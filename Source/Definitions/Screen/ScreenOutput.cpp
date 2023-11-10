@@ -161,6 +161,9 @@ void ScreenOutput::renderOpenGL()
         GLuint ebo;
         glGenBuffers(1, &ebo);
 
+        GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
+        glUniform4f(borderSoftLocation, 0.0f, 0.0f, 0.0f, 0.0f); 
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
@@ -185,20 +188,32 @@ void ScreenOutput::createAndLoadShaders()
         "in vec2 position;\n"
         "in vec3 texcoord;\n"
         "out vec3 Texcoord;\n"
+        "out vec2 surfacePosition;\n"
         "void main()\n"
         "{\n"
-        "   Texcoord = texcoord;\n"
+        "    Texcoord = texcoord;\n"
+        "    surfacePosition[0] = (position[0]+1.0f)/2.0f;\n"
+        "    surfacePosition[1] = (position[1]+1.0f)/2.0f;\n"
         "    gl_Position = vec4(position,0,1);\n"
         "}\n";
 
     const char* fragmentShaderCode =
         "in vec3 Texcoord;\n"
+        "in vec2 surfacePosition;\n"
         "out vec4 outColor;\n"
         "uniform sampler2D tex;\n"
+        "uniform vec4 borderSoft;\n"
+        "float map(float value, float min1, float max1, float min2, float max2) {\n"
+        "return min2 + ((max2-min2)*(value-min1)/(max1-min1)); };"
         "void main()\n"
         "{\n"
-        "    outColor = textureProj(tex, Texcoord);"//texture(myTexture, fragTextureCoord);\n"
-        "    outColor[3] = 1.0f;"
+        "    outColor = textureProj(tex, Texcoord);\n"
+        "   float alpha = 1.0f;\n"
+        "   if (surfacePosition[1] > 1-borderSoft[0])    {alpha *= map(surfacePosition[1],1.0f,1-borderSoft[0],0.0f,1.0f);}\n" // top
+        "   if (surfacePosition[0] > 1.0f-borderSoft[1]) {alpha *= map(surfacePosition[0],1.0f,1-borderSoft[1],0.0f,1.0f);}\n" // right
+        "   if (surfacePosition[1] < borderSoft[2])      {alpha *= map(surfacePosition[1],0.0f,borderSoft[2],0.0f,1.0f);}\n" // bottom
+        "   if (surfacePosition[0] < borderSoft[3])      {alpha *= map(surfacePosition[0],0.0f,borderSoft[3],0.0f,1.0f);}\n" // left
+        "    outColor[3] = alpha;\n"
         //"    outColor = vec4(0.5f,0.5f,0.5f,0.5f);   "
         "}\n";
 
