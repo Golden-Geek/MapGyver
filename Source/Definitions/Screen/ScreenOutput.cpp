@@ -9,28 +9,26 @@
 */
 
 #include "ScreenOutput.h"
+#include "Screen.h"
 
 using namespace juce::gl;
 
-ScreenOutput::ScreenOutput()
+ScreenOutput::ScreenOutput(Screen* parent)
 {
     setOpaque(true);
+    parentScreen = parent;
     //myImage = ImageCache::getFromFile(File("C:\\Users\\rosta\\Pictures\\olga.jpeg"));
     myImage = ImageCache::getFromFile(File("C:\\Users\\rosta\\Pictures\\mire.png"));
     bitmapData = std::make_shared<Image::BitmapData>(myImage, Image::BitmapData::readOnly);
 
-    tl = Point<float>(-1, 1);
-    tr = Point<float>(1, 1);
-    bl = Point<float>(-1, -1);
-    br = Point<float>(1, -1);
-
     openGLContext.setRenderer(this);
     openGLContext.attachTo(*this);
-    openGLContext.setComponentPaintingEnabled(true);
+    openGLContext.setComponentPaintingEnabled(false);
 
     OpenGLPixelFormat pixelFormat;
     pixelFormat.multisamplingLevel = 4; // Change this value to your needs.
     openGLContext.setPixelFormat(pixelFormat);
+
     stopLive();
 }
 
@@ -54,8 +52,8 @@ void ScreenOutput::goLive(int screenId)
         return; 
     }
 
-    if (isOn != nullptr) {
-        isOn->setValue(true);
+    if (parentScreen->enabled != nullptr) {
+        parentScreen->enabled->setValue(true);
     }
 
     isLive = true;
@@ -71,8 +69,8 @@ void ScreenOutput::goLive(int screenId)
 
 void ScreenOutput::stopLive()
 {
-    if (isOn != nullptr) {
-        isOn->setValue(false);
+    if (parentScreen->enabled != nullptr) {
+        parentScreen->enabled->setValue(false);
     }
     if (!isLive) { return; }
     setSize(1, 1);
@@ -118,56 +116,71 @@ void ScreenOutput::renderOpenGL()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        Point<float> center(0, 0);
-        intersection(tl, br, bl, tr, &center);
+        if (parentScreen != nullptr) {
+            Point<float> tl, tr, bl, br;
+            for (int i = 0; i < parentScreen->surfaces.items.size(); i++) {
+                Surface* s = parentScreen->surfaces.items[i];
+                tl.setXY(s->topLeft->x, s->topLeft->y);
+                tr.setXY(s->topRight->x, s->topRight->y);
+                bl.setXY(s->bottomLeft->x, s->bottomLeft->y);
+                br.setXY(s->bottomRight->x, s->bottomRight->y);
 
-        float dtl = center.getDistanceFrom(tl);
-        float dtr = center.getDistanceFrom(tr);
-        float dbr = center.getDistanceFrom(br);
-        float dbl = center.getDistanceFrom(bl);
+                Point<float> center(0, 0);
+                intersection(tl, br, bl, tr, &center);
 
-        float ztl = ((dtl + dbr) / dbr);
-        float ztr = ((dtr + dbl) / dbl);
-        float zbr = ((dbr + dtl) / dtl);
-        float zbl = ((dbl + dtr) / dtr);
+                float dtl = center.getDistanceFrom(tl);
+                float dtr = center.getDistanceFrom(tr);
+                float dbr = center.getDistanceFrom(br);
+                float dbl = center.getDistanceFrom(bl);
 
-        // Define vertices for a triangle
-        GLfloat vertices[] = {
-            //  Position        Texcoords
-                tl.x, tl.y, 0.0f, ztl, ztl, // Top-left
-                tr.x, tr.y, ztr, ztr, ztr, // Top-right
-                br.x, br.y, zbr, 0.0f, zbr, // Bottom-right
-                bl.x, bl.y, 0.0f, 0.0f, zbl // Bottom-left
-        };
-        // Create a vertex buffer object
-        GLuint vbo;
-        glGenBuffers(1, &vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+                float ztl = ((dtl + dbr) / dbr);
+                float ztr = ((dtr + dbl) / dbl);
+                float zbr = ((dbr + dtl) / dtl);
+                float zbl = ((dbl + dtr) / dtr);
 
-        GLint posAttrib = glGetAttribLocation(shader->getProgramID(), "position");
-        glEnableVertexAttribArray(posAttrib);
-        glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
+                // Define vertices for a triangle
+                GLfloat vertices[] = {
+                    tl.x, tl.y, -1.0f, 1.0f, 0.0f, ztl, ztl, // Top-left
+                    tr.x, tr.y, 1.0f, 1.0f, ztr, ztr, ztr, // Top-right
+                    br.x, br.y, 1.0f, -1.0f, zbr, 0.0f, zbr, // Bottom-right
+                    bl.x, bl.y, -1.0f, -1.0f, 0.0f, 0.0f, zbl // Bottom-left
+                };
+                // Create a vertex buffer object
+                GLuint vbo;
+                glGenBuffers(1, &vbo);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-        GLint texAttrib = glGetAttribLocation(shader->getProgramID(), "texcoord");
-        glEnableVertexAttribArray(texAttrib);
-        glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+                GLint posAttrib = glGetAttribLocation(shader->getProgramID(), "position");
+                glEnableVertexAttribArray(posAttrib);
+                glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), 0);
 
-        GLuint elements[] = {
-            0, 1, 2,
-            2, 3, 0,
-        };
+                GLint surfacePosAttrib = glGetAttribLocation(shader->getProgramID(), "surfacePosition");
+                glEnableVertexAttribArray(surfacePosAttrib);
+                glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
 
-        GLuint ebo;
-        glGenBuffers(1, &ebo);
+                GLint texAttrib = glGetAttribLocation(shader->getProgramID(), "texcoord");
+                glEnableVertexAttribArray(texAttrib);
+                glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(4 * sizeof(float)));
 
-        GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
-        glUniform4f(borderSoftLocation, 0.0f, 0.0f, 0.0f, 0.0f); 
+                GLuint elements[] = {
+                    0, 1, 2,
+                    2, 3, 0,
+                };
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+                GLuint ebo;
+                glGenBuffers(1, &ebo);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+                GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
+                glUniform4f(borderSoftLocation, s->softEdgeTop->floatValue(), s->softEdgeRight->floatValue(), s->softEdgeBottom->floatValue(), s->softEdgeLeft->floatValue());
+
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+
+                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+            }
+        }
         glDisable(GL_BLEND);
         myTexture.unbind();
     }
@@ -186,20 +199,21 @@ void ScreenOutput::createAndLoadShaders()
 
     const char* vertexShaderCode =
         "in vec2 position;\n"
+        "in vec2 surfacePosition;\n"
         "in vec3 texcoord;\n"
         "out vec3 Texcoord;\n"
-        "out vec2 surfacePosition;\n"
+        "out vec2 SurfacePosition;\n"
         "void main()\n"
         "{\n"
         "    Texcoord = texcoord;\n"
-        "    surfacePosition[0] = (position[0]+1.0f)/2.0f;\n"
-        "    surfacePosition[1] = (position[1]+1.0f)/2.0f;\n"
+        "    SurfacePosition[0] = (surfacePosition[0]+1.0f)/2.0f;\n"
+        "    SurfacePosition[1] = (surfacePosition[1]+1.0f)/2.0f;\n"
         "    gl_Position = vec4(position,0,1);\n"
         "}\n";
 
     const char* fragmentShaderCode =
         "in vec3 Texcoord;\n"
-        "in vec2 surfacePosition;\n"
+        "in vec2 SurfacePosition;\n"
         "out vec4 outColor;\n"
         "uniform sampler2D tex;\n"
         "uniform vec4 borderSoft;\n"
@@ -209,10 +223,10 @@ void ScreenOutput::createAndLoadShaders()
         "{\n"
         "    outColor = textureProj(tex, Texcoord);\n"
         "   float alpha = 1.0f;\n"
-        "   if (surfacePosition[1] > 1-borderSoft[0])    {alpha *= map(surfacePosition[1],1.0f,1-borderSoft[0],0.0f,1.0f);}\n" // top
-        "   if (surfacePosition[0] > 1.0f-borderSoft[1]) {alpha *= map(surfacePosition[0],1.0f,1-borderSoft[1],0.0f,1.0f);}\n" // right
-        "   if (surfacePosition[1] < borderSoft[2])      {alpha *= map(surfacePosition[1],0.0f,borderSoft[2],0.0f,1.0f);}\n" // bottom
-        "   if (surfacePosition[0] < borderSoft[3])      {alpha *= map(surfacePosition[0],0.0f,borderSoft[3],0.0f,1.0f);}\n" // left
+        "   if (SurfacePosition[1] > 1-borderSoft[0])    {alpha *= map(SurfacePosition[1],1.0f,1-borderSoft[0],0.0f,1.0f);}\n" // top
+        "   if (SurfacePosition[0] > 1.0f-borderSoft[1]) {alpha *= map(SurfacePosition[0],1.0f,1-borderSoft[1],0.0f,1.0f);}\n" // right
+        "   if (SurfacePosition[1] < borderSoft[2])      {alpha *= map(SurfacePosition[1],0.0f,borderSoft[2],0.0f,1.0f);}\n" // bottom
+        "   if (SurfacePosition[0] < borderSoft[3])      {alpha *= map(SurfacePosition[0],0.0f,borderSoft[3],0.0f,1.0f);}\n" // left
         "    outColor[3] = alpha;\n"
         //"    outColor = vec4(0.5f,0.5f,0.5f,0.5f);   "
         "}\n";

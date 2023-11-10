@@ -11,6 +11,14 @@
     <GROUP id="{1C2049A4-F05D-7C48-44EC-DD606A3617AC}" name="Source">
       <GROUP id="{032DB87E-0257-E9D1-2A9A-EDA9712E9E77}" name="Definitions">
         <GROUP id="{46017338-B075-9E00-F386-BEE2350888E7}" name="Screen">
+          <GROUP id="{3A2D31DE-8837-0C23-AC5B-B8DB90C47485}" name="Surface">
+            <FILE id="Xwcew0" name="Surface.cpp" compile="1" resource="0" file="Source/Definitions/Screen/Surface/Surface.cpp"/>
+            <FILE id="lPHYsI" name="Surface.h" compile="0" resource="0" file="Source/Definitions/Screen/Surface/Surface.h"/>
+            <FILE id="a1jWFT" name="SurfaceManager.cpp" compile="1" resource="0"
+                  file="Source/Definitions/Screen/Surface/SurfaceManager.cpp"/>
+            <FILE id="yxzeja" name="SurfaceManager.h" compile="0" resource="0"
+                  file="Source/Definitions/Screen/Surface/SurfaceManager.h"/>
+          </GROUP>
           <FILE id="tuDUut" name="Screen.cpp" compile="1" resource="0" file="Source/Definitions/Screen/Screen.cpp"/>
           <FILE id="o0VsSs" name="Screen.h" compile="0" resource="0" file="Source/Definitions/Screen/Screen.h"/>
           <FILE id="KN6DHg" name="ScreenManager.cpp" compile="1" resource="0"

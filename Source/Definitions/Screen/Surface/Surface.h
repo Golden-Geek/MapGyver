@@ -10,31 +10,35 @@
 
 #pragma once
 #include "JuceHeader.h"
-#include "ScreenOutput.h"
-#include "Surface/SurfaceManager.h"
+class SurfaceOutput;
 
 // #include "../Command/CommandSelectionManager.h"
 class CommandSelectionManager;
 
-class Screen :
+class Surface :
     public BaseItem
 {
 public:
-    Screen(var params = var());
-    virtual ~Screen();
+    Surface(var params = var());
+    virtual ~Surface();
 
     String objectType;
     var objectData;
 
-    IntParameter* screenNumber;
-    ScreenOutput output;
+    Point2DParameter* topLeft;
+    Point2DParameter* topRight;
+    Point2DParameter* bottomLeft;
+    Point2DParameter* bottomRight;
 
-    SurfaceManager surfaces;
+    FloatParameter* softEdgeTop;
+    FloatParameter* softEdgeRight;
+    FloatParameter* softEdgeBottom;
+    FloatParameter* softEdgeLeft;
 
     void onContainerParameterChangedInternal(Parameter* p);
 
     String getTypeString() const override { return objectType; }
-    static Screen* create(var params) { return new Screen(params); }
+    static Surface* create(var params) { return new Surface(params); }
 };
 
 

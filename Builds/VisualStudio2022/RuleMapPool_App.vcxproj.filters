@@ -5,6 +5,9 @@
     <Filter Include="RuleMapPool\Ressources">
       <UniqueIdentifier>{EF8C9817-6509-BF39-4C38-114117AF0954}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RuleMapPool\Source\Definitions\Screen\Surface">
+      <UniqueIdentifier>{E4D1A9A2-C06C-C0D1-699F-BF456FE207FC}</UniqueIdentifier>
+    </Filter>
     <Filter Include="RuleMapPool\Source\Definitions\Screen">
       <UniqueIdentifier>{85E31D98-969C-001B-2E2E-3E8A207CFBF2}</UniqueIdentifier>
     </Filter>
@@ -493,6 +496,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Definitions\Screen\Surface\Surface.cpp">
+      <Filter>RuleMapPool\Source\Definitions\Screen\Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Definitions\Screen\Surface\SurfaceManager.cpp">
+      <Filter>RuleMapPool\Source\Definitions\Screen\Surface</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Definitions\Screen\Screen.cpp">
       <Filter>RuleMapPool\Source\Definitions\Screen</Filter>
     </ClCompile>
@@ -2712,6 +2721,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Definitions\Screen\Surface\Surface.h">
+      <Filter>RuleMapPool\Source\Definitions\Screen\Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Definitions\Screen\Surface\SurfaceManager.h">
+      <Filter>RuleMapPool\Source\Definitions\Screen\Surface</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Definitions\Screen\Screen.h">
       <Filter>RuleMapPool\Source\Definitions\Screen</Filter>
     </ClInclude>

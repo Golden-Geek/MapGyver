@@ -16,20 +16,18 @@
 Screen::Screen(var params) :
 	BaseItem(params.getProperty("name", "Screen")),
 	objectType(params.getProperty("type", "Screen").toString()),
-	objectData(params)
+	objectData(params),
+	output(this)
 {
 	saveAndLoadRecursiveData = true;
 	nameCanBeChangedByUser = false;
-	canBeDisabled = false;
 
 	itemDataType = "Screen";
 
 	screenNumber = addIntParameter("Screen number", "Screen ID in your OS",0,0);
-	isOn = addBoolParameter("Is on", "if checheckd, we'll display this screen",false);
+	enabled->setDefaultValue(false);
 
-	linkedScreenOutput = std::make_shared<ScreenOutput>();
-	linkedScreenOutput->isOn = isOn;
-
+	addChildControllableContainer(&surfaces);
 }
 
 Screen::~Screen()
@@ -37,18 +35,18 @@ Screen::~Screen()
 }
 
 void Screen::onContainerParameterChangedInternal(Parameter* p) {
-	if (p == isOn) {
-		if (isOn->boolValue()) {
-			linkedScreenOutput->goLive(screenNumber->intValue());
+	if (p == enabled) {
+		if (enabled->boolValue()) {
+			output.goLive(screenNumber->intValue());
 		}
 		else {
-			linkedScreenOutput->stopLive();
+			output.stopLive();
 		}
 	}
 	else if (p == screenNumber) {
-		if (isOn->boolValue()) {
-			linkedScreenOutput->stopLive();
-			linkedScreenOutput->goLive(screenNumber->intValue());
+		if (enabled->boolValue()) {
+			output.stopLive();
+			output.goLive(screenNumber->intValue());
 		}
 	}
 }

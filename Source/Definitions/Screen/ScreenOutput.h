@@ -11,14 +11,17 @@
 #pragma once
 
 #include "JuceHeader.h"
+class Screen; 
 
 class ScreenOutput :
     public juce::Component,
     public juce::OpenGLRenderer
 {
     public:
-    ScreenOutput();
+    ScreenOutput(Screen* parent);
     ~ScreenOutput();
+
+    Screen* parentScreen;
 
     void paint(Graphics&) override;
 
@@ -30,7 +33,6 @@ class ScreenOutput :
     void openGLContextClosing() override;
 
     void createAndLoadShaders();
-    BoolParameter* isOn = nullptr;
 
     static bool intersection(Point<float> p1, Point<float> p2, Point<float> p3, Point<float> p4, Point<float>* intersect); // should be in another objet
 
@@ -40,7 +42,6 @@ class ScreenOutput :
     std::shared_ptr<Image::BitmapData> bitmapData = nullptr;
     GLuint textureID;
     OpenGLTexture myTexture;
-    Point<float> tl, tr, bl, br;
     Point<float> mousePos;
     Component* previousParent = nullptr;
     bool isLive = false;

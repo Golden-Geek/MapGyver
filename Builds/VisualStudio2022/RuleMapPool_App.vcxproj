@@ -141,6 +141,8 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Definitions\Screen\Surface\Surface.cpp"/>
+    <ClCompile Include="..\..\Source\Definitions\Screen\Surface\SurfaceManager.cpp"/>
     <ClCompile Include="..\..\Source\Definitions\Screen\Screen.cpp"/>
     <ClCompile Include="..\..\Source\Definitions\Screen\ScreenManager.cpp"/>
     <ClCompile Include="..\..\Source\Definitions\Screen\ScreenManagerUI.cpp"/>
@@ -2158,6 +2160,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_video.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Definitions\Screen\Surface\Surface.h"/>
+    <ClInclude Include="..\..\Source\Definitions\Screen\Surface\SurfaceManager.h"/>
     <ClInclude Include="..\..\Source\Definitions\Screen\Screen.h"/>
     <ClInclude Include="..\..\Source\Definitions\Screen\ScreenManager.h"/>
     <ClInclude Include="..\..\Source\Definitions\Screen\ScreenManagerUI.h"/>
