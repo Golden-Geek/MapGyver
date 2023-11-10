@@ -1,0 +1,60 @@
+{
+  "mainLayout": {
+    "type": 1,
+    "width": 1920,
+    "height": 989,
+    "direction": 2,
+    "shifters": [
+      {
+        "type": 1,
+        "width": 1920,
+        "height": 989,
+        "direction": 1,
+        "shifters": [
+          {
+            "type": 0,
+            "width": 940,
+            "height": 989,
+            "currentContent": "Screens",
+            "tabs": [
+              {
+                "name": "Screens"
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "width": 974,
+            "height": 989,
+            "direction": 2,
+            "shifters": [
+              {
+                "type": 0,
+                "width": 974,
+                "height": 712,
+                "currentContent": "Inspector",
+                "tabs": [
+                  {
+                    "name": "Inspector"
+                  }
+                ]
+              },
+              {
+                "type": 0,
+                "width": 974,
+                "height": 270,
+                "currentContent": "Logger",
+                "tabs": [
+                  {
+                    "name": "Logger"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "windows": null
+}

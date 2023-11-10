@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="DMftGm" name="RuleMapPool" projectType="guiapp" useAppConfig="1"
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1">
+  <MAINGROUP id="HVgNxl" name="RuleMapPool">
+    <GROUP id="{E81B84B3-41DE-914A-9CD1-D465593552E9}" name="Ressources">
+      <FILE id="eqKjYk" name="default.rmplayout" compile="0" resource="1"
+            file="Ressources/default.rmplayout"/>
+      <FILE id="BSmI1Y" name="icon.png" compile="0" resource="1" file="Ressources/icon.png"/>
+    </GROUP>
+    <GROUP id="{1C2049A4-F05D-7C48-44EC-DD606A3617AC}" name="Source">
+      <GROUP id="{032DB87E-0257-E9D1-2A9A-EDA9712E9E77}" name="Definitions">
+        <GROUP id="{46017338-B075-9E00-F386-BEE2350888E7}" name="Screen">
+          <FILE id="tuDUut" name="Screen.cpp" compile="1" resource="0" file="Source/Definitions/Screen/Screen.cpp"/>
+          <FILE id="o0VsSs" name="Screen.h" compile="0" resource="0" file="Source/Definitions/Screen/Screen.h"/>
+          <FILE id="KN6DHg" name="ScreenManager.cpp" compile="1" resource="0"
+                file="Source/Definitions/Screen/ScreenManager.cpp"/>
+          <FILE id="A3Nh7k" name="ScreenManager.h" compile="0" resource="0" file="Source/Definitions/Screen/ScreenManager.h"/>
+          <FILE id="yQnMbi" name="ScreenManagerUI.cpp" compile="1" resource="0"
+                file="Source/Definitions/Screen/ScreenManagerUI.cpp"/>
+          <FILE id="IpgmLm" name="ScreenManagerUI.h" compile="0" resource="0"
+                file="Source/Definitions/Screen/ScreenManagerUI.h"/>
+          <FILE id="nD4chz" name="ScreenOutput.cpp" compile="1" resource="0"
+                file="Source/Definitions/Screen/ScreenOutput.cpp"/>
+          <FILE id="Oudc7a" name="ScreenOutput.h" compile="0" resource="0" file="Source/Definitions/Screen/ScreenOutput.h"/>
+        </GROUP>
+      </GROUP>
+      <FILE id="z9PQ17" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="NPvmUn" name="Main.h" compile="0" resource="0" file="Source/Main.h"/>
+      <FILE id="FMHTjX" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+      <FILE id="SJ1tt1" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="m5mvik" name="MainComponentCommands.cpp" compile="1" resource="0"
+            file="Source/MainComponentCommands.cpp"/>
+      <FILE id="G1MinJ" name="mainIncludes.cpp" compile="1" resource="0"
+            file="Source/mainIncludes.cpp"/>
+      <FILE id="IAtXGY" name="mainIncludes.h" compile="0" resource="0" file="Source/mainIncludes.h"/>
+      <FILE id="IbcSit" name="RMPEngine.cpp" compile="1" resource="0" file="Source/RMPEngine.cpp"/>
+      <FILE id="f9rM75" name="RMPEngine.h" compile="0" resource="0" file="Source/RMPEngine.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_organicui" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+  <EXPORTFORMATS>
+    <VS2022 targetFolder="Builds/VisualStudio2022" smallIcon="BSmI1Y" bigIcon="BSmI1Y">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="RuleMapPool"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="RuleMapPool"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_organicui" path="Modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2022>
+  </EXPORTFORMATS>
+</JUCERPROJECT>
