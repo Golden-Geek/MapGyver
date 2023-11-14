@@ -44,7 +44,7 @@ public:
     void onContainerParameterChanged(Parameter* p) override;
     void triggerTriggered(Trigger* t);
     
-    String getTypeString() const override { return "Video File"; }
+    String getTypeString() const override { return "VideoFile"; }
     static MediaVideo* create(var params) { return new MediaVideo(); }
 
     libvlc_instance_t* VLCInstance = nullptr;
