@@ -35,6 +35,8 @@ public:
     FloatParameter* softEdgeBottom;
     FloatParameter* softEdgeLeft;
 
+    TargetParameter* tempMedia;
+
     void onContainerParameterChangedInternal(Parameter* p);
 
     String getTypeString() const override { return objectType; }

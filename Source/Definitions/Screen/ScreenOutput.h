@@ -12,6 +12,7 @@
 
 #include "JuceHeader.h"
 class Screen; 
+class Media;
 
 class ScreenOutput :
     public juce::Component,
@@ -38,11 +39,10 @@ class ScreenOutput :
 
     std::unique_ptr<OpenGLShaderProgram> shader;
     juce::OpenGLContext openGLContext;
-    Image myImage;
-    std::shared_ptr<Image::BitmapData> bitmapData = nullptr;
-    GLuint textureID;
-    OpenGLTexture myTexture;
     Point<float> mousePos;
     Component* previousParent = nullptr;
     bool isLive = false;
+
+    HashMap<Media*, std::shared_ptr<OpenGLTexture>> textures;
+    HashMap<Media*, int> texturesVersions;
 };

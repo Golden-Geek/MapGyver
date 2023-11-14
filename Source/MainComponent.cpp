@@ -3,6 +3,7 @@
 #include "RMPEngine.h"
 
 #include "Definitions/Screen/ScreenManagerUI.h"
+#include "Definitions/Media/MediaManagerUI.h"
 
 
 //==============================================================================
@@ -73,6 +74,7 @@ void MainComponent::resized()
 void MainContentComponent::init()
 {
     ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Screens", &ScreenManagerUI::create));
+    ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Medias", &MediaManagerUI::create));
 
     /*
     ShapeShifterManager::getInstance()->isInViewSubMenu.set("Interfaces", "Lists");

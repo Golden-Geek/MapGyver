@@ -11,6 +11,7 @@
 #include "JuceHeader.h"
 
 #include "Definitions/Screen/ScreenManager.h"
+#include "Definitions/Media/MediaManager.h"
 
 ControllableContainer* getAppSettings();
 
@@ -30,6 +31,7 @@ RMPEngine::RMPEngine() :
 	GlobalSettings::getInstance()->altScaleFactor->setDefaultValue(0.002);
 
 	addChildControllableContainer(ScreenManager::getInstance());
+	addChildControllableContainer(MediaManager::getInstance());
 
 	// MIDIManager::getInstance(); //Trigger constructor, declare settings
 
@@ -68,6 +70,7 @@ RMPEngine::~RMPEngine()
 	// CVGroupManager::deleteInstance();
 
 	// Guider::deleteInstance();
+	MediaManager::deleteInstance();
 	ScreenManager::deleteInstance();
 }
 
@@ -80,6 +83,7 @@ void RMPEngine::clearInternal()
 
 	// ModuleRouterManager::getInstance()->clear();
 	// ModuleManager::getInstance()->clear();
+	MediaManager::getInstance()->clear();
 	ScreenManager::getInstance()->clear();
 }
 
@@ -90,8 +94,11 @@ var RMPEngine::getJSONData()
 	//var mData = ModuleManager::getInstance()->getJSONData();
 	//if (!mData.isVoid() && mData.getDynamicObject()->getProperties().size() > 0) data.getDynamicObject()->setProperty(ModuleManager::getInstance()->shortName, mData);
 
-	var screenData = ScreenManager::getInstance()->getJSONData();
-	if (!screenData.isVoid() && screenData.getDynamicObject()->getProperties().size() > 0) data.getDynamicObject()->setProperty(ScreenManager::getInstance()->shortName, screenData);
+	var ScreenData = ScreenManager::getInstance()->getJSONData();
+	if (!ScreenData.isVoid() && ScreenData.getDynamicObject()->getProperties().size() > 0) data.getDynamicObject()->setProperty(ScreenManager::getInstance()->shortName, ScreenData);
+
+	var MediaData = MediaManager::getInstance()->getJSONData();
+	if (!MediaData.isVoid() && MediaData.getDynamicObject()->getProperties().size() > 0) data.getDynamicObject()->setProperty(MediaManager::getInstance()->shortName, MediaData);
 
 	return data;
 }
@@ -99,15 +106,21 @@ var RMPEngine::getJSONData()
 void RMPEngine::loadJSONDataInternalEngine(var data, ProgressTask* loadingTask)
 {
 	//ProgressTask* moduleTask = loadingTask->addTask("Modules");
-	ProgressTask* screenTask = loadingTask->addTask("Screens");
+	ProgressTask* ScreenTask = loadingTask->addTask("Screens");
+	ProgressTask* MediaTask = loadingTask->addTask("Medias");
 
 
 
 
-	screenTask->start();
+	ScreenTask->start();
 	ScreenManager::getInstance()->loadJSONData(data.getProperty(ScreenManager::getInstance()->shortName, var()));
-	screenTask->setProgress(1);
-	screenTask->end();
+	ScreenTask->setProgress(1);
+	ScreenTask->end();
+
+	MediaTask->start();
+	MediaManager::getInstance()->loadJSONData(data.getProperty(MediaManager::getInstance()->shortName, var()));
+	MediaTask->setProgress(1);
+	MediaTask->end();
 
 
 }
@@ -152,6 +165,7 @@ void RMPEngine::importMochi(var data)
 	if (!data.isObject()) return;
 
 	ScreenManager::getInstance()->addItemsFromData(data.getProperty(ScreenManager::getInstance()->shortName, var()));
+	MediaManager::getInstance()->addItemsFromData(data.getProperty(MediaManager::getInstance()->shortName, var()));
 }
 
 void RMPEngine::exportSelection()
@@ -159,6 +173,7 @@ void RMPEngine::exportSelection()
 	var data(new DynamicObject());
 
 	data.getDynamicObject()->setProperty(ScreenManager::getInstance()->shortName, ScreenManager::getInstance()->getExportSelectionData());
+	data.getDynamicObject()->setProperty(MediaManager::getInstance()->shortName, MediaManager::getInstance()->getExportSelectionData());
 
 	String s = JSON::toString(data);
 	

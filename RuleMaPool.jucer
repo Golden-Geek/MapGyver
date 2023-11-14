@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="DMftGm" name="RuleMapPool" projectType="guiapp" useAppConfig="1"
-              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;&#10;&#10;../../External/vlc/include">
   <MAINGROUP id="HVgNxl" name="RuleMapPool">
     <GROUP id="{E81B84B3-41DE-914A-9CD1-D465593552E9}" name="Ressources">
       <FILE id="eqKjYk" name="default.rmplayout" compile="0" resource="1"
@@ -10,6 +10,60 @@
     </GROUP>
     <GROUP id="{1C2049A4-F05D-7C48-44EC-DD606A3617AC}" name="Source">
       <GROUP id="{032DB87E-0257-E9D1-2A9A-EDA9712E9E77}" name="Definitions">
+        <GROUP id="{EF0AE558-22D4-3C9F-4A88-CCE4C6E5F11D}" name="Media">
+          <GROUP id="{8E0D02F4-273C-03BC-202B-A1F272672B85}" name="medias">
+            <GROUP id="{41F03A75-AF59-B1EB-32E5-DA8EAE830904}" name="MediaImage">
+              <FILE id="Mi9UbR" name="MediaIMage.cpp" compile="1" resource="0" file="Source/Definitions/Media/medias/MediaImage/MediaIMage.cpp"/>
+              <FILE id="Wl9Dmb" name="MediaIMage.h" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaImage/MediaIMage.h"/>
+            </GROUP>
+            <GROUP id="{0CD4D830-2561-4F55-FB32-E87DB2D4CE55}" name="MediaNDI">
+              <FILE id="o5Azf2" name="MediaNDI.cpp" compile="1" resource="0" file="Source/Definitions/Media/medias/MediaNDI/MediaNDI.cpp"/>
+              <FILE id="wkOWMP" name="MediaNDI.h" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaNDI/MediaNDI.h"/>
+            </GROUP>
+            <GROUP id="{67282A41-E833-822E-D849-F315BDC892D8}" name="MediaSolidColor">
+              <FILE id="EfMF5g" name="MediaSolidColor.cpp" compile="1" resource="0"
+                    file="Source/Definitions/Media/medias/MediaSolidColor/MediaSolidColor.cpp"/>
+              <FILE id="B5igmD" name="MediaSolidColor.h" compile="0" resource="0"
+                    file="Source/Definitions/Media/medias/MediaSolidColor/MediaSolidColor.h"/>
+            </GROUP>
+            <GROUP id="{97D3B627-A1B4-FBDD-D4E3-76FE8F212C5D}" name="MediaVideo">
+              <GROUP id="{DF8E2B1F-8EC2-77FD-8A2A-8AD1E60D093D}" name="vlcpp">
+                <FILE id="P2hjTu" name="common.hpp" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/vlcpp/common.hpp"/>
+                <FILE id="uZvrpA" name="Dialog.hpp" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/vlcpp/Dialog.hpp"/>
+                <FILE id="v3KcUM" name="Equalizer.hpp" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/vlcpp/Equalizer.hpp"/>
+                <FILE id="elGnl3" name="EventManager.hpp" compile="0" resource="0"
+                      file="Source/Definitions/Media/medias/MediaVideo/vlcpp/EventManager.hpp"/>
+                <FILE id="dUe2On" name="Instance.hpp" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/vlcpp/Instance.hpp"/>
+                <FILE id="wlnQ3o" name="Internal.hpp" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/vlcpp/Internal.hpp"/>
+                <FILE id="raxigL" name="Media.hpp" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/vlcpp/Media.hpp"/>
+                <FILE id="i1MBLF" name="MediaDiscoverer.hpp" compile="0" resource="0"
+                      file="Source/Definitions/Media/medias/MediaVideo/vlcpp/MediaDiscoverer.hpp"/>
+                <FILE id="OwisSM" name="MediaLibrary.hpp" compile="0" resource="0"
+                      file="Source/Definitions/Media/medias/MediaVideo/vlcpp/MediaLibrary.hpp"/>
+                <FILE id="dHxWaF" name="MediaList.hpp" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/vlcpp/MediaList.hpp"/>
+                <FILE id="WwukRA" name="MediaListPlayer.hpp" compile="0" resource="0"
+                      file="Source/Definitions/Media/medias/MediaVideo/vlcpp/MediaListPlayer.hpp"/>
+                <FILE id="Lv2jgB" name="MediaPlayer.hpp" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/vlcpp/MediaPlayer.hpp"/>
+                <FILE id="P6p4SZ" name="Picture.hpp" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/vlcpp/Picture.hpp"/>
+                <FILE id="gswsbJ" name="RendererDiscoverer.hpp" compile="0" resource="0"
+                      file="Source/Definitions/Media/medias/MediaVideo/vlcpp/RendererDiscoverer.hpp"/>
+                <FILE id="xnGSoY" name="structures.hpp" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/vlcpp/structures.hpp"/>
+                <FILE id="TMpnAE" name="vlc.hpp" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/vlcpp/vlc.hpp"/>
+              </GROUP>
+              <FILE id="H5NLS1" name="MediaVideo.cpp" compile="1" resource="0" file="Source/Definitions/Media/medias/MediaVideo/MediaVideo.cpp"/>
+              <FILE id="PKRg9O" name="MediaVideo.h" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaVideo/MediaVideo.h"/>
+            </GROUP>
+          </GROUP>
+          <FILE id="SHyQxO" name="Media.cpp" compile="1" resource="0" file="Source/Definitions/Media/Media.cpp"/>
+          <FILE id="l0QRn1" name="Media.h" compile="0" resource="0" file="Source/Definitions/Media/Media.h"/>
+          <FILE id="OWRLMl" name="MediaManager.cpp" compile="1" resource="0"
+                file="Source/Definitions/Media/MediaManager.cpp"/>
+          <FILE id="BjvsVj" name="MediaManager.h" compile="0" resource="0" file="Source/Definitions/Media/MediaManager.h"/>
+          <FILE id="q7Dxwx" name="MediaManagerUI.cpp" compile="1" resource="0"
+                file="Source/Definitions/Media/MediaManagerUI.cpp"/>
+          <FILE id="GOBMLl" name="MediaManagerUI.h" compile="0" resource="0"
+                file="Source/Definitions/Media/MediaManagerUI.h"/>
+        </GROUP>
         <GROUP id="{46017338-B075-9E00-F386-BEE2350888E7}" name="Screen">
           <GROUP id="{3A2D31DE-8837-0C23-AC5B-B8DB90C47485}" name="Surface">
             <FILE id="Xwcew0" name="Surface.cpp" compile="1" resource="0" file="Source/Definitions/Screen/Surface/Surface.cpp"/>
@@ -62,10 +116,13 @@
   </MODULES>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>
-    <VS2022 targetFolder="Builds/VisualStudio2022" smallIcon="BSmI1Y" bigIcon="BSmI1Y">
+    <VS2022 targetFolder="Builds/VisualStudio2022" smallIcon="BSmI1Y" bigIcon="BSmI1Y"
+            externalLibraries="libvlc.lib&#10;libvlccore.lib">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="RuleMapPool"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="RuleMapPool"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="RuleMapPool" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins"
+                       libraryPath="../../External/vlc/lib" binaryPath="Binaries/Debug"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="RuleMapPool" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins"
+                       libraryPath="../../External/vlc/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../JUCE/modules"/>

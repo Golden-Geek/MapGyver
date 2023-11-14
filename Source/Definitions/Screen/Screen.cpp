@@ -27,6 +27,7 @@ Screen::Screen(var params) :
 	screenNumber = addIntParameter("Screen number", "Screen ID in your OS",0,0);
 	enabled->setDefaultValue(false);
 
+
 	addChildControllableContainer(&surfaces);
 }
 

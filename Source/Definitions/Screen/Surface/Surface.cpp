@@ -11,6 +11,7 @@
 #include "JuceHeader.h"
 #include "Surface.h"
 #include "SurfaceManager.h"
+#include "Definitions/Media/MediaManager.h"
 
 Surface::Surface(var params) :
 	BaseItem(params.getProperty("name", "Surface")),
@@ -47,6 +48,11 @@ Surface::Surface(var params) :
 	softEdgeRight = addFloatParameter("Soft Edge Right", "", 0, 0, 1);
 	softEdgeBottom = addFloatParameter("Soft Edge Bottom", "", 0, 0, 1);
 	softEdgeLeft = addFloatParameter("Soft Edge Left", "", 0, 0, 1);
+
+	tempMedia = addTargetParameter("TEMP Media", "Media... for testing purposes ?", MediaManager::getInstance());
+	tempMedia->maxDefaultSearchLevel = 1;
+	tempMedia->targetType = TargetParameter::CONTAINER;
+
 
 }
 

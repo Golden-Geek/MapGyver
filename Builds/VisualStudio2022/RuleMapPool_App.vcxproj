@@ -43,14 +43,16 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <TargetExt>.exe</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\App\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\..\Binaries\Debug\App\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">RuleMapPool</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);../../External/vlc/lib</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\App\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">RuleMapPool</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);../../External/vlc/lib</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -63,7 +65,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;C:\repos\JUCE\modules;..\..\Modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;C:\repos\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../Source;../../External/vlc/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2022_78A503E=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -77,7 +79,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;C:\repos\JUCE\modules;..\..\Modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;C:\repos\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../Source;../../External/vlc/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2022_78A503E=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
@@ -87,13 +89,18 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)\RuleMapPool.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>../../External/vlc/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
+      <AdditionalDependencies>libvlc.lib;libvlccore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\RuleMapPool.bsc</OutputFile>
     </Bscmake>
-    <Lib/>
+    <Lib>
+      <AdditionalDependencies>libvlc.lib;libvlccore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../External/vlc/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -105,7 +112,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;C:\repos\JUCE\modules;..\..\Modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;C:\repos\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../Source;../../External/vlc/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2022_78A503E=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -119,7 +126,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;C:\repos\JUCE\modules;..\..\Modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;C:\repos\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../Source;../../External/vlc/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2022_78A503E=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
@@ -131,16 +138,28 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <AdditionalLibraryDirectories>../../External/vlc/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <AdditionalDependencies>libvlc.lib;libvlccore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\RuleMapPool.bsc</OutputFile>
     </Bscmake>
-    <Lib/>
+    <Lib>
+      <AdditionalDependencies>libvlc.lib;libvlccore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../External/vlc/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaImage\MediaIMage.cpp"/>
+    <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaNDI\MediaNDI.cpp"/>
+    <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaSolidColor\MediaSolidColor.cpp"/>
+    <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaVideo\MediaVideo.cpp"/>
+    <ClCompile Include="..\..\Source\Definitions\Media\Media.cpp"/>
+    <ClCompile Include="..\..\Source\Definitions\Media\MediaManager.cpp"/>
+    <ClCompile Include="..\..\Source\Definitions\Media\MediaManagerUI.cpp"/>
     <ClCompile Include="..\..\Source\Definitions\Screen\Surface\Surface.cpp"/>
     <ClCompile Include="..\..\Source\Definitions\Screen\Surface\SurfaceManager.cpp"/>
     <ClCompile Include="..\..\Source\Definitions\Screen\Screen.cpp"/>
@@ -2160,6 +2179,29 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_video.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaImage\MediaIMage.h"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaNDI\MediaNDI.h"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaSolidColor\MediaSolidColor.h"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\common.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\Dialog.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\Equalizer.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\EventManager.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\Instance.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\Internal.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\Media.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\MediaDiscoverer.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\MediaLibrary.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\MediaList.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\MediaListPlayer.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\MediaPlayer.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\Picture.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\RendererDiscoverer.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\structures.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\vlcpp\vlc.hpp"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaVideo\MediaVideo.h"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\Media.h"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\MediaManager.h"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\MediaManagerUI.h"/>
     <ClInclude Include="..\..\Source\Definitions\Screen\Surface\Surface.h"/>
     <ClInclude Include="..\..\Source\Definitions\Screen\Surface\SurfaceManager.h"/>
     <ClInclude Include="..\..\Source\Definitions\Screen\Screen.h"/>

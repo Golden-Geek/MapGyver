@@ -10,6 +10,7 @@
 
 #include "ScreenOutput.h"
 #include "Screen.h"
+#include "Definitions/Media/Media.h"
 
 using namespace juce::gl;
 
@@ -18,16 +19,16 @@ ScreenOutput::ScreenOutput(Screen* parent)
     setOpaque(true);
     parentScreen = parent;
     //myImage = ImageCache::getFromFile(File("C:\\Users\\rosta\\Pictures\\olga.jpeg"));
-    myImage = ImageCache::getFromFile(File("C:\\Users\\rosta\\Pictures\\mire.png"));
-    bitmapData = std::make_shared<Image::BitmapData>(myImage, Image::BitmapData::readOnly);
+    //myImage = ImageCache::getFromFile(File("C:\\Users\\rosta\\Pictures\\mire.png"));
+    //bitmapData = std::make_shared<Image::BitmapData>(myImage, Image::BitmapData::readOnly);
 
     openGLContext.setRenderer(this);
     openGLContext.attachTo(*this);
     openGLContext.setComponentPaintingEnabled(false);
 
-    OpenGLPixelFormat pixelFormat;
-    pixelFormat.multisamplingLevel = 4; // Change this value to your needs.
-    openGLContext.setPixelFormat(pixelFormat);
+    // OpenGLPixelFormat pixelFormat;
+    // pixelFormat.multisamplingLevel = 4; // Change this value to your needs.
+    // openGLContext.setPixelFormat(pixelFormat);
 
     stopLive();
 }
@@ -35,6 +36,9 @@ ScreenOutput::ScreenOutput(Screen* parent)
 ScreenOutput::~ScreenOutput()
 {
     stopLive();
+    glEnable(GL_BLEND);
+    textures.clear();
+    glDisable(GL_BLEND);
     openGLContext.detach();
 }
 
@@ -89,17 +93,12 @@ void ScreenOutput::newOpenGLContextCreated()
 {
     // Set up your OpenGL state here
 
-    if (!myImage.isNull())
-    {
-        myTexture.loadImage(myImage);
-    }
-
     createAndLoadShaders();
 }
 
 void ScreenOutput::renderOpenGL()
 {
-    // Définir la vue OpenGL en fonction de la taille du composant
+    // DÃ©finir la vue OpenGL en fonction de la taille du composant
     if (!isLive) {return;}
 
     glViewport(0, 0, getWidth(), getHeight());
@@ -107,8 +106,6 @@ void ScreenOutput::renderOpenGL()
     if (shader != nullptr)
     {
         shader->use();
-
-        myTexture.bind();
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -120,6 +117,29 @@ void ScreenOutput::renderOpenGL()
             Point<float> tl, tr, bl, br;
             for (int i = 0; i < parentScreen->surfaces.items.size(); i++) {
                 Surface* s = parentScreen->surfaces.items[i];
+
+                Media* m = dynamic_cast<Media*>(s->tempMedia->targetContainer.get());
+                std::shared_ptr<OpenGLTexture> tex = nullptr;
+
+                //myTexture.bind();
+                if (m != nullptr) {
+                    if (!textures.contains(m)) {
+                        tex = std::make_shared<OpenGLTexture>();
+                        tex->loadImage(m->myImage);
+                        texturesVersions.set(m, m->imageVersion);
+                        textures.set(m, tex);
+                    }
+                    tex = textures.getReference(m);
+                    unsigned int vers = texturesVersions.getReference(m);
+                    if (m->imageVersion != vers) {
+                        tex->loadImage(m->myImage);
+                        texturesVersions.set(m, m->imageVersion);
+                    }
+                    tex->bind();
+                }
+
+
+
                 tl.setXY(s->topLeft->x, s->topLeft->y);
                 tr.setXY(s->topRight->x, s->topRight->y);
                 bl.setXY(s->bottomLeft->x, s->bottomLeft->y);
@@ -178,18 +198,20 @@ void ScreenOutput::renderOpenGL()
                 glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+                
+                if (tex != nullptr) {
+                    tex->unbind();
+                }
 
             }
         }
         glDisable(GL_BLEND);
-        myTexture.unbind();
+        //myTexture.unbind();
     }
 }
 
 void ScreenOutput::openGLContextClosing()
 {
-    myTexture.unbind();
-    myTexture.release();
     shader = nullptr;
 }
 
