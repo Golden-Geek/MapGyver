@@ -28,7 +28,10 @@ RMPEngine::RMPEngine() :
 	Engine::mainEngine = this;
 	RMPEngine::mainEngine = this;
 
-	GlobalSettings::getInstance()->altScaleFactor->setDefaultValue(0.002);
+	GlobalSettings::getInstance()->altScaleFactor->setDefaultValue(0.05);
+
+	const char* argv[1] = { "-vvv" };
+	VLCInstance = libvlc_new(1, argv);
 
 	addChildControllableContainer(ScreenManager::getInstance());
 	addChildControllableContainer(MediaManager::getInstance());
@@ -72,6 +75,8 @@ RMPEngine::~RMPEngine()
 	// Guider::deleteInstance();
 	MediaManager::deleteInstance();
 	ScreenManager::deleteInstance();
+	libvlc_release(VLCInstance); 
+	VLCInstance = nullptr;
 }
 
 

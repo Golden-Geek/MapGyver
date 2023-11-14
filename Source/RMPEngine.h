@@ -12,6 +12,7 @@
 #pragma once
 
 #include "JuceHeader.h"
+#include "Definitions/Media/medias/MediaVideo/vlcpp/vlc.hpp"
  // #include "Module/ModuleIncludes.h"
 
 class DMXChannelView;
@@ -32,6 +33,8 @@ public:
 
 	//Global Settings
 	//ControllableContainer defaultBehaviors;
+
+	libvlc_instance_t* VLCInstance = nullptr;
 
 	void clearInternal() override;
 

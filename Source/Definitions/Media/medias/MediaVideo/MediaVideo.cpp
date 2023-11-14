@@ -10,6 +10,7 @@
 
 #include "MediaVideo.h"
 #include "vlcpp/vlc.hpp"
+#include "RMPEngine.h"
 
 MediaVideo::MediaVideo(var params) :
 	Media(params),
@@ -30,8 +31,8 @@ MediaVideo::MediaVideo(var params) :
     beatPerCycle = addIntParameter("Beat by cycles", "Number of tap tempo beats by cycle", 1, 1);
     tapTempoBtn = addTrigger("Tap tempo", "");
 
-    const char* argv[1] = { "-vvv" };
-    VLCInstance = libvlc_new(1, argv);
+    RMPEngine* e = dynamic_cast<RMPEngine*>(Engine::mainEngine);
+    VLCInstance = e->VLCInstance;
 }
 
 MediaVideo::~MediaVideo()
@@ -44,7 +45,6 @@ MediaVideo::~MediaVideo()
         libvlc_media_player_release(VLCMediaPlayer); VLCMediaPlayer = nullptr;
     }
     if (VLCMedia != nullptr) {  libvlc_media_release(VLCMedia);VLCMedia = nullptr; }
-    libvlc_release(VLCInstance); VLCInstance = nullptr;
 }
 
 void MediaVideo::clearItem()
