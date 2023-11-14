@@ -13,7 +13,9 @@
 MediaSolidColor::MediaSolidColor(var params) :
 	Media(params)
 {
-	color = addColorParameter("Color", "", Colour(255,0,0));
+	color = addColorParameter("Color", "", Colour(255,255,255));
+	myImage = Image(juce::Image::PixelFormat::ARGB, 1,1,true);
+	myImage.setPixelAt(0,0,color->getColor());
 }
 
 MediaSolidColor::~MediaSolidColor()
@@ -25,8 +27,9 @@ void MediaSolidColor::clearItem()
 	BaseItem::clearItem();
 }
 
-void MediaSolidColor::onContainerParameterChanged(Parameter* p)
+void MediaSolidColor::onContainerParameterChangedInternal(Parameter* p)
 {
-	Media::onContainerParameterChanged(p);
+	myImage.setPixelAt(0, 0, color->getColor());
+	updateVersion();
 }
 

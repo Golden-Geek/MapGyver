@@ -25,7 +25,7 @@ public:
     ColorParameter* color;
 
     void clearItem() override;
-    void onContainerParameterChanged(Parameter* p) override;
+    void onContainerParameterChangedInternal(Parameter* p) override;
     
     String getTypeString() const override { return "SolidColor"; }
     static MediaSolidColor* create(var params) { return new MediaSolidColor(); };
