@@ -15,7 +15,7 @@
 ControllableContainer* getAppSettings();
 
 RMPEngine::RMPEngine() :
-	Engine("RuleMaPool", ".olga")
+	Engine("RuleMaPool", ".coop")
 	//defaultBehaviors("Test"),
 	//ossiaFixture(nullptr)
 {
