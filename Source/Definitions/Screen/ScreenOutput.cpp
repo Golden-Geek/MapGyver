@@ -18,17 +18,10 @@ ScreenOutput::ScreenOutput(Screen* parent)
 {
     setOpaque(true);
     parentScreen = parent;
-    //myImage = ImageCache::getFromFile(File("C:\\Users\\rosta\\Pictures\\olga.jpeg"));
-    //myImage = ImageCache::getFromFile(File("C:\\Users\\rosta\\Pictures\\mire.png"));
-    //bitmapData = std::make_shared<Image::BitmapData>(myImage, Image::BitmapData::readOnly);
 
     openGLContext.setRenderer(this);
     openGLContext.attachTo(*this);
     openGLContext.setComponentPaintingEnabled(false);
-
-    // OpenGLPixelFormat pixelFormat;
-    // pixelFormat.multisamplingLevel = 4; // Change this value to your needs.
-    // openGLContext.setPixelFormat(pixelFormat);
 
     stopLive();
 }
@@ -46,10 +39,10 @@ void ScreenOutput::paint(Graphics& g)
 void ScreenOutput::goLive(int screenId)
 {
     Displays ds = Desktop::getInstance().getDisplays();
-
     if (isLive) { return; }
     if (screenId >= ds.displays.size()) { 
-    stopLive();
+        LOGERROR("selected display is not available");
+        stopLive();
         return; 
     }
 
@@ -71,7 +64,7 @@ void ScreenOutput::goLive(int screenId)
 void ScreenOutput::stopLive()
 {
     if (parentScreen->enabled != nullptr) {
-        parentScreen->enabled->setValue(false);
+        //parentScreen->enabled->setValue(false);
     }
     if (!isLive) { return; }
     setSize(1, 1);

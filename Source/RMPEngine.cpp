@@ -33,8 +33,8 @@ RMPEngine::RMPEngine() :
 	const char* argv[1] = { "-vvv" };
 	VLCInstance = libvlc_new(1, argv);
 
-	addChildControllableContainer(ScreenManager::getInstance());
 	addChildControllableContainer(MediaManager::getInstance());
+	addChildControllableContainer(ScreenManager::getInstance());
 
 	// MIDIManager::getInstance(); //Trigger constructor, declare settings
 
@@ -88,8 +88,8 @@ void RMPEngine::clearInternal()
 
 	// ModuleRouterManager::getInstance()->clear();
 	// ModuleManager::getInstance()->clear();
-	MediaManager::getInstance()->clear();
 	ScreenManager::getInstance()->clear();
+	MediaManager::getInstance()->clear();
 }
 
 var RMPEngine::getJSONData()
@@ -99,11 +99,12 @@ var RMPEngine::getJSONData()
 	//var mData = ModuleManager::getInstance()->getJSONData();
 	//if (!mData.isVoid() && mData.getDynamicObject()->getProperties().size() > 0) data.getDynamicObject()->setProperty(ModuleManager::getInstance()->shortName, mData);
 
+	var MediaData = MediaManager::getInstance()->getJSONData();
+	if (!MediaData.isVoid() && MediaData.getDynamicObject()->getProperties().size() > 0) data.getDynamicObject()->setProperty(MediaManager::getInstance()->shortName, MediaData);
+
 	var ScreenData = ScreenManager::getInstance()->getJSONData();
 	if (!ScreenData.isVoid() && ScreenData.getDynamicObject()->getProperties().size() > 0) data.getDynamicObject()->setProperty(ScreenManager::getInstance()->shortName, ScreenData);
 
-	var MediaData = MediaManager::getInstance()->getJSONData();
-	if (!MediaData.isVoid() && MediaData.getDynamicObject()->getProperties().size() > 0) data.getDynamicObject()->setProperty(MediaManager::getInstance()->shortName, MediaData);
 
 	return data;
 }
@@ -115,17 +116,17 @@ void RMPEngine::loadJSONDataInternalEngine(var data, ProgressTask* loadingTask)
 	ProgressTask* MediaTask = loadingTask->addTask("Medias");
 
 
+	MediaTask->start();
+	MediaManager::getInstance()->loadJSONData(data.getProperty(MediaManager::getInstance()->shortName, var()));
+	MediaTask->setProgress(1);
+	MediaTask->end();
+
 
 
 	ScreenTask->start();
 	ScreenManager::getInstance()->loadJSONData(data.getProperty(ScreenManager::getInstance()->shortName, var()));
 	ScreenTask->setProgress(1);
 	ScreenTask->end();
-
-	MediaTask->start();
-	MediaManager::getInstance()->loadJSONData(data.getProperty(MediaManager::getInstance()->shortName, var()));
-	MediaTask->setProgress(1);
-	MediaTask->end();
 
 
 }
