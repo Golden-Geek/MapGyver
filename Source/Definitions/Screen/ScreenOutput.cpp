@@ -36,9 +36,6 @@ ScreenOutput::ScreenOutput(Screen* parent)
 ScreenOutput::~ScreenOutput()
 {
     stopLive();
-    glEnable(GL_BLEND);
-    textures.clear();
-    glDisable(GL_BLEND);
     openGLContext.detach();
 }
 
@@ -117,101 +114,113 @@ void ScreenOutput::renderOpenGL()
             Point<float> tl, tr, bl, br;
             for (int i = 0; i < parentScreen->surfaces.items.size(); i++) {
                 Surface* s = parentScreen->surfaces.items[i];
+                if (s->enabled->boolValue()) {
+                    Media* m = dynamic_cast<Media*>(s->tempMedia->targetContainer.get());
+                    std::shared_ptr<OpenGLTexture> tex = nullptr;
 
-                Media* m = dynamic_cast<Media*>(s->tempMedia->targetContainer.get());
-                std::shared_ptr<OpenGLTexture> tex = nullptr;
-
-                //myTexture.bind();
-                if (m != nullptr) {
-                    if (!textures.contains(m)) {
-                        tex = std::make_shared<OpenGLTexture>();
-                        tex->loadImage(m->myImage);
-                        texturesVersions.set(m, m->imageVersion);
-                        textures.set(m, tex);
+                    //myTexture.bind();
+                    if (m != nullptr) {
+                        if (!textures.contains(m)) {
+                            tex = std::make_shared<OpenGLTexture>();
+                            tex->loadImage(m->myImage);
+                            texturesVersions.set(m, m->imageVersion);
+                            textures.set(m, tex);
+                        }
+                        tex = textures.getReference(m);
+                        unsigned int vers = texturesVersions.getReference(m);
+                        if (m->imageVersion != vers) {
+                            tex->loadImage(m->myImage);
+                            texturesVersions.set(m, m->imageVersion);
+                        }
+                        tex->bind();
                     }
-                    tex = textures.getReference(m);
-                    unsigned int vers = texturesVersions.getReference(m);
-                    if (m->imageVersion != vers) {
-                        tex->loadImage(m->myImage);
-                        texturesVersions.set(m, m->imageVersion);
-                    }
-                    tex->bind();
-                }
 
+                    tl.setXY(s->topLeft->x, s->topLeft->y);
+                    tr.setXY(s->topRight->x, s->topRight->y);
+                    bl.setXY(s->bottomLeft->x, s->bottomLeft->y);
+                    br.setXY(s->bottomRight->x, s->bottomRight->y);
 
+                    Point<float> center(0, 0);
+                    intersection(tl, br, bl, tr, &center);
 
-                tl.setXY(s->topLeft->x, s->topLeft->y);
-                tr.setXY(s->topRight->x, s->topRight->y);
-                bl.setXY(s->bottomLeft->x, s->bottomLeft->y);
-                br.setXY(s->bottomRight->x, s->bottomRight->y);
+                    float dtl = center.getDistanceFrom(tl);
+                    float dtr = center.getDistanceFrom(tr);
+                    float dbr = center.getDistanceFrom(br);
+                    float dbl = center.getDistanceFrom(bl);
 
-                Point<float> center(0, 0);
-                intersection(tl, br, bl, tr, &center);
+                    float ztl = ((dtl + dbr) / dbr);
+                    float ztr = ((dtr + dbl) / dbl);
+                    float zbr = ((dbr + dtl) / dtl);
+                    float zbl = ((dbl + dtr) / dtr);
 
-                float dtl = center.getDistanceFrom(tl);
-                float dtr = center.getDistanceFrom(tr);
-                float dbr = center.getDistanceFrom(br);
-                float dbl = center.getDistanceFrom(bl);
+                    Vector3D<float> tlTex(s->cropLeft->floatValue(), 1-s->cropTop->floatValue(),1.0f);
+                    Vector3D<float> trTex(1- s->cropRight->floatValue(), 1-s->cropTop->floatValue(),1.0f);
+                    Vector3D<float> blTex(s->cropLeft->floatValue(), s->cropBottom->floatValue(),1.0f);
+                    Vector3D<float> brTex(1 - s->cropRight->floatValue(), s->cropBottom->floatValue(),1.0f);
+                    
+                    tlTex *= ztl;
+                    trTex *= ztr;
+                    blTex *= zbl;
+                    brTex *= zbr;
 
-                float ztl = ((dtl + dbr) / dbr);
-                float ztr = ((dtr + dbl) / dbl);
-                float zbr = ((dbr + dtl) / dtl);
-                float zbl = ((dbl + dtr) / dtr);
+                    // Define vertices for a triangle
+                    GLfloat vertices[] = {
+                        tl.x, tl.y, -1.0f, 1.0f, tlTex.x, tlTex.y, tlTex.z, // Top-left
+                        tr.x, tr.y, 1.0f, 1.0f, trTex.x, trTex.y, trTex.z, // Top-right
+                        br.x, br.y, 1.0f, -1.0f, brTex.x, brTex.y, brTex.z, // Bottom-right
+                        bl.x, bl.y, -1.0f, -1.0f, blTex.x, blTex.y, blTex.z // Bottom-left
+                    };
+                    // Create a vertex buffer object
+                    GLuint vbo;
+                    glGenBuffers(1, &vbo);
+                    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+                    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-                // Define vertices for a triangle
-                GLfloat vertices[] = {
-                    tl.x, tl.y, -1.0f, 1.0f, 0.0f, ztl, ztl, // Top-left
-                    tr.x, tr.y, 1.0f, 1.0f, ztr, ztr, ztr, // Top-right
-                    br.x, br.y, 1.0f, -1.0f, zbr, 0.0f, zbr, // Bottom-right
-                    bl.x, bl.y, -1.0f, -1.0f, 0.0f, 0.0f, zbl // Bottom-left
-                };
-                // Create a vertex buffer object
-                GLuint vbo;
-                glGenBuffers(1, &vbo);
-                glBindBuffer(GL_ARRAY_BUFFER, vbo);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+                    GLint posAttrib = glGetAttribLocation(shader->getProgramID(), "position");
+                    glEnableVertexAttribArray(posAttrib);
+                    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), 0);
 
-                GLint posAttrib = glGetAttribLocation(shader->getProgramID(), "position");
-                glEnableVertexAttribArray(posAttrib);
-                glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), 0);
+                    GLint surfacePosAttrib = glGetAttribLocation(shader->getProgramID(), "surfacePosition");
+                    glEnableVertexAttribArray(surfacePosAttrib);
+                    glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
 
-                GLint surfacePosAttrib = glGetAttribLocation(shader->getProgramID(), "surfacePosition");
-                glEnableVertexAttribArray(surfacePosAttrib);
-                glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+                    GLint texAttrib = glGetAttribLocation(shader->getProgramID(), "texcoord");
+                    glEnableVertexAttribArray(texAttrib);
+                    glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(4 * sizeof(float)));
 
-                GLint texAttrib = glGetAttribLocation(shader->getProgramID(), "texcoord");
-                glEnableVertexAttribArray(texAttrib);
-                glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(4 * sizeof(float)));
+                    GLuint elements[] = {
+                        0, 1, 2,
+                        2, 3, 0,
+                    };
 
-                GLuint elements[] = {
-                    0, 1, 2,
-                    2, 3, 0,
-                };
+                    GLuint ebo;
+                    glGenBuffers(1, &ebo);
 
-                GLuint ebo;
-                glGenBuffers(1, &ebo);
+                    GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
+                    glUniform4f(borderSoftLocation, s->softEdgeTop->floatValue(), s->softEdgeRight->floatValue(), s->softEdgeBottom->floatValue(), s->softEdgeLeft->floatValue());
 
-                GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
-                glUniform4f(borderSoftLocation, s->softEdgeTop->floatValue(), s->softEdgeRight->floatValue(), s->softEdgeBottom->floatValue(), s->softEdgeLeft->floatValue());
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+                    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
-
-                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+                    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
                 
-                if (tex != nullptr) {
-                    tex->unbind();
+                    if (tex != nullptr) {
+                        tex->unbind();
+                    }
+
                 }
 
             }
         }
         glDisable(GL_BLEND);
-        //myTexture.unbind();
     }
 }
 
 void ScreenOutput::openGLContextClosing()
 {
+    glEnable(GL_BLEND);
+    textures.clear();
+    glDisable(GL_BLEND);
     shader = nullptr;
 }
 

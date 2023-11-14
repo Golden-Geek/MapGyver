@@ -49,6 +49,11 @@ Surface::Surface(var params) :
 	softEdgeBottom = addFloatParameter("Soft Edge Bottom", "", 0, 0, 1);
 	softEdgeLeft = addFloatParameter("Soft Edge Left", "", 0, 0, 1);
 
+	cropTop = addFloatParameter("Crop Top", "", 0, 0, 1);
+	cropRight = addFloatParameter("Crop Right", "", 0, 0, 1);
+	cropBottom = addFloatParameter("Crop Bottom", "", 0, 0, 1);
+	cropLeft = addFloatParameter("Crop Left", "", 0, 0, 1);
+
 	tempMedia = addTargetParameter("TEMP Media", "Media... for testing purposes ?", MediaManager::getInstance());
 	tempMedia->maxDefaultSearchLevel = 1;
 	tempMedia->targetType = TargetParameter::CONTAINER;

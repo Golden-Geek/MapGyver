@@ -35,6 +35,11 @@ public:
     FloatParameter* softEdgeBottom;
     FloatParameter* softEdgeLeft;
 
+    FloatParameter* cropTop;
+    FloatParameter* cropRight;
+    FloatParameter* cropBottom;
+    FloatParameter* cropLeft;
+
     TargetParameter* tempMedia;
 
     void onContainerParameterChangedInternal(Parameter* p);
