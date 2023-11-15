@@ -54,9 +54,12 @@ void ScreenOutput::goLive(int screenId)
     Displays::Display d = ds.displays[screenId];
     openGLContext.setContinuousRepainting(true);
     //previousParent = getParentComponent();
+    Rectangle<int> a = d.totalArea;
+    a.setWidth(a.getWidth() / 2);
+    a.setHeight(a.getHeight() / 2);
     addToDesktop(0);
     setVisible(true);
-    setBounds(d.totalArea);
+    setBounds(a);
     setAlwaysOnTop(true);
     repaint();
 }
@@ -108,7 +111,7 @@ void ScreenOutput::renderOpenGL()
             for (int i = 0; i < parentScreen->surfaces.items.size(); i++) {
                 Surface* s = parentScreen->surfaces.items[i];
                 if (s->enabled->boolValue()) {
-                    Media* m = dynamic_cast<Media*>(s->tempMedia->targetContainer.get());
+                    Media* m = dynamic_cast<Media*>(s->media->targetContainer.get());
                     std::shared_ptr<OpenGLTexture> tex = nullptr;
 
                     //myTexture.bind();

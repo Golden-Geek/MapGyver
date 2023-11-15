@@ -54,11 +54,9 @@ Surface::Surface(var params) :
 	cropBottom = addFloatParameter("Crop Bottom", "", 0, 0, 1);
 	cropLeft = addFloatParameter("Crop Left", "", 0, 0, 1);
 
-	tempMedia = addTargetParameter("TEMP Media", "Media... for testing purposes ?", MediaManager::getInstance());
-	tempMedia->maxDefaultSearchLevel = 1;
-	tempMedia->targetType = TargetParameter::CONTAINER;
-
-
+	media = addTargetParameter("Media", "Media to read on this screen", MediaManager::getInstance());
+	media->maxDefaultSearchLevel = 0;
+	media->targetType = TargetParameter::CONTAINER;
 }
 
 Surface::~Surface()

@@ -12,6 +12,22 @@
       <GROUP id="{032DB87E-0257-E9D1-2A9A-EDA9712E9E77}" name="Definitions">
         <GROUP id="{EF0AE558-22D4-3C9F-4A88-CCE4C6E5F11D}" name="Media">
           <GROUP id="{8E0D02F4-273C-03BC-202B-A1F272672B85}" name="medias">
+            <GROUP id="{BF4675FE-E1DE-EE53-5B48-137AA60E805F}" name="MediaComposition">
+              <GROUP id="{97D4FA44-C6BF-E7FB-1769-2FA2A65FD468}" name="CompositionLayer">
+                <FILE id="kwafyn" name="CompositionLayer.cpp" compile="1" resource="0"
+                      file="Source/Definitions/Media/medias/MediaComposition/CompositionLayer/CompositionLayer.cpp"/>
+                <FILE id="T0wtoX" name="CompositionLayer.h" compile="0" resource="0"
+                      file="Source/Definitions/Media/medias/MediaComposition/CompositionLayer/CompositionLayer.h"/>
+                <FILE id="kpv7LL" name="CompositionLayerManager.cpp" compile="1" resource="0"
+                      file="Source/Definitions/Media/medias/MediaComposition/CompositionLayer/CompositionLayerManager.cpp"/>
+                <FILE id="mGxNHb" name="CompositionLayerManager.h" compile="0" resource="0"
+                      file="Source/Definitions/Media/medias/MediaComposition/CompositionLayer/CompositionLayerManager.h"/>
+              </GROUP>
+              <FILE id="xOxP4n" name="MediaComposition.cpp" compile="1" resource="0"
+                    file="Source/Definitions/Media/medias/MediaComposition/MediaComposition.cpp"/>
+              <FILE id="TXeXGE" name="MediaComposition.h" compile="0" resource="0"
+                    file="Source/Definitions/Media/medias/MediaComposition/MediaComposition.h"/>
+            </GROUP>
             <GROUP id="{41F03A75-AF59-B1EB-32E5-DA8EAE830904}" name="MediaImage">
               <FILE id="Mi9UbR" name="MediaIMage.cpp" compile="1" resource="0" file="Source/Definitions/Media/medias/MediaImage/MediaIMage.cpp"/>
               <FILE id="Wl9Dmb" name="MediaIMage.h" compile="0" resource="0" file="Source/Definitions/Media/medias/MediaImage/MediaIMage.h"/>

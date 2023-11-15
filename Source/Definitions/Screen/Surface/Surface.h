@@ -40,7 +40,7 @@ public:
     FloatParameter* cropBottom;
     FloatParameter* cropLeft;
 
-    TargetParameter* tempMedia;
+    TargetParameter* media;
 
     void onContainerParameterChangedInternal(Parameter* p);
 

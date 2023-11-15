@@ -20,12 +20,11 @@ Screen::Screen(var params) :
 	output(this)
 {
 	saveAndLoadRecursiveData = true;
-	nameCanBeChangedByUser = false;
 
 	itemDataType = "Screen";
 
-	screenNumber = addIntParameter("Screen number", "Screen ID in your OS",0,0);
-	enabled->setDefaultValue(false);
+	screenNumber = addIntParameter("Screen number", "Screen ID in your OS",1,0);
+	//enabled->setDefaultValue(false);
 
 
 	addChildControllableContainer(&surfaces);

@@ -153,6 +153,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaComposition\CompositionLayer\CompositionLayer.cpp"/>
+    <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaComposition\CompositionLayer\CompositionLayerManager.cpp"/>
+    <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaComposition\MediaComposition.cpp"/>
     <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaImage\MediaIMage.cpp"/>
     <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaNDI\MediaNDI.cpp"/>
     <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaSolidColor\MediaSolidColor.cpp"/>
@@ -2179,6 +2182,9 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_video.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaComposition\CompositionLayer\CompositionLayer.h"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaComposition\CompositionLayer\CompositionLayerManager.h"/>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaComposition\MediaComposition.h"/>
     <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaImage\MediaIMage.h"/>
     <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaNDI\MediaNDI.h"/>
     <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaSolidColor\MediaSolidColor.h"/>

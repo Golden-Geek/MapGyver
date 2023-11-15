@@ -29,8 +29,8 @@ Media::Media(var params) :
 	myImage(Image::ARGB, 10,10, true)
 {
 	saveAndLoadRecursiveData = true;
-	nameCanBeChangedByUser = false;
-	canBeDisabled = false;
+	//nameCanBeChangedByUser = false;
+	//canBeDisabled = false;
 
 	itemDataType = "Media";
 

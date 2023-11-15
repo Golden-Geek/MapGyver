@@ -5,6 +5,7 @@
 #include "Definitions/Media/medias/MediaImage/MediaImage.h"
 #include "Definitions/Media/medias/MediaVideo/MediaVideo.h"
 #include "Definitions/Media/medias/MediaNDI/MediaNDI.h"
+#include "Definitions/Media/medias/MediaComposition/MediaComposition.h"
 
 /*
   ==============================================================================
@@ -27,10 +28,11 @@ MediaManager::MediaManager() :
     factory.defs.add(Factory<Media>::Definition::createDef("", "Image", &MediaImage::create));
     factory.defs.add(Factory<Media>::Definition::createDef("", "VideoFile", &MediaVideo::create));
     factory.defs.add(Factory<Media>::Definition::createDef("", "NDI", &MediaNDI::create));
+    factory.defs.add(Factory<Media>::Definition::createDef("", "Composition", &MediaComposition::create));
 
     itemDataType = "Media";
     selectItemWhenCreated = true;
-    autoReorderOnAdd = true;
+    //autoReorderOnAdd = true;
 }
 
 MediaManager::~MediaManager()

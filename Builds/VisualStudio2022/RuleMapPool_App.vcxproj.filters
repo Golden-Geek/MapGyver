@@ -5,6 +5,12 @@
     <Filter Include="RuleMapPool\Ressources">
       <UniqueIdentifier>{EF8C9817-6509-BF39-4C38-114117AF0954}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RuleMapPool\Source\Definitions\Media\medias\MediaComposition\CompositionLayer">
+      <UniqueIdentifier>{20F7D8C2-CD3B-EC88-0478-6845AD11929B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMapPool\Source\Definitions\Media\medias\MediaComposition">
+      <UniqueIdentifier>{069027E6-FB92-CA50-4D23-12419036CC8B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="RuleMapPool\Source\Definitions\Media\medias\MediaImage">
       <UniqueIdentifier>{AD3D7153-1B8E-07EF-9E4C-2E591F5340B8}</UniqueIdentifier>
     </Filter>
@@ -517,6 +523,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaComposition\CompositionLayer\CompositionLayer.cpp">
+      <Filter>RuleMapPool\Source\Definitions\Media\medias\MediaComposition\CompositionLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaComposition\CompositionLayer\CompositionLayerManager.cpp">
+      <Filter>RuleMapPool\Source\Definitions\Media\medias\MediaComposition\CompositionLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaComposition\MediaComposition.cpp">
+      <Filter>RuleMapPool\Source\Definitions\Media\medias\MediaComposition</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaImage\MediaIMage.cpp">
       <Filter>RuleMapPool\Source\Definitions\Media\medias\MediaImage</Filter>
     </ClCompile>
@@ -2763,6 +2778,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaComposition\CompositionLayer\CompositionLayer.h">
+      <Filter>RuleMapPool\Source\Definitions\Media\medias\MediaComposition\CompositionLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaComposition\CompositionLayer\CompositionLayerManager.h">
+      <Filter>RuleMapPool\Source\Definitions\Media\medias\MediaComposition\CompositionLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaComposition\MediaComposition.h">
+      <Filter>RuleMapPool\Source\Definitions\Media\medias\MediaComposition</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaImage\MediaIMage.h">
       <Filter>RuleMapPool\Source\Definitions\Media\medias\MediaImage</Filter>
     </ClInclude>
