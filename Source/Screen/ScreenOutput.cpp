@@ -117,14 +117,14 @@ void ScreenOutput::renderOpenGL()
                     if (m != nullptr) {
                         if (!textures.contains(m)) {
                             tex = std::make_shared<OpenGLTexture>();
-                            tex->loadImage(m->myImage);
+                            tex->loadImage(m->image);
                             texturesVersions.set(m, m->imageVersion);
                             textures.set(m, tex);
                         }
                         tex = textures.getReference(m);
                         unsigned int vers = texturesVersions.getReference(m);
                         if (m->imageVersion != vers) {
-                            tex->loadImage(m->myImage);
+                            tex->loadImage(m->image);
                             texturesVersions.set(m, m->imageVersion);
                         }
                         tex->bind();

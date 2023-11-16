@@ -32,7 +32,7 @@ void MediaImage::onContainerParameterChanged(Parameter* p)
 		File target = filePath->getFile();
 		if (target.existsAsFile() && target.hasFileExtension("jpg;jpeg;png")) {
 			String ext = target.getFileExtension();
-			myImage = ImageFileFormat::loadFrom(target);
+			image = ImageFileFormat::loadFrom(target);
 			updateVersion();
 		}
 	}

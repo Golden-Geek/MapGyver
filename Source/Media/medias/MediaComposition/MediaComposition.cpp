@@ -81,11 +81,11 @@ void MediaComposition::repaintImage()
 		Media* m = dynamic_cast<Media*>(l->media->targetContainer.get());
 		if (m != nullptr && l->enabled->boolValue() && m->enabled->boolValue()) {
 			AffineTransform t;
-			t = t.scaled(l->size->x / m->myImage.getWidth(), l->size->y / m->myImage.getHeight());
+			t = t.scaled(l->size->x / m->image.getWidth(), l->size->y / m->image.getHeight());
 			t = t.rotated(degreesToRadians(l->rotation->floatValue()));
 			t = t.translated(l->position->x,l->position->y);
 			workGraphics->setOpacity(l->alpha->floatValue());
-			workGraphics->drawImageTransformed(m->myImage.createCopy(), t, false);
+			workGraphics->drawImageTransformed(m->image.createCopy(), t, false);
 			texturesVersions.set(m, m->imageVersion);
 		}
 	}
@@ -100,9 +100,9 @@ void MediaComposition::updateImagesSize()
 	workImage.clear(Rectangle<int>(0, 0, resolution->x, resolution->y), Colour(255.0f, 0.0f, 0.0f));
 	workGraphics = std::make_shared<Graphics>(workImage);
 
-	myImage = Image(juce::Image::PixelFormat::RGB, resolution->x, resolution->y, true);
-	myImage.clear(Rectangle<int>(0, 0, resolution->x, resolution->y), Colour(255.0f, 0.0f, 0.0f));
-	myGraphics = std::make_shared<Graphics>(myImage);
+	image = Image(juce::Image::PixelFormat::RGB, resolution->x, resolution->y, true);
+	image.clear(Rectangle<int>(0, 0, resolution->x, resolution->y), Colour(255.0f, 0.0f, 0.0f));
+	myGraphics = std::make_shared<Graphics>(image);
 	
 	repaintImage();
 }
