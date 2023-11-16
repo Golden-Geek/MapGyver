@@ -65,7 +65,6 @@ void NDIInputDevice::run()
 	while (!threadShouldExit()) {
 		if (shouldProcess) {
 			NDIlib_video_frame_v2_t video_frame;
-			NDIlib_audio_frame_v2_t audio_frame;
 
 			switch (NDIlib_recv_capture_v2(pNDI_recv, &video_frame, nullptr, nullptr, 100)) {
 				// No data
@@ -76,15 +75,15 @@ void NDIInputDevice::run()
 				// Video data
 			case NDIlib_frame_type_video:
 
-				LOG("Video data received : " <<  video_frame.xres << " / " << video_frame.yres);
-				NDIlib_recv_free_video_v2(pNDI_recv, &video_frame);
+				//LOG("Video data received : " <<  video_frame.xres << " / " << video_frame.yres);
 				inputListeners.call(&NDIInputListener::videoFrameReceived, &video_frame);
+				NDIlib_recv_free_video_v2(pNDI_recv, &video_frame);
 				break;
 
 				// Audio data
 			case NDIlib_frame_type_audio:
 				//LOG("Audio data received : " << audio_frame.no_samples);
-				NDIlib_recv_free_audio_v2(pNDI_recv, &audio_frame);
+				//NDIlib_recv_free_audio_v2(pNDI_recv, &audio_frame);
 				break;
 			}
 		}
