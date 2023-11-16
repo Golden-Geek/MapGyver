@@ -26,8 +26,7 @@ public:
     void clearItem() override;
     void onContainerParameterChangedInternal(Parameter* p) override;
     
-    String getTypeString() const override { return "NDI"; }
-    static MediaNDI* create(var params) { return new MediaNDI(); };
+    DECLARE_TYPE("NDI")
 
     void updateDevice();
 

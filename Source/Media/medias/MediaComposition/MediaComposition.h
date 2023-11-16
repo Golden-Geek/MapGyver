@@ -37,11 +37,11 @@ public:
     void updateImagesSize();
     bool imageNeedRepaint = true;
 
-    String getTypeString() const override { return "Composition"; }
-    static MediaComposition* create(var params) { return new MediaComposition(); };
+    
+    DECLARE_TYPE("Composition")
+
     void controllableFeedbackUpdate(ControllableContainer* cc, Controllable* c) override;
 
     HashMap<Media*, int> texturesVersions;
 
-    //virtual MediaUI* createUI() {return new MediaComposition(); };
 };

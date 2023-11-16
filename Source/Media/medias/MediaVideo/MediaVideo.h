@@ -33,9 +33,6 @@ public:
     void clearItem() override;
     void onContainerParameterChanged(Parameter* p) override;
     void triggerTriggered(Trigger* t);
-    
-    String getTypeString() const override { return "VideoFile"; }
-    static MediaVideo* create(var params) { return new MediaVideo(); }
 
     libvlc_instance_t* VLCInstance = nullptr;
     libvlc_media_player_t* VLCMediaPlayer = nullptr;
@@ -91,5 +88,5 @@ public:
     IntParameter* beatPerCycle;
     void tapTempo();
 
-
+    DECLARE_TYPE("Video")
 };

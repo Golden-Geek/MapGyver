@@ -22,8 +22,5 @@ public:
     void clearItem() override;
     void onContainerParameterChanged(Parameter* p) override;
     
-    String getTypeString() const override { return "Image"; }
-    static MediaImage* create(var params) { return new MediaImage(); };
-
-    //virtual MediaUI* createUI() {return new MediaImage(); };
+    DECLARE_TYPE("Image")
 };

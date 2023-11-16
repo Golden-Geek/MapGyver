@@ -11,7 +11,7 @@
 #include "Media/MediaIncludes.h"
 
 MediaComposition::MediaComposition(var params) :
-	Media(params),
+	Media(getTypeString(), params),
 	Thread("Composition")
 {
 	resolution = addPoint2DParameter("Resolution", "Size of your composition");

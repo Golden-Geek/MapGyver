@@ -30,6 +30,7 @@ RMPEngine::RMPEngine() :
 
 	const char* argv[1] = { "-vvv" };
 	VLCInstance = libvlc_new(1, argv);
+	jassert(VLCInstance != nullptr);
 
 	addChildControllableContainer(MediaManager::getInstance());
 	addChildControllableContainer(ScreenManager::getInstance());

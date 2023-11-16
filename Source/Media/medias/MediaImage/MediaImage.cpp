@@ -11,7 +11,7 @@
 #include "Media/MediaIncludes.h"
 
 MediaImage::MediaImage(var params) :
-	Media(params)
+	Media(getTypeString(), params)
 {
 	filePath = addFileParameter("File path", "File path", "");
 }

@@ -11,7 +11,7 @@
 #include "Media/MediaIncludes.h"
 
 MediaSolidColor::MediaSolidColor(var params) :
-	Media(params)
+	Media(getTypeString(), params)
 {
 	color = addColorParameter("Color", "", Colour(255,255,255));
 	myImage = Image(juce::Image::PixelFormat::ARGB, 1,1,true);

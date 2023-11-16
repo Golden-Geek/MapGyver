@@ -17,15 +17,14 @@ MediaManager::MediaManager() :
 {
     managerFactory = &factory;
 
-    factory.defs.add(Factory<Media>::Definition::createDef("", "SolidColor", &MediaSolidColor::create));
-    factory.defs.add(Factory<Media>::Definition::createDef("", "Image", &MediaImage::create));
-    factory.defs.add(Factory<Media>::Definition::createDef("", "VideoFile", &MediaVideo::create));
-    factory.defs.add(Factory<Media>::Definition::createDef("", "NDI", &MediaNDI::create));
-    factory.defs.add(Factory<Media>::Definition::createDef("", "Composition", &MediaComposition::create));
+    factory.defs.add(Factory<Media>::Definition::createDef<MediaSolidColor>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<MediaImage>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<MediaVideo>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<MediaNDI>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<MediaComposition>(""));
 
     itemDataType = "Media";
     selectItemWhenCreated = true;
-    //autoReorderOnAdd = true;
 }
 
 MediaManager::~MediaManager()

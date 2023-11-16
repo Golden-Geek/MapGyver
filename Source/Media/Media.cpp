@@ -20,15 +20,12 @@ MediaUI::~MediaUI()
 }
 
 
-Media::Media(var params) :
-	BaseItem(params.getProperty("name", "Media")),
-	objectType(params.getProperty("type", "Media").toString()),
-	objectData(params),
-	myImage(Image::ARGB, 10,10, true)
+Media::Media(const String& name, var params) :
+	BaseItem(name),
+	imageVersion(0),
+	image(Image::ARGB, 10, 10, true)
 {
 	saveAndLoadRecursiveData = true;
-	//nameCanBeChangedByUser = false;
-	//canBeDisabled = false;
 
 	itemDataType = "Media";
 
@@ -43,5 +40,5 @@ void Media::onContainerParameterChangedInternal(Parameter* p) {
 
 
 void Media::updateVersion() {
-	imageVersion = (imageVersion +1 ) % 65535;
+	imageVersion = (imageVersion + 1) % 65535;
 }

@@ -25,22 +25,18 @@ class Media :
     public BaseItem
 {
 public:
-    Media(var params = var());
+    Media(const String& name = "Media", var params = var());
     virtual ~Media();
-    CriticalSection useImageData;
+    
+    unsigned int imageVersion;
 
-    String objectType;
-    var objectData;
+    CriticalSection imageLock;
+    Image image;
+    std::shared_ptr<Image::BitmapData> bitmapData;
 
     void onContainerParameterChangedInternal(Parameter* p);
 
-    Image myImage;
-    std::shared_ptr<Image::BitmapData> bitmapData = nullptr;
-    unsigned int imageVersion=0;
-
-    String getTypeString() const override { return objectType; }
+ 
 
     void updateVersion();
-
-    static Media* create(var params) { return new Media(params); }
 };

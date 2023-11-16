@@ -11,7 +11,7 @@
 #include "Media/MediaIncludes.h"
 
 MediaNDI::MediaNDI(var params) :
-	Media(params)
+	Media(getTypeString(), params)
 {
 	color = addColorParameter("Color", "", Colour(255,0,0));
 	ndiParam = new NDIDeviceParameter("NDI Source");
