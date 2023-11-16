@@ -33,8 +33,8 @@ public:
 	void setInputDevice(NDIInputDevice * i);
 
 	// Inherited via Listener
-	//virtual void NDIDeviceInAdded(NDIInputDevice *) override;
-	//virtual void NDIDeviceInRemoved(NDIInputDevice *) override;
+	virtual void NDIDeviceInAdded(NDIInputDevice *) override;
+	virtual void NDIDeviceInRemoved(NDIInputDevice *) override;
 
 	NDIDeviceParameterUI* createNDIParameterUI(Array<NDIDeviceParameter*> parameters = {});
 	ControllableUI * createDefaultUI(Array<Controllable*> controllables = {}) override;

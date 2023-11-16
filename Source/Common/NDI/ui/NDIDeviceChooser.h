@@ -43,8 +43,8 @@ public:
 
 	virtual void comboBoxChanged(ComboBox * ccb) override;
 
-	//virtual void NDIDeviceInAdded(NDIInputDevice *) override;
-	//virtual void NDIDeviceInRemoved(NDIInputDevice *) override;
+	virtual void NDIDeviceInAdded(NDIInputDevice *) override;
+	virtual void NDIDeviceInRemoved(NDIInputDevice *) override;
 
 	class  ChooserListener
 	{

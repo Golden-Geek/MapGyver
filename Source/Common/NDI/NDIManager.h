@@ -24,7 +24,7 @@
 
 
 class NDIManager :
-	public Timer
+	public Thread
 {
 public:
 	juce_DeclareSingleton(NDIManager,true)
@@ -36,18 +36,18 @@ public:
 	OwnedArray<NDIInputDevice> inputs;
 
 	void checkDevices();
-	void addInputDeviceIfNotThere(NDIlib_source_t info);
+	NDIInputDevice* addInputDeviceIfNotThere(NDIlib_source_t info);
 	void removeInputDevice(NDIInputDevice * d);
 
 	NDIInputDevice * getInputDeviceWithName(const String &name);
 
-	class  Listener
+	class Listener
 	{
 	public:
 		/** Destructor. */
 		virtual ~Listener() {}
-		virtual void ndiDeviceInAdded(NDIInputDevice* /*input*/) {}
-		virtual void ndiDeviceInRemoved(NDIInputDevice* /*input*/) {}
+		virtual void NDIDeviceInAdded(NDIInputDevice* /*input*/) {}
+		virtual void NDIDeviceInRemoved(NDIInputDevice* /*input*/) {}
 	};
 
 	ListenerList<Listener> listeners;
@@ -57,7 +57,7 @@ public:
 
 
 	// Inherited via Timer
-	virtual void timerCallback() override;
+	virtual void run() override;
 	
 	JUCE_DECLARE_NON_COPYABLE(NDIManager)
 };

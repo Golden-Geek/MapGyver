@@ -13,62 +13,64 @@
 
 juce_ImplementSingleton(NDIManager)
 
-NDIManager::NDIManager()
+NDIManager::NDIManager() :
+    Thread("NDI Manager")
 {
-
 	// ndiRouterDefaultType = dynamic_cast<BKEngine *>(Engine::mainEngine)->defaultBehaviors.addEnumParameter("NDI Router Ouput Type","Choose the default type when choosing a NDI Module as Router output");
 	// ndiRouterDefaultType->addOption("Control Change", NDIManager::CONTROL_CHANGE)->addOption("Note On", NDIManager::NOTE_ON)->addOption("Note Off", NDIManager::NOTE_OFF);
     pNDI_find = NDIlib_find_create_v2();
 
-	startTimer(5000); //check devices each half seconds
-	checkDevices();
+    startThread();
 }
 
 NDIManager::~NDIManager()
 {
+    stopThread(3000);
 }
 
 void NDIManager::checkDevices()
 {
 	//INPUTS
-	LOG("searching for devices");
+	//LOG("searching for devices");
     uint32_t no_sources = 0;
     const NDIlib_source_t* p_sources = NULL;
     NDIlib_find_wait_for_sources(pNDI_find, 1000);
     p_sources = NDIlib_find_get_current_sources(pNDI_find, &no_sources);
-    bool changed = false;
-    Array<String> current;
-    for (auto it = sources.begin(); it != sources.end(); it.next()) {
-        current.add(it.getKey());
-    }
-    if (no_sources > 0) {
-        for (uint32_t i = 0; i < no_sources; i++) {
-            String name = String(p_sources[i].p_ndi_name) + " " + String(p_sources[i].p_url_address);
-            std::shared_ptr<NDIlib_source_t> sourceCopy = std::make_shared<NDIlib_source_t>(p_sources[i]);
-            if (!sources.contains(name)) { 
-                NDIlib_source_t t = p_sources[i];
-                addInputDeviceIfNotThere(t);
-                changed = true; 
-            }
-            current.removeAllInstancesOf(name);
-            sources.set(name, sourceCopy);
+
+    for (int i = inputs.size()-1; i >= 0; i--) {
+        String key = inputs[i]->id;
+        bool isPresent = false;
+        for (uint32_t j = 0; j < no_sources && !isPresent; j++) {
+            isPresent = String(p_sources[j].p_url_address) == key;
+        }
+        if (!isPresent) {
+            removeInputDevice(inputs[i]);
         }
     }
-    if (current.size() > 0) { changed = true; }
-    if (changed) {
-        LOG("Changed !!!");
-    }
 
+    if (no_sources > 0) {
+        for (uint32_t i = 0; i < no_sources; i++) {
+            std::shared_ptr<NDIlib_source_t> sourceCopy = std::make_shared<NDIlib_source_t>(p_sources[i]);
+            NDIInputDevice* input = getInputDeviceWithName(p_sources[i].p_ndi_name);
+            if (input == nullptr) {
+                NDIlib_source_t t = p_sources[i];
+                input = addInputDeviceIfNotThere(t);
+            }
+            auto p_source = p_sources[i];
+            input->p_source = &p_source;
+        }
+    }
 }
 
-void NDIManager::addInputDeviceIfNotThere(NDIlib_source_t info)
+NDIInputDevice* NDIManager::addInputDeviceIfNotThere(NDIlib_source_t info)
 {
 	NDIInputDevice* d = new NDIInputDevice(info);
 	inputs.add(d);
 
 	NLOG("NDI", "Device In Added : " << d->name << " (ID : " << d->id << ")");
 
-	listeners.call(&Listener::ndiDeviceInAdded, d);
+	listeners.call(&Listener::NDIDeviceInAdded, d);
+    return d;
 }
 
 void NDIManager::removeInputDevice(NDIInputDevice* d)
@@ -77,7 +79,7 @@ void NDIManager::removeInputDevice(NDIInputDevice* d)
 
 	NLOG("NDI", "Device In Removed : " << d->name << " (ID : " << d->id << ")");
 
-	listeners.call(&Listener::ndiDeviceInRemoved, d);
+	listeners.call(&Listener::NDIDeviceInRemoved, d);
 	delete d;
 }
 
@@ -88,7 +90,10 @@ NDIInputDevice* NDIManager::getInputDeviceWithName(const String& name)
 	return nullptr;
 }
 
-void NDIManager::timerCallback()
+void NDIManager::run()
 {
-	checkDevices();
+    while (!threadShouldExit()) {
+        checkDevices();
+        wait(1000);
+    }
 }

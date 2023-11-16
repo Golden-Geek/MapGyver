@@ -30,7 +30,28 @@ void MediaNDI::clearItem()
 	BaseItem::clearItem();
 }
 
-void MediaNDI::onContainerParameterChanged(Parameter* p)
+void MediaNDI::onContainerParameterChangedInternal(Parameter* p)
 {
+    if (p == ndiParam) {
+        updateDevice();
+    }
+}
+
+void MediaNDI::updateDevice()
+{
+    if (isClearing) return;
+
+    if (ndiParam->inputDevice != ndiDevice)
+    {
+        if (ndiDevice != nullptr) ndiDevice->removeNDIInputListener(this);
+        ndiDevice = ndiParam->inputDevice;
+
+        if (ndiDevice != nullptr)
+        {
+            ndiDevice->addNDIInputListener(this);
+            NLOG(niceName, "Now listening to NDI Device : " << ndiDevice->name);
+        }
+    }
+
 }
 

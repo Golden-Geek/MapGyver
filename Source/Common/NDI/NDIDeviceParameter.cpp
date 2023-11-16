@@ -44,7 +44,6 @@ void NDIDeviceParameter::setInputDevice(NDIInputDevice * i)
 	setValue(val);
 }
 
-/*
 void NDIDeviceParameter::NDIDeviceInAdded(NDIInputDevice * i)
 {	
 	//DBG("Device In added " << i->name << " / " << ghostDeviceIn);
@@ -66,7 +65,7 @@ void NDIDeviceParameter::NDIDeviceInRemoved(NDIInputDevice * i)
 		setInputDevice(nullptr);
 	}
 }
-*/
+
 NDIDeviceParameterUI * NDIDeviceParameter::createNDIParameterUI(Array<NDIDeviceParameter *> parameters)
 {
 	if (parameters.size() == 0) parameters = { this };
