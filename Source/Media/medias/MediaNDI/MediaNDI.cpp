@@ -54,3 +54,25 @@ void MediaNDI::updateDevice()
 
 }
 
+void MediaNDI::videoFrameReceived(NDIlib_video_frame_v2_t* frame)
+{
+    const uint8_t* frameData = frame->p_data;
+    int width = frame->xres;
+    int height = frame->yres;
+
+    // Créer une image JUCE et copier les données
+    imageLock.enter();
+
+    if (image.getWidth() != width || image.getHeight() != height) {
+        image = Image(Image::PixelFormat::RGB,width, height, false);
+        bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::ReadWriteMode::writeOnly);
+    }
+    NdiVideoHelper::convertVideoFrame(frame, image);
+    //std::memcpy(bitmapData->data, frameData, width * height * 2); // 
+    imageLock.exit();
+    updateVersion();
+}
+
+
+
+    

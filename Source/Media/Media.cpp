@@ -28,6 +28,7 @@ Media::Media(const String& name, var params) :
 	saveAndLoadRecursiveData = true;
 
 	itemDataType = "Media";
+	bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::ReadWriteMode::writeOnly);
 
 }
 

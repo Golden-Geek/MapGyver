@@ -30,5 +30,6 @@ public:
 
     void updateDevice();
 
+    void videoFrameReceived(NDIlib_video_frame_v2_t* frame) override;
     //virtual MediaUI* createUI() {return new MediaNDI(); };
 };

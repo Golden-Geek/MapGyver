@@ -42,11 +42,12 @@ public:
 	void run() override;
 	bool shouldProcess = false;
 
-	class  NDIInputListener
+	class NDIInputListener
 	{
 	public:
 		/** Destructor. */
 		virtual ~NDIInputListener() {}
+		virtual void videoFrameReceived(NDIlib_video_frame_v2_t* frame) {}
 		//virtual void noteOnReceived(const int&/*channel*/, const int&/*pitch*/, const int&/*velocity*/) {}
 	};
 

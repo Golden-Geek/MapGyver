@@ -48,7 +48,6 @@ void NDIManager::checkDevices()
 
     if (no_sources > 0) {
         for (uint32_t i = 0; i < no_sources; i++) {
-            std::shared_ptr<NDIlib_source_t> sourceCopy = std::make_shared<NDIlib_source_t>(p_sources[i]);
             NDIInputDevice* input = getInputDeviceWithName(p_sources[i].p_ndi_name);
             if (input == nullptr) {
                 NDIlib_source_t t = p_sources[i];
