@@ -22,6 +22,9 @@ ScreenOutput::ScreenOutput(Screen* parent)
     openGLContext.attachTo(*this);
     openGLContext.setComponentPaintingEnabled(false);
 
+    setWantsKeyboardFocus(true); // Permet à ce composant de recevoir le focus clavier
+    addKeyListener(this);        // Ajoutez ce composant comme écouteur clavier
+
     stopLive();
 }
 
@@ -54,8 +57,8 @@ void ScreenOutput::goLive(int screenId)
     openGLContext.setContinuousRepainting(true);
     //previousParent = getParentComponent();
     Rectangle<int> a = d.totalArea;
-    a.setWidth(a.getWidth() / 2);
-    a.setHeight(a.getHeight() / 2);
+    a.setWidth(a.getWidth());
+    a.setHeight(a.getHeight());
     addToDesktop(0);
     setVisible(true);
     setBounds(a);
@@ -262,6 +265,15 @@ void ScreenOutput::createAndLoadShaders()
     shader->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(fragmentShaderCode));
     shader->link();
 
+}
+
+bool ScreenOutput::keyPressed(const KeyPress& key, Component* originatingComponent)
+{
+    if (key.isKeyCode(key.escapeKey)) {
+        stopLive();
+        return true;
+    }
+    return false;
 }
 
 bool ScreenOutput::intersection(Point<float> p1, Point<float> p2, Point<float> p3, Point<float> p4, Point<float>* intersect)

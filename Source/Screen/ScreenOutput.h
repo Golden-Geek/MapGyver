@@ -14,8 +14,9 @@ class Screen;
 class Media;
 
 class ScreenOutput :
-    public juce::Component,
-    public juce::OpenGLRenderer
+    public Component,
+    public OpenGLRenderer,
+    public KeyListener
 {
     public:
     ScreenOutput(Screen* parent);
@@ -34,6 +35,7 @@ class ScreenOutput :
 
     void createAndLoadShaders();
 
+    bool keyPressed(const KeyPress& key, Component* originatingComponent);
     static bool intersection(Point<float> p1, Point<float> p2, Point<float> p3, Point<float> p4, Point<float>* intersect); // should be in another objet
 
     std::unique_ptr<OpenGLShaderProgram> shader;

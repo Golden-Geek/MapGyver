@@ -82,6 +82,6 @@ void NDIDeviceParameter::loadJSONDataInternal(var data)
 	Parameter::loadJSONDataInternal(data);
 	//setInputDevice(NDIManager::getInstance()->getInputDeviceWithID(value[0]));
 
-	if (inputDevice == nullptr) ghostDeviceIn = data.getProperty("value", var())[0];	
+	if (inputDevice == nullptr) ghostDeviceIn = data.getProperty("value", var());	
 
 }
