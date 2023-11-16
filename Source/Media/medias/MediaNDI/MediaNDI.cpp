@@ -21,7 +21,8 @@ MediaNDI::MediaNDI(var params) :
 
 MediaNDI::~MediaNDI()
 {
-	
+    if (ndiDevice != nullptr) ndiDevice->removeNDIInputListener(this);
+
 }
 
 void MediaNDI::clearItem()
@@ -64,11 +65,11 @@ void MediaNDI::videoFrameReceived(NDIlib_video_frame_v2_t* frame)
     imageLock.enter();
 
     if (image.getWidth() != width || image.getHeight() != height) {
-        image = Image(Image::PixelFormat::RGB,width, height, false);
+        image = Image(Image::PixelFormat::ARGB,width, height, false);
         bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::ReadWriteMode::writeOnly);
     }
-    NdiVideoHelper::convertVideoFrame(frame, image);
-    //std::memcpy(bitmapData->data, frameData, width * height * 2); // 
+
+    std::memcpy(bitmapData->data, frameData, width * height * 4); // 
     imageLock.exit();
     updateVersion();
 }

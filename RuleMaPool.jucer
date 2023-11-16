@@ -33,7 +33,6 @@
                 file="Source/Common/NDI/NDIDeviceParameter.h"/>
           <FILE id="c6KvD0" name="NDIManager.cpp" compile="0" resource="0" file="Source/Common/NDI/NDIManager.cpp"/>
           <FILE id="JDMkOS" name="NDIManager.h" compile="0" resource="0" file="Source/Common/NDI/NDIManager.h"/>
-          <FILE id="oGrkxF" name="videoHelper.h" compile="0" resource="0" file="Source/Common/NDI/videoHelper.h"/>
         </GROUP>
         <FILE id="YvbUlU" name="CommonIncludes.cpp" compile="1" resource="0"
               file="Source/Common/CommonIncludes.cpp"/>

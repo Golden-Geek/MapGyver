@@ -2232,7 +2232,6 @@
     <ClInclude Include="..\..\Source\Common\NDI\NDIDevice.h"/>
     <ClInclude Include="..\..\Source\Common\NDI\NDIDeviceParameter.h"/>
     <ClInclude Include="..\..\Source\Common\NDI\NDIManager.h"/>
-    <ClInclude Include="..\..\Source\Common\NDI\videoHelper.h"/>
     <ClInclude Include="..\..\Source\Common\CommonIncludes.h"/>
     <ClInclude Include="..\..\Source\Media\medias\MediaComposition\CompositionLayer\CompositionLayer.h"/>
     <ClInclude Include="..\..\Source\Media\medias\MediaComposition\CompositionLayer\CompositionLayerManager.h"/>

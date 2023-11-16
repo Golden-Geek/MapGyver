@@ -53,8 +53,7 @@ void NDIManager::checkDevices()
                 NDIlib_source_t t = p_sources[i];
                 input = addInputDeviceIfNotThere(t);
             }
-            auto p_source = p_sources[i];
-            input->p_source = &p_source;
+            input->p_source = const_cast<NDIlib_source_t*>(&p_sources[i]);
         }
     }
 }

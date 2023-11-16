@@ -22,8 +22,6 @@
 #endif // _WIN64
 #endif // _WIN32
 
-#include "NDI/videoHelper.h"
-
 #include "NDI/NDIDevice.h"
 #include "NDI/NDIManager.h"
 #include "NDI/NDIDeviceParameter.h"

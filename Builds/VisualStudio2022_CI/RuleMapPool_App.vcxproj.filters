@@ -2829,9 +2829,6 @@
     <ClInclude Include="..\..\Source\Common\NDI\NDIManager.h">
       <Filter>RuleMapPool\Source\Common\NDI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Common\NDI\videoHelper.h">
-      <Filter>RuleMapPool\Source\Common\NDI</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Common\CommonIncludes.h">
       <Filter>RuleMapPool\Source\Common</Filter>
     </ClInclude>

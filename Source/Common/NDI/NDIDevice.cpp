@@ -37,9 +37,10 @@ void NDIInputDevice::addNDIInputListener(NDIInputListener* newListener)
 	if (inputListeners.size() == 1)
 	{
 
-		//int deviceIndex = MidiInput::getDevices().indexOf(name);
-		pNDI_recv = NDIlib_recv_create_v3();
-		// Connect to our sources
+		NDIlib_recv_create_t recv_create_desc;
+		recv_create_desc.color_format = NDIlib_recv_color_format_BGRX_BGRA; // Format de couleur souhaité
+
+		pNDI_recv = NDIlib_recv_create_v2(&recv_create_desc);
 		NDIlib_recv_connect(pNDI_recv, p_source);
 
 		// Destroy the NDI finder. We needed to have access to the pointers to p_sources[0]
@@ -75,7 +76,7 @@ void NDIInputDevice::run()
 				// Video data
 			case NDIlib_frame_type_video:
 
-				//LOG("Video data received : " <<  video_frame.xres << " / " << video_frame.yres);
+				LOG("Video data received : " <<  video_frame.xres << " / " << video_frame.yres);
 				NDIlib_recv_free_video_v2(pNDI_recv, &video_frame);
 				inputListeners.call(&NDIInputListener::videoFrameReceived, &video_frame);
 				break;
