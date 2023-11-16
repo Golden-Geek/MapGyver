@@ -9,9 +9,6 @@
 */
 
 #pragma once
-#include "JuceHeader.h"
-#include "NDIDeviceChooser.h"
-#include "../NDIDeviceParameter.h"
 
 class NDIDeviceParameterUI :
 	public ParameterUI,

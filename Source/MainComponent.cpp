@@ -1,10 +1,6 @@
-#include "JuceHeader.h"
-#include "MainComponent.h"
-#include "RMPEngine.h"
-
-#include "Definitions/Screen/ScreenManagerUI.h"
-#include "Definitions/Media/MediaManagerUI.h"
-
+#include "MainIncludes.h"
+#include "Screen/ScreenIncludes.h"
+#include "Media/MediaIncludes.h"
 
 //==============================================================================
 MainContentComponent::MainContentComponent()
@@ -76,52 +72,7 @@ void MainContentComponent::init()
     ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Screens", &ScreenManagerUI::create));
     ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Medias", &MediaManagerUI::create));
 
-    /*
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Interfaces", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Channels config", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Fixture Types", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Fixtures", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Groups", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Presets", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Timing Presets", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Curve Presets", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Cuelists", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Programmers", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Effects", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Carousels", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Mappers", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Multiplicators", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Layouts", "Lists");
-
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Encoders", "Panels");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Encoders Overview", "Panels");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Input Panel", "Panels");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Fixture Grid", "Grids");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Group Grid", "Grids");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Preset Grid", "Grids");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Cuelist Grid", "Grids");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Effect Grid", "Grids");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Carousel Grid", "Grids");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Mapper Grid", "Grids");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Virtual buttons", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Virtual buttons grid", "Playback");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Virtual faders", "Lists");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Virtual faders grid", "Playback");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Conductor Infos", "Panels");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Color Picker", "Panels");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("DMX Tester", "Panels");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Layout Viewer", "Panels");
-
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Outliner", "");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Dashboard", "");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Help", "");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("Parrots", "Organic Tools");
-    ShapeShifterManager::getInstance()->isInViewSubMenu.set("The Detective", "Organic Tools");
-
-    std::sort(ShapeShifterFactory::getInstance()->defs.begin(), ShapeShifterFactory::getInstance()->defs.end(),
-        [](ShapeShifterDefinition* a, ShapeShifterDefinition* b) { return a->contentName < b->contentName; });
-
-    */
+    
     OrganicMainContentComponent::init();
 
     //getLookAndFeel().setColour(juce::TextButton::textColourOffId, Colour(127,127,127));

@@ -9,15 +9,12 @@
 */
 
 #pragma once
-#include "JuceHeader.h"
-#include "NDIManager.h"
-#include "NDIDevice.h"
 
 class NDIDeviceParameterUI;
 
 class NDIDeviceParameter :
 	public Parameter,
-	public NDIManager::Listener
+	public NDIManager::NDIManagerListener
 {
 public:
 	NDIDeviceParameter(const String &name);

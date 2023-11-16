@@ -9,14 +9,11 @@
 */
 
 #pragma once
-#include "JuceHeader.h"
-#include "../NDIManager.h"
-#include "../NDIDevice.h"
 
 class NDIDeviceChooser :
 	public Component,
 	public ComboBox::Listener,
-	public NDIManager::Listener
+	public NDIManager::NDIManagerListener
 {
 public:
 	NDIDeviceChooser();

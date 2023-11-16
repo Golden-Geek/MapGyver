@@ -7,9 +7,7 @@
 
   ==============================================================================
 */
-#include "JuceHeader.h"
-#include "NDIDevice.h"
-#include "NDIManager.h"
+#include "Common/CommonIncludes.h"
 
 NDIDevice::NDIDevice(NDIlib_source_t& info, Type t) :
 	id(info.p_url_address),
@@ -96,18 +94,18 @@ void NDIInputDevice::run()
 			switch (NDIlib_recv_capture_v2(pNDI_recv, &video_frame, &audio_frame, nullptr, 100)) {
 				// No data
 			case NDIlib_frame_type_none:
-				LOG("No data received.\n");
+				LOG("No data received");
 				break;
 
 				// Video data
 			case NDIlib_frame_type_video:
-				LOG("Video data received (%dx%d).\n", video_frame.xres, video_frame.yres);
+				LOG("Video data received : " <<  video_frame.xres << " / " << video_frame.yres);
 				NDIlib_recv_free_video_v2(pNDI_recv, &video_frame);
 				break;
 
 				// Audio data
 			case NDIlib_frame_type_audio:
-				LOG("Audio data received (%d samples).\n", audio_frame.no_samples);
+				LOG("Audio data received : " << audio_frame.no_samples);
 				NDIlib_recv_free_audio_v2(pNDI_recv, &audio_frame);
 				break;
 			}

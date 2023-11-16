@@ -7,9 +7,7 @@
 
   ==============================================================================
 */
-#include "JuceHeader.h"
-#include "NDIDeviceParameter.h"
-#include "ui/NDIDeviceParameterUI.h"
+#include "Common/CommonIncludes.h"
 
 NDIDeviceParameter::NDIDeviceParameter(const String & name) :
 	Parameter(CUSTOM, name, "NDI Devices",var(), var(),var()),

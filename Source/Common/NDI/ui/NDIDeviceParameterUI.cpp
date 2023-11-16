@@ -7,9 +7,7 @@
 
   ==============================================================================
 */
-#include "JuceHeader.h"
-#include "NDIDeviceParameterUI.h"
-#include "../NDIDeviceParameter.h"
+#include "Common/CommonIncludes.h"
 
 NDIDeviceParameterUI::NDIDeviceParameterUI(Array<NDIDeviceParameter *> _NDIParams) :
 	ParameterUI(Inspectable::getArrayAs<NDIDeviceParameter, Parameter>(_NDIParams)),

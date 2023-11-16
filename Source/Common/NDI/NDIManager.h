@@ -9,19 +9,6 @@
 */
 
 #pragma once
-#include "JuceHeader.h"
-#include <Processing.NDI.Lib.h>
-
-#ifdef _WIN32
-#ifdef _WIN64
-#pragma comment(lib, "Processing.NDI.Lib.x64.lib")
-#else // _WIN64
-#pragma comment(lib, "Processing.NDI.Lib.x86.lib")
-#endif // _WIN64
-#endif // _WIN32
-
-#include "NDIDevice.h"
-
 
 class NDIManager :
 	public Thread
@@ -41,18 +28,18 @@ public:
 
 	NDIInputDevice * getInputDeviceWithName(const String &name);
 
-	class Listener
+	class NDIManagerListener
 	{
 	public:
 		/** Destructor. */
-		virtual ~Listener() {}
+		virtual ~NDIManagerListener() {}
 		virtual void NDIDeviceInAdded(NDIInputDevice* /*input*/) {}
 		virtual void NDIDeviceInRemoved(NDIInputDevice* /*input*/) {}
 	};
 
-	ListenerList<Listener> listeners;
-	void addNDIManagerListener(Listener* newListener) { listeners.add(newListener); }
-	void removeNDIManagerListener(Listener* listener) { listeners.remove(listener); }
+	ListenerList<NDIManagerListener> listeners;
+	void addNDIManagerListener(NDIManagerListener* newListener) { listeners.add(newListener); }
+	void removeNDIManagerListener(NDIManagerListener* listener) { listeners.remove(listener); }
 
 
 

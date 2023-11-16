@@ -1,11 +1,16 @@
 /*
   ==============================================================================
 
-    mainIncludes.h
-    Created: 18 Nov 2021 2:00:53pm
-    Author:  No
+    MainIncludes.h
+    Created: 16 Nov 2023 4:04:18pm
+    Author:  bkupe
 
   ==============================================================================
 */
 
 #pragma once
+
+#include "JuceHeader.h"
+
+#include "Main.h"
+#include "MainComponent.h"

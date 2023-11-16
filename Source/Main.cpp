@@ -1,9 +1,7 @@
-#include "Main.h"
-#include "JuceHeader.h"
-#include "RMPEngine.h"
-#include "MainComponent.h"
-
 //==============================================================================
+
+#include "MainIncludes.h"
+#include "Engine/RMPEngine.h"
 
 RuleMaPoolApplication::RuleMaPoolApplication() :
 	OrganicApplication("RuleMaPool", true, ImageCache::getFromMemory(BinaryData::icon_png, BinaryData::icon_pngSize))

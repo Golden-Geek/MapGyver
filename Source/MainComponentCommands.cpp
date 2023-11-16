@@ -7,9 +7,7 @@
 
  ==============================================================================
  */
- #include "MainComponent.h"
-// #include "UserInputManager.h"
-// #include "Definitions/Assistant/Assistant.h"
+ #include "MainIncludes.h"
 
 namespace RMPCommandId
 {
@@ -29,45 +27,6 @@ namespace RMPCommandId
 	static const int reloadCustomModules = 0x501;
 	static const int exportSelection = 0x800;
 	static const int importSelection = 0x801;
-
-	//static const int keyBackspace = 0x60100;
-	static const int keyClear = 0x60101;
-	static const int keyEnter = 0x60102;
-	static const int keyThru = 0x60103;
-	static const int keyBackspace = 0x60104;
-	static const int keyPlus = 0x60105;
-	static const int keyMinus = 0x60106;
-
-	static const int keyRecord = 0x60201;
-	static const int keyEdit = 0x60202;
-	static const int keyCopy = 0x60203;
-	static const int keyDelete = 0x60204;
-
-	static const int keyFixture = 0x60301;
-	static const int keyGroup = 0x60302;
-	static const int keyPreset = 0x60303;
-	static const int keyCuelist = 0x60304;
-	static const int keyCue = 0x60305;
-	static const int keyEffect = 0x60306;
-	static const int keyCarousel = 0x60307;
-	static const int keyMapper= 0x60308;
-	static const int keyAssistant = 0x60309;
-
-	static const int keyHighlight = 0x60320;
-	static const int keyBlind = 0x60321;
-
-	static const int key1 = 0x60401;
-	static const int key2 = 0x60402;
-	static const int key3 = 0x60403;
-	static const int key4 = 0x60404;
-	static const int key5 = 0x60405;
-	static const int key6 = 0x60406;
-	static const int key7 = 0x60407;
-	static const int key8 = 0x60408;
-	static const int key9 = 0x60409;
-	static const int key0 = 0x60410;
-
-
 
 }
 
@@ -144,189 +103,6 @@ void MainContentComponent::getCommandInfo(CommandID commandID, ApplicationComman
 		break;
 
 
-
-	/*
-	case RMPCommandId::keyBackspace:
-		result.setInfo("backspace", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("backspace").getKeyCode(), ModifierKeys::ctrlModifier);
-		break;
-
-	case RMPCommandId::keyClear:
-		result.setInfo("Clear", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("backspace").getKeyCode(), ModifierKeys::shiftModifier);
-		break;
-
-	case RMPCommandId::keyEnter:
-		result.setInfo("Enter", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("return").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyThru:
-		result.setInfo("Thru", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("t").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyPlus:
-		result.setInfo("Plus +", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("+").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyMinus:
-		result.setInfo("Minus -", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("-").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyRecord:
-		result.setInfo("Record", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("r").getKeyCode(), ModifierKeys::noModifiers);
-		result.addDefaultKeypress(KeyPress::createFromDescription("r").getKeyCode(), ModifierKeys::altModifier);
-		break;
-
-	case RMPCommandId::keyEdit:
-		result.setInfo("Edit", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("e").getKeyCode(), ModifierKeys::altModifier);
-		break;
-
-	case RMPCommandId::keyCopy:
-		result.setInfo("Copy", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("c").getKeyCode(), ModifierKeys::altModifier);
-		break;
-
-	case RMPCommandId::keyDelete:
-		result.setInfo("Delete", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("d").getKeyCode(), ModifierKeys::altModifier);
-		break;
-
-
-
-
-	case RMPCommandId::keyFixture:
-		result.setInfo("Fixture", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("f").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyGroup:
-		result.setInfo("Group", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("g").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyPreset:
-		result.setInfo("Preset", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("p").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyCuelist:
-		result.setInfo("Cuelist", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("l").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyCue:
-		result.setInfo("Cue", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("q").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyEffect:
-		result.setInfo("Effect", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("e").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyCarousel:
-		result.setInfo("Carousel", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("c").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyMapper:
-		result.setInfo("Mapper", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("m").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyAssistant:
-		result.setInfo("Assistant", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("a").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-
-	case RMPCommandId::keyHighlight:
-		result.setInfo("Hightlight", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("h").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::keyBlind:
-		result.setInfo("Blind", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("b").getKeyCode(), ModifierKeys::noModifiers);
-		break;
-
-
-
-
-
-	case RMPCommandId::key1:
-		result.setInfo("Key 1", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("1").getKeyCode(), ModifierKeys::noModifiers);
-		result.addDefaultKeypress(KeyPress::numberPad1, ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::key2:
-		result.setInfo("Key 2", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("2").getKeyCode(), ModifierKeys::noModifiers);
-		result.addDefaultKeypress(KeyPress::numberPad2, ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::key3:
-		result.setInfo("Key 3", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("3").getKeyCode(), ModifierKeys::noModifiers);
-		result.addDefaultKeypress(KeyPress::numberPad3, ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::key4:
-		result.setInfo("Key 4", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("4").getKeyCode(), ModifierKeys::noModifiers);
-		result.addDefaultKeypress(KeyPress::numberPad4, ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::key5:
-		result.setInfo("Key 5", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("5").getKeyCode(), ModifierKeys::noModifiers);
-		result.addDefaultKeypress(KeyPress::numberPad5, ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::key6:
-		result.setInfo("Key 6", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("6").getKeyCode(), ModifierKeys::noModifiers);
-		result.addDefaultKeypress(KeyPress::numberPad6, ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::key7:
-		result.setInfo("Key 7", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("7").getKeyCode(), ModifierKeys::noModifiers);
-		result.addDefaultKeypress(KeyPress::numberPad7, ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::key8:
-		result.setInfo("Key 8", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("8").getKeyCode(), ModifierKeys::noModifiers);
-		result.addDefaultKeypress(KeyPress::numberPad8, ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::key9:
-		result.setInfo("Key 9", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("9").getKeyCode(), ModifierKeys::noModifiers);
-		result.addDefaultKeypress(KeyPress::numberPad9, ModifierKeys::noModifiers);
-		break;
-
-	case RMPCommandId::key0:
-		result.setInfo("Key 0", "", "Direct Commands", 0);
-		result.addDefaultKeypress(KeyPress::createFromDescription("0").getKeyCode(), ModifierKeys::noModifiers);
-		result.addDefaultKeypress(KeyPress::numberPad0, ModifierKeys::noModifiers);
-		break;
-
-	case 0x40004: // bypass deleteing item with backspace 
-		OrganicMainContentComponent::getCommandInfo(commandID, result);
-		result.defaultKeypresses.remove(1);
-		// result.defaultKeypresses.remove(0);
-		break;
-
-	*/
 	default:
 		OrganicMainContentComponent::getCommandInfo(commandID, result);
 		break;
@@ -351,9 +127,6 @@ void MainContentComponent::getAllCommands(Array<CommandID>& commands) {
 		//RMPCommandId::postGithubIssue,
 		RMPCommandId::importSelection,
 		RMPCommandId::exportSelection
-		//RMPCommandId::goToCommunityModules,
-		//RMPCommandId::reloadCustomModules,
-		//RMPCommandId::exitGuide,
 
 
 	};

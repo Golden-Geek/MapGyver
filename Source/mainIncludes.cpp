@@ -1,11 +1,15 @@
 /*
   ==============================================================================
 
-    mainIncludes.cpp
-    Created: 18 Nov 2021 2:00:53pm
-    Author:  No
+    MainIncludes.cpp
+    Created: 16 Nov 2023 4:04:18pm
+    Author:  bkupe
 
   ==============================================================================
 */
 
-#include "mainIncludes.h"
+#include "MainIncludes.h"
+
+#include "Main.cpp"
+#include "MainComponent.cpp"
+#include "MainComponentCommands.cpp"

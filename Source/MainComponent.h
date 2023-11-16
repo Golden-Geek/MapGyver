@@ -1,17 +1,8 @@
 #pragma once
 
-#include <JuceHeader.h>
-
-
-#include "MainComponent.h"
-#include "RMPEngine.h"
-
 
 ApplicationProperties& getAppProperties();
 ApplicationCommandManager& getCommandManager();
-
-class MainContentComponent;
-class RMPEngine;
 
 //==============================================================================
 /*

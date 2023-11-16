@@ -1,17 +1,17 @@
 /*
   ==============================================================================
 
-    NDIDeviceChooser.cpp
-    Created: 20 Dec 2016 12:35:11pm
-    Author:  Ben
+	NDIDeviceChooser.cpp
+	Created: 20 Dec 2016 12:35:11pm
+	Author:  Ben
 
   ==============================================================================
 */
 
-#include "NDIDeviceChooser.h"
+#include "Common/CommonIncludes.h"
 
 NDIDeviceChooser::NDIDeviceChooser() :
-currentInputDevice(nullptr)
+	currentInputDevice(nullptr)
 {
 	addAndMakeVisible(&inputBox);
 
@@ -35,7 +35,7 @@ NDIDeviceChooser::~NDIDeviceChooser()
 void NDIDeviceChooser::resized()
 {
 	Rectangle<int> r = getLocalBounds();
-	int th = (showInputs != showOutputs)?getHeight():getHeight() / 2 - 2;
+	//int th = (showInputs != showOutputs)?getHeight():getHeight() / 2 - 2;
 
 	if (showInputs)
 	{
@@ -49,7 +49,7 @@ void NDIDeviceChooser::resized()
 
 }
 
-void NDIDeviceChooser::setGhostValue(const String & inValue)
+void NDIDeviceChooser::setGhostValue(const String& inValue)
 {
 	inputBox.setTextWhenNoChoicesAvailable(inValue.isEmpty() ? "No NDI In Available" : "Disconnected : " + inValue);
 	inputBox.setTextWhenNothingSelected(inValue.isEmpty() ? "No NDI In Selected" : "Disconnected : " + inValue);
@@ -61,7 +61,7 @@ void NDIDeviceChooser::updateInputComboBox()
 	int index = 1;
 	int idToSelect = 0;
 	inputBox.addItem("Don't use input", -1);
-	for (auto &i : NDIManager::getInstance()->inputs)
+	for (auto& i : NDIManager::getInstance()->inputs)
 	{
 		if (currentInputDevice == i) idToSelect = index;
 		inputBox.addItem(i->name, index);
@@ -71,17 +71,17 @@ void NDIDeviceChooser::updateInputComboBox()
 	inputBox.setSelectedId(idToSelect, dontSendNotification);
 }
 
-void NDIDeviceChooser::setSelectedInputDevice(NDIInputDevice * i)
+void NDIDeviceChooser::setSelectedInputDevice(NDIInputDevice* i)
 {
-	inputBox.setSelectedId(NDIManager::getInstance()->inputs.indexOf(i)+1, dontSendNotification);
+	inputBox.setSelectedId(NDIManager::getInstance()->inputs.indexOf(i) + 1, dontSendNotification);
 }
 
-void NDIDeviceChooser::setSelectedInputDevice(const String & deviceName)
+void NDIDeviceChooser::setSelectedInputDevice(const String& deviceName)
 {
 	setSelectedInputDevice(NDIManager::getInstance()->getInputDeviceWithName(deviceName));
 }
 
-void NDIDeviceChooser::comboBoxChanged(ComboBox * cb)
+void NDIDeviceChooser::comboBoxChanged(ComboBox* cb)
 {
 	int deviceIndex = cb->getSelectedId() - 1;
 
@@ -98,7 +98,7 @@ void NDIDeviceChooser::NDIDeviceInAdded(NDIInputDevice*)
 	updateInputComboBox();
 }
 
-void NDIDeviceChooser::NDIDeviceInRemoved(NDIInputDevice *)
+void NDIDeviceChooser::NDIDeviceInRemoved(NDIInputDevice*)
 {
 	updateInputComboBox();
 }

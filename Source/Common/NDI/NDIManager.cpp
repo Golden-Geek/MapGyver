@@ -7,9 +7,7 @@
 
   ==============================================================================
 */
-#include "JuceHeader.h"
-#include "mainIncludes.h"
-#include "NDIManager.h"
+#include "Common/CommonIncludes.h"
 
 juce_ImplementSingleton(NDIManager)
 
@@ -69,7 +67,7 @@ NDIInputDevice* NDIManager::addInputDeviceIfNotThere(NDIlib_source_t info)
 
 	NLOG("NDI", "Device In Added : " << d->name << " (ID : " << d->id << ")");
 
-	listeners.call(&Listener::NDIDeviceInAdded, d);
+	listeners.call(&NDIManagerListener::NDIDeviceInAdded, d);
     return d;
 }
 
@@ -79,7 +77,7 @@ void NDIManager::removeInputDevice(NDIInputDevice* d)
 
 	NLOG("NDI", "Device In Removed : " << d->name << " (ID : " << d->id << ")");
 
-	listeners.call(&Listener::NDIDeviceInRemoved, d);
+	listeners.call(&NDIManagerListener::NDIDeviceInRemoved, d);
 	delete d;
 }
 
