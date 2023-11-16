@@ -12,6 +12,7 @@
 
 //#include "../../Common/CommonIncludes.h"
 #include "Definitions/Media/Media.h"
+#include "Common/NDI/NDIDeviceParameter.h"
 
 class FixturePatch;
 
@@ -22,6 +23,7 @@ public:
     MediaNDI(var params = var());
     ~MediaNDI();
 
+    NDIDeviceParameter* ndiParam;
     ColorParameter* color;
 
     void clearItem() override;

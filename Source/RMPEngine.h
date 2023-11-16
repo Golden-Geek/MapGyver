@@ -13,7 +13,6 @@
 
 #include "JuceHeader.h"
 #include "Definitions/Media/medias/MediaVideo/vlcpp/vlc.hpp"
- // #include "Module/ModuleIncludes.h"
 
 class DMXChannelView;
 

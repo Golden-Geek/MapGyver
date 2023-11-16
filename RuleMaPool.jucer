@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="DMftGm" name="RuleMapPool" projectType="guiapp" useAppConfig="1"
-              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;&#10;&#10;../../External/vlc/include">
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/vlc/include&#10;../../External/NDI/include">
   <MAINGROUP id="HVgNxl" name="RuleMapPool">
     <GROUP id="{E81B84B3-41DE-914A-9CD1-D465593552E9}" name="Ressources">
       <FILE id="eqKjYk" name="default.rmplayout" compile="0" resource="1"
@@ -9,6 +9,28 @@
       <FILE id="BSmI1Y" name="icon.png" compile="0" resource="1" file="Ressources/icon.png"/>
     </GROUP>
     <GROUP id="{1C2049A4-F05D-7C48-44EC-DD606A3617AC}" name="Source">
+      <GROUP id="{B19EA5C3-367A-80C3-EC20-D9B7AA16E911}" name="Common">
+        <GROUP id="{CB174BFA-16BF-AEDE-F181-939536A126AF}" name="NDI">
+          <GROUP id="{F036D58F-B5A4-4235-7B68-4C2E247299CF}" name="ui">
+            <FILE id="EDoTYi" name="NDIDeviceChooser.cpp" compile="1" resource="0"
+                  file="Source/Common/NDI/ui/NDIDeviceChooser.cpp"/>
+            <FILE id="mhR3iz" name="NDIDeviceChooser.h" compile="0" resource="0"
+                  file="Source/Common/NDI/ui/NDIDeviceChooser.h"/>
+            <FILE id="W1KQnL" name="NDIDeviceParameterUI.cpp" compile="1" resource="0"
+                  file="Source/Common/NDI/ui/NDIDeviceParameterUI.cpp"/>
+            <FILE id="VTvRYj" name="NDIDeviceParameterUI.h" compile="0" resource="0"
+                  file="Source/Common/NDI/ui/NDIDeviceParameterUI.h"/>
+          </GROUP>
+          <FILE id="I6B3mU" name="NDIDevice.cpp" compile="1" resource="0" file="Source/Common/NDI/NDIDevice.cpp"/>
+          <FILE id="y5jMth" name="NDIDevice.h" compile="0" resource="0" file="Source/Common/NDI/NDIDevice.h"/>
+          <FILE id="x9tUAL" name="NDIDeviceParameter.cpp" compile="1" resource="0"
+                file="Source/Common/NDI/NDIDeviceParameter.cpp"/>
+          <FILE id="rhpX8H" name="NDIDeviceParameter.h" compile="0" resource="0"
+                file="Source/Common/NDI/NDIDeviceParameter.h"/>
+          <FILE id="c6KvD0" name="NDIManager.cpp" compile="1" resource="0" file="Source/Common/NDI/NDIManager.cpp"/>
+          <FILE id="JDMkOS" name="NDIManager.h" compile="0" resource="0" file="Source/Common/NDI/NDIManager.h"/>
+        </GROUP>
+      </GROUP>
       <GROUP id="{032DB87E-0257-E9D1-2A9A-EDA9712E9E77}" name="Definitions">
         <GROUP id="{EF0AE558-22D4-3C9F-4A88-CCE4C6E5F11D}" name="Media">
           <GROUP id="{8E0D02F4-273C-03BC-202B-A1F272672B85}" name="medias">
@@ -135,8 +157,9 @@
     <VS2022 targetFolder="Builds/VisualStudio2022" smallIcon="BSmI1Y" bigIcon="BSmI1Y"
             externalLibraries="libvlc.lib&#10;libvlccore.lib">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="RuleMapPool" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins"
-                       libraryPath="../../External/vlc/lib" binaryPath="Binaries/Debug"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="RuleMapPool" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
+                       libraryPath="../../External/vlc/lib&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;"
+                       binaryPath="Binaries/Debug"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="RuleMapPool" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins"
                        libraryPath="../../External/vlc/lib"/>
       </CONFIGURATIONS>

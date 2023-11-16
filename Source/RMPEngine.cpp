@@ -12,6 +12,7 @@
 
 #include "Definitions/Screen/ScreenManager.h"
 #include "Definitions/Media/MediaManager.h"
+#include "NDIManager.h"
 
 ControllableContainer* getAppSettings();
 
@@ -39,6 +40,8 @@ RMPEngine::RMPEngine() :
 	// MIDIManager::getInstance(); //Trigger constructor, declare settings
 
 	// getAppSettings()->addChildControllableContainer(&defaultBehaviors);
+
+	NDIManager::getInstance();
 }
 
 RMPEngine::~RMPEngine()
@@ -75,6 +78,7 @@ RMPEngine::~RMPEngine()
 	// Guider::deleteInstance();
 	MediaManager::deleteInstance();
 	ScreenManager::deleteInstance();
+	NDIManager::deleteInstance();
 	libvlc_release(VLCInstance); 
 	VLCInstance = nullptr;
 }

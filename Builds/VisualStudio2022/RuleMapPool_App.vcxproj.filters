@@ -5,6 +5,15 @@
     <Filter Include="RuleMapPool\Ressources">
       <UniqueIdentifier>{EF8C9817-6509-BF39-4C38-114117AF0954}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RuleMapPool\Source\Common\NDI\ui">
+      <UniqueIdentifier>{473B070E-823B-BF50-6783-D32935DA3D24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMapPool\Source\Common\NDI">
+      <UniqueIdentifier>{3EA975BF-0400-0228-3EE5-6BD17656247E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMapPool\Source\Common">
+      <UniqueIdentifier>{3E88D860-EFE0-CDFA-B1A9-B7F44A187B16}</UniqueIdentifier>
+    </Filter>
     <Filter Include="RuleMapPool\Source\Definitions\Media\medias\MediaComposition\CompositionLayer">
       <UniqueIdentifier>{20F7D8C2-CD3B-EC88-0478-6845AD11929B}</UniqueIdentifier>
     </Filter>
@@ -523,6 +532,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Common\NDI\ui\NDIDeviceChooser.cpp">
+      <Filter>RuleMapPool\Source\Common\NDI\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Common\NDI\ui\NDIDeviceParameterUI.cpp">
+      <Filter>RuleMapPool\Source\Common\NDI\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Common\NDI\NDIDevice.cpp">
+      <Filter>RuleMapPool\Source\Common\NDI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Common\NDI\NDIDeviceParameter.cpp">
+      <Filter>RuleMapPool\Source\Common\NDI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Common\NDI\NDIManager.cpp">
+      <Filter>RuleMapPool\Source\Common\NDI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Definitions\Media\medias\MediaComposition\CompositionLayer\CompositionLayer.cpp">
       <Filter>RuleMapPool\Source\Definitions\Media\medias\MediaComposition\CompositionLayer</Filter>
     </ClCompile>
@@ -2778,6 +2802,21 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Common\NDI\ui\NDIDeviceChooser.h">
+      <Filter>RuleMapPool\Source\Common\NDI\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Common\NDI\ui\NDIDeviceParameterUI.h">
+      <Filter>RuleMapPool\Source\Common\NDI\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Common\NDI\NDIDevice.h">
+      <Filter>RuleMapPool\Source\Common\NDI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Common\NDI\NDIDeviceParameter.h">
+      <Filter>RuleMapPool\Source\Common\NDI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Common\NDI\NDIManager.h">
+      <Filter>RuleMapPool\Source\Common\NDI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Definitions\Media\medias\MediaComposition\CompositionLayer\CompositionLayer.h">
       <Filter>RuleMapPool\Source\Definitions\Media\medias\MediaComposition\CompositionLayer</Filter>
     </ClInclude>
