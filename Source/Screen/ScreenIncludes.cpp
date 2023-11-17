@@ -12,7 +12,7 @@
 
 #include "Screen.cpp"
 #include "ScreenManager.cpp"
-#include "ScreenManagerUI.cpp"
-#include "ScreenOutput.cpp"
+#include "ui/ScreenManagerUI.cpp"
+#include "ui/ScreenOutput.cpp"
 #include "Surface\Surface.cpp"
 #include "Surface\SurfaceManager.cpp"

@@ -17,6 +17,8 @@ MediaVideo::MediaVideo(var params) :
 {
 	filePath = addFileParameter("File path", "File path", "");
 
+	playAtLoad = addBoolParameter("Play at load", "Play at load", false);
+
 	startBtn = addTrigger("start", "");
 	stopBtn = addTrigger("stop", "");
 	restartBtn = addTrigger("restart", "");
@@ -55,7 +57,8 @@ void MediaVideo::onContainerParameterChanged(Parameter* p)
 {
 	// LIBVLC_API int libvlc_audio_set_volume( libvlc_media_player_t *p_mi, int i_volume );
 
-	if (p == filePath) {
+	if (p == filePath)
+	{
 		String f = filePath->getFile().getFullPathName();
 		stop();
 		VLCMediaList = libvlc_media_list_new(VLCInstance);
@@ -76,19 +79,22 @@ void MediaVideo::onContainerParameterChanged(Parameter* p)
 		libvlc_media_player_play(VLCMediaPlayer);
 
 		libvlc_media_release(VLCMedia); VLCMedia = nullptr;
-		play();
 	}
-	else if (p == mediaVolume) {
+	else if (p == mediaVolume)
+	{
 		currentVolumeController = nextVolumeController;
 		nextVolumeController = "";
 		int v = mediaVolume->floatValue() * 100;
 		libvlc_audio_set_volume(VLCMediaPlayer, v);
 	}
-	else if (p == speedRate) {
+	else if (p == speedRate)
+	{
 		libvlc_media_player_set_rate(VLCMediaPlayer, speedRate->floatValue());
 	}
-	else if (p == seek) {
-		if (!vlcSeekedLast) {
+	else if (p == seek)
+	{
+		if (!vlcSeekedLast)
+		{
 			libvlc_media_player_set_position(VLCMediaPlayer, seek->floatValue());
 		}
 		vlcSeekedLast = false;
@@ -97,22 +103,17 @@ void MediaVideo::onContainerParameterChanged(Parameter* p)
 
 void MediaVideo::triggerTriggered(Trigger* t)
 {
-	if (t == startBtn) {
-		play();
-	}
-	else if (t == stopBtn) {
-		stop();
-	}
-	else if (t == restartBtn) {
-		restart();
-	}
-	else if (t == pauseBtn) {
-		pause();
-	}
-	else if (t == tapTempoBtn) {
-		tapTempo();
-	}
+	if (t == startBtn)  play();
+	else if (t == stopBtn) stop();
+	else if (t == restartBtn) restart();
+	else if (t == pauseBtn) pause();
+	else if (t == tapTempoBtn)tapTempo();
+}
 
+void MediaVideo::afterLoadJSONDataInternal()
+{
+	Media::afterLoadJSONDataInternal();
+	if (playAtLoad->boolValue()) play();
 }
 
 void MediaVideo::play()

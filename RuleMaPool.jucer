@@ -99,6 +99,12 @@
             <FILE id="gRWuC5" name="MediaVideo.h" compile="0" resource="0" file="Source/Media/medias/MediaVideo/MediaVideo.h"/>
           </GROUP>
         </GROUP>
+        <GROUP id="{246EA82D-0CB9-1D91-B613-BEC53E0B6D70}" name="ui">
+          <FILE id="PQNCME" name="MediaManagerUI.cpp" compile="0" resource="0"
+                file="Source/Media/ui/MediaManagerUI.cpp"/>
+          <FILE id="i0ITQB" name="MediaManagerUI.h" compile="0" resource="0"
+                file="Source/Media/ui/MediaManagerUI.h"/>
+        </GROUP>
         <FILE id="DUraYx" name="Media.cpp" compile="0" resource="0" file="Source/Media/Media.cpp"/>
         <FILE id="l2LpxR" name="Media.h" compile="0" resource="0" file="Source/Media/Media.h"/>
         <FILE id="e2HHh5" name="MediaIncludes.cpp" compile="1" resource="0"
@@ -107,10 +113,6 @@
         <FILE id="h3GENf" name="MediaManager.cpp" compile="0" resource="0"
               file="Source/Media/MediaManager.cpp"/>
         <FILE id="XTtx72" name="MediaManager.h" compile="0" resource="0" file="Source/Media/MediaManager.h"/>
-        <FILE id="fcApS2" name="MediaManagerUI.cpp" compile="0" resource="0"
-              file="Source/Media/MediaManagerUI.cpp"/>
-        <FILE id="paZoxB" name="MediaManagerUI.h" compile="0" resource="0"
-              file="Source/Media/MediaManagerUI.h"/>
       </GROUP>
       <GROUP id="{7B97F172-AD12-D845-791F-697250E41BF4}" name="Screen">
         <GROUP id="{B1E6FD4B-534C-4F1B-7B6F-D363C0DFB5E1}" name="Surface">
@@ -121,6 +123,15 @@
           <FILE id="Q0xQ7A" name="SurfaceManager.h" compile="0" resource="0"
                 file="Source/Screen/Surface/SurfaceManager.h"/>
         </GROUP>
+        <GROUP id="{785167D1-B4D2-8CFB-BBE8-207B7056030A}" name="ui">
+          <FILE id="JzjTAu" name="ScreenManagerUI.cpp" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenManagerUI.cpp"/>
+          <FILE id="uNwBQQ" name="ScreenManagerUI.h" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenManagerUI.h"/>
+          <FILE id="gkfEHb" name="ScreenOutput.cpp" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenOutput.cpp"/>
+          <FILE id="Gt9FQa" name="ScreenOutput.h" compile="0" resource="0" file="Source/Screen/ui/ScreenOutput.h"/>
+        </GROUP>
         <FILE id="fsjZqY" name="Screen.cpp" compile="0" resource="0" file="Source/Screen/Screen.cpp"/>
         <FILE id="mMPxNm" name="Screen.h" compile="0" resource="0" file="Source/Screen/Screen.h"/>
         <FILE id="IH8Rw8" name="ScreenIncludes.cpp" compile="1" resource="0"
@@ -130,13 +141,6 @@
         <FILE id="yum6o5" name="ScreenManager.cpp" compile="0" resource="0"
               file="Source/Screen/ScreenManager.cpp"/>
         <FILE id="Bdl4E1" name="ScreenManager.h" compile="0" resource="0" file="Source/Screen/ScreenManager.h"/>
-        <FILE id="XHPQWU" name="ScreenManagerUI.cpp" compile="0" resource="0"
-              file="Source/Screen/ScreenManagerUI.cpp"/>
-        <FILE id="arZMrN" name="ScreenManagerUI.h" compile="0" resource="0"
-              file="Source/Screen/ScreenManagerUI.h"/>
-        <FILE id="Vtq4gf" name="ScreenOutput.cpp" compile="0" resource="0"
-              file="Source/Screen/ScreenOutput.cpp"/>
-        <FILE id="RkT4yY" name="ScreenOutput.h" compile="0" resource="0" file="Source/Screen/ScreenOutput.h"/>
       </GROUP>
       <FILE id="z9PQ17" name="Main.cpp" compile="0" resource="0" file="Source/Main.cpp"/>
       <FILE id="NPvmUn" name="Main.h" compile="0" resource="0" file="Source/Main.h"/>

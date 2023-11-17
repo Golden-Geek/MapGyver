@@ -14,7 +14,7 @@
 
 #include "Media.h"
 #include "MediaManager.h"
-#include "MediaManagerUI.h"
+#include "ui/MediaManagerUI.h"
 
 #include "medias/MediaComposition/CompositionLayer/CompositionLayer.h"
 #include "medias/MediaComposition/CompositionLayer/CompositionLayerManager.h"

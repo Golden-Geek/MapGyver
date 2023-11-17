@@ -21,11 +21,15 @@ public:
     var objectData;
 
     IntParameter* screenNumber;
-    ScreenOutput output;
+    std::unique_ptr<ScreenOutput> output;
 
     SurfaceManager surfaces;
 
     void onContainerParameterChangedInternal(Parameter* p);
+
+    void updateOutputLiveStatus();
+
+    void afterLoadJSONDataInternal() override;
 
     String getTypeString() const override { return objectType; }
     static Screen* create(var params) { return new Screen(params); }

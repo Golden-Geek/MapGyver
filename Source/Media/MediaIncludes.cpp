@@ -12,7 +12,7 @@
 
 #include "Media.cpp"
 #include "MediaManager.cpp"
-#include "MediaManagerUI.cpp"
+#include "ui/MediaManagerUI.cpp"
 
 #include "medias/MediaComposition/MediaComposition.cpp"
 #include "medias/MediaComposition/CompositionLayer/CompositionLayer.cpp"

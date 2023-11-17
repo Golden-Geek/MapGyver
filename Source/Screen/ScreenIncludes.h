@@ -15,7 +15,7 @@
 #include "Surface/Surface.h"
 #include "Surface/SurfaceManager.h"
 
-#include "ScreenOutput.h"
+#include "ui/ScreenOutput.h"
 #include "Screen.h"
 #include "ScreenManager.h"
-#include "ScreenManagerUI.h"
+#include "ui/ScreenManagerUI.h"
