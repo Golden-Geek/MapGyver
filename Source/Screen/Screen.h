@@ -23,13 +23,21 @@ public:
     IntParameter* screenNumber;
     std::unique_ptr<ScreenOutput> output;
 
+    FloatParameter* snapDistance;
+
     SurfaceManager surfaces;
 
     void onContainerParameterChangedInternal(Parameter* p);
 
     void updateOutputLiveStatus();
 
+
+    Point2DParameter* getClosestHandle(Point<float> pos, float maxDistance = INT32_MAX, Array<Point2DParameter*> excludeHandles = {});
+    Point2DParameter* getSnapHandle(Point<float> pos, Point2DParameter* handle);
+    Array<Point2DParameter*> getOverlapHandles(Point2DParameter* handle);
+    
     void afterLoadJSONDataInternal() override;
+
 
     String getTypeString() const override { return objectType; }
     static Screen* create(var params) { return new Screen(params); }

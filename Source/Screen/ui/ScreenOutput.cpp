@@ -27,6 +27,7 @@ ScreenOutput::ScreenOutput(Screen* parent) :
 	addKeyListener(this);        // Ajoutez ce composant comme écouteur clavier
 
 	stopLive();
+
 }
 
 ScreenOutput::~ScreenOutput()
@@ -41,7 +42,7 @@ void ScreenOutput::paint(Graphics& g)
 	if (closestHandle != nullptr)
 	{
 		Point<int> mp = getMouseXYRelative();
-		Point<int> hp = getLocalBounds().getRelativePoint((closestHandle->x * .5f) + .5f, -(closestHandle->y * .5f) + .5f);
+		Point<int> hp = getLocalBounds().getRelativePoint(closestHandle->x, 1 - closestHandle->y);
 
 		// Draw a line from the mouse to the closest handle
 
@@ -73,30 +74,20 @@ void ScreenOutput::paintOverChildren(Graphics& g)
 
 void ScreenOutput::mouseDown(const MouseEvent& e)
 {
-	if (closestHandle != nullptr) posAtMouseDown = closestHandle->getPoint();
+	if (closestHandle != nullptr)
+	{
+		posAtMouseDown = closestHandle->getPoint();
+
+		overlapHandles.clear();
+		if (e.mods.isShiftDown()) overlapHandles = parentScreen->getOverlapHandles(closestHandle);
+	}
 }
 
 void ScreenOutput::mouseMove(const MouseEvent& e)
 {
 	if (!e.mods.isLeftButtonDown())
 	{
-		Point<int> mp = getMouseXYRelative();
-		float closestDist = INT32_MAX;
-		for (auto& s : parentScreen->surfaces.items)
-		{
-			Array<Point2DParameter*> handles = { s->topLeft, s->topRight, s->bottomLeft, s->bottomRight };
-			for (auto& h : handles)
-			{
-				Point<int> handlePos = getLocalBounds().getRelativePoint((h->x * .5f) + .5f, -(h->y * .5f) + .5f);
-
-				float dist = handlePos.getDistanceFrom(mp);
-				if (dist < closestDist)
-				{
-					closestHandle = h;
-					closestDist = dist;
-				}
-			}
-		}
+		closestHandle = parentScreen->getClosestHandle(getRelativeMousePos());
 		repaint();
 	}
 
@@ -106,21 +97,45 @@ void ScreenOutput::mouseDrag(const MouseEvent& e)
 {
 	if (closestHandle != nullptr)
 	{
-		Point<float> offsetRelative = (e.getOffsetFromDragStart().toFloat() * Point<float>(2, -2)) / Point<float>(getWidth(), getHeight());
-		closestHandle->setPoint(posAtMouseDown + offsetRelative);
+		Point<float> offsetRelative = (e.getOffsetFromDragStart().toFloat() * Point<float>(1, -1)) / Point<float>(getWidth(), getHeight());
+		Point<float> tp = posAtMouseDown + offsetRelative;
+		if (e.mods.isCommandDown())
+		{
+			Point2DParameter* th = parentScreen->getSnapHandle(tp, closestHandle);
+			if (th != nullptr) tp = th->getPoint();
+		}
+
+		closestHandle->setPoint(tp);
+		for (auto& h : overlapHandles) h->setPoint(tp);
+
 		repaint();
 	}
 }
 
 void ScreenOutput::mouseUp(const MouseEvent& e)
 {
-	closestHandle->setUndoablePoint(posAtMouseDown, closestHandle->getPoint());
+	if (overlapHandles.size() > 0)
+	{
+		Array<UndoableAction*> actions;
+		actions.add(closestHandle->setUndoablePoint(posAtMouseDown, closestHandle->getPoint(), true));
+		for(auto & h : overlapHandles) actions.add(h->setUndoablePoint(posAtMouseDown, closestHandle->getPoint(), true));
+		UndoMaster::getInstance()->performActions("Move handles", actions);
+	}
+	else closestHandle->setUndoablePoint(posAtMouseDown, closestHandle->getPoint());
+
+	overlapHandles.clear();
 	repaint();
 }
 
 void ScreenOutput::mouseExit(const MouseEvent& e)
 {
 	closestHandle = nullptr;
+}
+
+Point<float> ScreenOutput::getRelativeMousePos()
+{
+	Point<float> mp = getMouseXYRelative().toFloat();
+	return Point<float>(mp.x / getWidth(), 1 - (mp.y / getHeight()));
 }
 
 void ScreenOutput::goLive(int screenId)
@@ -239,10 +254,11 @@ void ScreenOutput::renderOpenGL()
 						tex->bind();
 					}
 
-					tl.setXY(s->topLeft->x, s->topLeft->y);
-					tr.setXY(s->topRight->x, s->topRight->y);
-					bl.setXY(s->bottomLeft->x, s->bottomLeft->y);
-					br.setXY(s->bottomRight->x, s->bottomRight->y);
+					Point<float> midP(.5f, .5f);
+					tl = (s->topLeft->getPoint() - midP) * 2;
+					tr = (s->topRight->getPoint() - midP) * 2;
+					bl = (s->bottomLeft->getPoint() - midP) * 2;
+					br = (s->bottomRight->getPoint() - midP) * 2;
 
 					Point<float> center(0, 0);
 					intersection(tl, br, bl, tr, &center);
@@ -329,6 +345,11 @@ void ScreenOutput::openGLContextClosing()
 	textures.clear();
 	glDisable(GL_BLEND);
 	shader = nullptr;
+}
+
+void ScreenOutput::userTriedToCloseWindow()
+{
+	stopLive();
 }
 
 void ScreenOutput::createAndLoadShaders()

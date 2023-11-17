@@ -27,20 +27,15 @@ Surface::Surface(var params) :
 	bottomLeft = addPoint2DParameter("bottomLeft ", "");
 	bottomRight = addPoint2DParameter("bottomRight ", "");
 
-	topLeft->setBounds(-1.0f, -1.0f, 1.0f,1.0f);
-	topRight->setBounds(-1.0f, -1.0f, 1.0f,1.0f);
-	bottomLeft->setBounds(-1.0f, -1.0f, 1.0f,1.0f);
-	bottomRight->setBounds(-1.0f, -1.0f, 1.0f,1.0f);
+	topLeft->setDefaultPoint(0, 1);
+	topRight->setDefaultPoint(1, 1);
+	bottomLeft->setDefaultPoint(0, 0);
+	bottomRight->setDefaultPoint(1, 0);
 
-	var def; def.append(0); def.append(0);
-	def[0] = -1.0f; def[1] = 1.0f;
-	topLeft->setDefaultValue(def);
-	def[0] = 1.0f; def[1] = 1.0f;
-	topRight->setDefaultValue(def);
-	def[0] = -1.0f; def[1] = -1.0f;
-	bottomLeft->setDefaultValue(def);
-	def[0] = 1.0f; def[1] = -1.0f;
-	bottomRight->setDefaultValue(def);
+	topLeft->setBounds(0, 0, 1, 1);
+	topRight->setBounds(0, 0, 1, 1);
+	bottomLeft->setBounds(0, 0, 1, 1);
+	bottomRight->setBounds(0, 0, 1, 1);
 
 	softEdgeTop = addFloatParameter("Soft Edge Top", "", 0, 0, 1);
 	softEdgeRight = addFloatParameter("Soft Edge Right", "", 0, 0, 1);

@@ -27,6 +27,7 @@ public:
 	Point<float> posAtMouseDown;
 	Point2DParameter* closestHandle;
 
+	Array<Point2DParameter*> overlapHandles;
 	void paint(Graphics& g) override;
 	void paintOverChildren(Graphics&) override;
 
@@ -36,12 +37,16 @@ public:
 	void mouseUp(const MouseEvent& e) override;
 	void mouseExit(const MouseEvent& e) override;
 
+	Point<float> getRelativeMousePos();
+
 	void goLive(int screenId);
 	void stopLive();
 
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
+
+	void userTriedToCloseWindow() override;
 
 	void createAndLoadShaders();
 
