@@ -12,7 +12,7 @@ namespace BinaryData
     const int            default_rmplayoutSize = 1326;
 
     extern const char*   icon_png;
-    const int            icon_pngSize = 74106;
+    const int            icon_pngSize = 52976;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 2;

@@ -3017,13 +3017,14 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Ressources\default.rmplayout"/>
-    <None Include="..\..\Ressources\icon.png"/>
+    <None Include="..\..\Resources\default.rmplayout"/>
+    <None Include="..\..\Resources\icon.png"/>
     <None Include="..\..\JUCE\modules\juce_core\native\java\README.txt"/>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt"/>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt"/>
     <None Include="..\..\Modules\juce_organicui\resources\organicui_resources\JuceLibraryCode\ReadMe.txt"/>
     <None Include="..\..\Modules\juce_organicui\README.md"/>
+    <None Include=".\icon.ico"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc"/>

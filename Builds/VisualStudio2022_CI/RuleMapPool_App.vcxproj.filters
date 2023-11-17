@@ -2,8 +2,8 @@
 
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="RuleMapPool\Ressources">
-      <UniqueIdentifier>{EF8C9817-6509-BF39-4C38-114117AF0954}</UniqueIdentifier>
+    <Filter Include="RuleMapPool\Resources">
+      <UniqueIdentifier>{F9D329A8-E8A5-1C86-FB67-8421D5BF354C}</UniqueIdentifier>
     </Filter>
     <Filter Include="RuleMapPool\Source\Engine">
       <UniqueIdentifier>{2E85C889-6BDA-D2A7-A006-FA7D1DEF61EB}</UniqueIdentifier>
@@ -5180,11 +5180,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Ressources\default.rmplayout">
-      <Filter>RuleMapPool\Ressources</Filter>
+    <None Include="..\..\Resources\default.rmplayout">
+      <Filter>RuleMapPool\Resources</Filter>
     </None>
-    <None Include="..\..\Ressources\icon.png">
-      <Filter>RuleMapPool\Ressources</Filter>
+    <None Include="..\..\Resources\icon.png">
+      <Filter>RuleMapPool\Resources</Filter>
     </None>
     <None Include="..\..\JUCE\modules\juce_core\native\java\README.txt">
       <Filter>JUCE Modules\juce_core\native\java</Filter>
@@ -5200,6 +5200,9 @@
     </None>
     <None Include="..\..\Modules\juce_organicui\README.md">
       <Filter>JUCE Modules\juce_organicui</Filter>
+    </None>
+    <None Include=".\icon.ico">
+      <Filter>JUCE Library Code</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
