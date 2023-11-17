@@ -9,6 +9,7 @@
 */
 
 #include "Screen/ScreenIncludes.h"
+#include "Screen.h"
 
 Screen::Screen(var params) :
 	BaseItem(params.getProperty("name", "Screen")),
@@ -103,6 +104,12 @@ Array<Point2DParameter*> Screen::getOverlapHandles(Point2DParameter* handle)
 		}
 	}
 	return result;
+}
+
+Surface* Screen::getSurfaceAt(Point<float> pos)
+{
+	for (auto& s : surfaces.items) if (s->isPointInside(pos)) return s;
+	return nullptr;
 }
 
 void Screen::afterLoadJSONDataInternal()

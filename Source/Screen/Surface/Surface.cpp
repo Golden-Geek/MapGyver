@@ -10,6 +10,7 @@
 
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
+#include "Surface.h"
 
 Surface::Surface(var params) :
 	BaseItem(params.getProperty("name", "Surface")),
@@ -56,6 +57,26 @@ Surface::~Surface()
 {
 }
 
-void Surface::onContainerParameterChangedInternal(Parameter* p) {
+void Surface::onContainerParameterChangedInternal(Parameter* p) 
+{
+	if (p == topLeft || p == topRight || p == bottomLeft || p == bottomRight)
+	{
+		updatePath();
+	}
+}
+
+void Surface::updatePath()
+{
+	quadPath.clear();
+	quadPath.startNewSubPath(topLeft->getPoint());
+	quadPath.lineTo(topRight->getPoint());
+	quadPath.lineTo(bottomRight->getPoint());
+	quadPath.lineTo(bottomLeft->getPoint());
+	quadPath.closeSubPath();
+}
+
+bool Surface::isPointInside(Point<float> pos)
+{
+	return quadPath.contains(pos);
 }
 

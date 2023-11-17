@@ -14,7 +14,8 @@
 using namespace juce::gl;
 
 ScreenOutput::ScreenOutput(Screen* parent) :
-	closestHandle(nullptr)
+	closestHandle(nullptr),
+	manipSurface(nullptr)
 {
 	setOpaque(true);
 	parentScreen = parent;
@@ -39,13 +40,30 @@ ScreenOutput::~ScreenOutput()
 
 void ScreenOutput::paint(Graphics& g)
 {
-	if (closestHandle != nullptr)
+	Colour col = isMouseButtonDown() ? Colours::yellow : Colours::cyan;
+
+	if (manipSurface != nullptr)
+	{
+		Path surfacePath;
+		surfacePath.addPath(manipSurface->quadPath);
+
+		//apply transform that inverse the Y axis and scale to the component size
+		surfacePath.applyTransform(AffineTransform::scale(getWidth(), getHeight()));
+		surfacePath.applyTransform(AffineTransform::verticalFlip(getHeight()));
+
+		g.setColour(col.withAlpha(.1f));
+		g.fillPath(surfacePath);
+		g.setColour(col.brighter(.3f));
+		g.strokePath(surfacePath, PathStrokeType(2.0f));
+
+		g.drawLine(Line<float>(getPointOnScreen(manipSurface->topLeft->getPoint()).toFloat(), getPointOnScreen(manipSurface->bottomRight->getPoint()).toFloat()), 2.0f);
+		g.drawLine(Line<float>(getPointOnScreen(manipSurface->topRight->getPoint()).toFloat(), getPointOnScreen(manipSurface->bottomLeft->getPoint()).toFloat()), 2.0f);
+
+	}
+	else if (closestHandle != nullptr)
 	{
 		Point<int> mp = getMouseXYRelative();
 		Point<int> hp = getLocalBounds().getRelativePoint(closestHandle->x, 1 - closestHandle->y);
-
-		// Draw a line from the mouse to the closest handle
-
 
 		float angle = mp.getAngleToPoint(hp);
 
@@ -58,12 +76,8 @@ void ScreenOutput::paint(Graphics& g)
 		p.lineTo(hp.toFloat());
 		p.closeSubPath();
 
-		g.drawLine(Line<float>(a1, a2), 3);
-
-		g.setColour((isMouseButtonDown() ? Colours::yellow : Colours::cyan).withAlpha(.5f));
-
+		g.setColour(col.withAlpha(.5f));
 		g.fillPath(p);
-		//g.drawLine(mp.x, mp.y, hp.x, hp.y, 5.0f);
 	}
 }
 
@@ -74,10 +88,14 @@ void ScreenOutput::paintOverChildren(Graphics& g)
 
 void ScreenOutput::mouseDown(const MouseEvent& e)
 {
-	if (closestHandle != nullptr)
+	if (manipSurface != nullptr)
 	{
-		posAtMouseDown = closestHandle->getPoint();
+		posAtMouseDown = { manipSurface->topLeft->getPoint(), manipSurface->topRight->getPoint(), manipSurface->bottomLeft->getPoint(), manipSurface->bottomRight->getPoint() };
 
+	}
+	else if (closestHandle != nullptr)
+	{
+		posAtMouseDown = { closestHandle->getPoint() };
 		overlapHandles.clear();
 		if (e.mods.isShiftDown()) overlapHandles = parentScreen->getOverlapHandles(closestHandle);
 	}
@@ -85,20 +103,32 @@ void ScreenOutput::mouseDown(const MouseEvent& e)
 
 void ScreenOutput::mouseMove(const MouseEvent& e)
 {
-	if (!e.mods.isLeftButtonDown())
+	if (e.mods.isAltDown())
 	{
-		closestHandle = parentScreen->getClosestHandle(getRelativeMousePos());
-		repaint();
+		closestHandle = nullptr;
+		manipSurface = parentScreen->getSurfaceAt(getRelativeMousePos());
 	}
+	else if (!e.mods.isLeftButtonDown())
+	{
+		manipSurface = nullptr;
+		closestHandle = parentScreen->getClosestHandle(getRelativeMousePos());
+	}
+	repaint();
 
 }
 
 void ScreenOutput::mouseDrag(const MouseEvent& e)
 {
-	if (closestHandle != nullptr)
+	Point<float> offsetRelative = (e.getOffsetFromDragStart().toFloat() * Point<float>(1, -1)) / Point<float>(getWidth(), getHeight());
+
+	if (manipSurface != nullptr)
 	{
-		Point<float> offsetRelative = (e.getOffsetFromDragStart().toFloat() * Point<float>(1, -1)) / Point<float>(getWidth(), getHeight());
-		Point<float> tp = posAtMouseDown + offsetRelative;
+		Array<Point2DParameter*> handles = { manipSurface->topLeft, manipSurface->topRight, manipSurface->bottomLeft, manipSurface->bottomRight };
+		for (int i = 0; i < handles.size(); i++) handles[i]->setPoint(posAtMouseDown[i] + offsetRelative);
+	}
+	else if (closestHandle != nullptr)
+	{
+		Point<float> tp = posAtMouseDown[0] + offsetRelative;
 		if (e.mods.isCommandDown())
 		{
 			Point2DParameter* th = parentScreen->getSnapHandle(tp, closestHandle);
@@ -108,22 +138,33 @@ void ScreenOutput::mouseDrag(const MouseEvent& e)
 		closestHandle->setPoint(tp);
 		for (auto& h : overlapHandles) h->setPoint(tp);
 
-		repaint();
 	}
+	repaint();
 }
 
 void ScreenOutput::mouseUp(const MouseEvent& e)
 {
-	if (overlapHandles.size() > 0)
+	if (manipSurface != nullptr)
 	{
+		Array<Point2DParameter*> handles = { manipSurface->topLeft, manipSurface->topRight, manipSurface->bottomLeft, manipSurface->bottomRight };
 		Array<UndoableAction*> actions;
-		actions.add(closestHandle->setUndoablePoint(posAtMouseDown, closestHandle->getPoint(), true));
-		for(auto & h : overlapHandles) actions.add(h->setUndoablePoint(posAtMouseDown, closestHandle->getPoint(), true));
-		UndoMaster::getInstance()->performActions("Move handles", actions);
-	}
-	else closestHandle->setUndoablePoint(posAtMouseDown, closestHandle->getPoint());
+		for (int i = 0; i < handles.size(); i++) actions.add(handles[i]->setUndoablePoint(posAtMouseDown[i], handles[i]->getPoint(), true));
+		UndoMaster::getInstance()->performActions("Move surface", actions);
 
-	overlapHandles.clear();
+	}
+	else if (closestHandle != nullptr)
+	{
+
+		if (overlapHandles.size() > 0)
+		{
+			Array<UndoableAction*> actions;
+			actions.add(closestHandle->setUndoablePoint(posAtMouseDown[0], closestHandle->getPoint(), true));
+			for (auto& h : overlapHandles) actions.add(h->setUndoablePoint(posAtMouseDown[0], closestHandle->getPoint(), true));
+			UndoMaster::getInstance()->performActions("Move handles", actions);
+		}
+		else closestHandle->setUndoablePoint(posAtMouseDown[0], closestHandle->getPoint());
+		overlapHandles.clear();
+	}
 	repaint();
 }
 
@@ -134,8 +175,18 @@ void ScreenOutput::mouseExit(const MouseEvent& e)
 
 Point<float> ScreenOutput::getRelativeMousePos()
 {
-	Point<float> mp = getMouseXYRelative().toFloat();
-	return Point<float>(mp.x / getWidth(), 1 - (mp.y / getHeight()));
+	return getRelativeScreenPos(getMouseXYRelative());
+}
+
+Point<float> ScreenOutput::getRelativeScreenPos(Point<int> screenPos)
+{
+	Point<float> p = screenPos.toFloat();
+	return Point<float>(p.x / getWidth(), 1 - (p.y / getHeight()));
+}
+
+Point<int> ScreenOutput::getPointOnScreen(Point<float> pos)
+{
+	return Point<float>(pos.x * getWidth(), (1 - pos.y) * getHeight()).toInt();
 }
 
 void ScreenOutput::goLive(int screenId)

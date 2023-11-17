@@ -37,7 +37,13 @@ public:
 
     TargetParameter* media;
 
+    Path quadPath;
+
     void onContainerParameterChangedInternal(Parameter* p);
+
+    void updatePath();
+
+    bool isPointInside(Point<float> pos);
 
     String getTypeString() const override { return objectType; }
     static Surface* create(var params) { return new Surface(params); }

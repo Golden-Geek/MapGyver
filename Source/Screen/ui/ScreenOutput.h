@@ -24,8 +24,9 @@ public:
 
 	Screen* parentScreen;
 
-	Point<float> posAtMouseDown;
 	Point2DParameter* closestHandle;
+	Surface* manipSurface;
+	Array<Point<float>> posAtMouseDown;
 
 	Array<Point2DParameter*> overlapHandles;
 	void paint(Graphics& g) override;
@@ -38,6 +39,8 @@ public:
 	void mouseExit(const MouseEvent& e) override;
 
 	Point<float> getRelativeMousePos();
+	Point<float> getRelativeScreenPos(Point<int> screenPos);
+	Point<int> getPointOnScreen(Point<float> pos);
 
 	void goLive(int screenId);
 	void stopLive();

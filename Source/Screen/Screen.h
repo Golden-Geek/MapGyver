@@ -28,14 +28,14 @@ public:
     SurfaceManager surfaces;
 
     void onContainerParameterChangedInternal(Parameter* p);
-
     void updateOutputLiveStatus();
 
 
     Point2DParameter* getClosestHandle(Point<float> pos, float maxDistance = INT32_MAX, Array<Point2DParameter*> excludeHandles = {});
     Point2DParameter* getSnapHandle(Point<float> pos, Point2DParameter* handle);
     Array<Point2DParameter*> getOverlapHandles(Point2DParameter* handle);
-    
+    Surface* getSurfaceAt(Point<float> pos);
+
     void afterLoadJSONDataInternal() override;
 
 
