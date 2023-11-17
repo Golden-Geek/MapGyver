@@ -37,10 +37,10 @@ void NDIInputDevice::addNDIInputListener(NDIInputListener* newListener)
 	if (inputListeners.size() == 1)
 	{
 
-		NDIlib_recv_create_t recv_create_desc;
+		NDIlib_recv_create_v3_t recv_create_desc;
 		recv_create_desc.color_format = NDIlib_recv_color_format_BGRX_BGRA; // Format de couleur souhaité
 
-		pNDI_recv = NDIlib_recv_create_v2(&recv_create_desc);
+		pNDI_recv = NDIlib_recv_create_v3(&recv_create_desc);
 		NDIlib_recv_connect(pNDI_recv, p_source);
 
 		// Destroy the NDI finder. We needed to have access to the pointers to p_sources[0]
@@ -66,7 +66,7 @@ void NDIInputDevice::run()
 		if (shouldProcess) {
 			NDIlib_video_frame_v2_t video_frame;
 
-			switch (NDIlib_recv_capture_v2(pNDI_recv, &video_frame, nullptr, nullptr, 100)) {
+			switch (NDIlib_recv_capture_v3(pNDI_recv, &video_frame, nullptr, nullptr, 100)) {
 				// No data
 			case NDIlib_frame_type_none:
 				//LOG("No data received");
