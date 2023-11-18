@@ -54,7 +54,6 @@ public:
 	void createAndLoadShaders();
 
 	bool keyPressed(const KeyPress& key, Component* originatingComponent);
-	static bool intersection(Point<float> p1, Point<float> p2, Point<float> p3, Point<float> p4, Point<float>* intersect); // should be in another objet
 
 	std::unique_ptr<OpenGLShaderProgram> shader;
 	juce::OpenGLContext openGLContext;
@@ -64,4 +63,6 @@ public:
 
 	HashMap<Media*, std::shared_ptr<OpenGLTexture>> textures;
 	HashMap<Media*, int> texturesVersions;
+	HashMap<Surface*, GLuint> vertices;
+	HashMap<Surface*, int> verticesVersions;
 };

@@ -124,6 +124,8 @@ void ScreenOutput::mouseDrag(const MouseEvent& e)
 	if (manipSurface != nullptr)
 	{
 		Array<Point2DParameter*> handles = { manipSurface->topLeft, manipSurface->topRight, manipSurface->bottomLeft, manipSurface->bottomRight };
+
+
 		for (int i = 0; i < handles.size(); i++) handles[i]->setPoint(posAtMouseDown[i] + offsetRelative);
 	}
 	else if (closestHandle != nullptr)
@@ -305,49 +307,12 @@ void ScreenOutput::renderOpenGL()
 						tex->bind();
 					}
 
-					Point<float> midP(.5f, .5f);
-					tl = (s->topLeft->getPoint() - midP) * 2;
-					tr = (s->topRight->getPoint() - midP) * 2;
-					bl = (s->bottomLeft->getPoint() - midP) * 2;
-					br = (s->bottomRight->getPoint() - midP) * 2;
-
-					Point<float> center(0, 0);
-					intersection(tl, br, bl, tr, &center);
-
-					float dtl = center.getDistanceFrom(tl);
-					float dtr = center.getDistanceFrom(tr);
-					float dbr = center.getDistanceFrom(br);
-					float dbl = center.getDistanceFrom(bl);
-
-					float ztl = ((dtl + dbr) / dbr);
-					float ztr = ((dtr + dbl) / dbl);
-					float zbr = ((dbr + dtl) / dtl);
-					float zbl = ((dbl + dtr) / dtr);
-
-					Vector3D<float> tlTex(s->cropLeft->floatValue(), 1 - s->cropTop->floatValue(), 1.0f);
-					Vector3D<float> trTex(1 - s->cropRight->floatValue(), 1 - s->cropTop->floatValue(), 1.0f);
-					Vector3D<float> blTex(s->cropLeft->floatValue(), s->cropBottom->floatValue(), 1.0f);
-					Vector3D<float> brTex(1 - s->cropRight->floatValue(), s->cropBottom->floatValue(), 1.0f);
-
-					tlTex *= ztl;
-					trTex *= ztr;
-					blTex *= zbl;
-					brTex *= zbr;
-
-					// Define vertices for a triangle
-					GLfloat vertices[] =
-					{
-						tl.x, tl.y, -1.0f, 1.0f, tlTex.x, tlTex.y, tlTex.z, // Top-left
-						tr.x, tr.y, 1.0f, 1.0f, trTex.x, trTex.y, trTex.z, // Top-right
-						br.x, br.y, 1.0f, -1.0f, brTex.x, brTex.y, brTex.z, // Bottom-right
-						bl.x, bl.y, -1.0f, -1.0f, blTex.x, blTex.y, blTex.z // Bottom-left
-					};
+					// vertices start
 
 					// Create a vertex buffer object
 					GLuint vbo;
 					glGenBuffers(1, &vbo);
 					glBindBuffer(GL_ARRAY_BUFFER, vbo);
-					glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 					GLint posAttrib = glGetAttribLocation(shader->getProgramID(), "position");
 					glEnableVertexAttribArray(posAttrib);
@@ -361,21 +326,20 @@ void ScreenOutput::renderOpenGL()
 					glEnableVertexAttribArray(texAttrib);
 					glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(4 * sizeof(float)));
 
-					GLuint elements[] = {
-						0, 1, 2,
-						2, 3, 0,
-					};
+					GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
+					glUniform4f(borderSoftLocation, s->softEdgeTop->floatValue(), s->softEdgeRight->floatValue(), s->softEdgeBottom->floatValue(), s->softEdgeLeft->floatValue());
 
 					GLuint ebo;
 					glGenBuffers(1, &ebo);
 
-					GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
-					glUniform4f(borderSoftLocation, s->softEdgeTop->floatValue(), s->softEdgeRight->floatValue(), s->softEdgeBottom->floatValue(), s->softEdgeLeft->floatValue());
-
 					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-					glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
-					glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+					s->verticesLock.enter();
+					glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * s->vertices.size(), s->vertices.getRawDataPointer(), GL_STATIC_DRAW);
+					glBufferData(GL_ELEMENT_ARRAY_BUFFER, s->verticesElements.size()*sizeof(GLuint), s->verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
+					s->verticesLock.exit();
+
+					glDrawElements(GL_TRIANGLES, s->verticesElements.size(), GL_UNSIGNED_INT, 0);
 
 					if (tex != nullptr)
 					{
@@ -456,31 +420,4 @@ bool ScreenOutput::keyPressed(const KeyPress& key, Component* originatingCompone
 		return true;
 	}
 	return false;
-}
-
-bool ScreenOutput::intersection(Point<float> p1, Point<float> p2, Point<float> p3, Point<float> p4, Point<float>* intersect)
-{
-	// Store the values for fast access and easy
-	// equations-to-code conversion
-	float x1 = p1.x, x2 = p2.x, x3 = p3.x, x4 = p4.x;
-	float y1 = p1.y, y2 = p2.y, y3 = p3.y, y4 = p4.y;
-
-	float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-	// If d is zero, there is no intersection
-	if (d == 0) return false;
-
-	// Get the x and y
-	float pre = (x1 * y2 - y1 * x2), post = (x3 * y4 - y3 * x4);
-	float x = (pre * (x3 - x4) - (x1 - x2) * post) / d;
-	float y = (pre * (y3 - y4) - (y1 - y2) * post) / d;
-
-	// Check if the x and y coordinates are within both lines
-	if (x < jmin(x1, x2) || x > jmax(x1, x2) ||
-		x < jmin(x3, x4) || x > jmax(x3, x4)) return false;
-	if (y < jmin(y1, y2) || y > jmax(y1, y2) ||
-		y < jmin(y3, y4) || y > jmax(y3, y4)) return false;
-
-	// Return the point of intersection
-	intersect->setXY(x, y);
-	return true;
 }
