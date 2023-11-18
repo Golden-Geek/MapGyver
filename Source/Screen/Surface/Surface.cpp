@@ -28,17 +28,17 @@ Surface::Surface(var params) :
 	bottomLeft = addPoint2DParameter("bottomLeft ", "");
 	bottomRight = addPoint2DParameter("bottomRight ", "");
 
-	isBeziers = addBoolParameter("Bezier sides", "", false);
+	isBezier = addBoolParameter("Bezier sides", "", false);
 	resetBezierBtn = addTrigger("Reset bezier values", "");
 
-	handleTopLeft = addPoint2DParameter("Handle Top Left", "");
-	handleTopRight = addPoint2DParameter("Handle Top Right", "");
-	handleBottomLeft = addPoint2DParameter("Handle Bottom Left", "");
-	handleBottomRight = addPoint2DParameter("Handle Bottom Right", "");
-	handleLeftTop = addPoint2DParameter("Handle Left Top", "");
-	handleLeftBottom = addPoint2DParameter("Handle Left Bottom", "");
-	handleRightTop = addPoint2DParameter("Handle Right Top", "");
-	handleRightBottom = addPoint2DParameter("Handle Right Bottom", "");
+	handleBezierTopLeft = addPoint2DParameter("Handle Top Left", "");
+	handleBezierTopRight = addPoint2DParameter("Handle Top Right", "");
+	handleBezierBottomLeft = addPoint2DParameter("Handle Bottom Left", "");
+	handleBezierBottomRight = addPoint2DParameter("Handle Bottom Right", "");
+	handleBezierLeftTop = addPoint2DParameter("Handle Left Top", "");
+	handleBezierLeftBottom = addPoint2DParameter("Handle Left Bottom", "");
+	handleBezierRightTop = addPoint2DParameter("Handle Right Top", "");
+	handleBezierRightBottom = addPoint2DParameter("Handle Right Bottom", "");
 
 	softEdgeTop = addFloatParameter("Soft Edge Top", "", 0, 0, 1);
 	softEdgeRight = addFloatParameter("Soft Edge Right", "", 0, 0, 1);
@@ -62,22 +62,22 @@ Surface::Surface(var params) :
 	bottomRight->setBounds(0, 0, 1, 1);
 
 
-	handleTopLeft->setDefaultPoint(1/3.0f, 1);
-	handleTopLeft->setBounds(0, 0, 1, 1);
-	handleTopRight->setDefaultPoint(2/3.0f, 1);
-	handleTopRight->setBounds(0, 0, 1, 1);
-	handleBottomLeft->setDefaultPoint(1/3.0f, 0);
-	handleBottomLeft->setBounds(0, 0, 1, 1);
-	handleBottomRight->setDefaultPoint(2/3.0f, 0);
-	handleBottomRight->setBounds(0, 0, 1, 1);
-	handleLeftTop->setDefaultPoint(0, 2/3.0f);
-	handleLeftTop->setBounds(0, 0, 1, 1);
-	handleLeftBottom->setDefaultPoint(0, 1/3.0f);
-	handleLeftBottom->setBounds(0, 0, 1, 1);
-	handleRightTop->setDefaultPoint(1, 2/3.0f);
-	handleRightTop->setBounds(0, 0, 1, 1);
-	handleRightBottom->setDefaultPoint(1, 1/3.0f);
-	handleRightBottom->setBounds(0, 0, 1, 1);
+	handleBezierTopLeft->setDefaultPoint(1/3.0f, 1);
+	handleBezierTopLeft->setBounds(0, 0, 1, 1);
+	handleBezierTopRight->setDefaultPoint(2/3.0f, 1);
+	handleBezierTopRight->setBounds(0, 0, 1, 1);
+	handleBezierBottomLeft->setDefaultPoint(1/3.0f, 0);
+	handleBezierBottomLeft->setBounds(0, 0, 1, 1);
+	handleBezierBottomRight->setDefaultPoint(2/3.0f, 0);
+	handleBezierBottomRight->setBounds(0, 0, 1, 1);
+	handleBezierLeftTop->setDefaultPoint(0, 2/3.0f);
+	handleBezierLeftTop->setBounds(0, 0, 1, 1);
+	handleBezierLeftBottom->setDefaultPoint(0, 1/3.0f);
+	handleBezierLeftBottom->setBounds(0, 0, 1, 1);
+	handleBezierRightTop->setDefaultPoint(1, 2/3.0f);
+	handleBezierRightTop->setBounds(0, 0, 1, 1);
+	handleBezierRightBottom->setDefaultPoint(1, 1/3.0f);
+	handleBezierRightBottom->setBounds(0, 0, 1, 1);
 
 	media->maxDefaultSearchLevel = 0;
 	media->targetType = TargetParameter::CONTAINER;
@@ -89,16 +89,12 @@ Surface::~Surface()
 
 void Surface::onContainerParameterChangedInternal(Parameter* p) 
 {
+	updateVertices();
 	if (p == topLeft || p == topRight || p == bottomLeft || p == bottomRight)
 	{
-		updateVertices();
 		updatePath();
 	}
 
-	if (p == handleTopLeft || p == handleTopRight || p == handleBottomLeft || p == handleBottomRight || p == handleLeftTop || p == handleLeftBottom || p == handleRightTop || p == handleRightBottom) 
-	{
-		updateVertices();
-	}
 }
 
 void Surface::updatePath()
@@ -126,14 +122,14 @@ void Surface::resetBezierPoints()
 	Point<float> temp;
 	var v; v.append(0); v.append(0);
 
-	temp = tl + ((tr - tl) / 3);			v[0] = temp.x; v[1] = temp.y;		handleTopLeft->setValue(v);
-	temp = tl + ((tr - tl) * 2 / 3);		v[0] = temp.x; v[1] = temp.y;		handleTopRight->setValue(v);
-	temp = bl + ((br - bl) / 3);			v[0] = temp.x; v[1] = temp.y;		handleBottomLeft->setValue(v);
-	temp = bl + ((br - bl) * 2 / 3);		v[0] = temp.x; v[1] = temp.y;		handleBottomRight->setValue(v);
-	temp = tl + ((bl - tl) / 3);			v[0] = temp.x; v[1] = temp.y;		handleLeftTop->setValue(v);
-	temp = tl + ((bl - tl) * 2 / 3);		v[0] = temp.x; v[1] = temp.y;		handleLeftBottom->setValue(v);
-	temp = tr + ((br - tr) / 3);			v[0] = temp.x; v[1] = temp.y;		handleRightTop->setValue(v);
-	temp = tr + ((br - tr) * 2 / 3);		v[0] = temp.x; v[1] = temp.y;		handleRightBottom->setValue(v);
+	temp = tl + ((tr - tl) / 3);			v[0] = temp.x; v[1] = temp.y;		handleBezierTopLeft->setValue(v);
+	temp = tl + ((tr - tl) * 2 / 3);		v[0] = temp.x; v[1] = temp.y;		handleBezierTopRight->setValue(v);
+	temp = bl + ((br - bl) / 3);			v[0] = temp.x; v[1] = temp.y;		handleBezierBottomLeft->setValue(v);
+	temp = bl + ((br - bl) * 2 / 3);		v[0] = temp.x; v[1] = temp.y;		handleBezierBottomRight->setValue(v);
+	temp = tl + ((bl - tl) / 3);			v[0] = temp.x; v[1] = temp.y;		handleBezierLeftTop->setValue(v);
+	temp = tl + ((bl - tl) * 2 / 3);		v[0] = temp.x; v[1] = temp.y;		handleBezierLeftBottom->setValue(v);
+	temp = tr + ((br - tr) / 3);			v[0] = temp.x; v[1] = temp.y;		handleBezierRightTop->setValue(v);
+	temp = tr + ((br - tr) * 2 / 3);		v[0] = temp.x; v[1] = temp.y;		handleBezierRightBottom->setValue(v);
 
 }
 
@@ -203,7 +199,7 @@ void Surface::updateVertices()
 	blTex *= zbl;
 	brTex *= zbr;
 
-	if (isBeziers->boolValue()) {
+	if (isBezier->boolValue()) {
 		const int gridSize = 40;
 		Point<float> grid[gridSize][gridSize];
 
@@ -215,13 +211,13 @@ void Surface::updateVertices()
 
 		for (int i = 0; i < gridSize; i++) {
 			float ratio = i / (float)(gridSize - 1);
-			grid[i][0] = getBeziers(openGLPoint(topLeft), openGLPoint(handleTopLeft), openGLPoint(handleTopRight), openGLPoint(topRight), ratio);
-			grid[i][gridSize - 1] = getBeziers(openGLPoint(bottomLeft), openGLPoint(handleBottomLeft), openGLPoint(handleBottomRight), openGLPoint(bottomRight), ratio);
+			grid[i][0] = getBeziers(openGLPoint(topLeft), openGLPoint(handleBezierTopLeft), openGLPoint(handleBezierTopRight), openGLPoint(topRight), ratio);
+			grid[i][gridSize - 1] = getBeziers(openGLPoint(bottomLeft), openGLPoint(handleBezierBottomLeft), openGLPoint(handleBezierBottomRight), openGLPoint(bottomRight), ratio);
 
-			Point<float> aAxis = openGLPoint(handleRightTop) - openGLPoint(handleLeftTop);
-			Point<float> bAxis = openGLPoint(handleRightBottom) - openGLPoint(handleLeftBottom);
-			Point<float> tempA = aAxis * ratio + openGLPoint(handleLeftTop);
-			Point<float> tempB = bAxis * ratio + openGLPoint(handleLeftBottom);
+			Point<float> aAxis = openGLPoint(handleBezierRightTop) - openGLPoint(handleBezierLeftTop);
+			Point<float> bAxis = openGLPoint(handleBezierRightBottom) - openGLPoint(handleBezierLeftBottom);
+			Point<float> tempA = aAxis * ratio + openGLPoint(handleBezierLeftTop);
+			Point<float> tempB = bAxis * ratio + openGLPoint(handleBezierLeftBottom);
 			for (int j = 1; j < gridSize - 1; j++) {
 				float ratio2 = j / (float)(gridSize - 1);
 				grid[i][j] = getBeziers(grid[i][0], tempA, tempB, grid[i][gridSize - 1], ratio2);
@@ -229,16 +225,22 @@ void Surface::updateVertices()
 		}
 
 		float ratio = 1/(float)(gridSize-1);
+
+		float fromX = cropLeft->floatValue();
+		float toX = 1-cropRight->floatValue();
+		float fromY = cropBottom->floatValue();
+		float toY = 1-cropTop->floatValue();
+
 		for (int i = 0; i < gridSize-1; i++) {
 			for (int j = 0; j < gridSize-1; j++) {
-				tlTex = Vector3D<float>(i * ratio		,1-( j * ratio), 1);
-				trTex = Vector3D<float>((i+1) * ratio	,1-( j * ratio), 1);
-				blTex = Vector3D<float>(i * ratio		,1-( (j+1) * ratio), 1);
-				brTex = Vector3D<float>((i+1) * ratio	,1-( (j+1) * ratio), 1);
-				addToVertices(grid[i][j], Point<float>(-1, 1), tlTex);
-				addToVertices(grid[i+1][j], Point<float>(-1, 1), trTex);
-				addToVertices(grid[i][j+1], Point<float>(-1, 1), blTex);
-				addToVertices(grid[i+1][j+1], Point<float>(-1, 1), brTex);
+				tlTex = Vector3D<float>(jmap(i * ratio		, 0.0f, 1.0f, fromX, toX),jmap(1-( j * ratio), 0.0f, 1.0f, fromY, toY), 1);
+				trTex = Vector3D<float>(jmap((i+1) * ratio	, 0.0f, 1.0f, fromX, toX),jmap(1-( j * ratio), 0.0f, 1.0f, fromY, toY), 1);
+				blTex = Vector3D<float>(jmap(i * ratio		, 0.0f, 1.0f, fromX, toX),jmap(1-( (j+1) * ratio), 0.0f, 1.0f, fromY, toY), 1);
+				brTex = Vector3D<float>(jmap((i+1) * ratio	, 0.0f, 1.0f, fromX, toX),jmap(1-( (j+1) * ratio), 0.0f, 1.0f, fromY, toY), 1);
+				addToVertices(grid[i][j], Point<float>(((i)*2*ratio)-1, -(((j)*2*ratio)-1)), tlTex);
+				addToVertices(grid[i+1][j], Point<float>(((i)*2*ratio)-1, -(((j)*2*ratio)-1)), trTex);
+				addToVertices(grid[i][j+1], Point<float>(((i)*2*ratio)-1, -(((j)*2*ratio)-1)), blTex);
+				addToVertices(grid[i+1][j+1], Point<float>(((i)*2*ratio)-1, -(((j)*2*ratio)-1)), brTex);
 				addLastFourAsQuad();
 			}
 		}

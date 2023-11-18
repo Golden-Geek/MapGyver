@@ -25,15 +25,15 @@ public:
     Point2DParameter* bottomLeft;
     Point2DParameter* bottomRight;
 
-    BoolParameter* isBeziers;
-    Point2DParameter* handleTopLeft;
-    Point2DParameter* handleTopRight;
-    Point2DParameter* handleBottomLeft;
-    Point2DParameter* handleBottomRight;
-    Point2DParameter* handleLeftTop;
-    Point2DParameter* handleLeftBottom;
-    Point2DParameter* handleRightTop;
-    Point2DParameter* handleRightBottom;
+    BoolParameter* isBezier;
+    Point2DParameter* handleBezierTopLeft;
+    Point2DParameter* handleBezierTopRight;
+    Point2DParameter* handleBezierBottomLeft;
+    Point2DParameter* handleBezierBottomRight;
+    Point2DParameter* handleBezierLeftTop;
+    Point2DParameter* handleBezierLeftBottom;
+    Point2DParameter* handleBezierRightTop;
+    Point2DParameter* handleBezierRightBottom;
 
     FloatParameter* softEdgeTop;
     FloatParameter* softEdgeRight;
