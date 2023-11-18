@@ -10,6 +10,7 @@
 
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
+#include "ScreenOutput.h"
 
 using namespace juce::gl;
 
@@ -80,6 +81,7 @@ void ScreenOutput::paint(Graphics& g)
 		g.fillPath(p);
 	}
 }
+
 
 void ScreenOutput::paintOverChildren(Graphics& g)
 {
@@ -336,7 +338,7 @@ void ScreenOutput::renderOpenGL()
 
 					s->verticesLock.enter();
 					glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * s->vertices.size(), s->vertices.getRawDataPointer(), GL_STATIC_DRAW);
-					glBufferData(GL_ELEMENT_ARRAY_BUFFER, s->verticesElements.size()*sizeof(GLuint), s->verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
+					glBufferData(GL_ELEMENT_ARRAY_BUFFER, s->verticesElements.size() * sizeof(GLuint), s->verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
 					s->verticesLock.exit();
 
 					glDrawElements(GL_TRIANGLES, s->verticesElements.size(), GL_UNSIGNED_INT, 0);

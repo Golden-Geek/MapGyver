@@ -35,8 +35,7 @@ public:
     std::shared_ptr<Image::BitmapData> bitmapData;
 
     void onContainerParameterChangedInternal(Parameter* p);
-
- 
-
     void updateVersion();
+
+    Point<int> getMediaSize();
 };

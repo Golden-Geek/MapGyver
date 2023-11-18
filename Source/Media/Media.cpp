@@ -43,3 +43,8 @@ void Media::onContainerParameterChangedInternal(Parameter* p) {
 void Media::updateVersion() {
 	imageVersion = (imageVersion + 1) % 65535;
 }
+
+Point<int> Media::getMediaSize()
+{
+	return Point<int>(image.getWidth(), image.getHeight());
+}

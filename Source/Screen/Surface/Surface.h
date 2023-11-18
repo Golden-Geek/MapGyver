@@ -69,6 +69,8 @@ public:
     void addLastFourAsQuad();
     void updateVertices();
 
+    Point<int> getMediaSize();
+
     String getTypeString() const override { return objectType; }
     static Surface* create(var params) { return new Surface(params); }
 

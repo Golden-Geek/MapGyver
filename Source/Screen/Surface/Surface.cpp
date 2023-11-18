@@ -62,21 +62,21 @@ Surface::Surface(var params) :
 	bottomRight->setBounds(0, 0, 1, 1);
 
 
-	handleBezierTopLeft->setDefaultPoint(1/3.0f, 1);
+	handleBezierTopLeft->setDefaultPoint(1 / 3.0f, 1);
 	handleBezierTopLeft->setBounds(0, 0, 1, 1);
-	handleBezierTopRight->setDefaultPoint(2/3.0f, 1);
+	handleBezierTopRight->setDefaultPoint(2 / 3.0f, 1);
 	handleBezierTopRight->setBounds(0, 0, 1, 1);
-	handleBezierBottomLeft->setDefaultPoint(1/3.0f, 0);
+	handleBezierBottomLeft->setDefaultPoint(1 / 3.0f, 0);
 	handleBezierBottomLeft->setBounds(0, 0, 1, 1);
-	handleBezierBottomRight->setDefaultPoint(2/3.0f, 0);
+	handleBezierBottomRight->setDefaultPoint(2 / 3.0f, 0);
 	handleBezierBottomRight->setBounds(0, 0, 1, 1);
-	handleBezierLeftTop->setDefaultPoint(0, 2/3.0f);
+	handleBezierLeftTop->setDefaultPoint(0, 2 / 3.0f);
 	handleBezierLeftTop->setBounds(0, 0, 1, 1);
-	handleBezierLeftBottom->setDefaultPoint(0, 1/3.0f);
+	handleBezierLeftBottom->setDefaultPoint(0, 1 / 3.0f);
 	handleBezierLeftBottom->setBounds(0, 0, 1, 1);
-	handleBezierRightTop->setDefaultPoint(1, 2/3.0f);
+	handleBezierRightTop->setDefaultPoint(1, 2 / 3.0f);
 	handleBezierRightTop->setBounds(0, 0, 1, 1);
-	handleBezierRightBottom->setDefaultPoint(1, 1/3.0f);
+	handleBezierRightBottom->setDefaultPoint(1, 1 / 3.0f);
 	handleBezierRightBottom->setBounds(0, 0, 1, 1);
 
 	media->maxDefaultSearchLevel = 0;
@@ -87,7 +87,7 @@ Surface::~Surface()
 {
 }
 
-void Surface::onContainerParameterChangedInternal(Parameter* p) 
+void Surface::onContainerParameterChangedInternal(Parameter* p)
 {
 	updateVertices();
 	if (p == topLeft || p == topRight || p == bottomLeft || p == bottomRight)
@@ -133,6 +133,14 @@ void Surface::resetBezierPoints()
 
 }
 
+Point<int> Surface::getMediaSize()
+{
+	if (Media* m = media->getTargetContainerAs<Media>())
+		return m->getMediaSize();
+
+	return Point<int>();
+}
+
 void Surface::triggerTriggered(Trigger* t)
 {
 	if (t == resetBezierBtn) {
@@ -154,7 +162,7 @@ void Surface::addToVertices(Point<float> posDisplay, Point<float> internalCoord,
 
 void Surface::addLastFourAsQuad()
 {
-	int nVertices = vertices.size()/7;
+	int nVertices = vertices.size() / 7;
 	if (nVertices >= 4) {
 		verticesElements.add(nVertices - 4);
 		verticesElements.add(nVertices - 3);
@@ -224,23 +232,23 @@ void Surface::updateVertices()
 			}
 		}
 
-		float ratio = 1/(float)(gridSize-1);
+		float ratio = 1 / (float)(gridSize - 1);
 
 		float fromX = cropLeft->floatValue();
-		float toX = 1-cropRight->floatValue();
+		float toX = 1 - cropRight->floatValue();
 		float fromY = cropBottom->floatValue();
-		float toY = 1-cropTop->floatValue();
+		float toY = 1 - cropTop->floatValue();
 
-		for (int i = 0; i < gridSize-1; i++) {
-			for (int j = 0; j < gridSize-1; j++) {
-				tlTex = Vector3D<float>(jmap(i * ratio		, 0.0f, 1.0f, fromX, toX),jmap(1-( j * ratio), 0.0f, 1.0f, fromY, toY), 1);
-				trTex = Vector3D<float>(jmap((i+1) * ratio	, 0.0f, 1.0f, fromX, toX),jmap(1-( j * ratio), 0.0f, 1.0f, fromY, toY), 1);
-				blTex = Vector3D<float>(jmap(i * ratio		, 0.0f, 1.0f, fromX, toX),jmap(1-( (j+1) * ratio), 0.0f, 1.0f, fromY, toY), 1);
-				brTex = Vector3D<float>(jmap((i+1) * ratio	, 0.0f, 1.0f, fromX, toX),jmap(1-( (j+1) * ratio), 0.0f, 1.0f, fromY, toY), 1);
-				addToVertices(grid[i][j], Point<float>(((i)*2*ratio)-1, -(((j)*2*ratio)-1)), tlTex);
-				addToVertices(grid[i+1][j], Point<float>(((i)*2*ratio)-1, -(((j)*2*ratio)-1)), trTex);
-				addToVertices(grid[i][j+1], Point<float>(((i)*2*ratio)-1, -(((j)*2*ratio)-1)), blTex);
-				addToVertices(grid[i+1][j+1], Point<float>(((i)*2*ratio)-1, -(((j)*2*ratio)-1)), brTex);
+		for (int i = 0; i < gridSize - 1; i++) {
+			for (int j = 0; j < gridSize - 1; j++) {
+				tlTex = Vector3D<float>(jmap(i * ratio, 0.0f, 1.0f, fromX, toX), jmap(1 - (j * ratio), 0.0f, 1.0f, fromY, toY), 1);
+				trTex = Vector3D<float>(jmap((i + 1) * ratio, 0.0f, 1.0f, fromX, toX), jmap(1 - (j * ratio), 0.0f, 1.0f, fromY, toY), 1);
+				blTex = Vector3D<float>(jmap(i * ratio, 0.0f, 1.0f, fromX, toX), jmap(1 - ((j + 1) * ratio), 0.0f, 1.0f, fromY, toY), 1);
+				brTex = Vector3D<float>(jmap((i + 1) * ratio, 0.0f, 1.0f, fromX, toX), jmap(1 - ((j + 1) * ratio), 0.0f, 1.0f, fromY, toY), 1);
+				addToVertices(grid[i][j], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), tlTex);
+				addToVertices(grid[i + 1][j], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), trTex);
+				addToVertices(grid[i][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), blTex);
+				addToVertices(grid[i + 1][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), brTex);
 				addLastFourAsQuad();
 			}
 		}
@@ -260,7 +268,7 @@ void Surface::updateVertices()
 
 
 Point<float> Surface::getBeziers(Point<float>a, Point<float>b, Point<float>c, Point<float>d, float r) {
-	
+
 	float x = (pow(1 - r, 3) * a.x) + (3 * (pow(1 - r, 2)) * r * b.x) + (3 * (pow(1 - r, 1)) * r * r * c.x) + (r * r * r * d.x);
 	float y = (pow(1 - r, 3) * a.y) + (3 * (pow(1 - r, 2)) * r * b.y) + (3 * (pow(1 - r, 1)) * r * r * c.y) + (r * r * r * d.y);
 	return Point<float>(x, y);

@@ -29,6 +29,19 @@ public:
 	Array<Point<float>> posAtMouseDown;
 
 	Array<Point2DParameter*> overlapHandles;
+
+	std::unique_ptr<OpenGLShaderProgram> shader;
+	juce::OpenGLContext openGLContext;
+	Point<float> mousePos;
+	Component* previousParent = nullptr;
+	bool isLive = false;
+
+	HashMap<Media*, std::shared_ptr<OpenGLTexture>> textures;
+	HashMap<Media*, int> texturesVersions;
+	HashMap<Surface*, GLuint> vertices;
+	HashMap<Surface*, int> verticesVersions;
+
+
 	void paint(Graphics& g) override;
 	void paintOverChildren(Graphics&) override;
 
@@ -55,14 +68,6 @@ public:
 
 	bool keyPressed(const KeyPress& key, Component* originatingComponent);
 
-	std::unique_ptr<OpenGLShaderProgram> shader;
-	juce::OpenGLContext openGLContext;
-	Point<float> mousePos;
-	Component* previousParent = nullptr;
-	bool isLive = false;
+	float estimateWidthHeightRatio(const Array<Point<float>>& corners);
 
-	HashMap<Media*, std::shared_ptr<OpenGLTexture>> textures;
-	HashMap<Media*, int> texturesVersions;
-	HashMap<Surface*, GLuint> vertices;
-	HashMap<Surface*, int> verticesVersions;
 };
