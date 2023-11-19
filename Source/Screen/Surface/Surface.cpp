@@ -18,7 +18,6 @@ Surface::Surface(var params) :
 	objectData(params)
 {
 	saveAndLoadRecursiveData = true;
-	nameCanBeChangedByUser = false;
 	canBeDisabled = true;
 
 	itemDataType = "Surface";
@@ -50,7 +49,9 @@ Surface::Surface(var params) :
 	cropBottom = addFloatParameter("Crop Bottom", "", 0, 0, 1);
 	cropLeft = addFloatParameter("Crop Left", "", 0, 0, 1);
 
-	media = addTargetParameter("Media", "Media to read on this screen", MediaManager::getInstance());
+	media = addTargetParameter("Media", "Media to read on this surface", MediaManager::getInstance());
+	mask = addTargetParameter("Mask", "Apply a mask to this surface", MediaManager::getInstance());
+	invertMask = addBoolParameter("Invert mask", "Invert mask", false);
 
 	topLeft->setDefaultPoint(0, 1);
 	topLeft->setBounds(0, 0, 1, 1);
@@ -81,6 +82,8 @@ Surface::Surface(var params) :
 
 	media->maxDefaultSearchLevel = 0;
 	media->targetType = TargetParameter::CONTAINER;
+	mask->maxDefaultSearchLevel = 0;
+	mask->targetType = TargetParameter::CONTAINER;
 
 	if (!Engine::mainEngine->isLoadingFile)
 	{
@@ -153,7 +156,7 @@ void Surface::triggerTriggered(Trigger* t)
 	}
 }
 
-void Surface::addToVertices(Point<float> posDisplay, Point<float> internalCoord, Vector3D<float> texCoord)
+void Surface::addToVertices(Point<float> posDisplay, Point<float> internalCoord, Vector3D<float> texCoord, Vector3D<float> maskCoord)
 {
 	vertices.add(posDisplay.x);
 	vertices.add(posDisplay.y);
@@ -162,12 +165,15 @@ void Surface::addToVertices(Point<float> posDisplay, Point<float> internalCoord,
 	vertices.add(texCoord.x);
 	vertices.add(texCoord.y);
 	vertices.add(texCoord.z);
+	vertices.add(maskCoord.x);
+	vertices.add(maskCoord.y);
+	vertices.add(maskCoord.z);
 
 }
 
 void Surface::addLastFourAsQuad()
 {
-	int nVertices = vertices.size() / 7;
+	int nVertices = vertices.size() / 10;
 	if (nVertices >= 4) {
 		verticesElements.add(nVertices - 4);
 		verticesElements.add(nVertices - 3);
@@ -197,6 +203,11 @@ void Surface::updateVertices()
 	Vector3D<float> blTex(cropLeft->floatValue(), cropBottom->floatValue(), 1.0f);
 	Vector3D<float> brTex(1 - cropRight->floatValue(), cropBottom->floatValue(), 1.0f);
 
+	Vector3D<float> tlMask(0, 1, 1.0f);
+	Vector3D<float> trMask(1, 1, 1.0f);
+	Vector3D<float> blMask(0, 0, 1.0f);
+	Vector3D<float> brMask(1, 0, 1.0f);
+
 	float dtl = center.getDistanceFrom(tl);
 	float dtr = center.getDistanceFrom(tr);
 	float dbr = center.getDistanceFrom(br);
@@ -211,6 +222,11 @@ void Surface::updateVertices()
 	trTex *= ztr;
 	blTex *= zbl;
 	brTex *= zbr;
+
+	tlMask *= ztl;
+	trMask *= ztr;
+	blMask *= zbl;
+	brMask *= zbr;
 
 	if (isBezier->boolValue()) {
 		const int gridSize = 40;
@@ -250,10 +266,14 @@ void Surface::updateVertices()
 				trTex = Vector3D<float>(jmap((i + 1) * ratio, 0.0f, 1.0f, fromX, toX), jmap(1 - (j * ratio), 0.0f, 1.0f, fromY, toY), 1);
 				blTex = Vector3D<float>(jmap(i * ratio, 0.0f, 1.0f, fromX, toX), jmap(1 - ((j + 1) * ratio), 0.0f, 1.0f, fromY, toY), 1);
 				brTex = Vector3D<float>(jmap((i + 1) * ratio, 0.0f, 1.0f, fromX, toX), jmap(1 - ((j + 1) * ratio), 0.0f, 1.0f, fromY, toY), 1);
-				addToVertices(grid[i][j], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), tlTex);
-				addToVertices(grid[i + 1][j], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), trTex);
-				addToVertices(grid[i][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), blTex);
-				addToVertices(grid[i + 1][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), brTex);
+				tlMask = Vector3D<float>(i * ratio, 1 - (j * ratio), 1);
+				trMask = Vector3D<float>((i + 1) * ratio, 1 - (j * ratio), 1);
+				blMask = Vector3D<float>(i * ratio, 1 - ((j + 1) * ratio), 1);
+				brMask = Vector3D<float>((i + 1) * ratio, 1 - ((j + 1) * ratio), 1);
+				addToVertices(grid[i][j], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), tlTex, tlMask);
+				addToVertices(grid[i + 1][j], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), trTex, trMask);
+				addToVertices(grid[i][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), blTex, blMask);
+				addToVertices(grid[i + 1][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), brTex, brMask);
 				addLastFourAsQuad();
 			}
 		}
@@ -261,10 +281,10 @@ void Surface::updateVertices()
 
 	}
 	else {
-		addToVertices(tl, Point<float>(-1, 1), tlTex);
-		addToVertices(tr, Point<float>(-1, 1), trTex);
-		addToVertices(bl, Point<float>(-1, 1), blTex);
-		addToVertices(br, Point<float>(-1, 1), brTex);
+		addToVertices(tl, Point<float>(-1, 1), tlTex, tlMask);
+		addToVertices(tr, Point<float>(1, 1), trTex, trMask);
+		addToVertices(bl, Point<float>(-1, -1), blTex, blMask);
+		addToVertices(br, Point<float>(1, -1), brTex, brMask);
 		addLastFourAsQuad();
 	}
 

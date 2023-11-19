@@ -46,6 +46,8 @@ public:
     FloatParameter* cropLeft;
 
     TargetParameter* media;
+    TargetParameter* mask;
+    BoolParameter* invertMask;
 
     Path quadPath;
 
@@ -65,7 +67,7 @@ public:
     Array<GLuint> verticesElements;
     CriticalSection verticesLock;
 
-    void addToVertices(Point<float> posDisplay, Point<float>itnernalCoord, Vector3D<float> texCoord);
+    void addToVertices(Point<float> posDisplay, Point<float>itnernalCoord, Vector3D<float> texCoord, Vector3D<float> maskCoord);
     void addLastFourAsQuad();
     void updateVertices();
 

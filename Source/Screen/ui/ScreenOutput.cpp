@@ -67,7 +67,7 @@ void ScreenOutput::update()
 		}
 
 		Rectangle<int> a = d.totalArea;
-		a.setWidth(a.getWidth());
+		a.setWidth(a.getWidth()-1);
 		a.setHeight(a.getHeight());
 		setBounds(a);
 		repaint();
@@ -280,6 +280,42 @@ void ScreenOutput::renderOpenGL()
 				Surface* s = screen->surfaces.items[i];
 				if (s->enabled->boolValue())
 				{
+
+					Media* mask = dynamic_cast<Media*>(s->mask->targetContainer.get());
+					std::shared_ptr<OpenGLTexture> texMask = nullptr;
+
+					GLuint textureLocation = glGetUniformLocation(shader->getProgramID(), "mask");
+					glUniform1i(textureLocation, 0); 
+					glActiveTexture(GL_TEXTURE0);
+
+					//myTexture.bind();
+					if (mask != nullptr)
+					{
+						if (!textures.contains(mask))
+						{
+							texMask = std::make_shared<OpenGLTexture>();
+							texMask->loadImage(mask->image);
+							texturesVersions.set(mask, mask->imageVersion);
+							textures.set(mask, texMask);
+						}
+						texMask = textures.getReference(mask);
+						unsigned int vers = texturesVersions.getReference(mask);
+						if (mask->imageVersion != vers)
+						{
+							texMask->loadImage(mask->image);
+							texturesVersions.set(mask, mask->imageVersion);
+						}
+						texMask->bind();
+					}
+					else
+					{
+						juce::Image whiteImage(juce::Image::PixelFormat::ARGB, 1, 1, true);
+						whiteImage.setPixelAt(0, 0, Colours::white);
+						texMask = std::make_shared<OpenGLTexture>();
+						texMask->loadImage(whiteImage);
+						texMask->bind();
+					}
+
 					Media* m = dynamic_cast<Media*>(s->media->targetContainer.get());
 					std::shared_ptr<OpenGLTexture> tex = nullptr;
 
@@ -300,8 +336,12 @@ void ScreenOutput::renderOpenGL()
 							tex->loadImage(m->image);
 							texturesVersions.set(m, m->imageVersion);
 						}
+						GLuint textureLocation = glGetUniformLocation(shader->getProgramID(), "tex");
+						glUniform1i(textureLocation, 1);
+						glActiveTexture(GL_TEXTURE1);
 						tex->bind();
 					}
+
 
 					// vertices start
 
@@ -312,15 +352,19 @@ void ScreenOutput::renderOpenGL()
 
 					GLint posAttrib = glGetAttribLocation(shader->getProgramID(), "position");
 					glEnableVertexAttribArray(posAttrib);
-					glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), 0);
+					glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), 0);
 
 					GLint surfacePosAttrib = glGetAttribLocation(shader->getProgramID(), "surfacePosition");
 					glEnableVertexAttribArray(surfacePosAttrib);
-					glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+					glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
 
 					GLint texAttrib = glGetAttribLocation(shader->getProgramID(), "texcoord");
 					glEnableVertexAttribArray(texAttrib);
-					glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(4 * sizeof(float)));
+					glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
+
+					GLint maskAttrib = glGetAttribLocation(shader->getProgramID(), "maskcoord");
+					glEnableVertexAttribArray(maskAttrib);
+					glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
 
 					GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
 					glUniform4f(borderSoftLocation, s->softEdgeTop->floatValue(), s->softEdgeRight->floatValue(), s->softEdgeBottom->floatValue(), s->softEdgeLeft->floatValue());
@@ -340,6 +384,10 @@ void ScreenOutput::renderOpenGL()
 					if (tex != nullptr)
 					{
 						tex->unbind();
+					}
+					if (texMask != nullptr)
+					{
+						texMask->unbind();
 					}
 
 				}
@@ -372,11 +420,14 @@ void ScreenOutput::createAndLoadShaders()
 		"in vec2 position;\n"
 		"in vec2 surfacePosition;\n"
 		"in vec3 texcoord;\n"
+		"in vec3 maskcoord;\n"
 		"out vec3 Texcoord;\n"
+		"out vec3 Maskcoord;\n"
 		"out vec2 SurfacePosition;\n"
 		"void main()\n"
 		"{\n"
 		"    Texcoord = texcoord;\n"
+		"    Maskcoord = maskcoord;\n"
 		"    SurfacePosition[0] = (surfacePosition[0]+1.0f)/2.0f;\n"
 		"    SurfacePosition[1] = (surfacePosition[1]+1.0f)/2.0f;\n"
 		"    gl_Position = vec4(position,0,1);\n"
@@ -384,21 +435,25 @@ void ScreenOutput::createAndLoadShaders()
 
 	const char* fragmentShaderCode =
 		"in vec3 Texcoord;\n"
+		"in vec3 Maskcoord;\n"
 		"in vec2 SurfacePosition;\n"
 		"out vec4 outColor;\n"
 		"uniform sampler2D tex;\n"
+		"uniform sampler2D mask;\n"
 		"uniform vec4 borderSoft;\n"
 		"float map(float value, float min1, float max1, float min2, float max2) {\n"
 		"return min2 + ((max2-min2)*(value-min1)/(max1-min1)); };"
 		"void main()\n"
 		"{\n"
-		"    outColor = textureProj(tex, Texcoord);\n"
+		"   outColor = textureProj(tex, Texcoord);\n"
+		"   vec4 maskColor = textureProj(mask, Maskcoord);\n"
 		"   float alpha = 1.0f;\n"
 		"   if (SurfacePosition[1] > 1-borderSoft[0])    {alpha *= map(SurfacePosition[1],1.0f,1-borderSoft[0],0.0f,1.0f);}\n" // top
 		"   if (SurfacePosition[0] > 1.0f-borderSoft[1]) {alpha *= map(SurfacePosition[0], 1.0f, 1 - borderSoft[1], 0.0f, 1.0f); }\n" // right
 		"   if (SurfacePosition[1] < borderSoft[2])      {alpha *= map(SurfacePosition[1],0.0f,borderSoft[2],0.0f,1.0f);}\n" // bottom
 		"   if (SurfacePosition[0] < borderSoft[3])      {alpha *= map(SurfacePosition[0],0.0f,borderSoft[3],0.0f,1.0f);}\n" // left
-		"    outColor[3] = alpha;\n"
+		"   alpha *= maskColor[1]; \n"
+		"   outColor[3] = alpha;\n"
 		//"    outColor = vec4(0.5f,0.5f,0.5f,0.5f);   "
 		"}\n";
 
