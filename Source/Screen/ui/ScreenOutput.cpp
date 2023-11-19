@@ -67,7 +67,7 @@ void ScreenOutput::update()
 		}
 
 		Rectangle<int> a = d.totalArea;
-		a.setWidth(a.getWidth()-1);
+		a.setWidth(a.getWidth());
 		a.setHeight(a.getHeight());
 		setBounds(a);
 		repaint();
@@ -284,8 +284,8 @@ void ScreenOutput::renderOpenGL()
 					Media* mask = dynamic_cast<Media*>(s->mask->targetContainer.get());
 					std::shared_ptr<OpenGLTexture> texMask = nullptr;
 
-					GLuint textureLocation = glGetUniformLocation(shader->getProgramID(), "mask");
-					glUniform1i(textureLocation, 0); 
+					GLuint maskLocation = glGetUniformLocation(shader->getProgramID(), "mask");
+					glUniform1i(maskLocation, 0); 
 					glActiveTexture(GL_TEXTURE0);
 
 					//myTexture.bind();
@@ -319,7 +319,10 @@ void ScreenOutput::renderOpenGL()
 					Media* m = dynamic_cast<Media*>(s->media->targetContainer.get());
 					std::shared_ptr<OpenGLTexture> tex = nullptr;
 
-					//myTexture.bind();
+					GLuint textureLocation = glGetUniformLocation(shader->getProgramID(), "tex");
+					glUniform1i(textureLocation, 1);
+					glActiveTexture(GL_TEXTURE1);
+
 					if (m != nullptr)
 					{
 						if (!textures.contains(m))
@@ -336,9 +339,6 @@ void ScreenOutput::renderOpenGL()
 							tex->loadImage(m->image);
 							texturesVersions.set(m, m->imageVersion);
 						}
-						GLuint textureLocation = glGetUniformLocation(shader->getProgramID(), "tex");
-						glUniform1i(textureLocation, 1);
-						glActiveTexture(GL_TEXTURE1);
 						tex->bind();
 					}
 
