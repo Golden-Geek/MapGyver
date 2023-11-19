@@ -56,6 +56,8 @@
 #define JUCE_MODULE_AVAILABLE_juce_opengl               1
 #define JUCE_MODULE_AVAILABLE_juce_organicui            1
 #define JUCE_MODULE_AVAILABLE_juce_osc                  1
+#define JUCE_MODULE_AVAILABLE_juce_sharedtexture        1
+#define JUCE_MODULE_AVAILABLE_juce_simpleweb            1
 #define JUCE_MODULE_AVAILABLE_juce_video                1
 
 #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
@@ -179,34 +181,34 @@
 // juce_organicui flags:
 
 #ifndef    ORGANICUI_USE_SERVUS
- //#define ORGANICUI_USE_SERVUS 0
+ #define   ORGANICUI_USE_SERVUS 1
 #endif
 
 #ifndef    ORGANICUI_USE_SHAREDTEXTURE
- //#define ORGANICUI_USE_SHAREDTEXTURE 0
+ #define   ORGANICUI_USE_SHAREDTEXTURE 1
 #endif
 
 #ifndef    ORGANICUI_USE_WEBSERVER
- //#define ORGANICUI_USE_WEBSERVER 0
+ #define   ORGANICUI_USE_WEBSERVER 1
 #endif
 
 //==============================================================================
 // juce_osc flags:
 
 #ifndef    JUCE_ALLOW_SPECIAL_CHARS_IN_ADDRESS
- //#define JUCE_ALLOW_SPECIAL_CHARS_IN_ADDRESS 0
+ #define   JUCE_ALLOW_SPECIAL_CHARS_IN_ADDRESS 1
 #endif
 
 #ifndef    JUCE_ENABLE_BROADCAST_BY_DEFAULT
- //#define JUCE_ENABLE_BROADCAST_BY_DEFAULT 0
+ #define   JUCE_ENABLE_BROADCAST_BY_DEFAULT 1
 #endif
 
 #ifndef    JUCE_EXCLUSIVE_BINDING_BY_DEFAULT
- //#define JUCE_EXCLUSIVE_BINDING_BY_DEFAULT 0
+ #define   JUCE_EXCLUSIVE_BINDING_BY_DEFAULT 1
 #endif
 
 #ifndef    JUCE_IP_AND_PORT_DETECTION
- //#define JUCE_IP_AND_PORT_DETECTION 0
+ #define   JUCE_IP_AND_PORT_DETECTION 1
 #endif
 
 //==============================================================================

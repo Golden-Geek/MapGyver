@@ -9,7 +9,7 @@
 namespace BinaryData
 {
     extern const char*   default_rmplayout;
-    const int            default_rmplayoutSize = 1326;
+    const int            default_rmplayoutSize = 2452;
 
     extern const char*   icon_png;
     const int            icon_pngSize = 52976;
