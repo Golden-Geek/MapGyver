@@ -12,25 +12,63 @@
         "direction": 1,
         "shifters": [
           {
-            "type": 0,
-            "width": 940,
+            "type": 1,
+            "width": 1400,
             "height": 989,
-            "currentContent": "Screens",
-            "tabs": [
+            "direction": 1,
+            "shifters": [
               {
-                "name": "Screens"
+                "type": 1,
+                "width": 366,
+                "height": 989,
+                "direction": 2,
+                "shifters": [
+                  {
+                    "type": 0,
+                    "width": 366,
+                    "height": 156,
+                    "currentContent": "Screens",
+                    "tabs": [
+                      {
+                        "name": "Screens"
+                      }
+                    ]
+                  },
+                  {
+                    "type": 0,
+                    "width": 366,
+                    "height": 826,
+                    "currentContent": "Medias",
+                    "tabs": [
+                      {
+                        "name": "Medias"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": 0,
+                "width": 1028,
+                "height": 989,
+                "currentContent": "Screen Editor",
+                "tabs": [
+                  {
+                    "name": "Screen Editor"
+                  }
+                ]
               }
             ]
           },
           {
             "type": 1,
-            "width": 974,
+            "width": 514,
             "height": 989,
             "direction": 2,
             "shifters": [
               {
                 "type": 0,
-                "width": 974,
+                "width": 514,
                 "height": 712,
                 "currentContent": "Inspector",
                 "tabs": [
@@ -41,7 +79,7 @@
               },
               {
                 "type": 0,
-                "width": 974,
+                "width": 514,
                 "height": 270,
                 "currentContent": "Logger",
                 "tabs": [

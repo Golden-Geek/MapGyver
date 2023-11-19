@@ -14,11 +14,11 @@
 ControllableContainer* getAppSettings();
 
 RMPEngine::RMPEngine() :
-	Engine("RuleMaPool", ".coop")
+	Engine("RuleMaPool", ".poule")
 	//defaultBehaviors("Test"),
 	//ossiaFixture(nullptr)
 {
-	convertURL = "http://hazlab.fr/";
+	convertURL = "http://hazlab.fr/rulemapool/releases/convert.json";
 	
 	//Communication
 	// OSCRemoteControl::getInstance()->addRemoteControlListener(UserInputManager::getInstance());
