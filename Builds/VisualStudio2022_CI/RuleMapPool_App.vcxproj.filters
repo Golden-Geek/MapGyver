@@ -598,10 +598,16 @@
     <ClCompile Include="..\..\Source\Screen\Surface\SurfaceManager.cpp">
       <Filter>RuleMapPool\Source\Screen\Surface</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Screen\ui\ScreenEditorPanel.cpp">
+      <Filter>RuleMapPool\Source\Screen\ui</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Screen\ui\ScreenManagerUI.cpp">
       <Filter>RuleMapPool\Source\Screen\ui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Screen\ui\ScreenOutput.cpp">
+      <Filter>RuleMapPool\Source\Screen\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Screen\ui\ScreenRenderer.cpp">
       <Filter>RuleMapPool\Source\Screen\ui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Screen\Screen.cpp">
@@ -2925,10 +2931,16 @@
     <ClInclude Include="..\..\Source\Screen\Surface\SurfaceManager.h">
       <Filter>RuleMapPool\Source\Screen\Surface</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Screen\ui\ScreenEditorPanel.h">
+      <Filter>RuleMapPool\Source\Screen\ui</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Screen\ui\ScreenManagerUI.h">
       <Filter>RuleMapPool\Source\Screen\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Screen\ui\ScreenOutput.h">
+      <Filter>RuleMapPool\Source\Screen\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Screen\ui\ScreenRenderer.h">
       <Filter>RuleMapPool\Source\Screen\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Screen\Screen.h">

@@ -14,7 +14,7 @@ class Screen;
 class Media;
 
 class ScreenOutput :
-	public Component,
+	public InspectableContentComponent,
 	public OpenGLRenderer,
 	public KeyListener
 {
@@ -22,7 +22,7 @@ public:
 	ScreenOutput(Screen* parent);
 	~ScreenOutput();
 
-	Screen* parentScreen;
+	Screen* screen;
 
 	Point2DParameter* closestHandle;
 	Surface* manipSurface;
@@ -41,6 +41,7 @@ public:
 	HashMap<Surface*, GLuint> vertices;
 	HashMap<Surface*, int> verticesVersions;
 
+	void update();
 
 	void paint(Graphics& g) override;
 	void paintOverChildren(Graphics&) override;
@@ -55,8 +56,6 @@ public:
 	Point<float> getRelativeScreenPos(Point<int> screenPos);
 	Point<int> getPointOnScreen(Point<float> pos);
 
-	void goLive(int screenId);
-	void stopLive();
 
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
@@ -67,7 +66,29 @@ public:
 	void createAndLoadShaders();
 
 	bool keyPressed(const KeyPress& key, Component* originatingComponent);
+};
 
-	float estimateWidthHeightRatio(const Array<Point<float>>& corners);
 
+class ScreenOutputWatcher :
+	public ScreenManager::AsyncListener,
+	public ContainerAsyncListener,
+	public EngineListener
+{
+public:
+	juce_DeclareSingleton(ScreenOutputWatcher, false);
+	
+	ScreenOutputWatcher();
+	~ScreenOutputWatcher();
+
+	OwnedArray<ScreenOutput> outputs;
+
+	void updateOutput(Screen* s);
+
+	ScreenOutput* getOutputForScreen(Screen* s);
+
+	void newMessage(const ScreenManager::ManagerEvent& e) override;
+	void newMessage(const ContainerAsyncEvent& e) override;
+
+	void startLoadFile() override;
+	void endLoadFile() override;
 };

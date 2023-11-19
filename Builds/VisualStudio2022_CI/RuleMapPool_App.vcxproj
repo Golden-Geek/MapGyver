@@ -195,10 +195,16 @@
     <ClCompile Include="..\..\Source\Screen\Surface\SurfaceManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Screen\ui\ScreenEditorPanel.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Screen\ui\ScreenManagerUI.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Screen\ui\ScreenOutput.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Screen\ui\ScreenRenderer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Screen\Screen.cpp">
@@ -2262,8 +2268,10 @@
     <ClInclude Include="..\..\Source\Media\MediaManager.h"/>
     <ClInclude Include="..\..\Source\Screen\Surface\Surface.h"/>
     <ClInclude Include="..\..\Source\Screen\Surface\SurfaceManager.h"/>
+    <ClInclude Include="..\..\Source\Screen\ui\ScreenEditorPanel.h"/>
     <ClInclude Include="..\..\Source\Screen\ui\ScreenManagerUI.h"/>
     <ClInclude Include="..\..\Source\Screen\ui\ScreenOutput.h"/>
+    <ClInclude Include="..\..\Source\Screen\ui\ScreenRenderer.h"/>
     <ClInclude Include="..\..\Source\Screen\Screen.h"/>
     <ClInclude Include="..\..\Source\Screen\ScreenIncludes.h"/>
     <ClInclude Include="..\..\Source\Screen\ScreenManager.h"/>

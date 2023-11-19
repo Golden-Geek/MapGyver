@@ -81,6 +81,11 @@ Surface::Surface(var params) :
 
 	media->maxDefaultSearchLevel = 0;
 	media->targetType = TargetParameter::CONTAINER;
+
+	if (!Engine::mainEngine->isLoadingFile)
+	{
+		if (!MediaManager::getInstance()->items.isEmpty()) media->setValueFromTarget(MediaManager::getInstance()->items.getFirst());
+	}
 }
 
 Surface::~Surface()

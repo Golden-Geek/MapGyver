@@ -20,46 +20,20 @@ Screen::Screen(var params) :
 
 	itemDataType = "Screen";
 
-	output.reset(new ScreenOutput(this));
+	outputType = addEnumParameter("Output type", "Output type");
+	outputType->addOption("Display", DISPLAY)->addOption("Shared Texture", SHARED_TEXTURE)->addOption("NDI", NDI);
 
-	screenNumber = addIntParameter("Screen number", "Screen ID in your OS", 1, 0);
-	//enabled->setDefaultValue(false);
+	screenID = addIntParameter("Screen number", "Screen ID in your OS", 1, 0);
 
 	snapDistance = addFloatParameter("Snap distance", "Distance in pixels to snap to another point", .05f, 0, .2f);
 
-	addChildControllableContainer(&surfaces);
+	if (!Engine::mainEngine->isLoadingFile) surfaces.addItem();
 
-	if (!Engine::mainEngine->isLoadingFile)
-	{
-		updateOutputLiveStatus();
-	}
+	addChildControllableContainer(&surfaces);
 }
 
 Screen::~Screen()
 {
-}
-
-void Screen::onContainerParameterChangedInternal(Parameter* p)
-{
-	if (p == enabled || p == screenNumber)
-	{
-		updateOutputLiveStatus();
-	}
-}
-
-void Screen::updateOutputLiveStatus()
-{
-	if (isCurrentlyLoadingData) return;
-
-	if (enabled->boolValue())
-	{
-		output->stopLive();
-		output->goLive(screenNumber->intValue());
-	}
-	else
-	{
-		output->stopLive();
-	}
 }
 
 Point2DParameter* Screen::getClosestHandle(Point<float> pos, float maxDistance, Array<Point2DParameter*> excludeHandles)
@@ -115,9 +89,3 @@ Surface* Screen::getSurfaceAt(Point<float> pos)
 	for (auto& s : surfaces.items) if (s->isPointInside(pos)) return s;
 	return nullptr;
 }
-
-void Screen::afterLoadJSONDataInternal()
-{
-	updateOutputLiveStatus();
-}
-

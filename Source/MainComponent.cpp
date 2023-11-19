@@ -9,12 +9,15 @@ MainContentComponent::MainContentComponent()
     // you add any child components.
     // setSize (800, 600);
     getCommandManager().registerAllCommandsForTarget(this);
+    ScreenOutputWatcher::getInstance(); // triggers the creation of the singleton
 }
 
 MainContentComponent::~MainContentComponent()
 {
     // This shuts down the audio Fixture and clears the audio source.
     //shutdownAudio();
+
+    ScreenOutputWatcher::deleteInstance();
 }
 
 //==============================================================================
@@ -70,6 +73,7 @@ void MainComponent::resized()
 void MainContentComponent::init()
 {
     ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Screens", &ScreenManagerUI::create));
+    ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Screen Editor", &ScreenEditorPanel::create));
     ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Medias", &MediaManagerUI::create));
 
     
@@ -77,4 +81,5 @@ void MainContentComponent::init()
 
     //getLookAndFeel().setColour(juce::TextButton::textColourOffId, Colour(127,127,127));
     getLookAndFeel().setColour(juce::TextButton::buttonColourId, Colour(64,64,64));
+
 }

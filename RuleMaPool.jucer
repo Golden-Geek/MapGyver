@@ -124,6 +124,10 @@
                 file="Source/Screen/Surface/SurfaceManager.h"/>
         </GROUP>
         <GROUP id="{785167D1-B4D2-8CFB-BBE8-207B7056030A}" name="ui">
+          <FILE id="nwDWIk" name="ScreenEditorPanel.cpp" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenEditorPanel.cpp"/>
+          <FILE id="rK4yhM" name="ScreenEditorPanel.h" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenEditorPanel.h"/>
           <FILE id="JzjTAu" name="ScreenManagerUI.cpp" compile="0" resource="0"
                 file="Source/Screen/ui/ScreenManagerUI.cpp"/>
           <FILE id="uNwBQQ" name="ScreenManagerUI.h" compile="0" resource="0"
@@ -131,6 +135,10 @@
           <FILE id="gkfEHb" name="ScreenOutput.cpp" compile="0" resource="0"
                 file="Source/Screen/ui/ScreenOutput.cpp"/>
           <FILE id="Gt9FQa" name="ScreenOutput.h" compile="0" resource="0" file="Source/Screen/ui/ScreenOutput.h"/>
+          <FILE id="UcxRTZ" name="ScreenRenderer.cpp" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenRenderer.cpp"/>
+          <FILE id="g7k9TM" name="ScreenRenderer.h" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenRenderer.h"/>
         </GROUP>
         <FILE id="fsjZqY" name="Screen.cpp" compile="0" resource="0" file="Source/Screen/Screen.cpp"/>
         <FILE id="mMPxNm" name="Screen.h" compile="0" resource="0" file="Source/Screen/Screen.h"/>

@@ -14,5 +14,6 @@
 #include "ScreenManager.cpp"
 #include "ui/ScreenManagerUI.cpp"
 #include "ui/ScreenOutput.cpp"
-#include "Surface\Surface.cpp"
-#include "Surface\SurfaceManager.cpp"
+#include "Surface/Surface.cpp"
+#include "Surface/SurfaceManager.cpp"
+#include "ui/ScreenEditorPanel.cpp"

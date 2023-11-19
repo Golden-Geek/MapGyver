@@ -10,16 +10,18 @@
 
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
-#include "ScreenOutput.h"
+
+juce_ImplementSingleton(ScreenOutputWatcher)
 
 using namespace juce::gl;
 
-ScreenOutput::ScreenOutput(Screen* parent) :
+ScreenOutput::ScreenOutput(Screen* screen) :
+	InspectableContentComponent(screen),
+	screen(screen),
 	closestHandle(nullptr),
 	manipSurface(nullptr)
 {
 	setOpaque(true);
-	parentScreen = parent;
 
 	openGLContext.setRenderer(this);
 	openGLContext.attachTo(*this);
@@ -28,16 +30,63 @@ ScreenOutput::ScreenOutput(Screen* parent) :
 	setWantsKeyboardFocus(true); // Permet à ce composant de recevoir le focus clavier
 	addKeyListener(this);        // Ajoutez ce composant comme écouteur clavier
 
-	stopLive();
+	update();
 
 }
 
 ScreenOutput::~ScreenOutput()
 {
-	stopLive();
+	removeFromDesktop();
 	openGLContext.detach();
 }
 
+
+void ScreenOutput::update()
+{
+	bool shouldShow = !inspectable.wasObjectDeleted() && screen->enabled->boolValue();
+
+	Displays ds = Desktop::getInstance().getDisplays();
+	if (screen->screenID->intValue() >= ds.displays.size())
+	{
+		LOGWARNING("Display #" << screen->screenID->intValue() << " is not available(" + ds.displays.size() << " screens connected)");
+		shouldShow = false;
+	}
+
+	bool prevIsLive = isLive;
+	isLive = shouldShow;
+
+	if (shouldShow)
+	{
+		Displays::Display d = ds.displays[screen->screenID->intValue()];
+
+		if (!prevIsLive)
+		{
+			openGLContext.setContinuousRepainting(true);
+			addToDesktop(0);
+			setAlwaysOnTop(true);
+		}
+
+		Rectangle<int> a = d.totalArea;
+		a.setWidth(a.getWidth());
+		a.setHeight(a.getHeight());
+		setBounds(a);
+		repaint();
+	}
+	else
+	{
+		if (prevIsLive)
+		{
+			removeFromDesktop();
+			//setSize(1, 1); //really ?
+			openGLContext.setContinuousRepainting(false);
+			setAlwaysOnTop(false);
+		}
+
+		openGLContext.triggerRepaint();
+	}
+
+	setVisible(shouldShow);
+}
 
 void ScreenOutput::paint(Graphics& g)
 {
@@ -99,7 +148,7 @@ void ScreenOutput::mouseDown(const MouseEvent& e)
 	{
 		posAtMouseDown = { closestHandle->getPoint() };
 		overlapHandles.clear();
-		if (e.mods.isShiftDown()) overlapHandles = parentScreen->getOverlapHandles(closestHandle);
+		if (e.mods.isShiftDown()) overlapHandles = screen->getOverlapHandles(closestHandle);
 	}
 }
 
@@ -108,12 +157,12 @@ void ScreenOutput::mouseMove(const MouseEvent& e)
 	if (e.mods.isAltDown())
 	{
 		closestHandle = nullptr;
-		manipSurface = parentScreen->getSurfaceAt(getRelativeMousePos());
+		manipSurface = screen->getSurfaceAt(getRelativeMousePos());
 	}
 	else if (!e.mods.isLeftButtonDown())
 	{
 		manipSurface = nullptr;
-		closestHandle = parentScreen->getClosestHandle(getRelativeMousePos());
+		closestHandle = screen->getClosestHandle(getRelativeMousePos());
 	}
 	repaint();
 
@@ -135,7 +184,7 @@ void ScreenOutput::mouseDrag(const MouseEvent& e)
 		Point<float> tp = posAtMouseDown[0] + offsetRelative;
 		if (e.mods.isCommandDown())
 		{
-			Point2DParameter* th = parentScreen->getSnapHandle(tp, closestHandle);
+			Point2DParameter* th = screen->getSnapHandle(tp, closestHandle);
 			if (th != nullptr) tp = th->getPoint();
 		}
 
@@ -193,61 +242,6 @@ Point<int> ScreenOutput::getPointOnScreen(Point<float> pos)
 	return Point<float>(pos.x * getWidth(), (1 - pos.y) * getHeight()).toInt();
 }
 
-void ScreenOutput::goLive(int screenId)
-{
-	Displays ds = Desktop::getInstance().getDisplays();
-	if (isLive)
-	{
-		return;
-	}
-	if (screenId >= ds.displays.size())
-	{
-		LOGERROR("selected display is not available");
-		stopLive();
-		return;
-	}
-
-	if (parentScreen->enabled != nullptr)
-	{
-		parentScreen->enabled->setValue(true);
-	}
-
-	isLive = true;
-	Displays::Display d = ds.displays[screenId];
-	openGLContext.setContinuousRepainting(true);
-
-	//previousParent = getParentComponent();
-	Rectangle<int> a = d.totalArea;
-	a.setWidth(a.getWidth());
-	a.setHeight(a.getHeight());
-	addToDesktop(0);
-	setVisible(true);
-	setBounds(a);
-	setAlwaysOnTop(true);
-	repaint();
-}
-
-void ScreenOutput::stopLive()
-{
-	if (parentScreen->enabled != nullptr)
-	{
-		//parentScreen->enabled->setValue(false);
-	}
-	if (!isLive)
-	{
-		return;
-	}
-	setSize(1, 1);
-	openGLContext.triggerRepaint();
-	openGLContext.setContinuousRepainting(false);
-	isLive = false;
-	setAlwaysOnTop(false);
-	//setVisible(false);
-	//removeFromDesktop();
-	//setAlwaysOnTop(false);
-	//previousParent->addAndMakeVisible(this);
-	//previousParent->resized();
-}
 
 void ScreenOutput::newOpenGLContextCreated()
 {
@@ -278,12 +272,12 @@ void ScreenOutput::renderOpenGL()
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		if (parentScreen != nullptr)
+		if (screen != nullptr)
 		{
 			Point<float> tl, tr, bl, br;
-			for (int i = 0; i < parentScreen->surfaces.items.size(); i++)
+			for (int i = 0; i < screen->surfaces.items.size(); i++)
 			{
-				Surface* s = parentScreen->surfaces.items[i];
+				Surface* s = screen->surfaces.items[i];
 				if (s->enabled->boolValue())
 				{
 					Media* m = dynamic_cast<Media*>(s->media->targetContainer.get());
@@ -366,7 +360,8 @@ void ScreenOutput::openGLContextClosing()
 
 void ScreenOutput::userTriedToCloseWindow()
 {
-	stopLive();
+	if (inspectable.wasObjectDeleted()) return;
+	screen->enabled->setValue(false);
 }
 
 void ScreenOutput::createAndLoadShaders()
@@ -416,10 +411,107 @@ void ScreenOutput::createAndLoadShaders()
 
 bool ScreenOutput::keyPressed(const KeyPress& key, Component* originatingComponent)
 {
+	if (inspectable.wasObjectDeleted()) return false;
+
 	if (key.isKeyCode(key.escapeKey))
 	{
-		stopLive();
+		screen->enabled->setValue(false);
 		return true;
 	}
+
 	return false;
+}
+
+
+ScreenOutputWatcher::ScreenOutputWatcher()
+{
+	ScreenManager::getInstance()->addAsyncManagerListener(this);
+	ScreenManager::getInstance()->addAsyncContainerListener(this);
+	Engine::mainEngine->addEngineListener(this);
+}
+
+ScreenOutputWatcher::~ScreenOutputWatcher()
+{
+	ScreenManager::getInstance()->removeAsyncManagerListener(this);
+	ScreenManager::getInstance()->removeAsyncContainerListener(this);
+	Engine::mainEngine->removeEngineListener(this);
+	outputs.clear();
+}
+
+void ScreenOutputWatcher::updateOutput(Screen* s)
+{
+	ScreenOutput* o = getOutputForScreen(s);
+	bool shouldShow = s->enabled->boolValue() && s->outputType->getValueDataAsEnum<Screen::OutputType>() == Screen::OutputType::DISPLAY;
+	if (o == nullptr)
+	{
+		if (shouldShow) outputs.add(new ScreenOutput(s));
+	}
+	else
+	{
+		if (!shouldShow) outputs.removeObject(o);
+		else o->update();
+	}
+}
+
+ScreenOutput* ScreenOutputWatcher::getOutputForScreen(Screen* s)
+{
+	for (auto& o : outputs)
+	{
+		if (o->screen == s) return o;
+	}
+	return nullptr;
+}
+
+
+void ScreenOutputWatcher::newMessage(const ScreenManager::ManagerEvent& e)
+{
+	if(Engine::mainEngine->isLoadingFile) return;
+	switch (e.type)
+	{
+	case ScreenManager::ManagerEvent::ITEM_ADDED:
+		updateOutput(e.getItem());
+		break;
+
+	case ScreenManager::ManagerEvent::ITEMS_ADDED:
+		for (auto& s : e.getItems()) updateOutput(s);
+		break;
+
+
+	case ScreenManager::ManagerEvent::ITEM_REMOVED:
+		updateOutput(e.getItem());
+		break;
+
+	case ScreenManager::ManagerEvent::ITEMS_REMOVED:
+		for (auto& s : e.getItems()) updateOutput(s);
+		break;
+	}
+}
+
+void ScreenOutputWatcher::newMessage(const ContainerAsyncEvent& e)
+{
+	if (Engine::mainEngine->isLoadingFile) return;
+
+	switch (e.type)
+	{
+	case ContainerAsyncEvent::ControllableFeedbackUpdate:
+	{
+		if (Screen* s = dynamic_cast<Screen*>(e.targetControllable->parentContainer.get()))
+		{
+			if (e.targetControllable == s->enabled || e.targetControllable == s->outputType || e.targetControllable == s->screenID)
+			{
+				updateOutput(s);
+			}
+		}
+	}
+	}
+}
+
+void ScreenOutputWatcher::startLoadFile()
+{
+	outputs.clear();
+}
+
+void ScreenOutputWatcher::endLoadFile()
+{
+	for (auto& s : ScreenManager::getInstance()->items) updateOutput(s);
 }
