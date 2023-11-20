@@ -9,10 +9,6 @@
       <FILE id="AKcEsb" name="icon.png" compile="0" resource="1" file="Resources/icon.png"/>
     </GROUP>
     <GROUP id="{1C2049A4-F05D-7C48-44EC-DD606A3617AC}" name="Source">
-      <GROUP id="{C97F0BAC-D0A7-86DD-3A02-57F4CF14F7C3}" name="Engine">
-        <FILE id="SZB5Og" name="RMPEngine.cpp" compile="1" resource="0" file="Source/Engine/RMPEngine.cpp"/>
-        <FILE id="aVz8Zt" name="RMPEngine.h" compile="0" resource="0" file="Source/Engine/RMPEngine.h"/>
-      </GROUP>
       <GROUP id="{B19EA5C3-367A-80C3-EC20-D9B7AA16E911}" name="Common">
         <GROUP id="{CB174BFA-16BF-AEDE-F181-939536A126AF}" name="NDI">
           <GROUP id="{F036D58F-B5A4-4235-7B68-4C2E247299CF}" name="ui">
@@ -38,6 +34,13 @@
               file="Source/Common/CommonIncludes.cpp"/>
         <FILE id="NqNVGJ" name="CommonIncludes.h" compile="0" resource="0"
               file="Source/Common/CommonIncludes.h"/>
+        <FILE id="JPNfCK" name="OpenGLManager.cpp" compile="0" resource="0"
+              file="Source/Common/OpenGLManager.cpp"/>
+        <FILE id="mHGAjV" name="OpenGLManager.h" compile="0" resource="0" file="Source/Common/OpenGLManager.h"/>
+      </GROUP>
+      <GROUP id="{C97F0BAC-D0A7-86DD-3A02-57F4CF14F7C3}" name="Engine">
+        <FILE id="SZB5Og" name="RMPEngine.cpp" compile="1" resource="0" file="Source/Engine/RMPEngine.cpp"/>
+        <FILE id="aVz8Zt" name="RMPEngine.h" compile="0" resource="0" file="Source/Engine/RMPEngine.h"/>
       </GROUP>
       <GROUP id="{924D741D-3B07-1454-A4CF-6C278ABC753A}" name="Media">
         <GROUP id="{C40269DA-3473-C7DB-E54E-1486703E54A8}" name="medias">

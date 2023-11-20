@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "Media.h"
 
 MediaUI::MediaUI(Media* item) :
 	BaseItemUI(item)
@@ -42,6 +43,10 @@ void Media::onContainerParameterChangedInternal(Parameter* p) {
 
 void Media::updateVersion() {
 	imageVersion = (imageVersion + 1) % 65535;
+}
+
+void Media::updateTexture()
+{
 }
 
 Point<int> Media::getMediaSize()

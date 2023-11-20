@@ -1,6 +1,7 @@
 #include "MainIncludes.h"
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
+#include "Common/CommonIncludes.h"
 
 //==============================================================================
 MainContentComponent::MainContentComponent()
@@ -9,6 +10,7 @@ MainContentComponent::MainContentComponent()
     // you add any child components.
     // setSize (800, 600);
     getCommandManager().registerAllCommandsForTarget(this);
+    OpenGLManager::getInstance();
     ScreenOutputWatcher::getInstance(); // triggers the creation of the singleton
 }
 
@@ -18,6 +20,7 @@ MainContentComponent::~MainContentComponent()
     //shutdownAudio();
 
     ScreenOutputWatcher::deleteInstance();
+    OpenGLManager::deleteInstance();
 }
 
 //==============================================================================

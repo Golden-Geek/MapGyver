@@ -11,8 +11,7 @@
 #pragma once
 
 class MediaComposition :
-    public Media,
-    public Thread
+    public Media
 {
 public:
     MediaComposition(var params = var());
@@ -26,7 +25,7 @@ public:
     void clearItem() override;
     void onContainerParameterChangedInternal(Parameter* p) override;
     
-    void run() override;
+    void run();
 
     void repaintImage();
 

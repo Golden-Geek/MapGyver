@@ -15,3 +15,5 @@
 #include "NDI/NDIManager.cpp"
 #include "NDI/ui/NDIDeviceChooser.cpp"
 #include "NDI/ui/NDIDeviceParameterUI.cpp"
+
+#include "OpenGLManager.cpp"

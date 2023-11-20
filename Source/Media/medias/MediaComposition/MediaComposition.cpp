@@ -11,8 +11,7 @@
 #include "Media/MediaIncludes.h"
 
 MediaComposition::MediaComposition(var params) :
-	Media(getTypeString(), params),
-	Thread("Composition")
+	Media(getTypeString(), params)
 {
 	resolution = addPoint2DParameter("Resolution", "Size of your composition");
 	var d; d.append(1920); d.append(1080);
@@ -23,12 +22,12 @@ MediaComposition::MediaComposition(var params) :
 
 	updateImagesSize();
 
-	startThread(Thread::Priority::highest);
+	//startThread(Thread::Priority::highest);
 }
 
 MediaComposition::~MediaComposition()
 {
-	stopThread(1000);
+	//stopThread(1000);
 }
 
 void MediaComposition::clearItem()
@@ -45,30 +44,21 @@ void MediaComposition::onContainerParameterChangedInternal(Parameter* p)
 
 void MediaComposition::run()
 {
-	while (!threadShouldExit()) {
-		double start = Time::getMillisecondCounterHiRes();
-		double period = 1000.0f / fps->floatValue();
-		// process
-		bool needRepaint = imageNeedRepaint;
-		for (int i = 0; i < layers.items.size() && !needRepaint; i++) {
-			CompositionLayer* l = layers.items[i];
-			Media* m = dynamic_cast<Media*>(l->media->targetContainer.get());
-			if (l->enabled->boolValue() && m->enabled->boolValue()) {
-				if (texturesVersions.contains(m) && texturesVersions.getReference(m) != (int)m->imageVersion) {
-					needRepaint = true;
-				}
+	double start = Time::getMillisecondCounterHiRes();
+	double period = 1000.0f / fps->floatValue();
+	// process
+	bool needRepaint = imageNeedRepaint;
+	for (int i = 0; i < layers.items.size() && !needRepaint; i++) {
+		CompositionLayer* l = layers.items[i];
+		Media* m = dynamic_cast<Media*>(l->media->targetContainer.get());
+		if (l->enabled->boolValue() && m->enabled->boolValue()) {
+			if (texturesVersions.contains(m) && texturesVersions.getReference(m) != (int)m->imageVersion) {
+				needRepaint = true;
 			}
 		}
-		if (needRepaint) {
-			repaintImage();
-		}
-
-		double end = Time::getMillisecondCounterHiRes();
-		double elapsed = end - start;
-		double remaining = period - elapsed;
-		if (remaining > 0) {
-			wait(remaining);
-		}
+	}
+	if (needRepaint) {
+		repaintImage();
 	}
 }
 

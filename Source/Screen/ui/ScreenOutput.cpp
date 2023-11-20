@@ -10,6 +10,7 @@
 
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
+#include "Common/CommonIncludes.h"
 
 juce_ImplementSingleton(ScreenOutputWatcher)
 
@@ -23,6 +24,7 @@ ScreenOutput::ScreenOutput(Screen* screen) :
 {
 	setOpaque(true);
 
+	openGLContext.setNativeSharedContext(&OpenGLManager::getInstance()->openGLContext);
 	openGLContext.setRenderer(this);
 	openGLContext.attachTo(*this);
 	openGLContext.setComponentPaintingEnabled(true);
@@ -68,7 +70,7 @@ void ScreenOutput::update()
 
 		Rectangle<int> a = d.totalArea;
 		a.setWidth(a.getWidth());
-		a.setHeight(a.getHeight());
+		a.setHeight(a.getHeight()-1); // -1 to stop my screen to flicker ><
 		setBounds(a);
 		repaint();
 	}
@@ -77,7 +79,7 @@ void ScreenOutput::update()
 		if (prevIsLive)
 		{
 			removeFromDesktop();
-			//setSize(1, 1); //really ?
+			//setSize(1, 1); //really ?       '-_-
 			openGLContext.setContinuousRepainting(false);
 			setAlwaysOnTop(false);
 		}
@@ -255,6 +257,7 @@ void ScreenOutput::newOpenGLContextCreated()
 void ScreenOutput::renderOpenGL()
 {
 	// Définir la vue OpenGL en fonction de la taille du composant
+	openGLContext.makeActive();
 	if (!isLive)
 	{
 		return;

@@ -33,9 +33,11 @@ public:
     CriticalSection imageLock;
     Image image;
     std::shared_ptr<Image::BitmapData> bitmapData;
+    GLuint textureId;
 
     void onContainerParameterChangedInternal(Parameter* p);
     void updateVersion();
+    void updateTexture();
 
     Point<int> getMediaSize();
 };
