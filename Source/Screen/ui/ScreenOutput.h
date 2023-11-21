@@ -70,7 +70,7 @@ public:
 
 
 class ScreenOutputWatcher :
-	public ScreenManager::AsyncListener,
+	public ScreenManager::ManagerListener,
 	public ContainerAsyncListener,
 	public EngineListener
 {
@@ -82,11 +82,16 @@ public:
 
 	OwnedArray<ScreenOutput> outputs;
 
-	void updateOutput(Screen* s);
+	void updateOutput(Screen* s, bool forceRemove = false);
 
 	ScreenOutput* getOutputForScreen(Screen* s);
 
-	void newMessage(const ScreenManager::ManagerEvent& e) override;
+	void itemAdded(Screen* item) override;
+	void itemsAdded(Array<Screen*> items) override;
+	void itemRemoved(Screen* item) override;
+	void itemsRemoved(Array<Screen*> items) override;
+
+	//void newMessage(const ScreenManager::ManagerEvent& e) override;
 	void newMessage(const ContainerAsyncEvent& e) override;
 
 	void startLoadFile() override;

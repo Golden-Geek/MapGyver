@@ -44,8 +44,8 @@ void MediaComposition::onContainerParameterChangedInternal(Parameter* p)
 
 void MediaComposition::run()
 {
-	double start = Time::getMillisecondCounterHiRes();
-	double period = 1000.0f / fps->floatValue();
+	//double start = Time::getMillisecondCounterHiRes();
+	//double period = 1000.0f / fps->floatValue();
 	// process
 	bool needRepaint = imageNeedRepaint;
 	for (int i = 0; i < layers.items.size() && !needRepaint; i++) {

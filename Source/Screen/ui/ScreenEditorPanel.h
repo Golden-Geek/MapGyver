@@ -11,15 +11,22 @@
 #pragma once
 
 class ScreenEditorView :
-	public InspectableContentComponent
+	public InspectableContentComponent,
+	public OpenGLRenderer
 {
 public:
 	ScreenEditorView(Screen* screen);
 	~ScreenEditorView();
 
 	Screen* screen;
+	OpenGLContext context;
 
 	void paint(Graphics& g) override;
+
+	// Inherited via OpenGLRenderer
+	void newOpenGLContextCreated() override;
+	void renderOpenGL() override;
+	void openGLContextClosing() override;
 };
 
 class ScreenEditorPanel :
@@ -40,6 +47,7 @@ public:
 
 	void inspectablesSelectionChanged() override;
 	void inspectableDestroyed(Inspectable* i) override;
+
 
 	static ScreenEditorPanel* create(const String& name) { return new ScreenEditorPanel(name); }
 };

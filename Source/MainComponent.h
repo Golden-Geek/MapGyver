@@ -1,5 +1,6 @@
 #pragma once
 
+class GlContextHolder;
 
 ApplicationProperties& getAppProperties();
 ApplicationCommandManager& getCommandManager();
@@ -17,7 +18,11 @@ public:
     MainContentComponent();
     ~MainContentComponent() override;
     
+    std::unique_ptr<GlContextHolder> glContextHolder;
+    
     void init() override;
+    void setupOpenGL() override;
+    void paint(Graphics& g) override;
 
     void getAllCommands(Array<CommandID>& commands) override;
     virtual void getCommandInfo(CommandID commandID, ApplicationCommandInfo& result) override;

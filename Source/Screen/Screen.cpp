@@ -36,6 +36,12 @@ Screen::~Screen()
 {
 }
 
+void Screen::clearItem()
+{
+	BaseItem::clearItem();
+	//enabled->setValue(false);
+}
+
 Point2DParameter* Screen::getClosestHandle(Point<float> pos, float maxDistance, Array<Point2DParameter*> excludeHandles)
 {
 	Point2DParameter* result = nullptr;

@@ -24,7 +24,7 @@ ScreenOutput::ScreenOutput(Screen* screen) :
 {
 	setOpaque(true);
 
-	openGLContext.setNativeSharedContext(&OpenGLManager::getInstance()->openGLContext);
+	openGLContext.setNativeSharedContext(&GlContextHolder::getInstance()->context);
 	openGLContext.setRenderer(this);
 	openGLContext.attachTo(*this);
 	openGLContext.setComponentPaintingEnabled(true);
@@ -70,7 +70,7 @@ void ScreenOutput::update()
 
 		Rectangle<int> a = d.totalArea;
 		a.setWidth(a.getWidth());
-		a.setHeight(a.getHeight()-1); // -1 to stop my screen to flicker ><
+		a.setHeight(a.getHeight() - 1); // -1 to stop my screen to flicker ><
 		setBounds(a);
 		repaint();
 	}
@@ -275,125 +275,117 @@ void ScreenOutput::renderOpenGL()
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		if (screen != nullptr)
+		if (screen != nullptr && !screen->isClearing)
 		{
 			Point<float> tl, tr, bl, br;
-			for (int i = 0; i < screen->surfaces.items.size(); i++)
+
+			GenericScopedLock lock(screen->surfaces.items.getLock());
+			for (auto& s : screen->surfaces.items)
 			{
-				Surface* s = screen->surfaces.items[i];
-				if (s->enabled->boolValue())
+				if (!s->enabled->boolValue()) continue;
+
+				Media* mask = dynamic_cast<Media*>(s->mask->targetContainer.get());
+				std::shared_ptr<OpenGLTexture> texMask = nullptr;
+
+				GLuint maskLocation = glGetUniformLocation(shader->getProgramID(), "mask");
+				glUniform1i(maskLocation, 0);
+				glActiveTexture(GL_TEXTURE0);
+
+				//myTexture.bind();
+				if (mask != nullptr)
 				{
-
-					Media* mask = dynamic_cast<Media*>(s->mask->targetContainer.get());
-					std::shared_ptr<OpenGLTexture> texMask = nullptr;
-
-					GLuint maskLocation = glGetUniformLocation(shader->getProgramID(), "mask");
-					glUniform1i(maskLocation, 0); 
-					glActiveTexture(GL_TEXTURE0);
-
-					//myTexture.bind();
-					if (mask != nullptr)
+					if (!textures.contains(mask))
 					{
-						if (!textures.contains(mask))
-						{
-							texMask = std::make_shared<OpenGLTexture>();
-							texMask->loadImage(mask->image);
-							texturesVersions.set(mask, mask->imageVersion);
-							textures.set(mask, texMask);
-						}
-						texMask = textures.getReference(mask);
-						unsigned int vers = texturesVersions.getReference(mask);
-						if (mask->imageVersion != vers)
-						{
-							texMask->loadImage(mask->image);
-							texturesVersions.set(mask, mask->imageVersion);
-						}
-						texMask->bind();
-					}
-					else
-					{
-						juce::Image whiteImage(juce::Image::PixelFormat::ARGB, 1, 1, true);
-						whiteImage.setPixelAt(0, 0, Colours::white);
 						texMask = std::make_shared<OpenGLTexture>();
-						texMask->loadImage(whiteImage);
-						texMask->bind();
+						texMask->loadImage(mask->image);
+						texturesVersions.set(mask, mask->imageVersion);
+						textures.set(mask, texMask);
 					}
-
-					Media* m = dynamic_cast<Media*>(s->media->targetContainer.get());
-					std::shared_ptr<OpenGLTexture> tex = nullptr;
-
-					GLuint textureLocation = glGetUniformLocation(shader->getProgramID(), "tex");
-					glUniform1i(textureLocation, 1);
-					glActiveTexture(GL_TEXTURE1);
-
-					if (m != nullptr)
+					texMask = textures.getReference(mask);
+					unsigned int vers = texturesVersions.getReference(mask);
+					if (mask->imageVersion != vers)
 					{
-						if (!textures.contains(m))
-						{
-							tex = std::make_shared<OpenGLTexture>();
-							tex->loadImage(m->image);
-							texturesVersions.set(m, m->imageVersion);
-							textures.set(m, tex);
-						}
-						tex = textures.getReference(m);
-						unsigned int vers = texturesVersions.getReference(m);
-						if (m->imageVersion != vers)
-						{
-							tex->loadImage(m->image);
-							texturesVersions.set(m, m->imageVersion);
-						}
-						tex->bind();
+						texMask->loadImage(mask->image);
+						texturesVersions.set(mask, mask->imageVersion);
 					}
-
-
-					// vertices start
-
-					// Create a vertex buffer object
-					GLuint vbo;
-					glGenBuffers(1, &vbo);
-					glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-					GLint posAttrib = glGetAttribLocation(shader->getProgramID(), "position");
-					glEnableVertexAttribArray(posAttrib);
-					glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), 0);
-
-					GLint surfacePosAttrib = glGetAttribLocation(shader->getProgramID(), "surfacePosition");
-					glEnableVertexAttribArray(surfacePosAttrib);
-					glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
-
-					GLint texAttrib = glGetAttribLocation(shader->getProgramID(), "texcoord");
-					glEnableVertexAttribArray(texAttrib);
-					glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
-
-					GLint maskAttrib = glGetAttribLocation(shader->getProgramID(), "maskcoord");
-					glEnableVertexAttribArray(maskAttrib);
-					glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
-
-					GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
-					glUniform4f(borderSoftLocation, s->softEdgeTop->floatValue(), s->softEdgeRight->floatValue(), s->softEdgeBottom->floatValue(), s->softEdgeLeft->floatValue());
-
-					GLuint ebo;
-					glGenBuffers(1, &ebo);
-
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-					s->verticesLock.enter();
-					glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * s->vertices.size(), s->vertices.getRawDataPointer(), GL_STATIC_DRAW);
-					glBufferData(GL_ELEMENT_ARRAY_BUFFER, s->verticesElements.size() * sizeof(GLuint), s->verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
-					s->verticesLock.exit();
-
-					glDrawElements(GL_TRIANGLES, s->verticesElements.size(), GL_UNSIGNED_INT, 0);
-
-					if (tex != nullptr)
-					{
-						tex->unbind();
-					}
-					if (texMask != nullptr)
-					{
-						texMask->unbind();
-					}
-
+					texMask->bind();
 				}
+				else
+				{
+					juce::Image whiteImage(juce::Image::PixelFormat::ARGB, 1, 1, true);
+					whiteImage.setPixelAt(0, 0, Colours::white);
+					texMask = std::make_shared<OpenGLTexture>();
+					texMask->loadImage(whiteImage);
+					texMask->bind();
+				}
+
+				Media* m = dynamic_cast<Media*>(s->media->targetContainer.get());
+				std::shared_ptr<OpenGLTexture> tex = nullptr;
+
+				GLuint textureLocation = glGetUniformLocation(shader->getProgramID(), "tex");
+				glUniform1i(textureLocation, 1);
+				glActiveTexture(GL_TEXTURE1);
+
+				if (m != nullptr)
+				{
+					if (!textures.contains(m))
+					{
+						tex = std::make_shared<OpenGLTexture>();
+						tex->loadImage(m->image);
+						texturesVersions.set(m, m->imageVersion);
+						textures.set(m, tex);
+					}
+					tex = textures.getReference(m);
+					unsigned int vers = texturesVersions.getReference(m);
+					if (m->imageVersion != vers)
+					{
+						tex->loadImage(m->image);
+						texturesVersions.set(m, m->imageVersion);
+					}
+					tex->bind();
+				}
+
+
+				// vertices start
+
+				// Create a vertex buffer object
+				GLuint vbo;
+				glGenBuffers(1, &vbo);
+				glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+				GLint posAttrib = glGetAttribLocation(shader->getProgramID(), "position");
+				glEnableVertexAttribArray(posAttrib);
+				glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), 0);
+
+				GLint surfacePosAttrib = glGetAttribLocation(shader->getProgramID(), "surfacePosition");
+				glEnableVertexAttribArray(surfacePosAttrib);
+				glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+
+				GLint texAttrib = glGetAttribLocation(shader->getProgramID(), "texcoord");
+				glEnableVertexAttribArray(texAttrib);
+				glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
+
+				GLint maskAttrib = glGetAttribLocation(shader->getProgramID(), "maskcoord");
+				glEnableVertexAttribArray(maskAttrib);
+				glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
+
+				GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
+				glUniform4f(borderSoftLocation, s->softEdgeTop->floatValue(), s->softEdgeRight->floatValue(), s->softEdgeBottom->floatValue(), s->softEdgeLeft->floatValue());
+
+				GLuint ebo;
+				glGenBuffers(1, &ebo);
+
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+
+				s->verticesLock.enter();
+				glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * s->vertices.size(), s->vertices.getRawDataPointer(), GL_STATIC_DRAW);
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, s->verticesElements.size() * sizeof(GLuint), s->verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
+				s->verticesLock.exit();
+
+				glDrawElements(GL_TRIANGLES, s->verticesElements.size(), GL_UNSIGNED_INT, 0);
+
+				if (tex != nullptr) tex->unbind();
+				if (texMask != nullptr) texMask->unbind();
 
 			}
 		}
@@ -483,23 +475,23 @@ bool ScreenOutput::keyPressed(const KeyPress& key, Component* originatingCompone
 
 ScreenOutputWatcher::ScreenOutputWatcher()
 {
-	ScreenManager::getInstance()->addAsyncManagerListener(this);
+	ScreenManager::getInstance()->addBaseManagerListener(this);
 	ScreenManager::getInstance()->addAsyncContainerListener(this);
 	Engine::mainEngine->addEngineListener(this);
 }
 
 ScreenOutputWatcher::~ScreenOutputWatcher()
 {
-	ScreenManager::getInstance()->removeAsyncManagerListener(this);
+	ScreenManager::getInstance()->removeBaseManagerListener(this);
 	ScreenManager::getInstance()->removeAsyncContainerListener(this);
 	Engine::mainEngine->removeEngineListener(this);
 	outputs.clear();
 }
 
-void ScreenOutputWatcher::updateOutput(Screen* s)
+void ScreenOutputWatcher::updateOutput(Screen* s, bool forceRemove)
 {
 	ScreenOutput* o = getOutputForScreen(s);
-	bool shouldShow = s->enabled->boolValue() && s->outputType->getValueDataAsEnum<Screen::OutputType>() == Screen::OutputType::DISPLAY;
+	bool shouldShow = !forceRemove && !s->isClearing && s->enabled->boolValue() && s->outputType->getValueDataAsEnum<Screen::OutputType>() == Screen::OutputType::DISPLAY;
 	if (o == nullptr)
 	{
 		if (shouldShow) outputs.add(new ScreenOutput(s));
@@ -521,28 +513,48 @@ ScreenOutput* ScreenOutputWatcher::getOutputForScreen(Screen* s)
 }
 
 
-void ScreenOutputWatcher::newMessage(const ScreenManager::ManagerEvent& e)
+//void ScreenOutputWatcher::newMessage(const ScreenManager::ManagerEvent& e)
+//{
+//	if (Engine::mainEngine->isLoadingFile) return;
+//	switch (e.type)
+//	{
+//	case ScreenManager::ManagerEvent::ITEM_ADDED:
+//		updateOutput(e.getItem());
+//		break;
+//
+//	case ScreenManager::ManagerEvent::ITEMS_ADDED:
+//		for (auto& s : e.getItems()) updateOutput(s);
+//		break;
+//
+//
+//	case ScreenManager::ManagerEvent::ITEM_REMOVED:
+//		updateOutput(e.getItem());
+//		break;
+//
+//	case ScreenManager::ManagerEvent::ITEMS_REMOVED:
+//		for (auto& s : e.getItems()) updateOutput(s);
+//		break;
+//	}
+//}
+
+void ScreenOutputWatcher::itemAdded(Screen* item)
 {
-	if(Engine::mainEngine->isLoadingFile) return;
-	switch (e.type)
-	{
-	case ScreenManager::ManagerEvent::ITEM_ADDED:
-		updateOutput(e.getItem());
-		break;
+	updateOutput(item);
+}
 
-	case ScreenManager::ManagerEvent::ITEMS_ADDED:
-		for (auto& s : e.getItems()) updateOutput(s);
-		break;
+void ScreenOutputWatcher::itemsAdded(Array<Screen*> items)
+{
+	for (auto& s : items) updateOutput(s);
+}
 
+void ScreenOutputWatcher::itemRemoved(Screen* item)
+{
+	updateOutput(item, true);
+}
 
-	case ScreenManager::ManagerEvent::ITEM_REMOVED:
-		updateOutput(e.getItem());
-		break;
-
-	case ScreenManager::ManagerEvent::ITEMS_REMOVED:
-		for (auto& s : e.getItems()) updateOutput(s);
-		break;
-	}
+void ScreenOutputWatcher::itemsRemoved(Array<Screen*> items)
+{
+	for (auto& s : items) updateOutput(s, true);
 }
 
 void ScreenOutputWatcher::newMessage(const ContainerAsyncEvent& e)
