@@ -53,13 +53,13 @@ Surface::Surface(var params) :
 	invertMask = addBoolParameter("Invert mask", "Invert mask", false);
 
 	topLeft->setDefaultPoint(0, 1);
-	topLeft->setBounds(0, 0, 1, 1);
+	topLeft->setBounds(-1, -1, 2, 2);
 	topRight->setDefaultPoint(1, 1);
-	topRight->setBounds(0, 0, 1, 1);
+	topRight->setBounds(-1, -1, 2, 2);
 	bottomLeft->setDefaultPoint(0, 0);
-	bottomLeft->setBounds(0, 0, 1, 1);
+	bottomLeft->setBounds(-1, -1, 2, 2);
 	bottomRight->setDefaultPoint(1, 0);
-	bottomRight->setBounds(0, 0, 1, 1);
+	bottomRight->setBounds(-1, -1, 2, 2);
 
 
 	handleBezierTopLeft->setDefaultPoint(1 / 3.0f, 1);
