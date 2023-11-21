@@ -9,7 +9,6 @@
 */
 
 #include "Screen/ScreenIncludes.h"
-#include "Screen.h"
 
 Screen::Screen(var params) :
 	BaseItem(params.getProperty("name", "Screen")),
@@ -19,6 +18,9 @@ Screen::Screen(var params) :
 	saveAndLoadRecursiveData = true;
 
 	itemDataType = "Screen";
+
+	screenWidth = addIntParameter("Screen width", "Screen width in pixels", 1920, 0, 10000);
+	screenHeight = addIntParameter("Screen height", "Screen height in pixels", 1080, 0, 10000);
 
 	outputType = addEnumParameter("Output type", "Output type");
 	outputType->addOption("Display", DISPLAY)->addOption("Shared Texture", SHARED_TEXTURE)->addOption("NDI", NDI);
@@ -30,6 +32,8 @@ Screen::Screen(var params) :
 	if (!Engine::mainEngine->isLoadingFile) surfaces.addItem();
 
 	addChildControllableContainer(&surfaces);
+
+	renderer.reset(new ScreenRenderer(this));
 }
 
 Screen::~Screen()

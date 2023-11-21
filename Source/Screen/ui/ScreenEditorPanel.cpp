@@ -23,7 +23,7 @@ ScreenEditorView::ScreenEditorView(Screen* screen) :
 
 ScreenEditorView::~ScreenEditorView()
 {
-	if(GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+	if (GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
 }
 
 void ScreenEditorView::paint(Graphics& g)
@@ -35,8 +35,9 @@ void ScreenEditorView::paint(Graphics& g)
 	g.setFont(16);
 	g.drawFittedText("Editing " + screen->niceName, getLocalBounds(), Justification::centred, 1);
 
+
 	Point<int> pos = getTopLevelComponent()->getLocalPoint(this, Point<int>(0, 0));
-	
+
 }
 
 void ScreenEditorView::newOpenGLContextCreated()
@@ -48,22 +49,38 @@ void ScreenEditorView::renderOpenGL()
 {
 	if (inspectable.wasObjectDeleted()) return;
 
-	//draw rectangle of the compoennt size
-	//glViewport(0, 0, getWidth(), getHeight());
+	OpenGLFrameBuffer* frameBuffer = &screen->renderer->frameBuffer;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0, getWidth(), getHeight(), 0, 0, 1);
-	
-	//draw the red rectangle
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, frameBuffer->getTextureID());
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+	int w = frameBuffer->getWidth();
+	int h = frameBuffer->getHeight();
+
+	//glColor3f(1.0f, 0.0f, 0.0f);
 	glBegin(GL_QUADS);
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex2f(0, 0);
-	glVertex2f(getWidth(), 0);
-	glVertex2f(getWidth(), getHeight());
-	glVertex2f(0, getHeight());
+	glTexCoord2f(0, 0); glVertex2f(0, 0);
+	glTexCoord2f(1, 0); glVertex2f(w, 0);
+	glTexCoord2f(1, 1); glVertex2f(w, h);
+	glTexCoord2f(0, 1); glVertex2f(0, h);
 	glEnd();
+	glGetError();
 
+	glDisable(GL_TEXTURE_2D);
 
+	glDisable(GL_BLEND);
 }
 
 

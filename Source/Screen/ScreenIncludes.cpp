@@ -13,6 +13,7 @@
 
 #include "Screen.cpp"
 #include "ScreenManager.cpp"
+#include "ui/ScreenRenderer.cpp"
 #include "ui/ScreenManagerUI.cpp"
 #include "ui/ScreenOutput.cpp"
 #include "Surface/Surface.cpp"

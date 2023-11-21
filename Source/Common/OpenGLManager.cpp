@@ -50,27 +50,30 @@ void GlContextHolder::detach()
 //==============================================================================
 // Clients MUST call unregisterOpenGlRenderer manually in their destructors!!
 
-void GlContextHolder::registerOpenGlRenderer(juce::Component* child)
+void GlContextHolder::registerOpenGlRenderer(juce::OpenGLRenderer* child)
 {
 	jassert(juce::MessageManager::getInstance()->isThisTheMessageThread());
 
 	if (dynamic_cast<juce::OpenGLRenderer*> (child) != nullptr)
 	{
-		if (findClientIndexForComponent(child) < 0)
+		if (findClientIndexForRenderer(child) < 0)
 		{
-			clients.add(new Client(child, (parent->isParentOf(child) ? Client::State::running : Client::State::suspended)));
-			child->addComponentListener(this);
+			juce::Component* c = dynamic_cast<juce::Component*> (child);
+			Client::State state = Client::State::running;
+			if (c != nullptr) state = parent->isParentOf(c) ? Client::State::running : Client::State::suspended;
+			clients.add(new Client(child, state));
+			if(c != nullptr) c->addComponentListener(this);
 		}
 	}
 	else
 		jassertfalse;
 }
 
-void GlContextHolder::unregisterOpenGlRenderer(juce::Component* child)
+void GlContextHolder::unregisterOpenGlRenderer(juce::OpenGLRenderer* child)
 {
 	jassert(juce::MessageManager::getInstance()->isThisTheMessageThread());
 
-	const int index = findClientIndexForComponent(child);
+	const int index = findClientIndexForRenderer(child);
 
 	if (index >= 0)
 	{
@@ -80,7 +83,7 @@ void GlContextHolder::unregisterOpenGlRenderer(juce::Component* child)
 			client->nextState = Client::State::suspended;
 		}
 
-		child->removeComponentListener(this);
+		if(client->c!= nullptr) client->c->removeComponentListener(this);
 		context.executeOnGLThread([this](juce::OpenGLContext&)
 			{
 				checkComponents(false, false);
@@ -100,7 +103,7 @@ void GlContextHolder::setBackgroundColour(const juce::Colour c)
 
 void GlContextHolder::checkComponents(bool isClosing, bool isDrawing)
 {
-	juce::Array<juce::Component*> initClients, runningClients;
+	juce::Array<Client*> initClients, runningClients;
 
 	{
 		juce::ScopedLock arrayLock(clients.getLock());
@@ -111,15 +114,15 @@ void GlContextHolder::checkComponents(bool isClosing, bool isDrawing)
 		for (int i = 0; i < n; ++i)
 		{
 			Client* client = clients[i];
-			if (client->c != nullptr)
+			if (client->r != nullptr)
 			{
 				Client::State nextState = (isClosing ? Client::State::suspended : client->nextState);
 
-				if (client->currentState == Client::State::running && nextState == Client::State::running)   runningClients.add(client->c);
-				else if (client->currentState == Client::State::suspended && nextState == Client::State::running)   initClients.add(client->c);
+				if (client->currentState == Client::State::running && nextState == Client::State::running)   runningClients.add(client);
+				else if (client->currentState == Client::State::suspended && nextState == Client::State::running)   initClients.add(client);
 				else if (client->currentState == Client::State::running && nextState == Client::State::suspended)
 				{
-					dynamic_cast<juce::OpenGLRenderer*> (client->c)->openGLContextClosing();
+					client->r->openGLContextClosing();
 				}
 
 				client->currentState = nextState;
@@ -128,7 +131,7 @@ void GlContextHolder::checkComponents(bool isClosing, bool isDrawing)
 	}
 
 	for (int i = 0; i < initClients.size(); ++i)
-		dynamic_cast<juce::OpenGLRenderer*> (initClients.getReference(i))->newOpenGLContextCreated();
+		initClients.getReference(i)->r->newOpenGLContextCreated();
 
 	if (runningClients.size() > 0 && isDrawing)
 	{
@@ -137,15 +140,19 @@ void GlContextHolder::checkComponents(bool isClosing, bool isDrawing)
 
 		for (int i = 0; i < runningClients.size(); ++i)
 		{
-			juce::Component* comp = runningClients.getReference(i);
+			Client* rc = runningClients.getReference(i);
+			juce::Component* comp = rc->c;
 
-			juce::Rectangle<int> r = (parent->getLocalArea(comp, comp->getLocalBounds()).toFloat() * displayScale).getSmallestIntegerContainer();
-			glViewport((GLint)r.getX(),
-				(GLint)parentBounds.getHeight() - (GLint)r.getBottom(),
-				(GLsizei)r.getWidth(), (GLsizei)r.getHeight());
-			juce::OpenGLHelpers::clear(backgroundColour);
+			if (comp != nullptr)
+			{
+				juce::Rectangle<int> r = (parent->getLocalArea(comp, comp->getLocalBounds()).toFloat() * displayScale).getSmallestIntegerContainer();
+				glViewport((GLint)r.getX(),
+					(GLint)parentBounds.getHeight() - (GLint)r.getBottom(),
+					(GLsizei)r.getWidth(), (GLsizei)r.getHeight());
+			}
+			//juce::OpenGLHelpers::clear(backgroundColour);
 
-			dynamic_cast<juce::OpenGLRenderer*> (comp)->renderOpenGL();
+			rc->r->renderOpenGL();
 		}
 	}
 }
@@ -200,8 +207,8 @@ void GlContextHolder::componentBeingDeleted(juce::Component& component)
 
 void GlContextHolder::newOpenGLContextCreated()
 {
-	gl::glDebugMessageControl(gl::GL_DEBUG_SOURCE_API, gl::GL_DEBUG_TYPE_OTHER, gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, gl::GL_FALSE);
-	glDisable(GL_DEBUG_OUTPUT);
+	//gl::glDebugMessageControl(gl::GL_DEBUG_SOURCE_API, gl::GL_DEBUG_TYPE_OTHER, gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, gl::GL_FALSE);
+	//glDisable(GL_DEBUG_OUTPUT);
 	checkComponents(false, false);
 }
 

@@ -10,6 +10,8 @@
 
 #pragma once
 
+class ScreenRenderer;
+
 class Screen :
     public BaseItem
 {
@@ -20,6 +22,9 @@ public:
     String objectType;
     var objectData;
     
+    IntParameter* screenWidth;
+    IntParameter* screenHeight;
+
     enum OutputType { DISPLAY, SHARED_TEXTURE, NDI };
     EnumParameter* outputType;
     IntParameter* screenID;
@@ -27,6 +32,8 @@ public:
     FloatParameter* snapDistance;
 
     SurfaceManager surfaces;
+
+    std::unique_ptr<ScreenRenderer> renderer;
 
     void clearItem() override;
 

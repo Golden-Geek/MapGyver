@@ -10,7 +10,6 @@
 
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
-#include "Surface.h"
 
 Surface::Surface(var params) :
 	BaseItem(params.getProperty("name", "Surface")),

@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "Media.h"
 
 MediaUI::MediaUI(Media* item) :
 	BaseItemUI(item)

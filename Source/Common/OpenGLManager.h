@@ -29,9 +29,9 @@ public:
 
 	//==============================================================================
 	// Clients MUST call unregisterOpenGlRenderer manually in their destructors!!
-	void registerOpenGlRenderer(juce::Component* child);
+	void registerOpenGlRenderer(juce::OpenGLRenderer* child);
 
-	void unregisterOpenGlRenderer(juce::Component* child);
+	void unregisterOpenGlRenderer(juce::OpenGLRenderer* child);
 
 	void setBackgroundColour(const juce::Colour c);
 
@@ -58,6 +58,8 @@ private:
 	//==============================================================================
 	juce::Component* parent;
 
+	
+
 	struct Client
 	{
 		enum class State
@@ -66,36 +68,58 @@ private:
 			running
 		};
 
-		Client(juce::Component* comp, State nextStateToUse = State::suspended)
-			: c(comp), currentState(State::suspended), nextState(nextStateToUse) {}
+		Client(juce::OpenGLRenderer* r, State nextStateToUse = State::suspended)
+			: r(r), c(dynamic_cast<Component*>(r)), currentState(State::suspended), nextState(nextStateToUse) {}
 
 
+		juce::OpenGLRenderer* r = nullptr;
 		juce::Component* c = nullptr;
 		State currentState = State::suspended, nextState = State::suspended;
 	};
+
 
 	juce::CriticalSection stateChangeCriticalSection;
 	juce::OwnedArray<Client, juce::CriticalSection> clients;
 
 	//==============================================================================
-	int findClientIndexForComponent(juce::Component* comp) const
+	int findClientIndexForComponent(juce::Component* c) const
 	{
 		const int n = clients.size();
 		for (int i = 0; i < n; ++i)
-			if (comp == clients[i]->c)
+			if (c == clients[i]->c)
 				return i;
 
 		return -1;
 	}
 
-	Client* findClientForComponent(juce::Component* comp) const
+	Client* findClientForComponent(juce::Component* c) const
 	{
-		const int index = findClientIndexForComponent(comp);
+		const int index = findClientIndexForComponent(c);
 		if (index >= 0 && index < clients.size())
 			return clients[index];
 
 		return nullptr;
 	}
+
+	int findClientIndexForRenderer(juce::OpenGLRenderer* r) const
+	{
+		const int n = clients.size();
+		for (int i = 0; i < n; ++i)
+			if (r == clients[i]->r)
+				return i;
+
+		return -1;
+	}
+
+	Client* findClientForRenderer(juce::OpenGLRenderer* r) const
+	{
+		const int index = findClientIndexForRenderer(r);
+		if (index >= 0 && index < clients.size())
+			return clients[index];
+
+		return nullptr;
+	}
+
 
 	//==============================================================================
 	juce::Colour backgroundColour{ juce::Colours::black };

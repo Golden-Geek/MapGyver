@@ -79,7 +79,6 @@ void ScreenOutput::update()
 		if (prevIsLive)
 		{
 			removeFromDesktop();
-			//setSize(1, 1); //really ?       '-_-
 			openGLContext.setContinuousRepainting(false);
 			setAlwaysOnTop(false);
 		}
@@ -389,6 +388,7 @@ void ScreenOutput::renderOpenGL()
 
 			}
 		}
+
 		glDisable(GL_BLEND);
 	}
 }
