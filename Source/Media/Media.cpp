@@ -35,6 +35,10 @@ Media::Media(const String& name, var params) :
 
 Media::~Media()
 {
+	OpenGLManager::getInstance()->openGLContext.executeOnGLThread([this](OpenGLContext& c) {
+		c.makeActive();
+		texture.release();
+		}, true);
 }
 
 void Media::onContainerParameterChangedInternal(Parameter* p) {
@@ -47,6 +51,10 @@ void Media::updateVersion() {
 
 void Media::updateTexture()
 {
+	OpenGLManager::getInstance()->openGLContext.executeOnGLThread([this](OpenGLContext &c){ 
+		c.makeActive();
+		texture.loadImage(image);
+	}, true);
 }
 
 Point<int> Media::getMediaSize()

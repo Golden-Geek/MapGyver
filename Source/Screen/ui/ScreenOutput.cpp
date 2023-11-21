@@ -10,7 +10,6 @@
 
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
-#include "Common/CommonIncludes.h"
 
 juce_ImplementSingleton(ScreenOutputWatcher)
 
@@ -70,7 +69,7 @@ void ScreenOutput::update()
 
 		Rectangle<int> a = d.totalArea;
 		a.setWidth(a.getWidth());
-		a.setHeight(a.getHeight()-1); // -1 to stop my screen to flicker ><
+		a.setHeight(a.getHeight());
 		setBounds(a);
 		repaint();
 	}
@@ -79,7 +78,7 @@ void ScreenOutput::update()
 		if (prevIsLive)
 		{
 			removeFromDesktop();
-			//setSize(1, 1); //really ?       '-_-
+			//setSize(1, 1); //really ?
 			openGLContext.setContinuousRepainting(false);
 			setAlwaysOnTop(false);
 		}
@@ -257,7 +256,9 @@ void ScreenOutput::newOpenGLContextCreated()
 void ScreenOutput::renderOpenGL()
 {
 	// Définir la vue OpenGL en fonction de la taille du composant
+
 	openGLContext.makeActive();
+
 	if (!isLive)
 	{
 		return;
@@ -328,21 +329,28 @@ void ScreenOutput::renderOpenGL()
 
 					if (m != nullptr)
 					{
-						if (!textures.contains(m))
-						{
-							tex = std::make_shared<OpenGLTexture>();
-							tex->loadImage(m->image);
-							texturesVersions.set(m, m->imageVersion);
-							textures.set(m, tex);
+						if (glIsTexture(m->texture.getTextureID())) {
+							LOG("oui");
 						}
-						tex = textures.getReference(m);
-						unsigned int vers = texturesVersions.getReference(m);
-						if (m->imageVersion != vers)
-						{
-							tex->loadImage(m->image);
-							texturesVersions.set(m, m->imageVersion);
+						else {
+							LOG("non");
 						}
-						tex->bind();
+						m->texture.bind();
+						//if (!textures.contains(m))
+						//{
+						//	tex = std::make_shared<OpenGLTexture>();
+						//	tex->loadImage(m->image);
+						//	texturesVersions.set(m, m->imageVersion);
+						//	textures.set(m, tex);
+						//}
+						//tex = textures.getReference(m);
+						//unsigned int vers = texturesVersions.getReference(m);
+						//if (m->imageVersion != vers)
+						//{
+						//	tex->loadImage(m->image);
+						//	texturesVersions.set(m, m->imageVersion);
+						//}
+						//tex->bind();
 					}
 
 

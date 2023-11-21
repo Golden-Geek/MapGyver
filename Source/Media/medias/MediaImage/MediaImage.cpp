@@ -33,6 +33,7 @@ void MediaImage::onContainerParameterChanged(Parameter* p)
 		if (target.existsAsFile() && target.hasFileExtension("jpg;jpeg;png")) {
 			String ext = target.getFileExtension();
 			image = ImageFileFormat::loadFrom(target);
+			updateTexture();
 			updateVersion();
 		}
 	}
