@@ -66,15 +66,31 @@ void ScreenEditorView::renderOpenGL()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-	int w = frameBuffer->getWidth();
-	int h = frameBuffer->getHeight();
+	int fw = frameBuffer->getWidth();
+	int fh = frameBuffer->getHeight();
+
+	float fr = fw * 1.0f / fh;
+	float r = getWidth() * 1.0f / getHeight();
+
+	DBG(fr << " " << r);
+	int w = getWidth();
+	int h = getHeight();
+
+	int tw = w;
+	int th = h;
+	if (fr > r) th = getWidth() / fr; 
+	else  tw = getHeight() * fr;
+
+	int tx = (w - tw) / 2;
+	int ty = (h - th) / 2;
+
 
 	//glColor3f(1.0f, 0.0f, 0.0f);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0); glVertex2f(0, 0);
-	glTexCoord2f(1, 0); glVertex2f(w, 0);
-	glTexCoord2f(1, 1); glVertex2f(w, h);
-	glTexCoord2f(0, 1); glVertex2f(0, h);
+	glTexCoord2f(0, 1); glVertex2f(tx, ty);
+	glTexCoord2f(1, 1); glVertex2f(tx + tw, ty);
+	glTexCoord2f(1, 0); glVertex2f(tx + tw, ty + th);
+	glTexCoord2f(0, 0); glVertex2f(tx, ty + th);
 	glEnd();
 	glGetError();
 

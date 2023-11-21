@@ -28,7 +28,7 @@ ScreenRenderer::~ScreenRenderer()
 void ScreenRenderer::newOpenGLContextCreated()
 {
 	// Set up your OpenGL state here
-	frameBuffer.initialise(GlContextHolder::getInstance()->context, 400, 400);
+	frameBuffer.initialise(GlContextHolder::getInstance()->context, screen->screenWidth->intValue(), screen->screenHeight->intValue());
 	createAndLoadShaders();
 }
 
@@ -37,7 +37,7 @@ void ScreenRenderer::renderOpenGL()
 	// Définir la vue OpenGL en fonction de la taille du composant
 
 	frameBuffer.makeCurrentRenderingTarget();
-	glClearColor(.5f, 0, .5f, 1.0f);
+	glClearColor(0, 0, 0, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
 	glMatrixMode(GL_PROJECTION);
@@ -55,13 +55,13 @@ void ScreenRenderer::renderOpenGL()
 	{
 		shader->use();
 
-		//for (auto& s : screen->surfaces.items) drawSurface(s);
+		for (auto& s : screen->surfaces.items) drawSurface(s);
 
 		glUseProgram(0);
 		glGetError();
 	}
 
-	drawTest();
+	//drawTest();
 
 	frameBuffer.releaseAsRenderingTarget();
 
@@ -261,9 +261,16 @@ void ScreenRenderer::drawSurface(Surface* s)
 	glDrawElements(GL_TRIANGLES, s->verticesElements.size(), GL_UNSIGNED_INT, 0);
 	glGetError();
 
+	glActiveTexture(GL_TEXTURE1);
+	glDisable(GL_TEXTURE_2D);
 	if (tex != nullptr) tex->unbind();
+
+	glActiveTexture(GL_TEXTURE0);
+	glDisable(GL_TEXTURE_2D);
 	if (texMask != nullptr) texMask->unbind();
+
 	glGetError();
+
 
 }
 
@@ -319,7 +326,6 @@ void ScreenRenderer::createAndLoadShaders()
 		"   if (SurfacePosition[0] < borderSoft[3])      {alpha *= map(SurfacePosition[0],0.0f,borderSoft[3],0.0f,1.0f);}\n" // left
 		"   alpha *= maskColor[1]; \n"
 		"   outColor[3] = alpha;\n"
-		//"    outColor = vec4(0.5f,0.5f,0.5f,0.5f);   "
 		"}\n";
 
 	shader.reset(new OpenGLShaderProgram(GlContextHolder::getInstance()->context));
