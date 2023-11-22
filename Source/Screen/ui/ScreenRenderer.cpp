@@ -160,21 +160,7 @@ void ScreenRenderer::drawSurface(Surface* s)
 
 	if (mask != nullptr)
 	{
-		if (!textures.contains(mask))
-		{
-			texMask = std::make_shared<OpenGLTexture>();
-			texMask->loadImage(mask->image);
-			texturesVersions.set(mask, mask->imageVersion);
-			textures.set(mask, texMask);
-		}
-		texMask = textures.getReference(mask);
-		unsigned int vers = texturesVersions.getReference(mask);
-		if (mask->imageVersion != vers)
-		{
-			texMask->loadImage(mask->image);
-			texturesVersions.set(mask, mask->imageVersion);
-		}
-		texMask->bind();
+		glBindTexture(GL_TEXTURE_2D, mask->frameBuffer.getTextureID());
 	}
 	else
 	{
@@ -196,21 +182,7 @@ void ScreenRenderer::drawSurface(Surface* s)
 
 	if (media != nullptr)
 	{
-		if (!textures.contains(media))
-		{
-			tex = std::make_shared<OpenGLTexture>();
-			tex->loadImage(media->image);
-			texturesVersions.set(media, media->imageVersion);
-			textures.set(media, tex);
-		}
-		tex = textures.getReference(media);
-		unsigned int vers = texturesVersions.getReference(media);
-		if (media->imageVersion != vers)
-		{
-			tex->loadImage(media->image);
-			texturesVersions.set(media, media->imageVersion);
-		}
-		tex->bind();
+		glBindTexture(GL_TEXTURE_2D, media->frameBuffer.getTextureID());
 	}
 
 

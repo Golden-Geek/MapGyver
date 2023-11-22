@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "Media.h"
 
 MediaUI::MediaUI(Media* item) :
 	BaseItemUI(item)
@@ -25,10 +26,11 @@ Media::Media(const String& name, var params) :
 	imageVersion(0),
 	image(Image::ARGB, 10, 10, true)
 {
+	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
 	saveAndLoadRecursiveData = true;
 
 	itemDataType = "Media";
-	bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::ReadWriteMode::writeOnly);
+	bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::ReadWriteMode::readWrite);
 
 }
 
@@ -39,12 +41,15 @@ Media::~Media()
 void Media::onContainerParameterChangedInternal(Parameter* p) {
 }
 
-
-void Media::updateVersion() {
-	imageVersion = (imageVersion + 1) % 65535;
+void Media::newOpenGLContextCreated()
+{
 }
 
-void Media::updateTexture()
+void Media::renderOpenGL()
+{
+}
+
+void Media::openGLContextClosing()
 {
 }
 

@@ -33,7 +33,9 @@ void MediaImage::onContainerParameterChanged(Parameter* p)
 		if (target.existsAsFile() && target.hasFileExtension("jpg;jpeg;png")) {
 			String ext = target.getFileExtension();
 			image = ImageFileFormat::loadFrom(target);
-			updateVersion();
+			GlContextHolder::getInstance()->context.executeOnGLThread([this](OpenGLContext& context) {
+				frameBuffer.initialise(context, image);
+			}, true);
 		}
 	}
 }

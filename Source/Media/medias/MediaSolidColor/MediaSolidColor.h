@@ -21,6 +21,8 @@ public:
 
     void clearItem() override;
     void onContainerParameterChangedInternal(Parameter* p) override;
+
+    void setColor(Colour c);
     
     DECLARE_TYPE("Solid Color")
 };

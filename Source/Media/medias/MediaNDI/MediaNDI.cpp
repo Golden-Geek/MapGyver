@@ -71,7 +71,6 @@ void MediaNDI::videoFrameReceived(NDIlib_video_frame_v2_t* frame)
 
     std::memcpy(bitmapData->data, frameData, width * height * 4); // 
     imageLock.exit();
-    updateVersion();
 }
 
 
