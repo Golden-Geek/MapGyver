@@ -6,3 +6,5 @@ Builds/*/x64
 Builds/VisualStudio2022/RuleMapPool_App.vcxproj
 
 Builds/VisualStudio2022/RuleMapPool_App.vcxproj.filters
+
+Binaries/Release/

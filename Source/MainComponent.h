@@ -20,6 +20,7 @@ public:
     
     std::unique_ptr<GlContextHolder> glContextHolder;
     
+    Component renderComp;
 
     void init() override;
     void setupOpenGL() override;

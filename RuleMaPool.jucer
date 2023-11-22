@@ -199,7 +199,8 @@
                        libraryPath="../../External/vlc/lib&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;"
                        binaryPath="Binaries/Debug"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="RuleMapPool" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/vlc/lib&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;"/>
+                       libraryPath="../../External/vlc/lib&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;"
+                       binaryPath="Binaries/Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core"/>
