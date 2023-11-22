@@ -142,6 +142,17 @@ void MediaVideo::restart()
 	play();
 }
 
+void MediaVideo::renderOpenGL()
+{
+	if (frameBuffer.getWidth() != image.getWidth() || frameBuffer.getHeight() != image.getHeight()) {
+		frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
+	}
+	if (frameUpdated) {
+		frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
+		frameUpdated = false;
+	}
+}
+
 void MediaVideo::run()
 {
 }
@@ -161,8 +172,9 @@ void* MediaVideo::lock(void** pixels)
 void MediaVideo::unlock(void* oldBuffer, void* const* pixels)
 {
 	imageLock.exit();
-	updateVersion();
+	frameUpdated = true;
 }
+
 
 void MediaVideo::display(void* nextBuffer)
 {

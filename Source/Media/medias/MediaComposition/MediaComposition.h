@@ -25,9 +25,7 @@ public:
     void clearItem() override;
     void onContainerParameterChangedInternal(Parameter* p) override;
     
-    void run();
-
-    void repaintImage();
+    void renderOpenGL();
 
     std::shared_ptr<Graphics> myGraphics = nullptr;
     std::shared_ptr<Graphics> workGraphics = nullptr;

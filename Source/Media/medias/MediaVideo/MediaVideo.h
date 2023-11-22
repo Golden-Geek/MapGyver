@@ -18,6 +18,8 @@ public:
 	MediaVideo(var params = var());
 	~MediaVideo();
 
+	bool frameUpdated;
+
 	FileParameter* filePath;
 
 	BoolParameter* playAtLoad;
@@ -62,6 +64,8 @@ public:
 	void stop();
 	void pause();
 	void restart();
+
+	void renderOpenGL();
 
 	void run() override;
 	void threadLoop();

@@ -14,8 +14,7 @@ MediaSolidColor::MediaSolidColor(var params) :
 	Media(getTypeString(), params)
 {
 	color = addColorParameter("Color", "", Colour(255,255,255));
-	image = Image(juce::Image::PixelFormat::ARGB, 1,1,true);
-	image.setPixelAt(0,0,color->getColor());
+	setColor(color->getColor());
 }
 
 MediaSolidColor::~MediaSolidColor()
@@ -29,7 +28,16 @@ void MediaSolidColor::clearItem()
 
 void MediaSolidColor::onContainerParameterChangedInternal(Parameter* p)
 {
-	image.setPixelAt(0, 0, color->getColor());
-	updateVersion();
+	if (p == color) {
+		setColor(color->getColor());
+	}
+}
+
+void MediaSolidColor::setColor(Colour c)
+{
+	GlContextHolder::getInstance()->context.executeOnGLThread([this, c](OpenGLContext &context) {
+		frameBuffer.initialise(GlContextHolder::getInstance()->context, 10, 10);
+		frameBuffer.clear(c);
+	}, true);
 }
 

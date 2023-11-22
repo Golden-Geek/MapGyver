@@ -22,7 +22,8 @@ public:
 
 
 class Media :
-    public BaseItem
+    public BaseItem, 
+    public OpenGLRenderer
 {
 public:
     Media(const String& name = "Media", var params = var());
@@ -33,11 +34,14 @@ public:
     CriticalSection imageLock;
     Image image;
     std::shared_ptr<Image::BitmapData> bitmapData;
-    GLuint textureId;
+    OpenGLFrameBuffer frameBuffer;
 
     void onContainerParameterChangedInternal(Parameter* p);
-    void updateVersion();
-    void updateTexture();
+
+    void newOpenGLContextCreated() override;
+    void renderOpenGL() override;
+    void openGLContextClosing() override;
+
 
     Point<int> getMediaSize();
 };
