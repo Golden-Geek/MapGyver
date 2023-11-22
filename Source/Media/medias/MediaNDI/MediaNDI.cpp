@@ -16,6 +16,7 @@ MediaNDI::MediaNDI(var params) :
 	color = addColorParameter("Color", "", Colour(255,0,0));
 	ndiParam = new NDIDeviceParameter("NDI Source");
 	addParameter(ndiParam);
+    frameUpdated = false;
 	//NDIManager::getInstance();
 }
 
@@ -80,7 +81,11 @@ void MediaNDI::renderOpenGL()
         frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
     }
     if (frameUpdated) {
-        frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
+        frameBuffer.makeCurrentRenderingTarget();
+        glBindTexture(GL_TEXTURE_2D, frameBuffer.getTextureID());
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.getWidth(), image.getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, bitmapData->data);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        frameBuffer.releaseAsRenderingTarget();
         frameUpdated = false;
     }
 }

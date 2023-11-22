@@ -45,7 +45,6 @@ public:
 	int imageLines = 0;
 	//uint32_t* vlcData;
 
-	std::shared_ptr<Image::BitmapData> vlcBitmapData = nullptr;
 	bool vlcDataIsValid = false;
 
 	bool vlcSeekedLast = false;

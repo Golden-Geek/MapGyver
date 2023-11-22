@@ -34,6 +34,7 @@ MediaVideo::MediaVideo(var params) :
 
 	RMPEngine* e = dynamic_cast<RMPEngine*>(Engine::mainEngine);
 	VLCInstance = e->VLCInstance;
+	frameUpdated = false;
 }
 
 MediaVideo::~MediaVideo()
@@ -147,8 +148,12 @@ void MediaVideo::renderOpenGL()
 	if (frameBuffer.getWidth() != image.getWidth() || frameBuffer.getHeight() != image.getHeight()) {
 		frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
 	}
-	if (frameUpdated) {
-		frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
+	if (frameBuffer.isValid() && frameUpdated) {
+		frameBuffer.makeCurrentRenderingTarget();
+		glBindTexture(GL_TEXTURE_2D, frameBuffer.getTextureID());
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.getWidth(), image.getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, bitmapData->data);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		frameBuffer.releaseAsRenderingTarget();
 		frameUpdated = false;
 	}
 }
@@ -165,7 +170,7 @@ void* MediaVideo::lock(void** pixels)
 {
 	imageLock.enter();
 	//pixels[0] = vlcData;
-	pixels[0] = vlcBitmapData->getLinePointer(0);
+	pixels[0] = bitmapData->getLinePointer(0);
 	return 0;
 }
 
@@ -195,7 +200,7 @@ unsigned MediaVideo::setup_video(char* chroma, unsigned* width, unsigned* height
 	//vlcData = (uint32_t*)malloc(imageWidth * imageHeight * sizeof(uint32_t));
 
 	image = Image(Image::ARGB, imageWidth, imageHeight, true);
-	vlcBitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::writeOnly);
+	bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
 
 	vlcDataIsValid = true;
 	memcpy(chroma, "RV32", 4);

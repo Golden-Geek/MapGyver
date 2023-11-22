@@ -36,7 +36,7 @@ Media::Media(const String& name, var params) :
 
 Media::~Media()
 {
-	GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+	//GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
 }
 
 void Media::onContainerParameterChangedInternal(Parameter* p) {

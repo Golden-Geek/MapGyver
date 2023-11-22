@@ -18,8 +18,7 @@ public:
     ~MediaComposition();
 
     Point2DParameter* resolution;
-    FloatParameter* fps;
-
+ 
     CompositionLayerManager layers;
 
     void clearItem() override;
