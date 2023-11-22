@@ -84,10 +84,10 @@ void CompositionMedia::renderOpenGL()
             glTexCoord2f(1.0f, 1.0f); glVertex2f(x + width, y);
             glTexCoord2f(0.0f, 1.0f); glVertex2f(x, y);
             glEnd();
+            juce::gl::glPopMatrix();
         }
 
         // Restaure la matrice de modèle-vue
-        juce::gl::glPopMatrix();
     }
     frameBuffer.releaseAsRenderingTarget();
 }
