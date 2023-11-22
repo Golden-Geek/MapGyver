@@ -9,7 +9,6 @@
 */
 
 #include "Screen/ScreenIncludes.h"
-#include "Media/MediaIncludes.h"
 #include "Common/CommonIncludes.h"
 
 juce_ImplementSingleton(ScreenOutputWatcher)
@@ -18,9 +17,8 @@ using namespace juce::gl;
 
 ScreenOutput::ScreenOutput(Screen* screen) :
 	InspectableContentComponent(screen),
-	screen(screen),
-	closestHandle(nullptr),
-	manipSurface(nullptr)
+	isLive(false),
+	screen(screen)
 {
 	setOpaque(true);
 
@@ -89,170 +87,11 @@ void ScreenOutput::update()
 	setVisible(shouldShow);
 }
 
-void ScreenOutput::paint(Graphics& g)
-{
-	Colour col = isMouseButtonDown() ? Colours::yellow : Colours::cyan;
-
-	if (manipSurface != nullptr)
-	{
-		Path surfacePath;
-		surfacePath.addPath(manipSurface->quadPath);
-
-		//apply transform that inverse the Y axis and scale to the component size
-		surfacePath.applyTransform(AffineTransform::scale(getWidth(), getHeight()));
-		surfacePath.applyTransform(AffineTransform::verticalFlip(getHeight()));
-
-		g.setColour(col.withAlpha(.1f));
-		g.fillPath(surfacePath);
-		g.setColour(col.brighter(.3f));
-		g.strokePath(surfacePath, PathStrokeType(2.0f));
-
-		g.drawLine(Line<float>(getPointOnScreen(manipSurface->topLeft->getPoint()).toFloat(), getPointOnScreen(manipSurface->bottomRight->getPoint()).toFloat()), 2.0f);
-		g.drawLine(Line<float>(getPointOnScreen(manipSurface->topRight->getPoint()).toFloat(), getPointOnScreen(manipSurface->bottomLeft->getPoint()).toFloat()), 2.0f);
-
-	}
-	else if (closestHandle != nullptr)
-	{
-		Point<int> mp = getMouseXYRelative();
-		Point<int> hp = getLocalBounds().getRelativePoint(closestHandle->x, 1 - closestHandle->y);
-
-		float angle = mp.getAngleToPoint(hp);
-
-		Point<float> a1 = Point<float>(cosf(angle), sinf(angle)) * 20;
-		Point<float> a2 = Point<float>(cosf(angle + MathConstants<float>::pi), sinf(angle + MathConstants<float>::pi)) * 20;
-
-		Path p;
-		p.startNewSubPath(mp.toFloat() + a1);
-		p.lineTo(mp.toFloat() + a2);
-		p.lineTo(hp.toFloat());
-		p.closeSubPath();
-
-		g.setColour(col.withAlpha(.5f));
-		g.fillPath(p);
-	}
-}
-
-
-void ScreenOutput::paintOverChildren(Graphics& g)
-{
-
-}
-
-void ScreenOutput::mouseDown(const MouseEvent& e)
-{
-	if (manipSurface != nullptr)
-	{
-		posAtMouseDown = { manipSurface->topLeft->getPoint(), manipSurface->topRight->getPoint(), manipSurface->bottomLeft->getPoint(), manipSurface->bottomRight->getPoint() };
-
-	}
-	else if (closestHandle != nullptr)
-	{
-		posAtMouseDown = { closestHandle->getPoint() };
-		overlapHandles.clear();
-		if (e.mods.isShiftDown()) overlapHandles = screen->getOverlapHandles(closestHandle);
-	}
-}
-
-void ScreenOutput::mouseMove(const MouseEvent& e)
-{
-	if (e.mods.isAltDown())
-	{
-		closestHandle = nullptr;
-		manipSurface = screen->getSurfaceAt(getRelativeMousePos());
-	}
-	else if (!e.mods.isLeftButtonDown())
-	{
-		manipSurface = nullptr;
-		closestHandle = screen->getClosestHandle(getRelativeMousePos());
-	}
-	repaint();
-
-}
-
-void ScreenOutput::mouseDrag(const MouseEvent& e)
-{
-	Point<float> offsetRelative = (e.getOffsetFromDragStart().toFloat() * Point<float>(1, -1)) / Point<float>(getWidth(), getHeight());
-
-	if (manipSurface != nullptr)
-	{
-		Array<Point2DParameter*> handles = { manipSurface->topLeft, manipSurface->topRight, manipSurface->bottomLeft, manipSurface->bottomRight };
-
-
-		for (int i = 0; i < handles.size(); i++) handles[i]->setPoint(posAtMouseDown[i] + offsetRelative);
-	}
-	else if (closestHandle != nullptr)
-	{
-		Point<float> tp = posAtMouseDown[0] + offsetRelative;
-		if (e.mods.isCommandDown())
-		{
-			Point2DParameter* th = screen->getSnapHandle(tp, closestHandle);
-			if (th != nullptr) tp = th->getPoint();
-		}
-
-		closestHandle->setPoint(tp);
-		for (auto& h : overlapHandles) h->setPoint(tp);
-
-	}
-	repaint();
-}
-
-void ScreenOutput::mouseUp(const MouseEvent& e)
-{
-	if (manipSurface != nullptr)
-	{
-		Array<Point2DParameter*> handles = { manipSurface->topLeft, manipSurface->topRight, manipSurface->bottomLeft, manipSurface->bottomRight };
-		Array<UndoableAction*> actions;
-		for (int i = 0; i < handles.size(); i++) actions.add(handles[i]->setUndoablePoint(posAtMouseDown[i], handles[i]->getPoint(), true));
-		UndoMaster::getInstance()->performActions("Move surface", actions);
-
-	}
-	else if (closestHandle != nullptr)
-	{
-
-		if (overlapHandles.size() > 0)
-		{
-			Array<UndoableAction*> actions;
-			actions.add(closestHandle->setUndoablePoint(posAtMouseDown[0], closestHandle->getPoint(), true));
-			for (auto& h : overlapHandles) actions.add(h->setUndoablePoint(posAtMouseDown[0], closestHandle->getPoint(), true));
-			UndoMaster::getInstance()->performActions("Move handles", actions);
-		}
-		else closestHandle->setUndoablePoint(posAtMouseDown[0], closestHandle->getPoint());
-		overlapHandles.clear();
-	}
-	repaint();
-}
-
-void ScreenOutput::mouseExit(const MouseEvent& e)
-{
-	manipSurface = nullptr;
-	closestHandle = nullptr;
-	repaint();
-}
-
-Point<float> ScreenOutput::getRelativeMousePos()
-{
-	return getRelativeScreenPos(getMouseXYRelative());
-}
-
-Point<float> ScreenOutput::getRelativeScreenPos(Point<int> screenPos)
-{
-	Point<float> p = screenPos.toFloat();
-	return Point<float>(p.x / getWidth(), 1 - (p.y / getHeight()));
-}
-
-Point<int> ScreenOutput::getPointOnScreen(Point<float> pos)
-{
-	return Point<float>(pos.x * getWidth(), (1 - pos.y) * getHeight()).toInt();
-}
-
-
 void ScreenOutput::newOpenGLContextCreated()
 {
 	// Set up your OpenGL state here
 	gl::glDebugMessageControl(gl::GL_DEBUG_SOURCE_API, gl::GL_DEBUG_TYPE_OTHER, gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, gl::GL_FALSE);
 	glDisable(GL_DEBUG_OUTPUT);
-
-	createAndLoadShaders();
 }
 
 void ScreenOutput::renderOpenGL()
@@ -288,7 +127,6 @@ void ScreenOutput::renderOpenGL()
 	glTexCoord2f(1, 0); glVertex2f(getWidth(), getHeight());
 	glTexCoord2f(1, 1); glVertex2f(getWidth(), 0);
 	glEnd();
-	glGetError();
 
 	glDisable(GL_TEXTURE_2D);
 	glFinish();
@@ -296,68 +134,12 @@ void ScreenOutput::renderOpenGL()
 
 void ScreenOutput::openGLContextClosing()
 {
-	glEnable(GL_BLEND);
-	textures.clear();
-	glDisable(GL_BLEND);
-	shader = nullptr;
 }
 
 void ScreenOutput::userTriedToCloseWindow()
 {
 	if (inspectable.wasObjectDeleted()) return;
 	screen->enabled->setValue(false);
-}
-
-void ScreenOutput::createAndLoadShaders()
-{
-	//String vertexShader, fragmentShader;
-
-	const char* vertexShaderCode =
-		"in vec2 position;\n"
-		"in vec2 surfacePosition;\n"
-		"in vec3 texcoord;\n"
-		"in vec3 maskcoord;\n"
-		"out vec3 Texcoord;\n"
-		"out vec3 Maskcoord;\n"
-		"out vec2 SurfacePosition;\n"
-		"void main()\n"
-		"{\n"
-		"    Texcoord = texcoord;\n"
-		"    Maskcoord = maskcoord;\n"
-		"    SurfacePosition[0] = (surfacePosition[0]+1.0f)/2.0f;\n"
-		"    SurfacePosition[1] = (surfacePosition[1]+1.0f)/2.0f;\n"
-		"    gl_Position = vec4(position,0,1);\n"
-		"}\n";
-
-	const char* fragmentShaderCode =
-		"in vec3 Texcoord;\n"
-		"in vec3 Maskcoord;\n"
-		"in vec2 SurfacePosition;\n"
-		"out vec4 outColor;\n"
-		"uniform sampler2D tex;\n"
-		"uniform sampler2D mask;\n"
-		"uniform vec4 borderSoft;\n"
-		"float map(float value, float min1, float max1, float min2, float max2) {\n"
-		"return min2 + ((max2-min2)*(value-min1)/(max1-min1)); };"
-		"void main()\n"
-		"{\n"
-		"   outColor = textureProj(tex, Texcoord);\n"
-		"   vec4 maskColor = textureProj(mask, Maskcoord);\n"
-		"   float alpha = 1.0f;\n"
-		"   if (SurfacePosition[1] > 1-borderSoft[0])    {alpha *= map(SurfacePosition[1],1.0f,1-borderSoft[0],0.0f,1.0f);}\n" // top
-		"   if (SurfacePosition[0] > 1.0f-borderSoft[1]) {alpha *= map(SurfacePosition[0], 1.0f, 1 - borderSoft[1], 0.0f, 1.0f); }\n" // right
-		"   if (SurfacePosition[1] < borderSoft[2])      {alpha *= map(SurfacePosition[1],0.0f,borderSoft[2],0.0f,1.0f);}\n" // bottom
-		"   if (SurfacePosition[0] < borderSoft[3])      {alpha *= map(SurfacePosition[0],0.0f,borderSoft[3],0.0f,1.0f);}\n" // left
-		"   alpha *= maskColor[1]; \n"
-		"   outColor[3] = alpha;\n"
-		//"    outColor = vec4(0.5f,0.5f,0.5f,0.5f);   "
-		"}\n";
-
-	shader.reset(new OpenGLShaderProgram(openGLContext));
-	shader->addVertexShader(OpenGLHelpers::translateVertexShaderToV3(vertexShaderCode));
-	shader->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(fragmentShaderCode));
-	shader->link();
-
 }
 
 bool ScreenOutput::keyPressed(const KeyPress& key, Component* originatingComponent)
@@ -376,14 +158,16 @@ bool ScreenOutput::keyPressed(const KeyPress& key, Component* originatingCompone
 
 ScreenOutputWatcher::ScreenOutputWatcher()
 {
-	ScreenManager::getInstance()->addBaseManagerListener(this);
+	ScreenManager::getInstance()->addAsyncManagerListener(this);
 	ScreenManager::getInstance()->addAsyncContainerListener(this);
 	Engine::mainEngine->addEngineListener(this);
+
+
 }
 
 ScreenOutputWatcher::~ScreenOutputWatcher()
 {
-	ScreenManager::getInstance()->removeBaseManagerListener(this);
+	ScreenManager::getInstance()->removeAsyncManagerListener(this);
 	ScreenManager::getInstance()->removeAsyncContainerListener(this);
 	Engine::mainEngine->removeEngineListener(this);
 	outputs.clear();
@@ -414,49 +198,49 @@ ScreenOutput* ScreenOutputWatcher::getOutputForScreen(Screen* s)
 }
 
 
-//void ScreenOutputWatcher::newMessage(const ScreenManager::ManagerEvent& e)
+void ScreenOutputWatcher::newMessage(const ScreenManager::ManagerEvent& e)
+{
+	if (Engine::mainEngine->isLoadingFile) return;
+	switch (e.type)
+	{
+	case ScreenManager::ManagerEvent::ITEM_ADDED:
+		updateOutput(e.getItem());
+		break;
+
+	case ScreenManager::ManagerEvent::ITEMS_ADDED:
+		for (auto& s : e.getItems()) updateOutput(s);
+		break;
+
+
+	case ScreenManager::ManagerEvent::ITEM_REMOVED:
+		updateOutput(e.getItem());
+		break;
+
+	case ScreenManager::ManagerEvent::ITEMS_REMOVED:
+		for (auto& s : e.getItems()) updateOutput(s);
+		break;
+	}
+}
+
+//void ScreenOutputWatcher::itemAdded(Screen* item)
 //{
-//	if (Engine::mainEngine->isLoadingFile) return;
-//	switch (e.type)
-//	{
-//	case ScreenManager::ManagerEvent::ITEM_ADDED:
-//		updateOutput(e.getItem());
-//		break;
-//
-//	case ScreenManager::ManagerEvent::ITEMS_ADDED:
-//		for (auto& s : e.getItems()) updateOutput(s);
-//		break;
-//
-//
-//	case ScreenManager::ManagerEvent::ITEM_REMOVED:
-//		updateOutput(e.getItem());
-//		break;
-//
-//	case ScreenManager::ManagerEvent::ITEMS_REMOVED:
-//		for (auto& s : e.getItems()) updateOutput(s);
-//		break;
-//	}
+//	updateOutput(item);
 //}
-
-void ScreenOutputWatcher::itemAdded(Screen* item)
-{
-	updateOutput(item);
-}
-
-void ScreenOutputWatcher::itemsAdded(Array<Screen*> items)
-{
-	for (auto& s : items) updateOutput(s);
-}
-
-void ScreenOutputWatcher::itemRemoved(Screen* item)
-{
-	updateOutput(item, true);
-}
-
-void ScreenOutputWatcher::itemsRemoved(Array<Screen*> items)
-{
-	for (auto& s : items) updateOutput(s, true);
-}
+//
+//void ScreenOutputWatcher::itemsAdded(Array<Screen*> items)
+//{
+//	for (auto& s : items) updateOutput(s);
+//}
+//
+//void ScreenOutputWatcher::itemRemoved(Screen* item)
+//{
+//	updateOutput(item, true);
+//}
+//
+//void ScreenOutputWatcher::itemsRemoved(Array<Screen*> items)
+//{
+//	for (auto& s : items) updateOutput(s, true);
+//}
 
 void ScreenOutputWatcher::newMessage(const ContainerAsyncEvent& e)
 {

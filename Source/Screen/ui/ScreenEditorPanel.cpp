@@ -301,7 +301,6 @@ void ScreenEditorView::renderOpenGL()
 	float fr = fw * 1.0f / fh;
 	float r = getWidth() * 1.0f / getHeight();
 
-	DBG(fr << " " << r);
 	int w = getWidth();
 	int h = getHeight();
 
