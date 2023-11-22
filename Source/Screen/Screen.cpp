@@ -58,10 +58,13 @@ Point2DParameter* Screen::getClosestHandle(Point<float> pos, float maxDistance, 
 		if (!s->enabled->boolValue()) continue;
 
 		Array<Point2DParameter*> handles = { s->topLeft, s->topRight, s->bottomLeft, s->bottomRight };
-		Array<Point2DParameter*> bezierHandles = { s->handleBezierTopLeft, s->handleBezierTopRight, s->handleBezierBottomLeft, s->handleBezierBottomRight, s->handleBezierLeftTop, s->handleBezierLeftBottom, s->handleBezierRightTop, s->handleBezierRightBottom };
+		
+		
 		if (s->isBezier->boolValue()) {
+			Array<Point2DParameter*> bezierHandles = { s->handleBezierTopLeft, s->handleBezierTopRight, s->handleBezierBottomLeft, s->handleBezierBottomRight, s->handleBezierLeftTop, s->handleBezierLeftBottom, s->handleBezierRightTop, s->handleBezierRightBottom };
 			handles.addArray(bezierHandles);
 		}
+
 		for (auto& h : handles)
 		{
 			if (excludeHandles.contains(h)) continue;
