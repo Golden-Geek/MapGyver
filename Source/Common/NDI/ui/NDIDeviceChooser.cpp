@@ -95,11 +95,11 @@ void NDIDeviceChooser::comboBoxChanged(ComboBox* cb)
 
 void NDIDeviceChooser::NDIDeviceInAdded(NDIInputDevice*)
 {
-	updateInputComboBox();
+	MessageManager::callAsync([this]() {updateInputComboBox(); });
 }
 
 void NDIDeviceChooser::NDIDeviceInRemoved(NDIInputDevice*)
 {
-	updateInputComboBox();
+	MessageManager::callAsync([this](){updateInputComboBox(); });
 }
 
