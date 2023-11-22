@@ -71,6 +71,18 @@ void MediaNDI::videoFrameReceived(NDIlib_video_frame_v2_t* frame)
 
     std::memcpy(bitmapData->data, frameData, width * height * 4); // 
     imageLock.exit();
+    frameUpdated = true;
+}
+
+void MediaNDI::renderOpenGL()
+{
+    if (frameBuffer.getWidth() != image.getWidth() || frameBuffer.getHeight() != image.getHeight()) {
+        frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
+    }
+    if (frameUpdated) {
+        frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
+        frameUpdated = false;
+    }
 }
 
 

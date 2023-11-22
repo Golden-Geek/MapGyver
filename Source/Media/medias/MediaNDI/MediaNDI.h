@@ -19,6 +19,8 @@ public:
     MediaNDI(var params = var());
     ~MediaNDI();
 
+    bool frameUpdated;
+
     NDIDeviceParameter* ndiParam;
     NDIInputDevice* ndiDevice = nullptr;
     ColorParameter* color;
@@ -31,5 +33,8 @@ public:
     void updateDevice();
 
     void videoFrameReceived(NDIlib_video_frame_v2_t* frame) override;
+
+    void renderOpenGL();
+
     //virtual MediaUI* createUI() {return new MediaNDI(); };
 };
