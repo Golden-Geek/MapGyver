@@ -20,6 +20,8 @@ public:
     String objectType;
     var objectData;
 
+    BoolParameter* showTestPattern;
+
     Point2DParameter* topLeft;
     Point2DParameter* topRight;
     Point2DParameter* bottomLeft;

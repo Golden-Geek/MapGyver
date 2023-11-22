@@ -27,6 +27,8 @@ Screen::Screen(var params) :
 
 	screenID = addIntParameter("Screen number", "Screen ID in your OS", 1, 0);
 
+	showTestPattern = addBoolParameter("Show Test Pattern", "Show a test pattern on the screen", false);
+
 	snapDistance = addFloatParameter("Snap distance", "Distance in pixels to snap to another point", .05f, 0, .2f);
 
 	if (!Engine::mainEngine->isLoadingFile) surfaces.addItem();

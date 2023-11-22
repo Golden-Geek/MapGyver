@@ -29,6 +29,7 @@ public:
     EnumParameter* outputType;
     IntParameter* screenID;
 
+    BoolParameter* showTestPattern;
     FloatParameter* snapDistance;
 
     SurfaceManager surfaces;

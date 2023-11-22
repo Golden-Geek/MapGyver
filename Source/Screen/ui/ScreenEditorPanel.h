@@ -12,7 +12,8 @@
 
 class ScreenEditorView :
 	public InspectableContentComponent,
-	public OpenGLRenderer
+	public OpenGLRenderer,
+	public DragAndDropTarget
 {
 public:
 	ScreenEditorView(Screen* screen);
@@ -38,6 +39,11 @@ public:
 	float zoomAtMouseDown;
 	Point<float> viewOffset;
 
+	//drag drop
+	Surface* candidateDropSurface;
+
+	GLuint framebuffer;
+
 	void paint(Graphics& g) override;
 
 	void mouseDown(const MouseEvent& e) override;
@@ -50,6 +56,12 @@ public:
 	Point<float> getRelativeScreenPos(Point<int> screenPos);
 	Point<int> getPointOnScreen(Point<float> pos);
 	void moveScreenPointTo(Point<float> screenPos, Point<int> posOnScreen);
+
+	bool isInterestedInDragSource(const SourceDetails& dragSourceDetails) override;
+	void itemDragEnter(const SourceDetails& source) override;
+	void itemDragMove(const SourceDetails& source) override;
+	void itemDragExit(const SourceDetails& source) override;
+	void itemDropped(const SourceDetails& source) override;
 
 	// Inherited via OpenGLRenderer
 	void newOpenGLContextCreated() override;

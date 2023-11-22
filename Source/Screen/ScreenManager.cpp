@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-    ObjectManager.cpp
-    Created: 26 Sep 2020 10:02:28am
-    Author:  bkupe
+	ObjectManager.cpp
+	Created: 26 Sep 2020 10:02:28am
+	Author:  bkupe
 
   ==============================================================================
 */
@@ -13,27 +13,33 @@
 juce_ImplementSingleton(ScreenManager);
 
 ScreenManager::ScreenManager() :
-    BaseManager("Screen")
-    {
-    itemDataType = "Screen";
-    selectItemWhenCreated = true;
+	BaseManager("Screen"),
+	editingScreen(nullptr)
+{
+	itemDataType = "Screen";
+	selectItemWhenCreated = true;
 }
 
 ScreenManager::~ScreenManager()
 {
-    // stopThread(1000);
 }
 
 
-void ScreenManager::addItemInternal(Screen* o, var data)
+var ScreenManager::getJSONData()
 {
+	var data = BaseManager::getJSONData();
+	if(editingScreen != nullptr) data.getDynamicObject()->setProperty("editingScreen", editingScreen->shortName);
+	return data;
 }
 
-void ScreenManager::removeItemInternal(Screen* o)
+void ScreenManager::loadJSONDataManagerInternal(var data)
 {
-}
+	BaseManager::loadJSONDataManagerInternal(data);
 
-void ScreenManager::onContainerParameterChanged(Parameter* p)
-{
+	if (data.hasProperty("editingScreen"))
+	{
+		String editingScreenName = data.getProperty("editingScreen", "Screen").toString();
+		editingScreen = getItemWithName(editingScreenName);
+	}
 }
 

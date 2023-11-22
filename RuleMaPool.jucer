@@ -44,6 +44,10 @@
       </GROUP>
       <GROUP id="{924D741D-3B07-1454-A4CF-6C278ABC753A}" name="Media">
         <GROUP id="{C40269DA-3473-C7DB-E54E-1486703E54A8}" name="medias">
+          <GROUP id="{9464B2D1-738F-D466-E697-1054D73E3948}" name="MediaShader">
+            <FILE id="NXeQy7" name="MediaShader.cpp" compile="0" resource="0" file="Source/Media/medias/MediaShader/MediaShader.cpp"/>
+            <FILE id="gGslhe" name="MediaShader.h" compile="0" resource="0" file="Source/Media/medias/MediaShader/MediaShader.h"/>
+          </GROUP>
           <GROUP id="{18CB82B5-568E-3754-3C9C-2B7779AFABA3}" name="MediaComposition">
             <GROUP id="{2638868B-D71E-0B00-8DB6-2AC3237D5D0B}" name="CompositionLayer">
               <FILE id="y8GK6F" name="CompositionLayer.cpp" compile="0" resource="0"
@@ -107,6 +111,8 @@
                 file="Source/Media/ui/MediaManagerUI.cpp"/>
           <FILE id="i0ITQB" name="MediaManagerUI.h" compile="0" resource="0"
                 file="Source/Media/ui/MediaManagerUI.h"/>
+          <FILE id="K1OWpR" name="MediaUI.cpp" compile="0" resource="0" file="Source/Media/ui/MediaUI.cpp"/>
+          <FILE id="SpABRc" name="MediaUI.h" compile="0" resource="0" file="Source/Media/ui/MediaUI.h"/>
         </GROUP>
         <FILE id="DUraYx" name="Media.cpp" compile="0" resource="0" file="Source/Media/Media.cpp"/>
         <FILE id="l2LpxR" name="Media.h" compile="0" resource="0" file="Source/Media/Media.h"/>

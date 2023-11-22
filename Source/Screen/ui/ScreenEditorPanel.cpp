@@ -10,6 +10,7 @@
 
 #include "Screen/ScreenIncludes.h"
 #include "Common/CommonIncludes.h"
+#include "Media/MediaIncludes.h"
 
 //EDITOR VIEW
 
@@ -21,6 +22,7 @@ ScreenEditorView::ScreenEditorView(Screen* screen) :
 	panningMode(false),
 	closestHandle(nullptr),
 	manipSurface(nullptr),
+	candidateDropSurface(nullptr),
 	zoom(1),
 	zoomAtMouseDown(1)
 {
@@ -44,25 +46,32 @@ void ScreenEditorView::paint(Graphics& g)
 
 	Colour col = isMouseButtonDown() ? Colours::yellow : Colours::cyan;
 
-	if (manipSurface != nullptr)
+	if (manipSurface != nullptr || candidateDropSurface != nullptr)
 	{
+		Surface* surface = candidateDropSurface != nullptr ? candidateDropSurface : manipSurface;
+
+		if (candidateDropSurface != nullptr) col = Colours::purple;
+
 		Path surfacePath;
-		surfacePath.addPath(manipSurface->quadPath);
-		 
+		surfacePath.addPath(surface->quadPath);
+
 		AffineTransform at = AffineTransform::verticalFlip(1) //inverse the Y axis
 			.followedBy(AffineTransform::translation(-viewOffset.x, viewOffset.y))
 			.followedBy(AffineTransform::scale(frameBufferRect.getWidth() * zoom, frameBufferRect.getHeight() * zoom)) //scale to the component size
 			.followedBy(AffineTransform::translation(frameBufferRect.getX(), frameBufferRect.getY())); //translate to the component position
 		surfacePath.applyTransform(at);
 
+
 		g.setColour(col.withAlpha(.1f));
 		g.fillPath(surfacePath);
 		g.setColour(col.brighter(.3f));
 		g.strokePath(surfacePath, PathStrokeType(2.0f));
 
-		g.drawLine(Line<float>(getPointOnScreen(manipSurface->topLeft->getPoint()).toFloat(), getPointOnScreen(manipSurface->bottomRight->getPoint()).toFloat()), 2.0f);
-		g.drawLine(Line<float>(getPointOnScreen(manipSurface->topRight->getPoint()).toFloat(), getPointOnScreen(manipSurface->bottomLeft->getPoint()).toFloat()), 2.0f);
-
+		if (manipSurface != nullptr)
+		{
+			g.drawLine(Line<float>(getPointOnScreen(manipSurface->topLeft->getPoint()).toFloat(), getPointOnScreen(manipSurface->bottomRight->getPoint()).toFloat()), 2.0f);
+			g.drawLine(Line<float>(getPointOnScreen(manipSurface->topRight->getPoint()).toFloat(), getPointOnScreen(manipSurface->bottomLeft->getPoint()).toFloat()), 2.0f);
+		}
 	}
 	else if (closestHandle != nullptr)
 	{
@@ -266,6 +275,19 @@ void ScreenEditorView::renderOpenGL()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
+	Colour c = BG_COLOR.darker();
+	//draw BG
+	glBegin(GL_QUADS);
+	glColor3f(c.getFloatRed(), c.getFloatGreen(), c.getFloatBlue());
+	glTexCoord2f(0, 0); glVertex2f(0, 0);
+	glTexCoord2f(0, 1); glVertex2f(0, getHeight());
+	glTexCoord2f(1, 1); glVertex2f(getWidth(), getHeight());
+	glTexCoord2f(1, 0); glVertex2f(getWidth(), 0);
+	glEnd();
+	glGetError();
+
+
+	//draw frameBuffer
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, frameBuffer->getTextureID());
 
@@ -299,11 +321,13 @@ void ScreenEditorView::renderOpenGL()
 	float ox = viewOffset.x;
 	float oy = viewOffset.y;
 
+
 	glBegin(GL_QUADS);
-	glTexCoord2f(ox, oy+1); glVertex2f(tx, ty);
-	glTexCoord2f(ox+rZoom, oy+1); glVertex2f(tx + tw, ty);
-	glTexCoord2f(ox+rZoom, oy+hZoom); glVertex2f(tx + tw, ty + th);
-	glTexCoord2f(ox, oy+hZoom); glVertex2f(tx, ty + th);
+	glColor3f(1, 1, 1);
+	glTexCoord2f(ox, oy + 1); glVertex2f(tx, ty);
+	glTexCoord2f(ox + rZoom, oy + 1); glVertex2f(tx + tw, ty);
+	glTexCoord2f(ox + rZoom, oy + hZoom); glVertex2f(tx + tw, ty + th);
+	glTexCoord2f(ox, oy + hZoom); glVertex2f(tx, ty + th);
 	glEnd();
 	glGetError();
 
@@ -315,6 +339,46 @@ void ScreenEditorView::renderOpenGL()
 
 void ScreenEditorView::openGLContextClosing()
 {
+}
+
+bool ScreenEditorView::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
+{
+	if (dragSourceDetails.description.getProperty("dataType", "") == "Media") return true;
+
+}
+
+
+
+void ScreenEditorView::itemDragEnter(const SourceDetails& source)
+{
+	if (BaseItemMinimalUI<Media>* m = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get()))
+	{
+		candidateDropSurface = screen->getSurfaceAt(getRelativeMousePos());
+		repaint();
+	}
+}
+
+void ScreenEditorView::itemDragMove(const SourceDetails& source)
+{
+	if (BaseItemMinimalUI<Media>* m = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get()))
+	{
+		candidateDropSurface = screen->getSurfaceAt(getRelativeMousePos());
+		repaint();
+	}
+}
+
+void ScreenEditorView::itemDragExit(const SourceDetails& source)
+{
+	candidateDropSurface = nullptr;
+	repaint();
+}
+
+void ScreenEditorView::itemDropped(const SourceDetails& source)
+{
+	if (candidateDropSurface == nullptr) return;
+	candidateDropSurface->media->setValueFromTarget(dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())->item);
+	candidateDropSurface = nullptr;
+	repaint();
 }
 
 void ScreenEditorView::moveScreenPointTo(Point<float> screenPos, Point<int> posOnScreen)
@@ -331,6 +395,7 @@ ScreenEditorPanel::ScreenEditorPanel(const String& name) :
 	ShapeShifterContentComponent(name)
 {
 	InspectableSelectionManager::mainSelectionManager->addSelectionListener(this);
+	if (ScreenManager::getInstance()->editingScreen != nullptr) setCurrentScreen(ScreenManager::getInstance()->editingScreen);
 }
 
 ScreenEditorPanel::~ScreenEditorPanel()
@@ -369,6 +434,8 @@ void ScreenEditorPanel::setCurrentScreen(Screen* screen)
 		screenEditorView.reset(new ScreenEditorView(screen));
 		addAndMakeVisible(screenEditorView.get());
 	}
+
+	ScreenManager::getInstance()->editingScreen = screen;
 
 	resized();
 }

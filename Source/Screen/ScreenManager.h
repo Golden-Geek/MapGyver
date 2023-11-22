@@ -18,10 +18,10 @@ public:
 
     ScreenManager();
     ~ScreenManager();
+     
+    Screen* editingScreen;
 
-    void addItemInternal(Screen* o, var data) override;
-    void removeItemInternal(Screen* o) override;
-
-    void onContainerParameterChanged(Parameter* p) override;
+    var getJSONData() override;
+    void loadJSONDataManagerInternal(var data) override;
 
 };

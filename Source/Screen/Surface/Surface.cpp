@@ -21,6 +21,8 @@ Surface::Surface(var params) :
 
 	itemDataType = "Surface";
 
+	showTestPattern = addBoolParameter("Show Test Pattern", "If checked this will not use the media but generate a TestPatterns", false);
+
 	topLeft = addPoint2DParameter("topLeft ", "");
 	topRight = addPoint2DParameter("topRight ", "");
 	bottomLeft = addPoint2DParameter("bottomLeft ", "");

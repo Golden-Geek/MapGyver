@@ -17,6 +17,9 @@
     <Filter Include="RuleMapPool\Source\Engine">
       <UniqueIdentifier>{2E85C889-6BDA-D2A7-A006-FA7D1DEF61EB}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RuleMapPool\Source\Media\medias\MediaShader">
+      <UniqueIdentifier>{2D43DA54-3CA8-E8AD-5B5F-2B9F509B2605}</UniqueIdentifier>
+    </Filter>
     <Filter Include="RuleMapPool\Source\Media\medias\MediaComposition\CompositionLayer">
       <UniqueIdentifier>{D5A2BED2-CED6-F608-9FC6-E19B500C1851}</UniqueIdentifier>
     </Filter>
@@ -688,6 +691,9 @@
     <ClCompile Include="..\..\Source\Engine\RMPEngine.cpp">
       <Filter>RuleMapPool\Source\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\MediaShader\MediaShader.cpp">
+      <Filter>RuleMapPool\Source\Media\medias\MediaShader</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\MediaComposition\CompositionLayer\CompositionLayer.cpp">
       <Filter>RuleMapPool\Source\Media\medias\MediaComposition\CompositionLayer</Filter>
     </ClCompile>
@@ -710,6 +716,9 @@
       <Filter>RuleMapPool\Source\Media\medias\MediaVideo</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\ui\MediaManagerUI.cpp">
+      <Filter>RuleMapPool\Source\Media\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\ui\MediaUI.cpp">
       <Filter>RuleMapPool\Source\Media\ui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\Media.cpp">
@@ -3018,6 +3027,9 @@
     <ClInclude Include="..\..\Source\Engine\RMPEngine.h">
       <Filter>RuleMapPool\Source\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\MediaShader\MediaShader.h">
+      <Filter>RuleMapPool\Source\Media\medias\MediaShader</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\MediaComposition\CompositionLayer\CompositionLayer.h">
       <Filter>RuleMapPool\Source\Media\medias\MediaComposition\CompositionLayer</Filter>
     </ClInclude>
@@ -3088,6 +3100,9 @@
       <Filter>RuleMapPool\Source\Media\medias\MediaVideo</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\ui\MediaManagerUI.h">
+      <Filter>RuleMapPool\Source\Media\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\ui\MediaUI.h">
       <Filter>RuleMapPool\Source\Media\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\Media.h">

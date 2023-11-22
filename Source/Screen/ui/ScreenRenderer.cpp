@@ -28,12 +28,13 @@ ScreenRenderer::~ScreenRenderer()
 void ScreenRenderer::newOpenGLContextCreated()
 {
 	// Set up your OpenGL state here
-	frameBuffer.initialise(GlContextHolder::getInstance()->context, screen->screenWidth->intValue(), screen->screenHeight->intValue());
 	createAndLoadShaders();
+	frameBuffer.initialise(GlContextHolder::getInstance()->context, screen->screenWidth->intValue(), screen->screenHeight->intValue());
 }
 
 void ScreenRenderer::renderOpenGL()
 {
+	
 	// Définir la vue OpenGL en fonction de la taille du composant
 
 	frameBuffer.makeCurrentRenderingTarget();

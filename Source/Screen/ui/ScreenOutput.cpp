@@ -24,7 +24,7 @@ ScreenOutput::ScreenOutput(Screen* screen) :
 {
 	setOpaque(true);
 
-	openGLContext.setNativeSharedContext(&GlContextHolder::getInstance()->context);
+	openGLContext.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
 	openGLContext.setRenderer(this);
 	openGLContext.attachTo(*this);
 	openGLContext.setComponentPaintingEnabled(true);
@@ -265,134 +265,33 @@ void ScreenOutput::renderOpenGL()
 	}
 
 	glViewport(0, 0, getWidth(), getHeight());
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, getWidth(), getHeight(), 0, 0, 1);
 
-	if (shader != nullptr)
-	{
-		shader->use();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, screen->renderer->frameBuffer.getTextureID());
 
-		if (screen != nullptr && !screen->isClearing)
-		{
-			Point<float> tl, tr, bl, br;
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			GenericScopedLock lock(screen->surfaces.items.getLock());
-			for (auto& s : screen->surfaces.items)
-			{
-				if (!s->enabled->boolValue()) continue;
+	glBegin(GL_QUADS);
+	glColor3f(1, 1, 1);
+	glTexCoord2f(0, 1); glVertex2f(0, 0);
+	glTexCoord2f(0, 0); glVertex2f(0, getHeight());
+	glTexCoord2f(1, 0); glVertex2f(getWidth(), getHeight());
+	glTexCoord2f(1, 1); glVertex2f(getWidth(), 0);
+	glEnd();
+	glGetError();
 
-				Media* mask = dynamic_cast<Media*>(s->mask->targetContainer.get());
-				std::shared_ptr<OpenGLTexture> texMask = nullptr;
-
-				GLuint maskLocation = glGetUniformLocation(shader->getProgramID(), "mask");
-				glUniform1i(maskLocation, 0);
-				glActiveTexture(GL_TEXTURE0);
-
-				//myTexture.bind();
-				if (mask != nullptr)
-				{
-					if (!textures.contains(mask))
-					{
-						texMask = std::make_shared<OpenGLTexture>();
-						texMask->loadImage(mask->image);
-						texturesVersions.set(mask, mask->imageVersion);
-						textures.set(mask, texMask);
-					}
-					texMask = textures.getReference(mask);
-					unsigned int vers = texturesVersions.getReference(mask);
-					if (mask->imageVersion != vers)
-					{
-						texMask->loadImage(mask->image);
-						texturesVersions.set(mask, mask->imageVersion);
-					}
-					texMask->bind();
-				}
-				else
-				{
-					juce::Image whiteImage(juce::Image::PixelFormat::ARGB, 1, 1, true);
-					whiteImage.setPixelAt(0, 0, Colours::white);
-					texMask = std::make_shared<OpenGLTexture>();
-					texMask->loadImage(whiteImage);
-					texMask->bind();
-				}
-
-				Media* m = dynamic_cast<Media*>(s->media->targetContainer.get());
-				std::shared_ptr<OpenGLTexture> tex = nullptr;
-
-				GLuint textureLocation = glGetUniformLocation(shader->getProgramID(), "tex");
-				glUniform1i(textureLocation, 1);
-				glActiveTexture(GL_TEXTURE1);
-
-				if (m != nullptr)
-				{
-					if (!textures.contains(m))
-					{
-						tex = std::make_shared<OpenGLTexture>();
-						tex->loadImage(m->image);
-						texturesVersions.set(m, m->imageVersion);
-						textures.set(m, tex);
-					}
-					tex = textures.getReference(m);
-					unsigned int vers = texturesVersions.getReference(m);
-					if (m->imageVersion != vers)
-					{
-						tex->loadImage(m->image);
-						texturesVersions.set(m, m->imageVersion);
-					}
-					tex->bind();
-				}
-
-
-				// vertices start
-
-				// Create a vertex buffer object
-				GLuint vbo;
-				glGenBuffers(1, &vbo);
-				glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-				GLint posAttrib = glGetAttribLocation(shader->getProgramID(), "position");
-				glEnableVertexAttribArray(posAttrib);
-				glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), 0);
-
-				GLint surfacePosAttrib = glGetAttribLocation(shader->getProgramID(), "surfacePosition");
-				glEnableVertexAttribArray(surfacePosAttrib);
-				glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
-
-				GLint texAttrib = glGetAttribLocation(shader->getProgramID(), "texcoord");
-				glEnableVertexAttribArray(texAttrib);
-				glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
-
-				GLint maskAttrib = glGetAttribLocation(shader->getProgramID(), "maskcoord");
-				glEnableVertexAttribArray(maskAttrib);
-				glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
-
-				GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
-				glUniform4f(borderSoftLocation, s->softEdgeTop->floatValue(), s->softEdgeRight->floatValue(), s->softEdgeBottom->floatValue(), s->softEdgeLeft->floatValue());
-
-				GLuint ebo;
-				glGenBuffers(1, &ebo);
-
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-				s->verticesLock.enter();
-				glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * s->vertices.size(), s->vertices.getRawDataPointer(), GL_STATIC_DRAW);
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, s->verticesElements.size() * sizeof(GLuint), s->verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
-				s->verticesLock.exit();
-
-				glDrawElements(GL_TRIANGLES, s->verticesElements.size(), GL_UNSIGNED_INT, 0);
-
-				if (tex != nullptr) tex->unbind();
-				if (texMask != nullptr) texMask->unbind();
-
-			}
-		}
-
-		glDisable(GL_BLEND);
-	}
+	glDisable(GL_TEXTURE_2D);
+	glFinish();
 }
 
 void ScreenOutput::openGLContextClosing()
