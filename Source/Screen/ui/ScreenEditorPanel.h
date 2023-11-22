@@ -52,6 +52,7 @@ public:
 	void mouseUp(const MouseEvent& e) override;
 	void mouseExit(const MouseEvent& e) override;
 
+
 	Point<float> getRelativeMousePos();
 	Point<float> getRelativeScreenPos(Point<int> screenPos);
 	Point<int> getPointOnScreen(Point<float> pos);

@@ -17,7 +17,7 @@
 ScreenEditorView::ScreenEditorView(Screen* screen) :
 	InspectableContentComponent(screen),
 	screen(screen),
-	zoomSensitivity(1.5f),
+	zoomSensitivity(3.f),
 	zoomingMode(false),
 	panningMode(false),
 	closestHandle(nullptr),
@@ -103,16 +103,20 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 		zoomAtMouseDown = zoom;
 		offsetAtMouseDown = viewOffset;
 		focusPointAtMouseDown = getRelativeMousePos();
-		return;
 	}
 
 	panningMode = KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey);
 	if (panningMode)
 	{
 		offsetAtMouseDown = viewOffset;
-		return;
 	}
 
+	if (zoomingMode || panningMode)
+	{
+		closestHandle = nullptr;
+		repaint();
+		return;
+	}
 
 	//surface manip mode
 	if (manipSurface != nullptr)
@@ -155,7 +159,7 @@ void ScreenEditorView::mouseDrag(const MouseEvent& e)
 
 	if (zoomingMode)
 	{
-		zoom = zoomAtMouseDown + offsetRelative.getDistanceFromOrigin() * (offsetRelative.y > 0 ? 1 : -1) * zoomSensitivity;
+		zoom = zoomAtMouseDown + offsetRelative.y * zoomSensitivity;
 		moveScreenPointTo(focusPointAtMouseDown, focusScreenPoint);
 		return;
 	}
@@ -301,7 +305,6 @@ void ScreenEditorView::renderOpenGL()
 	float fr = fw * 1.0f / fh;
 	float r = getWidth() * 1.0f / getHeight();
 
-	DBG(fr << " " << r);
 	int w = getWidth();
 	int h = getHeight();
 
