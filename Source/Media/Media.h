@@ -20,6 +20,7 @@ public:
 	virtual ~Media();
 
 	OpenGLFrameBuffer frameBuffer;
+	bool shouldRedraw;
 
 	void onContainerParameterChangedInternal(Parameter* p);
 
@@ -50,7 +51,6 @@ public:
 	SpinLock imageLock;
 	Image image;
 	std::shared_ptr<Image::BitmapData> bitmapData;
-	bool shouldUpdateImage;
 
 	virtual void renderGL();
 	virtual void initFrameBuffer() override;

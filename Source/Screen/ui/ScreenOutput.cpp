@@ -125,10 +125,10 @@ void ScreenOutput::renderOpenGL()
 
 	glBegin(GL_QUADS);
 	glColor3f(1, 1, 1);
-	glTexCoord2f(0, 1); glVertex2f(0, 0);
-	glTexCoord2f(0, 0); glVertex2f(0, getHeight());
-	glTexCoord2f(1, 0); glVertex2f(getWidth(), getHeight());
-	glTexCoord2f(1, 1); glVertex2f(getWidth(), 0);
+	glTexCoord2f(0, 0); glVertex2f(0, 0);
+	glTexCoord2f(0, 1); glVertex2f(0, getHeight());
+	glTexCoord2f(1, 1); glVertex2f(getWidth(), getHeight());
+	glTexCoord2f(1, 0); glVertex2f(getWidth(), 0);
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);

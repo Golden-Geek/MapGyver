@@ -11,7 +11,8 @@
 #include "Media/MediaIncludes.h"
 
 Media::Media(const String& name, var params) :
-	BaseItem(name)
+	BaseItem(name),
+	shouldRedraw(false)
 {
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
 	saveAndLoadRecursiveData = true;
@@ -40,7 +41,13 @@ void Media::renderOpenGL()
 
 	if (!frameBuffer.isValid()) return;
 
-	renderGL();
+	if (shouldRedraw)
+	{
+		frameBuffer.makeCurrentRenderingTarget();
+		renderGL();
+		frameBuffer.releaseAsRenderingTarget();
+		shouldRedraw = false;
+	}
 }
 
 OpenGLFrameBuffer* Media::getFrameBuffer()
@@ -65,6 +72,7 @@ void Media::initFrameBuffer()
 	if (size.isOrigin()) return;
 
 	frameBuffer.initialise(GlContextHolder::getInstance()->context, size.x, size.y);
+	shouldRedraw = true;
 }
 
 Point<int> Media::getMediaSize()
@@ -76,8 +84,7 @@ Point<int> Media::getMediaSize()
 // ImageMedia
 
 ImageMedia::ImageMedia(const String& name, var params) :
-	Media(name, params),
-	shouldUpdateImage(false)
+	Media(name, params)
 {
 }
 
@@ -87,26 +94,20 @@ ImageMedia::~ImageMedia()
 
 void ImageMedia::renderGL()
 {
-	if (image.isValid() && shouldUpdateImage) {
 
-		GenericScopedLock lock(imageLock);
+	GenericScopedLock lock(imageLock);
 
-		frameBuffer.makeCurrentAndClear();
+	glMatrixMode(GL_TEXTURE);
+	glBindTexture(GL_TEXTURE_2D, frameBuffer.getTextureID());
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.getWidth(), image.getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, bitmapData->data);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
-		glBindTexture(GL_TEXTURE_2D, frameBuffer.getTextureID());
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.getWidth(), image.getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, bitmapData->data);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		frameBuffer.releaseAsRenderingTarget();
-
-		shouldUpdateImage = false;
-	}
 }
 
 void ImageMedia::initFrameBuffer()
 {
-	//Media::initFrameBuffer();
 	frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
+	shouldRedraw = true;
 }
 
 void ImageMedia::initImage(int width, int height)
@@ -118,6 +119,7 @@ void ImageMedia::initImage(Image newImage)
 {
 	image = newImage.convertedToFormat(Image::ARGB);
 	bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
+	shouldRedraw = true;
 }
 
 Point<int> ImageMedia::getMediaSize()

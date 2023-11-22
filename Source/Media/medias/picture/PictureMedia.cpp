@@ -32,7 +32,7 @@ void PictureMedia::onContainerParameterChanged(Parameter* p)
 		{
 			GenericScopedLock lock(imageLock);
 			initImage(ImageFileFormat::loadFrom(target));
-			shouldUpdateImage = true;
+			shouldRedraw = true;
 		}
 	}
 }

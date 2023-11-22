@@ -279,6 +279,10 @@ void ScreenEditorView::renderOpenGL()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
 	Colour c = BG_COLOR.darker();
 	//draw BG
 	glBegin(GL_QUADS);
@@ -295,9 +299,7 @@ void ScreenEditorView::renderOpenGL()
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, frameBuffer->getTextureID());
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	
 
 	int fw = frameBuffer->getWidth();
 	int fh = frameBuffer->getHeight();
@@ -327,10 +329,10 @@ void ScreenEditorView::renderOpenGL()
 
 	glBegin(GL_QUADS);
 	glColor3f(1, 1, 1);
-	glTexCoord2f(ox, oy + 1); glVertex2f(tx, ty);
-	glTexCoord2f(ox + rZoom, oy + 1); glVertex2f(tx + tw, ty);
-	glTexCoord2f(ox + rZoom, oy + hZoom); glVertex2f(tx + tw, ty + th);
-	glTexCoord2f(ox, oy + hZoom); glVertex2f(tx, ty + th);
+	glTexCoord2f(ox, oy + hZoom); glVertex2f(tx, ty);
+	glTexCoord2f(ox + rZoom, oy + hZoom); glVertex2f(tx + tw, ty);
+	glTexCoord2f(ox + rZoom, oy + 1); glVertex2f(tx + tw, ty + th);
+	glTexCoord2f(ox, oy + 1); glVertex2f(tx, ty + th);
 	glEnd();
 	glGetError();
 

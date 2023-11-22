@@ -62,85 +62,16 @@ void ScreenRenderer::renderOpenGL()
 		glGetError();
 	}
 
-	//drawTest();
+	glBegin(GL_QUADS);
+	glColor3f(1, 1, 1);
+	glTexCoord2f(0, 1); glVertex2f(0, 0);
+	glTexCoord2f(0, 0); glVertex2f(0, 20);
+	glTexCoord2f(1, 0); glVertex2f(20, 20);
+	glTexCoord2f(1, 1); glVertex2f(20, 0);
+	glEnd();
+
 
 	frameBuffer.releaseAsRenderingTarget();
-
-}
-
-void ScreenRenderer::drawTest()
-{
-	float vertices[] = {
-		// Front face
-		-0.5f, -0.5f,  0.5f,  // Bottom-left
-		 0.5f, -0.5f,  0.5f,  // Bottom-right
-		 0.5f,  0.5f,  0.5f,  // Top-right
-		 0.5f,  0.5f,  0.5f,  // Top-right
-		-0.5f,  0.5f,  0.5f,  // Top-left
-		-0.5f, -0.5f,  0.5f,  // Bottom-left
-
-		// Back face
-		-0.5f, -0.5f, -0.5f,  // Bottom-left
-		-0.5f,  0.5f, -0.5f,  // Top-left
-		 0.5f,  0.5f, -0.5f,  // Top-right
-		 0.5f,  0.5f, -0.5f,  // Top-right
-		 0.5f, -0.5f, -0.5f,  // Bottom-right
-		-0.5f, -0.5f, -0.5f,  // Bottom-left
-
-		// Left face
-		-0.5f,  0.5f,  0.5f,  // Top-right
-		-0.5f,  0.5f, -0.5f,  // Top-left
-		-0.5f, -0.5f, -0.5f,  // Bottom-left
-		-0.5f, -0.5f, -0.5f,  // Bottom-left
-		-0.5f, -0.5f,  0.5f,  // Bottom-right
-		-0.5f,  0.5f,  0.5f,  // Top-right
-
-		// Right face
-		 0.5f,  0.5f,  0.5f,  // Top-left
-		 0.5f, -0.5f, -0.5f,  // Bottom-right
-		 0.5f,  0.5f, -0.5f,  // Top-right         
-		 0.5f, -0.5f, -0.5f,  // Bottom-right
-		 0.5f,  0.5f,  0.5f,  // Top-left
-		 0.5f, -0.5f,  0.5f,  // Bottom-left     
-
-		 // Bottom face
-		 -0.5f, -0.5f, -0.5f,  // Top-right
-		  0.5f, -0.5f, -0.5f,  // Top-left
-		  0.5f, -0.5f,  0.5f,  // Bottom-left
-		  0.5f, -0.5f,  0.5f,  // Bottom-left
-		 -0.5f, -0.5f,  0.5f,  // Bottom-right
-		 -0.5f, -0.5f, -0.5f,  // Top-right
-
-		 // Top face
-		 -0.5f,  0.5f, -0.5f,  // Top-left
-		  0.5f,  0.5f , 0.5f,  // Bottom-right
-		  0.5f,  0.5f, -0.5f,  // Top-right     
-		  0.5f,  0.5f,  0.5f,  // Bottom-right
-		 -0.5f,  0.5f, -0.5f,  // Top-left
-		 -0.5f,  0.5f,  0.5f   // Bottom-left        
-	};
-
-	testShader->use();
-	GLuint VBO, VAO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-	glBindVertexArray(VAO); // Bind the VAO representing the cube
-	glDrawArrays(GL_TRIANGLES, 0, 36); // Draw the cube
-	glBindVertexArray(0); // Unbind the VAO
-
-	glUseProgram(0);
 
 }
 
@@ -251,7 +182,6 @@ void ScreenRenderer::drawSurface(Surface* s)
 void ScreenRenderer::openGLContextClosing()
 {
 	glEnable(GL_BLEND);
-	textures.clear();
 	glDisable(GL_BLEND);
 	shader = nullptr;
 }
@@ -305,22 +235,4 @@ void ScreenRenderer::createAndLoadShaders()
 	shader->addVertexShader(OpenGLHelpers::translateVertexShaderToV3(vertexShaderCode));
 	shader->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(fragmentShaderCode));
 	shader->link();
-
-
-	const char* testVertexShader =
-		"in vec3 aPos;\n"
-		"void main() {\n"
-		"gl_Position = vec4(aPos, 1.0);\n"
-		"}";
-
-	const char* testFragmentShader =
-		" out vec4 FragColor;\n"
-		"void main() {\n"
-		"FragColor = vec4(1.0, 1.0, 1.0, 1.0); // white color\n"
-		" }\n";
-
-	testShader.reset(new OpenGLShaderProgram(GlContextHolder::getInstance()->context));
-	testShader->addVertexShader(OpenGLHelpers::translateVertexShaderToV3(testVertexShader));
-	testShader->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(testFragmentShader));
-	testShader->link();
 }

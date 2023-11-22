@@ -156,7 +156,7 @@ void* VideoMedia::lock(void** pixels)
 
 void VideoMedia::unlock(void* oldBuffer, void* const* pixels)
 {
-	shouldUpdateImage = true;
+	shouldRedraw = true;
 	imageLock.exit();
 }
 

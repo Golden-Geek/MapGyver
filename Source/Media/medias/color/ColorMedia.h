@@ -22,7 +22,8 @@ public:
 	void clearItem() override;
 	void onContainerParameterChangedInternal(Parameter* p) override;
 
-	void setColor(Colour c);
+	void renderGL() override;
 
+	Point<int> getMediaSize();
 	DECLARE_TYPE("Solid Color")
 };
