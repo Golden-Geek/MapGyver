@@ -43,67 +43,72 @@
         <FILE id="aVz8Zt" name="RMPEngine.h" compile="0" resource="0" file="Source/Engine/RMPEngine.h"/>
       </GROUP>
       <GROUP id="{924D741D-3B07-1454-A4CF-6C278ABC753A}" name="Media">
-        <GROUP id="{C40269DA-3473-C7DB-E54E-1486703E54A8}" name="medias">
-          <GROUP id="{9464B2D1-738F-D466-E697-1054D73E3948}" name="MediaShader">
-            <FILE id="NXeQy7" name="MediaShader.cpp" compile="0" resource="0" file="Source/Media/medias/MediaShader/MediaShader.cpp"/>
-            <FILE id="gGslhe" name="MediaShader.h" compile="0" resource="0" file="Source/Media/medias/MediaShader/MediaShader.h"/>
+        <GROUP id="{284332BF-9D8F-13AD-1288-491679B1B400}" name="medias">
+          <GROUP id="{34DE5101-50DD-DFBC-E9E3-99E1944439CD}" name="color">
+            <FILE id="Zex5T9" name="ColorMedia.cpp" compile="0" resource="0" file="Source/Media/medias/color/ColorMedia.cpp"/>
+            <FILE id="SgIxxG" name="ColorMedia.h" compile="0" resource="0" file="Source/Media/medias/color/ColorMedia.h"/>
           </GROUP>
-          <GROUP id="{18CB82B5-568E-3754-3C9C-2B7779AFABA3}" name="MediaComposition">
-            <GROUP id="{2638868B-D71E-0B00-8DB6-2AC3237D5D0B}" name="CompositionLayer">
-              <FILE id="y8GK6F" name="CompositionLayer.cpp" compile="0" resource="0"
-                    file="Source/Media/medias/MediaComposition/CompositionLayer/CompositionLayer.cpp"/>
-              <FILE id="u7p6Hw" name="CompositionLayer.h" compile="0" resource="0"
-                    file="Source/Media/medias/MediaComposition/CompositionLayer/CompositionLayer.h"/>
-              <FILE id="f4R3bA" name="CompositionLayerManager.cpp" compile="0" resource="0"
-                    file="Source/Media/medias/MediaComposition/CompositionLayer/CompositionLayerManager.cpp"/>
-              <FILE id="vhw3tL" name="CompositionLayerManager.h" compile="0" resource="0"
-                    file="Source/Media/medias/MediaComposition/CompositionLayer/CompositionLayerManager.h"/>
+          <GROUP id="{C1D8290A-0898-63EE-5F55-905BBAF572B5}" name="composition">
+            <GROUP id="{6DFE3C41-BB95-5E6D-83E1-761C9503E865}" name="CompositionLayer">
+              <FILE id="SQhbhW" name="CompositionLayer.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/composition/CompositionLayer/CompositionLayer.cpp"/>
+              <FILE id="QnRAXh" name="CompositionLayer.h" compile="0" resource="0"
+                    file="Source/Media/medias/composition/CompositionLayer/CompositionLayer.h"/>
+              <FILE id="s7Uj9r" name="CompositionLayerManager.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/composition/CompositionLayer/CompositionLayerManager.cpp"/>
+              <FILE id="TAzm77" name="CompositionLayerManager.h" compile="0" resource="0"
+                    file="Source/Media/medias/composition/CompositionLayer/CompositionLayerManager.h"/>
             </GROUP>
-            <FILE id="EkG6PG" name="MediaComposition.cpp" compile="0" resource="0"
-                  file="Source/Media/medias/MediaComposition/MediaComposition.cpp"/>
-            <FILE id="uOuWHR" name="MediaComposition.h" compile="0" resource="0"
-                  file="Source/Media/medias/MediaComposition/MediaComposition.h"/>
+            <FILE id="Qc0V4g" name="CompositionMedia.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/composition/CompositionMedia.cpp"/>
+            <FILE id="gB3RQv" name="CompositionMedia.h" compile="0" resource="0"
+                  file="Source/Media/medias/composition/CompositionMedia.h"/>
           </GROUP>
-          <GROUP id="{FF01396F-522A-96B2-9F45-E39B76944682}" name="MediaImage">
-            <FILE id="U1g5y1" name="MediaImage.cpp" compile="0" resource="0" file="Source/Media/medias/MediaImage/MediaImage.cpp"/>
-            <FILE id="zDkVP8" name="MediaImage.h" compile="0" resource="0" file="Source/Media/medias/MediaImage/MediaImage.h"/>
+          <GROUP id="{C6442A20-240E-74D5-44AC-2F09FDBFAA13}" name="ndi">
+            <FILE id="h4TbQs" name="NDIMedia.cpp" compile="0" resource="0" file="Source/Media/medias/ndi/NDIMedia.cpp"/>
+            <FILE id="cGfKGN" name="NDIMedia.h" compile="0" resource="0" file="Source/Media/medias/ndi/NDIMedia.h"/>
           </GROUP>
-          <GROUP id="{B380765B-610A-370D-BBA2-C2CA5507979C}" name="MediaNDI">
-            <FILE id="oeegkr" name="MediaNDI.cpp" compile="0" resource="0" file="Source/Media/medias/MediaNDI/MediaNDI.cpp"/>
-            <FILE id="UM73VP" name="MediaNDI.h" compile="0" resource="0" file="Source/Media/medias/MediaNDI/MediaNDI.h"/>
+          <GROUP id="{2247A8BB-4BCE-BF66-FE60-B7F0DD09AF0D}" name="picture">
+            <FILE id="MUk5db" name="PictureMedia.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/picture/PictureMedia.cpp"/>
+            <FILE id="E6j3FS" name="PictureMedia.h" compile="0" resource="0" file="Source/Media/medias/picture/PictureMedia.h"/>
           </GROUP>
-          <GROUP id="{769230E9-27A9-EE9F-BF21-8BDB93ABB5DD}" name="MediaSolidColor">
-            <FILE id="i5J8qF" name="MediaSolidColor.cpp" compile="0" resource="0"
-                  file="Source/Media/medias/MediaSolidColor/MediaSolidColor.cpp"/>
-            <FILE id="EnyY8g" name="MediaSolidColor.h" compile="0" resource="0"
-                  file="Source/Media/medias/MediaSolidColor/MediaSolidColor.h"/>
+          <GROUP id="{85865C8C-AC14-E279-F737-BC93A4D8B6E0}" name="shader">
+            <FILE id="EY9yW4" name="ShaderMedia.cpp" compile="0" resource="0" file="Source/Media/medias/shader/ShaderMedia.cpp"/>
+            <FILE id="hDwXde" name="ShaderMedia.h" compile="0" resource="0" file="Source/Media/medias/shader/ShaderMedia.h"/>
           </GROUP>
-          <GROUP id="{9C257473-59F0-A0AD-F365-12A8232D3B05}" name="MediaVideo">
-            <GROUP id="{537B5DE7-54EA-57D1-9307-2FDFFE798C46}" name="vlcpp">
-              <FILE id="xgDKDi" name="common.hpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/vlcpp/common.hpp"/>
-              <FILE id="eh36No" name="Dialog.hpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/vlcpp/Dialog.hpp"/>
-              <FILE id="qZvR9Y" name="Equalizer.hpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/vlcpp/Equalizer.hpp"/>
-              <FILE id="tPFb1G" name="EventManager.hpp" compile="0" resource="0"
-                    file="Source/Media/medias/MediaVideo/vlcpp/EventManager.hpp"/>
-              <FILE id="WgQA08" name="Instance.hpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/vlcpp/Instance.hpp"/>
-              <FILE id="IZEwIo" name="Internal.hpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/vlcpp/Internal.hpp"/>
-              <FILE id="ir6bNk" name="Media.hpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/vlcpp/Media.hpp"/>
-              <FILE id="AmVnSN" name="MediaDiscoverer.hpp" compile="0" resource="0"
-                    file="Source/Media/medias/MediaVideo/vlcpp/MediaDiscoverer.hpp"/>
-              <FILE id="pbXCHN" name="MediaLibrary.hpp" compile="0" resource="0"
-                    file="Source/Media/medias/MediaVideo/vlcpp/MediaLibrary.hpp"/>
-              <FILE id="ba2w2f" name="MediaList.hpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/vlcpp/MediaList.hpp"/>
-              <FILE id="TcVt9s" name="MediaListPlayer.hpp" compile="0" resource="0"
-                    file="Source/Media/medias/MediaVideo/vlcpp/MediaListPlayer.hpp"/>
-              <FILE id="g5zEt1" name="MediaPlayer.hpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/vlcpp/MediaPlayer.hpp"/>
-              <FILE id="tUu0Vz" name="Picture.hpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/vlcpp/Picture.hpp"/>
-              <FILE id="K1ayFx" name="RendererDiscoverer.hpp" compile="0" resource="0"
-                    file="Source/Media/medias/MediaVideo/vlcpp/RendererDiscoverer.hpp"/>
-              <FILE id="pXLRhC" name="structures.hpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/vlcpp/structures.hpp"/>
-              <FILE id="bcbtpv" name="vlc.hpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/vlcpp/vlc.hpp"/>
+          <GROUP id="{45D85D7E-0A3B-33C4-DE6E-4E2C56AA2ECD}" name="sharedtexture">
+            <FILE id="EqiBCU" name="SharedTextureMedia.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/sharedtexture/SharedTextureMedia.cpp"/>
+            <FILE id="dPIWw1" name="SharedTextureMedia.h" compile="0" resource="0"
+                  file="Source/Media/medias/sharedtexture/SharedTextureMedia.h"/>
+          </GROUP>
+          <GROUP id="{789B912B-C9EF-806B-BBB4-78AE0DD44723}" name="video">
+            <GROUP id="{9D414D54-55FD-3F32-B9A7-89C67E1127A7}" name="vlcpp">
+              <FILE id="WQyaU2" name="common.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/common.hpp"/>
+              <FILE id="Dwhrri" name="Dialog.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Dialog.hpp"/>
+              <FILE id="yKWcW1" name="Equalizer.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Equalizer.hpp"/>
+              <FILE id="TpDs3i" name="EventManager.hpp" compile="0" resource="0"
+                    file="Source/Media/medias/video/vlcpp/EventManager.hpp"/>
+              <FILE id="wuezPZ" name="Instance.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Instance.hpp"/>
+              <FILE id="N9aTjF" name="Internal.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Internal.hpp"/>
+              <FILE id="TJzQjd" name="Media.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Media.hpp"/>
+              <FILE id="STki3X" name="MediaDiscoverer.hpp" compile="0" resource="0"
+                    file="Source/Media/medias/video/vlcpp/MediaDiscoverer.hpp"/>
+              <FILE id="BzOtc5" name="MediaLibrary.hpp" compile="0" resource="0"
+                    file="Source/Media/medias/video/vlcpp/MediaLibrary.hpp"/>
+              <FILE id="JuQxnw" name="MediaList.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/MediaList.hpp"/>
+              <FILE id="CNF6ax" name="MediaListPlayer.hpp" compile="0" resource="0"
+                    file="Source/Media/medias/video/vlcpp/MediaListPlayer.hpp"/>
+              <FILE id="paLijP" name="MediaPlayer.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/MediaPlayer.hpp"/>
+              <FILE id="So2tTO" name="Picture.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Picture.hpp"/>
+              <FILE id="ugm3ig" name="RendererDiscoverer.hpp" compile="0" resource="0"
+                    file="Source/Media/medias/video/vlcpp/RendererDiscoverer.hpp"/>
+              <FILE id="ewqOtR" name="structures.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/structures.hpp"/>
+              <FILE id="z5YQqQ" name="vlc.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/vlc.hpp"/>
             </GROUP>
-            <FILE id="fkzo5n" name="MediaVideo.cpp" compile="0" resource="0" file="Source/Media/medias/MediaVideo/MediaVideo.cpp"/>
-            <FILE id="gRWuC5" name="MediaVideo.h" compile="0" resource="0" file="Source/Media/medias/MediaVideo/MediaVideo.h"/>
+            <FILE id="J1IVz4" name="VideoMedia.cpp" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.cpp"/>
+            <FILE id="HIszRg" name="VideoMedia.h" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.h"/>
           </GROUP>
         </GROUP>
         <GROUP id="{246EA82D-0CB9-1D91-B613-BEC53E0B6D70}" name="ui">

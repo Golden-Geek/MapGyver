@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-    MediaIncludes.h
-    Created: 16 Nov 2023 4:04:33pm
-    Author:  bkupe
+	MediaIncludes.h
+	Created: 16 Nov 2023 4:04:33pm
+	Author:  bkupe
 
   ==============================================================================
 */
@@ -14,17 +14,20 @@
 
 #include "Media.h"
 #include "MediaManager.h"
+#include "ui/MediaUI.h"
 #include "ui/MediaManagerUI.h"
 
-#include "medias/MediaComposition/CompositionLayer/CompositionLayer.h"
-#include "medias/MediaComposition/CompositionLayer/CompositionLayerManager.h"
-#include "medias/MediaComposition/MediaComposition.h"
+#include "medias/composition/CompositionLayer/CompositionLayer.h"
+#include "medias/composition/CompositionLayer/CompositionLayerManager.h"
+#include "medias/composition/CompositionMedia.h"
 
-#include "medias/MediaImage/MediaImage.h"
+#include "medias/picture/PictureMedia.h"
 
-#include "medias/MediaNDI/MediaNDI.h"
+#include "medias/ndi/NDIMedia.h"
+#include "medias/sharedtexture/SharedTextureMedia.h"
+#include "medias/shader/ShaderMedia.h"
 
-#include "medias/MediaSolidColor/MediaSolidColor.h"
+#include "medias/color/ColorMedia.h"
 
-#include "medias/MediaVideo/vlcpp/vlc.hpp"
-#include "medias/MediaVideo/MediaVideo.h"
+#include "medias/video/vlcpp/vlc.hpp"
+#include "medias/video/VideoMedia.h"

@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-	MediaComposition.cpp
+	CompositionMedia.cpp
 	Created: 26 Sep 2020 1:51:42pm
 	Author:  bkupe
 
@@ -10,7 +10,7 @@
 
 #include "Media/MediaIncludes.h"
 
-MediaComposition::MediaComposition(var params) :
+CompositionMedia::CompositionMedia(var params) :
 	Media(getTypeString(), params)
 {
 	resolution = addPoint2DParameter("Resolution", "Size of your composition");
@@ -24,24 +24,24 @@ MediaComposition::MediaComposition(var params) :
 	//startThread(Thread::Priority::highest);
 }
 
-MediaComposition::~MediaComposition()
+CompositionMedia::~CompositionMedia()
 {
 	//stopThread(1000);
 }
 
-void MediaComposition::clearItem()
+void CompositionMedia::clearItem()
 {
 	BaseItem::clearItem();
 }
 
-void MediaComposition::onContainerParameterChangedInternal(Parameter* p)
+void CompositionMedia::onContainerParameterChangedInternal(Parameter* p)
 {
 	if (p == resolution) {
 		updateImagesSize();
 	}
 }
 
-void MediaComposition::renderOpenGL()
+void CompositionMedia::renderOpenGL()
 {
     frameBuffer.makeCurrentAndClear();
     glClearColor(0, 0, 0, 0);
@@ -62,10 +62,10 @@ void MediaComposition::renderOpenGL()
             int width = l->size->x;
             int height = l->size->y;
 
-            // Rotation en radians (ex : M_PI_4 pour une rotation de 45 degrés)
+            // Rotation en radians (ex : M_PI_4 pour une rotation de 45 degrÃ©s)
             float rotationAngle = l->rotation->floatValue();
 
-            // Niveau de transparence (0.0 pour complètement transparent, 1.0 pour complètement opaque)
+            // Niveau de transparence (0.0 pour complÃ¨tement transparent, 1.0 pour complÃ¨tement opaque)
             float alpha = l->alpha->floatValue();
 
             // Active la texture
@@ -86,13 +86,13 @@ void MediaComposition::renderOpenGL()
             glEnd();
         }
 
-        // Restaure la matrice de modèle-vue
+        // Restaure la matrice de modÃ¨le-vue
         juce::gl::glPopMatrix();
     }
     frameBuffer.releaseAsRenderingTarget();
 }
 
-void MediaComposition::updateImagesSize()
+void CompositionMedia::updateImagesSize()
 {
     GlContextHolder::getInstance()->context.executeOnGLThread([this](OpenGLContext &c){
         frameBuffer.initialise(GlContextHolder::getInstance()->context, resolution->x, resolution->y);
@@ -100,7 +100,7 @@ void MediaComposition::updateImagesSize()
     
 }
 
-void MediaComposition::controllableFeedbackUpdate(ControllableContainer* cc, Controllable* c)
+void CompositionMedia::controllableFeedbackUpdate(ControllableContainer* cc, Controllable* c)
 {
 	imageNeedRepaint = true;
 }

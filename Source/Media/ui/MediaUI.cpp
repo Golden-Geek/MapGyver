@@ -8,4 +8,13 @@
   ==============================================================================
 */
 
-#include "MediaUI.h"
+#include "Media/MediaIncludes.h"
+
+MediaUI::MediaUI(Media* item) :
+    BaseItemUI(item)
+{
+}
+
+MediaUI::~MediaUI()
+{
+}

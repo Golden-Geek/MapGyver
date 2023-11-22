@@ -1,47 +1,62 @@
 /*
   ==============================================================================
 
-    Object.h
-    Created: 26 Sep 2020 10:02:32am
-    Author:  bkupe
+	Object.h
+	Created: 26 Sep 2020 10:02:32am
+	Author:  bkupe
 
   ==============================================================================
 */
 
 #pragma once
 
-class Media;
 
-class MediaUI :
-    public BaseItemUI<Media>
+class Media :
+	public BaseItem,
+	public OpenGLRenderer
 {
 public:
-    MediaUI(Media* item);
-    virtual ~MediaUI();
+	Media(const String& name = "Media", var params = var());
+	virtual ~Media();
+
+	OpenGLFrameBuffer frameBuffer;
+
+	void onContainerParameterChangedInternal(Parameter* p);
+
+	void newOpenGLContextCreated() override;
+	void renderOpenGL() override;
+	void openGLContextClosing() override;
+
+	virtual void initFrameBuffer();
+
+	virtual void initGL() {}
+	virtual void renderGL() {}
+	virtual void closeGL() {}
+
+	OpenGLFrameBuffer* getFrameBuffer();
+	GLint getTextureID();
+
+	virtual Point<int> getMediaSize();
 };
 
 
-class Media :
-    public BaseItem, 
-    public OpenGLRenderer
+class ImageMedia :
+	public Media
 {
 public:
-    Media(const String& name = "Media", var params = var());
-    virtual ~Media();
-    
-    unsigned int imageVersion;
+	ImageMedia(const String& name = "CPUMedia", var params = var());
+	virtual ~ImageMedia();
 
-    CriticalSection imageLock;
-    Image image;
-    std::shared_ptr<Image::BitmapData> bitmapData;
-    OpenGLFrameBuffer frameBuffer;
+	SpinLock imageLock;
+	Image image;
+	std::shared_ptr<Image::BitmapData> bitmapData;
+	bool shouldUpdateImage;
 
-    void onContainerParameterChangedInternal(Parameter* p);
+	virtual void renderGL();
+	virtual void initFrameBuffer() override;
 
-    void newOpenGLContextCreated() override;
-    void renderOpenGL() override;
-    void openGLContextClosing() override;
+	void initImage(int width, int height);
+	virtual void initImage(Image image);
 
-
-    Point<int> getMediaSize();
+	virtual Point<int> getMediaSize() override;
 };

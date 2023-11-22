@@ -417,6 +417,7 @@ ScreenEditorPanel::ScreenEditorPanel(const String& name) :
 ScreenEditorPanel::~ScreenEditorPanel()
 {
 	InspectableSelectionManager::mainSelectionManager->removeSelectionListener(this);
+	setCurrentScreen(nullptr);
 }
 
 void ScreenEditorPanel::paint(Graphics& g)
@@ -441,14 +442,17 @@ void ScreenEditorPanel::setCurrentScreen(Screen* screen)
 	if (screenEditorView != nullptr)
 	{
 		if (screenEditorView->screen == screen) return;
+		if (screenEditorView->screen != nullptr) screenEditorView->screen->removeInspectableListener(this);
 		removeChildComponent(screenEditorView.get());
 		screenEditorView.reset();
+
 	}
 
 	if (screen != nullptr)
 	{
 		screenEditorView.reset(new ScreenEditorView(screen));
 		addAndMakeVisible(screenEditorView.get());
+		screen->addInspectableListener(this);
 	}
 
 	ScreenManager::getInstance()->editingScreen = screen;

@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    MediaComposition.h
+    CompositionMedia.h
     Created: 26 Sep 2020 1:51:42pm
     Author:  bkupe
 
@@ -10,12 +10,12 @@
 
 #pragma once
 
-class MediaComposition :
+class CompositionMedia :
     public Media
 {
 public:
-    MediaComposition(var params = var());
-    ~MediaComposition();
+    CompositionMedia(var params = var());
+    ~CompositionMedia();
 
     Point2DParameter* resolution;
  

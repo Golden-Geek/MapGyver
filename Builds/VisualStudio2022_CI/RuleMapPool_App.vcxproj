@@ -109,28 +109,31 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Engine\RMPEngine.cpp"/>
-    <ClCompile Include="..\..\Source\Media\medias\MediaShader\MediaShader.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\color\ColorMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\MediaComposition\CompositionLayer\CompositionLayer.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\composition\CompositionLayer\CompositionLayer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\MediaComposition\CompositionLayer\CompositionLayerManager.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\composition\CompositionLayer\CompositionLayerManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\MediaComposition\MediaComposition.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\composition\CompositionMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\MediaImage\MediaImage.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\ndi\NDIMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\MediaNDI\MediaNDI.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\picture\PictureMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\MediaSolidColor\MediaSolidColor.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\shader\ShaderMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\MediaVideo\MediaVideo.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\video\VideoMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\ui\MediaManagerUI.cpp">
@@ -2233,30 +2236,31 @@
     <ClInclude Include="..\..\Source\Common\CommonIncludes.h"/>
     <ClInclude Include="..\..\Source\Common\OpenGLManager.h"/>
     <ClInclude Include="..\..\Source\Engine\RMPEngine.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaShader\MediaShader.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaComposition\CompositionLayer\CompositionLayer.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaComposition\CompositionLayer\CompositionLayerManager.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaComposition\MediaComposition.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaImage\MediaImage.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaNDI\MediaNDI.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaSolidColor\MediaSolidColor.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\common.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\Dialog.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\Equalizer.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\EventManager.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\Instance.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\Internal.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\Media.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\MediaDiscoverer.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\MediaLibrary.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\MediaList.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\MediaListPlayer.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\MediaPlayer.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\Picture.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\RendererDiscoverer.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\structures.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\vlcpp\vlc.hpp"/>
-    <ClInclude Include="..\..\Source\Media\medias\MediaVideo\MediaVideo.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\color\ColorMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\composition\CompositionLayer\CompositionLayer.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\composition\CompositionLayer\CompositionLayerManager.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\composition\CompositionMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\ndi\NDIMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\picture\PictureMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\shader\ShaderMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\common.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Dialog.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Equalizer.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\EventManager.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Instance.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Internal.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Media.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\MediaDiscoverer.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\MediaLibrary.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\MediaList.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\MediaListPlayer.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\MediaPlayer.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Picture.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\RendererDiscoverer.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\structures.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\vlc.hpp"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\VideoMedia.h"/>
     <ClInclude Include="..\..\Source\Media\ui\MediaManagerUI.h"/>
     <ClInclude Include="..\..\Source\Media\ui\MediaUI.h"/>
     <ClInclude Include="..\..\Source\Media\Media.h"/>

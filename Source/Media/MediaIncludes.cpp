@@ -12,14 +12,20 @@
 
 #include "Media.cpp"
 #include "MediaManager.cpp"
+#include "ui/MediaUI.cpp"
 #include "ui/MediaManagerUI.cpp"
 
-#include "medias/MediaComposition/MediaComposition.cpp"
-#include "medias/MediaComposition/CompositionLayer/CompositionLayer.cpp"
-#include "medias/MediaComposition/CompositionLayer/CompositionLayerManager.cpp"
+#include "medias/composition/CompositionLayer/CompositionLayer.cpp"
+#include "medias/composition/CompositionLayer/CompositionLayerManager.cpp"
+#include "medias/composition/CompositionMedia.cpp"
 
-#include "medias/MediaImage/MediaIMage.cpp"
-#include "medias/MediaNDI/MediaNDI.cpp"
+#include "medias/picture/PictureMedia.cpp"
 
-#include "medias/MediaSolidColor/MediaSolidColor.cpp"
-#include "medias/MediaVideo/MediaVideo.cpp"
+#include "medias/ndi/NDIMedia.cpp"
+#include "medias/sharedtexture/SharedTextureMedia.cpp"
+#include "medias/shader/ShaderMedia.cpp"
+
+#include "medias/color/ColorMedia.cpp"
+
+#include "medias/video/VideoMedia.cpp"
+

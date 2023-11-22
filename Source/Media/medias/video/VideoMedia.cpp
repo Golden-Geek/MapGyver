@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-	MediaVideo.cpp
+	VideoMedia.cpp
 	Created: 26 Sep 2020 1:51:42pm
 	Author:  Mediaupe
 
@@ -11,9 +11,8 @@
 #include "Media/MediaIncludes.h"
 #include "Engine/RMPEngine.h"
 
-MediaVideo::MediaVideo(var params) :
-	Media(getTypeString(), params),
-	Thread("MediaVideoFileMedia")
+VideoMedia::VideoMedia(var params) :
+	ImageMedia(getTypeString(), params)
 {
 	filePath = addFileParameter("File path", "File path", "");
 
@@ -37,24 +36,27 @@ MediaVideo::MediaVideo(var params) :
 	frameUpdated = false;
 }
 
-MediaVideo::~MediaVideo()
+VideoMedia::~VideoMedia()
 {
 	stop();
-	if (VLCMediaListPlayer != nullptr) { libvlc_media_list_player_release(VLCMediaListPlayer); VLCMediaListPlayer = nullptr; }
-	if (VLCMediaList != nullptr) { libvlc_media_list_release(VLCMediaList); VLCMediaList = nullptr; }
-	if (VLCMediaPlayer != nullptr) {
+
+	if (VLCMediaListPlayer != nullptr) libvlc_media_list_player_release(VLCMediaListPlayer); VLCMediaListPlayer = nullptr;
+	if (VLCMediaList != nullptr) libvlc_media_list_release(VLCMediaList); VLCMediaList = nullptr;
+	if (VLCMediaPlayer != nullptr)
+	{
 		libvlc_event_detach(libvlc_media_player_event_manager(VLCMediaPlayer), libvlc_MediaPlayerPositionChanged, vlcSeek, this);
 		libvlc_media_player_release(VLCMediaPlayer); VLCMediaPlayer = nullptr;
 	}
-	if (VLCMedia != nullptr) { libvlc_media_release(VLCMedia); VLCMedia = nullptr; }
+
+	if (VLCMedia != nullptr) libvlc_media_release(VLCMedia); VLCMedia = nullptr;
 }
 
-void MediaVideo::clearItem()
+void VideoMedia::clearItem()
 {
 	BaseItem::clearItem();
 }
 
-void MediaVideo::onContainerParameterChanged(Parameter* p)
+void VideoMedia::onContainerParameterChanged(Parameter* p)
 {
 	// LIBVLC_API int libvlc_audio_set_volume( libvlc_media_player_t *p_mi, int i_volume );
 
@@ -102,7 +104,7 @@ void MediaVideo::onContainerParameterChanged(Parameter* p)
 	}
 }
 
-void MediaVideo::triggerTriggered(Trigger* t)
+void VideoMedia::triggerTriggered(Trigger* t)
 {
 	if (t == startBtn)  play();
 	else if (t == stopBtn) stop();
@@ -111,62 +113,40 @@ void MediaVideo::triggerTriggered(Trigger* t)
 	else if (t == tapTempoBtn)tapTempo();
 }
 
-void MediaVideo::afterLoadJSONDataInternal()
+void VideoMedia::afterLoadJSONDataInternal()
 {
 	Media::afterLoadJSONDataInternal();
 	if (playAtLoad->boolValue()) play();
 }
 
-void MediaVideo::play()
+void VideoMedia::play()
 {
 	if (VLCMediaPlayer != nullptr) {
 		libvlc_media_list_player_play(VLCMediaListPlayer);
 	}
 }
 
-void MediaVideo::stop()
+void VideoMedia::stop()
 {
 	if (VLCMediaPlayer != nullptr) {
 		libvlc_media_list_player_stop(VLCMediaListPlayer);
 	}
 }
 
-void MediaVideo::pause()
+void VideoMedia::pause()
 {
 	libvlc_media_list_player_pause(VLCMediaListPlayer);
 
 }
 
-void MediaVideo::restart()
+void VideoMedia::restart()
 {
 	stop();
 	play();
 }
 
-void MediaVideo::renderOpenGL()
-{
-	if (frameBuffer.getWidth() != image.getWidth() || frameBuffer.getHeight() != image.getHeight()) {
-		frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
-	}
-	if (frameBuffer.isValid() && frameUpdated) {
-		frameBuffer.makeCurrentRenderingTarget();
-		glBindTexture(GL_TEXTURE_2D, frameBuffer.getTextureID());
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.getWidth(), image.getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, bitmapData->data);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		frameBuffer.releaseAsRenderingTarget();
-		frameUpdated = false;
-	}
-}
 
-void MediaVideo::run()
-{
-}
-
-void MediaVideo::threadLoop()
-{
-}
-
-void* MediaVideo::lock(void** pixels)
+void* VideoMedia::lock(void** pixels)
 {
 	imageLock.enter();
 	//pixels[0] = vlcData;
@@ -174,60 +154,52 @@ void* MediaVideo::lock(void** pixels)
 	return 0;
 }
 
-void MediaVideo::unlock(void* oldBuffer, void* const* pixels)
+void VideoMedia::unlock(void* oldBuffer, void* const* pixels)
 {
+	shouldUpdateImage = true;
 	imageLock.exit();
-	frameUpdated = true;
 }
 
 
-void MediaVideo::display(void* nextBuffer)
+void VideoMedia::display(void* nextBuffer)
 {
 	//LOG("display");
-	//LOG(String(imageLines)+" "+String(imagePitches));
-	//vlcData = nextBuffer;
 }
 
-unsigned MediaVideo::setup_video(char* chroma, unsigned* width, unsigned* height, unsigned* pitches, unsigned* lines)
+
+unsigned VideoMedia::setup_video(char* chroma, unsigned* width, unsigned* height, unsigned* pitches, unsigned* lines)
 {
-	//LOG("Hello ");
 	imageWidth = *width;
 	imageHeight = *height;
 	imagePitches = *pitches;
 	imageLines = *lines;
 
-	imageLock.enter();
-	//vlcData = (uint32_t*)malloc(imageWidth * imageHeight * sizeof(uint32_t));
+	GenericScopedLock lock(imageLock);
 
-	image = Image(Image::ARGB, imageWidth, imageHeight, true);
-	bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
+	initImage(imageWidth, imageHeight);
 
 	vlcDataIsValid = true;
 	memcpy(chroma, "RV32", 4);
 	(*pitches) = imageWidth * 4;
 	(*lines) = imageHeight;
-	imageLock.exit();
 
-	//LOG(String(imageLines) + " " + String(imagePitches));
 	return 1;
 }
 
-void MediaVideo::cleanup_video()
+void VideoMedia::cleanup_video()
 {
 	vlcDataIsValid = false;
-	//free(vlcData);
-	//LOG("cleanup_video");
-
 }
 
-void MediaVideo::vlcSeek()
+void VideoMedia::vlcSeek()
 {
 	float pos = libvlc_media_player_get_position(VLCMediaPlayer);
 	vlcSeekedLast = true;
 	seek->setValue(pos);
 }
 
-void MediaVideo::tapTempo() {
+void VideoMedia::tapTempo()
+{
 	double now = Time::getMillisecondCounterHiRes();
 	double delta = now - lastTapTempo;
 	lastTapTempo = now;

@@ -17,11 +17,11 @@ MediaManager::MediaManager() :
 {
     managerFactory = &factory;
 
-    factory.defs.add(Factory<Media>::Definition::createDef<MediaSolidColor>(""));
-    factory.defs.add(Factory<Media>::Definition::createDef<MediaImage>(""));
-    factory.defs.add(Factory<Media>::Definition::createDef<MediaVideo>(""));
-    factory.defs.add(Factory<Media>::Definition::createDef<MediaNDI>(""));
-    factory.defs.add(Factory<Media>::Definition::createDef<MediaComposition>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<ColorMedia>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<PictureMedia>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<VideoMedia>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<NDIMedia>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<CompositionMedia>(""));
 
     itemDataType = "Media";
     selectItemWhenCreated = true;

@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-	MediaVideo.h
+	VideoMedia.h
 	Created: 26 Sep 2020 1:51:42pm
 	Author:  Mediaupe
 
@@ -10,13 +10,12 @@
 
 #pragma once
 
-class MediaVideo :
-	public Media,
-	public Thread
+class VideoMedia :
+	public ImageMedia
 {
 public:
-	MediaVideo(var params = var());
-	~MediaVideo();
+	VideoMedia(var params = var());
+	~VideoMedia();
 
 	bool frameUpdated;
 
@@ -64,35 +63,30 @@ public:
 	void pause();
 	void restart();
 
-	void renderOpenGL();
-
-	void run() override;
-	void threadLoop();
-
 	void* lock(void** pixels);
-	static void* lock(void* self, void** pixels) { return static_cast<MediaVideo*>(self)->lock(pixels); };
+	static void* lock(void* self, void** pixels) { return static_cast<VideoMedia*>(self)->lock(pixels); };
 
 	void unlock(void* oldBuffer, void* const* pixels);
-	static void unlock(void* self, void* oldBuffer, void* const* pixels) { static_cast<MediaVideo*>(self)->unlock(oldBuffer, pixels); };
+	static void unlock(void* self, void* oldBuffer, void* const* pixels) { static_cast<VideoMedia*>(self)->unlock(oldBuffer, pixels); };
 
 	void display(void* nextBuffer);
-	static void display(void* self, void* nextBuffer) { static_cast<MediaVideo*>(self)->display(nextBuffer); };
+	static void display(void* self, void* nextBuffer) { static_cast<VideoMedia*>(self)->display(nextBuffer); };
 
 	unsigned setup_video(char* chroma, unsigned* width, unsigned* height, unsigned* pitches, unsigned* lines);
 	static unsigned setup_video(void** self, char* chroma, unsigned* width, unsigned* height, unsigned* pitches, unsigned* lines) {
-		return static_cast<MediaVideo*>(*self)->setup_video(chroma, width, height, pitches, lines);
+		return static_cast<VideoMedia*>(*self)->setup_video(chroma, width, height, pitches, lines);
 	}
 
 	void cleanup_video();
 	static void cleanup_video(void* self) {
-		static_cast<MediaVideo*>(self)->cleanup_video();
+		static_cast<VideoMedia*>(self)->cleanup_video();
 	}
 
 	void vlcSeek();
 	static void vlcSeek(const struct libvlc_event_t* p_event, void* p_data) {
-		static_cast<MediaVideo*>(p_data)->vlcSeek();
+		static_cast<VideoMedia*>(p_data)->vlcSeek();
 	}
-	//virtual MediaUI* createUI() {return new MediaVideo(); };
+	//virtual MediaUI* createUI() {return new VideoMedia(); };
 
 	
 	void tapTempo();

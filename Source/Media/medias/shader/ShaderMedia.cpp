@@ -1,20 +1,11 @@
 /*
   ==============================================================================
 
-    MediaUI.h
-    Created: 22 Nov 2023 3:38:52pm
+    MediaShader.cpp
+    Created: 22 Nov 2023 3:39:16pm
     Author:  bkupe
 
   ==============================================================================
 */
 
-#pragma once
-
-class MediaUI :
-    public BaseItemUI<Media>
-{
-public:
-    MediaUI(Media* item);
-    virtual ~MediaUI();
-};
-
+#include "Media/MediaIncludes.h"

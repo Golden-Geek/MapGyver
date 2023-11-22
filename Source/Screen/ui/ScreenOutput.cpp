@@ -96,12 +96,15 @@ void ScreenOutput::newOpenGLContextCreated()
 
 void ScreenOutput::renderOpenGL()
 {
+	if (inspectable.wasObjectDeleted()) return;
+	if (screen->isClearing) return;
+
 	// Définir la vue OpenGL en fonction de la taille du composant
-	openGLContext.makeActive();
 	if (!isLive)
 	{
 		return;
 	}
+	openGLContext.makeActive();
 
 	glViewport(0, 0, getWidth(), getHeight());
 	glMatrixMode(GL_PROJECTION);

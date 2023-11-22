@@ -34,7 +34,7 @@ void ScreenRenderer::newOpenGLContextCreated()
 
 void ScreenRenderer::renderOpenGL()
 {
-	
+
 	// Définir la vue OpenGL en fonction de la taille du composant
 
 	frameBuffer.makeCurrentRenderingTarget();
@@ -160,7 +160,7 @@ void ScreenRenderer::drawSurface(Surface* s)
 
 	if (mask != nullptr)
 	{
-		glBindTexture(GL_TEXTURE_2D, mask->frameBuffer.getTextureID());
+		glBindTexture(GL_TEXTURE_2D, mask->getTextureID());
 	}
 	else
 	{
@@ -182,7 +182,7 @@ void ScreenRenderer::drawSurface(Surface* s)
 
 	if (media != nullptr)
 	{
-		glBindTexture(GL_TEXTURE_2D, media->frameBuffer.getTextureID());
+		glBindTexture(GL_TEXTURE_2D, media->getTextureID());
 	}
 
 
