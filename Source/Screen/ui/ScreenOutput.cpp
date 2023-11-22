@@ -224,7 +224,9 @@ void ScreenOutput::mouseUp(const MouseEvent& e)
 
 void ScreenOutput::mouseExit(const MouseEvent& e)
 {
+	manipSurface = nullptr;
 	closestHandle = nullptr;
+	repaint();
 }
 
 Point<float> ScreenOutput::getRelativeMousePos()

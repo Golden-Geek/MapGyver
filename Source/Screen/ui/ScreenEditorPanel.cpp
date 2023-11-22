@@ -159,7 +159,9 @@ void ScreenEditorView::mouseUp(const MouseEvent& e)
 
 void ScreenEditorView::mouseExit(const MouseEvent& e)
 {
+	manipSurface = nullptr;
 	closestHandle = nullptr;
+	repaint();
 }
 
 Point<float> ScreenEditorView::getRelativeMousePos()

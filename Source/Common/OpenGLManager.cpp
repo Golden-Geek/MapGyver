@@ -24,6 +24,7 @@ GlContextHolder::~GlContextHolder()
 void GlContextHolder::setup(juce::Component* topLevelComponent)
 {
 	parent = topLevelComponent;
+	if(OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(parent)) registerOpenGlRenderer(r);
 
 	context.setRenderer(this);
 	context.setContinuousRepainting(true);
@@ -60,7 +61,7 @@ void GlContextHolder::registerOpenGlRenderer(juce::OpenGLRenderer* child)
 		{
 			juce::Component* c = dynamic_cast<juce::Component*> (child);
 			Client::State state = Client::State::running;
-			if (c != nullptr) state = parent->isParentOf(c) ? Client::State::running : Client::State::suspended;
+			if (c != nullptr) state = (parent == c || parent->isParentOf(c)) ? Client::State::running : Client::State::suspended;
 			clients.add(new Client(child, state));
 			if(c != nullptr) c->addComponentListener(this);
 		}
