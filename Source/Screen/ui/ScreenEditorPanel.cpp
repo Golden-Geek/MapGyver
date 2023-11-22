@@ -272,12 +272,8 @@ void ScreenEditorView::renderOpenGL()
 	OpenGLFrameBuffer* frameBuffer = &screen->renderer->frameBuffer;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, getWidth(), getHeight(), 0, 0, 1);
+	Init2DMatrix(getWidth(), getHeight());
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

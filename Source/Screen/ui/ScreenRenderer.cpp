@@ -40,13 +40,8 @@ void ScreenRenderer::renderOpenGL()
 	frameBuffer.makeCurrentRenderingTarget();
 	glClearColor(0, 0, 0, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, frameBuffer.getWidth(), frameBuffer.getHeight(), 0, 0, 1);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	
+	Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -65,11 +60,10 @@ void ScreenRenderer::renderOpenGL()
 	glBegin(GL_QUADS);
 	glColor3f(1, 1, 1);
 	glTexCoord2f(0, 1); glVertex2f(0, 0);
-	glTexCoord2f(0, 0); glVertex2f(0, 20);
-	glTexCoord2f(1, 0); glVertex2f(20, 20);
-	glTexCoord2f(1, 1); glVertex2f(20, 0);
+	glTexCoord2f(0, 0); glVertex2f(0, 50);
+	glTexCoord2f(1, 0); glVertex2f(50, 50);
+	glTexCoord2f(1, 1); glVertex2f(50, 0);
 	glEnd();
-
 
 	frameBuffer.releaseAsRenderingTarget();
 

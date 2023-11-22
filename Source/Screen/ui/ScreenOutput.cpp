@@ -106,13 +106,7 @@ void ScreenOutput::renderOpenGL()
 	}
 	openGLContext.makeActive();
 
-	glViewport(0, 0, getWidth(), getHeight());
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, getWidth(), getHeight(), 0, 0, 1);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	Init2DViewport(getWidth(), getHeight());
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);

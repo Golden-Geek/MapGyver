@@ -22,6 +22,7 @@
 #endif // _WIN64
 #endif // _WIN32
 
+
 #include "NDI/NDIDevice.h"
 #include "NDI/NDIManager.h"
 #include "NDI/NDIDeviceParameter.h"
@@ -29,4 +30,5 @@
 #include "NDI/ui/NDIDeviceChooser.h"
 #include "NDI/ui/NDIDeviceParameterUI.h"
 
+#include "GLHelpers.h"
 #include "OpenGLManager.h"

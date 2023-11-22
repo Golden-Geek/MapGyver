@@ -34,6 +34,7 @@
               file="Source/Common/CommonIncludes.cpp"/>
         <FILE id="NqNVGJ" name="CommonIncludes.h" compile="0" resource="0"
               file="Source/Common/CommonIncludes.h"/>
+        <FILE id="lfDzBU" name="GLHelpers.h" compile="0" resource="0" file="Source/Common/GLHelpers.h"/>
         <FILE id="JPNfCK" name="OpenGLManager.cpp" compile="0" resource="0"
               file="Source/Common/OpenGLManager.cpp"/>
         <FILE id="mHGAjV" name="OpenGLManager.h" compile="0" resource="0" file="Source/Common/OpenGLManager.h"/>
