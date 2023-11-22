@@ -53,6 +53,8 @@ Point2DParameter* Screen::getClosestHandle(Point<float> pos, float maxDistance, 
 	float closestDist = maxDistance;
 	for (auto& s : surfaces.items)
 	{
+		if (!s->enabled->boolValue()) continue;
+
 		Array<Point2DParameter*> handles = { s->topLeft, s->topRight, s->bottomLeft, s->bottomRight };
 		Array<Point2DParameter*> bezierHandles = { s->handleBezierTopLeft, s->handleBezierTopRight, s->handleBezierBottomLeft, s->handleBezierBottomRight, s->handleBezierLeftTop, s->handleBezierLeftBottom, s->handleBezierRightTop, s->handleBezierRightBottom };
 		if (s->isBezier->boolValue()) {
@@ -83,6 +85,7 @@ Array<Point2DParameter*> Screen::getOverlapHandles(Point2DParameter* handle)
 	Array<Point2DParameter*> result;
 	for (auto& s : surfaces.items)
 	{
+		if (!s->enabled->boolValue()) continue;
 		Array<Point2DParameter*> handles = { s->topLeft, s->topRight, s->bottomLeft, s->bottomRight };
 		for (auto& h : handles)
 		{
@@ -96,6 +99,10 @@ Array<Point2DParameter*> Screen::getOverlapHandles(Point2DParameter* handle)
 
 Surface* Screen::getSurfaceAt(Point<float> pos)
 {
-	for (auto& s : surfaces.items) if (s->isPointInside(pos)) return s;
+	for (auto& s : surfaces.items)
+	{
+		if (!s->enabled->boolValue()) continue;
+		if (s->isPointInside(pos)) return s;
+	}
 	return nullptr;
 }
