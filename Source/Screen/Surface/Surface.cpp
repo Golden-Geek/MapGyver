@@ -10,11 +10,13 @@
 
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
+#include "Surface.h"
 
 Surface::Surface(var params) :
 	BaseItem(params.getProperty("name", "Surface")),
 	objectType(params.getProperty("type", "Surface").toString()),
-	objectData(params)
+	objectData(params),
+	previewMedia(nullptr)
 {
 	saveAndLoadRecursiveData = true;
 	canBeDisabled = true;
@@ -290,6 +292,11 @@ void Surface::updateVertices()
 	}
 
 	verticesLock.exit();
+}
+
+Media* Surface::getMedia()
+{
+	return previewMedia != nullptr ? previewMedia : media->getTargetContainerAs<Media>();
 }
 
 

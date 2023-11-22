@@ -10,6 +10,8 @@
 
 #pragma once
 
+class Media;
+
 class Surface :
     public BaseItem
 {
@@ -51,6 +53,8 @@ public:
     TargetParameter* mask;
     BoolParameter* invertMask;
 
+    Media* previewMedia;
+
     Path quadPath;
 
     void onContainerParameterChangedInternal(Parameter* p);
@@ -72,6 +76,8 @@ public:
     void addToVertices(Point<float> posDisplay, Point<float>itnernalCoord, Vector3D<float> texCoord, Vector3D<float> maskCoord);
     void addLastFourAsQuad();
     void updateVertices();
+
+    Media* getMedia();
 
     Point<int> getMediaSize();
 

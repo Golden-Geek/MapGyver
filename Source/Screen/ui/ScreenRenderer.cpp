@@ -150,7 +150,7 @@ void ScreenRenderer::drawSurface(Surface* s)
 
 	Point<float> tl, tr, bl, br;
 
-	Media* mask = dynamic_cast<Media*>(s->mask->targetContainer.get());
+	Media* mask = s->mask->getTargetContainerAs<Media>();// dynamic_cast<Media*>(s->mask->targetContainer.get());
 	std::shared_ptr<OpenGLTexture> texMask = nullptr;
 
 
@@ -186,7 +186,7 @@ void ScreenRenderer::drawSurface(Surface* s)
 	}
 	glGetError();
 
-	Media* media = dynamic_cast<Media*>(s->media->targetContainer.get());
+	Media* media = s->getMedia();
 	std::shared_ptr<OpenGLTexture> tex = nullptr;
 
 	GLuint textureLocation = glGetUniformLocation(shader->getProgramID(), "tex");

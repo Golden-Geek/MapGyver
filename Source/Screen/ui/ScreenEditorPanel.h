@@ -63,6 +63,8 @@ public:
 	void itemDragExit(const SourceDetails& source) override;
 	void itemDropped(const SourceDetails& source) override;
 
+	void setCandidateDropSurface(Surface* s, Media* m = nullptr);
+
 	// Inherited via OpenGLRenderer
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;

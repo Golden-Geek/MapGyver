@@ -344,7 +344,8 @@ void ScreenEditorView::openGLContextClosing()
 bool ScreenEditorView::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
 	if (dragSourceDetails.description.getProperty("dataType", "") == "Media") return true;
-
+	
+	return false;
 }
 
 
@@ -353,8 +354,7 @@ void ScreenEditorView::itemDragEnter(const SourceDetails& source)
 {
 	if (BaseItemMinimalUI<Media>* m = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get()))
 	{
-		candidateDropSurface = screen->getSurfaceAt(getRelativeMousePos());
-		repaint();
+		setCandidateDropSurface(screen->getSurfaceAt(getRelativeMousePos()), m->item); repaint();
 	}
 }
 
@@ -362,24 +362,37 @@ void ScreenEditorView::itemDragMove(const SourceDetails& source)
 {
 	if (BaseItemMinimalUI<Media>* m = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get()))
 	{
-		candidateDropSurface = screen->getSurfaceAt(getRelativeMousePos());
+		setCandidateDropSurface(screen->getSurfaceAt(getRelativeMousePos()), m->item);
 		repaint();
 	}
 }
 
 void ScreenEditorView::itemDragExit(const SourceDetails& source)
 {
-	candidateDropSurface = nullptr;
+	setCandidateDropSurface(nullptr);
 	repaint();
 }
+
 
 void ScreenEditorView::itemDropped(const SourceDetails& source)
 {
 	if (candidateDropSurface == nullptr) return;
 	candidateDropSurface->media->setValueFromTarget(dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())->item);
-	candidateDropSurface = nullptr;
+	setCandidateDropSurface(nullptr);
 	repaint();
 }
+
+void ScreenEditorView::setCandidateDropSurface(Surface* s, Media* m)
+{
+	if (candidateDropSurface == s) return;
+
+	if (candidateDropSurface != nullptr) candidateDropSurface->previewMedia = nullptr;
+
+	candidateDropSurface = s;
+
+	if (candidateDropSurface != nullptr) candidateDropSurface->previewMedia = m;
+}
+
 
 void ScreenEditorView::moveScreenPointTo(Point<float> screenPos, Point<int> posOnScreen)
 {
