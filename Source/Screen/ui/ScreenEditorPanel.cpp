@@ -15,7 +15,14 @@
 
 ScreenEditorView::ScreenEditorView(Screen* screen) :
 	InspectableContentComponent(screen),
-	screen(screen)
+	screen(screen),
+	zoomSensitivity(1.5f),
+	zoomingMode(false),
+	panningMode(false),
+	closestHandle(nullptr),
+	manipSurface(nullptr),
+	zoom(1),
+	zoomAtMouseDown(1)
 {
 	selectionContourColor = NORMAL_COLOR;
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
@@ -30,15 +37,21 @@ void ScreenEditorView::paint(Graphics& g)
 {
 	if (frameBufferRect.isEmpty()) return;
 
+	if (zoomingMode)
+	{
+		return;
+	}
+
 	Colour col = isMouseButtonDown() ? Colours::yellow : Colours::cyan;
 
 	if (manipSurface != nullptr)
 	{
 		Path surfacePath;
 		surfacePath.addPath(manipSurface->quadPath);
-
-		AffineTransform at = AffineTransform::scale(frameBufferRect.getWidth(), frameBufferRect.getHeight()) //scale to the component size
-			.followedBy(AffineTransform::verticalFlip(frameBufferRect.getHeight())) //inverse the Y axis
+		 
+		AffineTransform at = AffineTransform::verticalFlip(1) //inverse the Y axis
+			.followedBy(AffineTransform::translation(-viewOffset.x, viewOffset.y))
+			.followedBy(AffineTransform::scale(frameBufferRect.getWidth() * zoom, frameBufferRect.getHeight() * zoom)) //scale to the component size
 			.followedBy(AffineTransform::translation(frameBufferRect.getX(), frameBufferRect.getY())); //translate to the component position
 		surfacePath.applyTransform(at);
 
@@ -54,7 +67,7 @@ void ScreenEditorView::paint(Graphics& g)
 	else if (closestHandle != nullptr)
 	{
 		Point<int> mp = getMouseXYRelative();
-		Point<int> hp = frameBufferRect.getRelativePoint(closestHandle->x, 1 - closestHandle->y);
+		Point<int> hp = getPointOnScreen(closestHandle->getPoint());// frameBufferRect.getRelativePoint(closestHandle->x, 1 - closestHandle->y);
 
 		float angle = mp.getAngleToPoint(hp);
 
@@ -75,6 +88,24 @@ void ScreenEditorView::paint(Graphics& g)
 
 void ScreenEditorView::mouseDown(const MouseEvent& e)
 {
+	zoomingMode = e.mods.isCommandDown() && KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey);
+	if (zoomingMode)
+	{
+		zoomAtMouseDown = zoom;
+		offsetAtMouseDown = viewOffset;
+		focusPointAtMouseDown = getRelativeMousePos();
+		return;
+	}
+
+	panningMode = KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey);
+	if (panningMode)
+	{
+		offsetAtMouseDown = viewOffset;
+		return;
+	}
+
+
+	//surface manip mode
 	if (manipSurface != nullptr)
 	{
 		posAtMouseDown = { manipSurface->topLeft->getPoint(), manipSurface->topRight->getPoint(), manipSurface->bottomLeft->getPoint(), manipSurface->bottomRight->getPoint() };
@@ -86,10 +117,13 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 		overlapHandles.clear();
 		if (e.mods.isShiftDown()) overlapHandles = screen->getOverlapHandles(closestHandle);
 	}
+
 }
 
 void ScreenEditorView::mouseMove(const MouseEvent& e)
 {
+	if (zoomingMode || panningMode) return;
+
 	if (e.mods.isAltDown())
 	{
 		closestHandle = nullptr;
@@ -106,7 +140,25 @@ void ScreenEditorView::mouseMove(const MouseEvent& e)
 
 void ScreenEditorView::mouseDrag(const MouseEvent& e)
 {
-	Point<float> offsetRelative = (e.getOffsetFromDragStart().toFloat() * Point<float>(1, -1)) / Point<float>(getWidth(), getHeight());
+	Point<float> offsetRelative = (e.getOffsetFromDragStart().toFloat() * Point<float>(1, -1)) / Point<float>(frameBufferRect.getWidth(), frameBufferRect.getHeight());
+
+	Point<int> focusScreenPoint = e.getMouseDownPosition();
+
+	if (zoomingMode)
+	{
+		zoom = zoomAtMouseDown + offsetRelative.getDistanceFromOrigin() * (offsetRelative.y > 0 ? 1 : -1) * zoomSensitivity;
+		moveScreenPointTo(focusPointAtMouseDown, focusScreenPoint);
+		return;
+	}
+
+	if (panningMode)
+	{
+		viewOffset = offsetAtMouseDown - offsetRelative / zoom;
+		return;
+	}
+
+
+	offsetRelative /= zoom;
 
 	if (manipSurface != nullptr)
 	{
@@ -128,11 +180,24 @@ void ScreenEditorView::mouseDrag(const MouseEvent& e)
 		for (auto& h : overlapHandles) h->setPoint(tp);
 
 	}
+
 	repaint();
 }
 
 void ScreenEditorView::mouseUp(const MouseEvent& e)
 {
+	if (zoomingMode)
+	{
+		zoomingMode = false;
+		return;
+	}
+
+	if (panningMode)
+	{
+		panningMode = false;
+		return;
+	}
+
 	if (manipSurface != nullptr)
 	{
 		Array<Point2DParameter*> handles = { manipSurface->topLeft, manipSurface->topRight, manipSurface->bottomLeft, manipSurface->bottomRight };
@@ -164,6 +229,7 @@ void ScreenEditorView::mouseExit(const MouseEvent& e)
 	repaint();
 }
 
+
 Point<float> ScreenEditorView::getRelativeMousePos()
 {
 	return getRelativeScreenPos(getMouseXYRelative());
@@ -172,12 +238,12 @@ Point<float> ScreenEditorView::getRelativeMousePos()
 Point<float> ScreenEditorView::getRelativeScreenPos(Point<int> screenPos)
 {
 	Point<float> p = screenPos.toFloat() - frameBufferRect.getTopLeft().toFloat();
-	return Point<float>(p.x / frameBufferRect.getWidth(), 1 - (p.y / frameBufferRect.getHeight()));
+	return Point<float>(p.x / (frameBufferRect.getWidth() * zoom) + viewOffset.x, 1 - (p.y / (frameBufferRect.getHeight() * zoom) - viewOffset.y));
 }
 
 Point<int> ScreenEditorView::getPointOnScreen(Point<float> pos)
 {
-	return frameBufferRect.getTopLeft() + Point<float>(pos.x * frameBufferRect.getWidth(), (1 - pos.y) * frameBufferRect.getHeight()).toInt();
+	return frameBufferRect.getTopLeft() + Point<float>((pos.x - viewOffset.x) * (frameBufferRect.getWidth() * zoom), (1 - pos.y + viewOffset.y) * (frameBufferRect.getHeight() * zoom)).toInt();
 }
 
 
@@ -227,12 +293,17 @@ void ScreenEditorView::renderOpenGL()
 
 	frameBufferRect = Rectangle<int>(tx, ty, tw, th);
 
-	//glColor3f(1.0f, 0.0f, 0.0f);
+	float rZoom = 1 / zoom;
+	float hZoom = 1 - 1 / zoom;
+
+	float ox = viewOffset.x;
+	float oy = viewOffset.y;
+
 	glBegin(GL_QUADS);
-	glTexCoord2f(0, 1); glVertex2f(tx, ty);
-	glTexCoord2f(1, 1); glVertex2f(tx + tw, ty);
-	glTexCoord2f(1, 0); glVertex2f(tx + tw, ty + th);
-	glTexCoord2f(0, 0); glVertex2f(tx, ty + th);
+	glTexCoord2f(ox, oy+1); glVertex2f(tx, ty);
+	glTexCoord2f(ox+rZoom, oy+1); glVertex2f(tx + tw, ty);
+	glTexCoord2f(ox+rZoom, oy+hZoom); glVertex2f(tx + tw, ty + th);
+	glTexCoord2f(ox, oy+hZoom); glVertex2f(tx, ty + th);
 	glEnd();
 	glGetError();
 
@@ -244,6 +315,12 @@ void ScreenEditorView::renderOpenGL()
 
 void ScreenEditorView::openGLContextClosing()
 {
+}
+
+void ScreenEditorView::moveScreenPointTo(Point<float> screenPos, Point<int> posOnScreen)
+{
+	Point<float> relativePosOnScreen = getRelativeScreenPos(posOnScreen);
+	viewOffset += screenPos - relativePosOnScreen;
 }
 
 

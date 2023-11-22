@@ -28,6 +28,16 @@ public:
 
 	Array<Point2DParameter*> overlapHandles;
 
+	bool panningMode;
+	Point<float> offsetAtMouseDown;
+	Point<float> focusPointAtMouseDown;
+
+	float zoomSensitivity;
+	bool zoomingMode;
+	float zoom;
+	float zoomAtMouseDown;
+	Point<float> viewOffset;
+
 	void paint(Graphics& g) override;
 
 	void mouseDown(const MouseEvent& e) override;
@@ -39,6 +49,7 @@ public:
 	Point<float> getRelativeMousePos();
 	Point<float> getRelativeScreenPos(Point<int> screenPos);
 	Point<int> getPointOnScreen(Point<float> pos);
+	void moveScreenPointTo(Point<float> screenPos, Point<int> posOnScreen);
 
 	// Inherited via OpenGLRenderer
 	void newOpenGLContextCreated() override;
