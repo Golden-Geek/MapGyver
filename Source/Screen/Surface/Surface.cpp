@@ -206,9 +206,9 @@ void Surface::updateVertices()
 	Vector3D<float> blTex(cropLeft->floatValue(), cropBottom->floatValue(), 1.0f);
 	Vector3D<float> brTex(1 - cropRight->floatValue(), cropBottom->floatValue(), 1.0f);
 
-	Media* med = dynamic_cast<Media*>(media->targetContainer.get());
-	
-	if (med!= nullptr && med->flipY) {
+	Media* med = media->getTargetContainerAs<Media>();
+
+	if (med != nullptr && med->flipY) {
 		tlTex.y = 1 - tlTex.y;
 		trTex.y = 1 - trTex.y;
 		blTex.y = 1 - blTex.y;
@@ -221,7 +221,7 @@ void Surface::updateVertices()
 	Vector3D<float> blMask(0, 0, 1.0f);
 	Vector3D<float> brMask(1, 0, 1.0f);
 
-	Media* msk = dynamic_cast<Media*>(mask->targetContainer.get());
+	Media* msk = mask->getTargetContainerAs<Media>();
 	if (msk != nullptr && msk->flipY) {
 		tlMask.y = 1 - tlMask.y;
 		trMask.y = 1 - trMask.y;
