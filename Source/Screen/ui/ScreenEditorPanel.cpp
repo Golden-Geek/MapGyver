@@ -112,19 +112,21 @@ void ScreenEditorView::paint(Graphics& g)
 				g.drawEllipse(Rectangle<float>(0, 0, size, size).withCentre(center.toFloat()), 1);
 			}
 
-			Array<Line<float>> handleBezierLines = {
-			Line<float>(getPointOnScreen(s->topLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierTopLeft->getPoint()).toFloat()),
-			Line<float>(getPointOnScreen(s->topLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierLeftTop->getPoint()).toFloat()),
-			Line<float>(getPointOnScreen(s->topRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierTopRight->getPoint()).toFloat()),
-			Line<float>(getPointOnScreen(s->topRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierRightTop->getPoint()).toFloat()),
-			Line<float>(getPointOnScreen(s->bottomLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierBottomLeft->getPoint()).toFloat()),
-			Line<float>(getPointOnScreen(s->bottomLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierLeftBottom->getPoint()).toFloat()),
-			Line<float>(getPointOnScreen(s->bottomRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierBottomRight->getPoint()).toFloat()),
-			Line<float>(getPointOnScreen(s->bottomRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierRightBottom->getPoint()).toFloat()),
-			};
+			if (s->bezierCC.enabled->boolValue()) {
+				Array<Line<float>> handleBezierLines = {
+				Line<float>(getPointOnScreen(s->topLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierTopLeft->getPoint()).toFloat()),
+				Line<float>(getPointOnScreen(s->topLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierLeftTop->getPoint()).toFloat()),
+				Line<float>(getPointOnScreen(s->topRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierTopRight->getPoint()).toFloat()),
+				Line<float>(getPointOnScreen(s->topRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierRightTop->getPoint()).toFloat()),
+				Line<float>(getPointOnScreen(s->bottomLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierBottomLeft->getPoint()).toFloat()),
+				Line<float>(getPointOnScreen(s->bottomLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierLeftBottom->getPoint()).toFloat()),
+				Line<float>(getPointOnScreen(s->bottomRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierBottomRight->getPoint()).toFloat()),
+				Line<float>(getPointOnScreen(s->bottomRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierRightBottom->getPoint()).toFloat()),
+				};
 
-			g.setColour(Colours::white.withAlpha(.5f));
-			for (auto& l : handleBezierLines) g.drawLine(l, 1);
+				g.setColour(Colours::white.withAlpha(.5f));
+				for (auto& l : handleBezierLines) g.drawLine(l, 1);
+			}
 		}
 	}
 }
