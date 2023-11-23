@@ -143,6 +143,10 @@ void ScreenRenderer::drawSurface(Surface* s)
 	glUniform4f(borderSoftLocation, s->softEdgeTop->floatValue(), s->softEdgeRight->floatValue(), s->softEdgeBottom->floatValue(), s->softEdgeLeft->floatValue());
 	glGetError();
 
+	GLuint invertMaskLocation = glGetUniformLocation(shader->getProgramID(), "invertMask");
+	glUniform1i(invertMaskLocation, s->invertMask->boolValue() ? 1 : 0);
+	glGetError();
+
 	GLuint ebo;
 	glGenBuffers(1, &ebo);
 	glGetError();
@@ -210,6 +214,7 @@ void ScreenRenderer::createAndLoadShaders()
 		"uniform sampler2D tex;\n"
 		"uniform sampler2D mask;\n"
 		"uniform vec4 borderSoft;\n"
+		"uniform int invertMask;\n"
 		"float map(float value, float min1, float max1, float min2, float max2) {\n"
 		"return min2 + ((max2-min2)*(value-min1)/(max1-min1)); };"
 		"void main()\n"
@@ -221,7 +226,8 @@ void ScreenRenderer::createAndLoadShaders()
 		"   if (SurfacePosition[0] > 1.0f-borderSoft[1]) {alpha *= map(SurfacePosition[0], 1.0f, 1 - borderSoft[1], 0.0f, 1.0f); }\n" // right
 		"   if (SurfacePosition[1] < borderSoft[2])      {alpha *= map(SurfacePosition[1],0.0f,borderSoft[2],0.0f,1.0f);}\n" // bottom
 		"   if (SurfacePosition[0] < borderSoft[3])      {alpha *= map(SurfacePosition[0],0.0f,borderSoft[3],0.0f,1.0f);}\n" // left
-		"   alpha *= maskColor[1]; \n"
+		"	float maskValue = invertMask == 0 ? maskColor[1] : 1-maskColor[1];\n"
+		"   alpha *= maskValue; \n"
 		"   outColor[3] = alpha;\n"
 		"}\n";
 
