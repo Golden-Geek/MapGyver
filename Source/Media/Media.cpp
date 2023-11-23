@@ -94,7 +94,6 @@ ImageMedia::~ImageMedia()
 
 void ImageMedia::renderGL()
 {
-	if (!shouldRedraw) {return;}
 	GenericScopedLock lock(imageLock);
 
 	glMatrixMode(GL_TEXTURE);
