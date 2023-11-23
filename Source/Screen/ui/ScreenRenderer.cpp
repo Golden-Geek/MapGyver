@@ -106,11 +106,11 @@ void ScreenRenderer::drawSurface(Surface* s)
 	glActiveTexture(GL_TEXTURE1);
 	glGetError();
 
-	if (media != nullptr)
+	if (media == nullptr)
 	{
-		glBindTexture(GL_TEXTURE_2D, media->getTextureID());
+		return;
 	}
-
+	glBindTexture(GL_TEXTURE_2D, media->getTextureID());
 
 	// vertices start
 
@@ -163,6 +163,11 @@ void ScreenRenderer::drawSurface(Surface* s)
 
 	glDrawElements(GL_TRIANGLES, s->verticesElements.size(), GL_UNSIGNED_INT, 0);
 	glGetError();
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &ebo);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &vbo);
 
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
