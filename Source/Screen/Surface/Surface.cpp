@@ -96,6 +96,7 @@ Surface::Surface(var params) :
 	bezierCC.editorIsCollapsed = true;
 	adjustmentsCC.editorIsCollapsed = true;
 
+	positionningCC.saveAndLoadRecursiveData = true;
 	positionningCC.addChildControllableContainer(&bezierCC);
 	addChildControllableContainer(&positionningCC);
 	addChildControllableContainer(&adjustmentsCC);
@@ -120,7 +121,12 @@ void Surface::onContainerParameterChangedInternal(Parameter* p)
 
 void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
+	if (c == resetBezierBtn) {
+		resetBezierPoints();
+	}
+	
 	updateVertices();
+	
 	if (c == topLeft || c == topRight || c == bottomLeft || c == bottomRight)
 	{
 		updatePath();
@@ -171,12 +177,29 @@ Point<int> Surface::getMediaSize()
 	return Point<int>();
 }
 
-void Surface::triggerTriggered(Trigger* t)
+Array<Point2DParameter*> Surface::getCornerHandles()
 {
-	if (t == resetBezierBtn) {
-		resetBezierPoints();
-	}
+	return { topLeft, topRight, bottomLeft, bottomRight };
 }
+
+Array<Point2DParameter*> Surface::getAllHandles()
+{
+	return { topLeft, topRight, bottomLeft, bottomRight, handleBezierTopLeft, handleBezierTopRight, handleBezierBottomLeft, handleBezierBottomRight, handleBezierLeftTop, handleBezierLeftBottom, handleBezierRightTop, handleBezierRightBottom };
+}
+
+Array<Point2DParameter*> Surface::getBezierHandles(Point2DParameter* corner)
+{
+	if (corner != nullptr)
+	{
+		if(corner == topLeft) return { handleBezierTopLeft, handleBezierLeftTop };
+		else if (corner == topRight) return { handleBezierTopRight, handleBezierRightTop };
+		else if (corner == bottomLeft) return { handleBezierBottomLeft, handleBezierLeftBottom };
+		else if (corner == bottomRight) return { handleBezierBottomRight, handleBezierRightBottom };
+	}
+
+	return { handleBezierTopLeft, handleBezierTopRight, handleBezierBottomLeft, handleBezierBottomRight, handleBezierLeftTop, handleBezierLeftBottom, handleBezierRightTop, handleBezierRightBottom };
+}
+
 
 void Surface::addToVertices(Point<float> posDisplay, Point<float> internalCoord, Vector3D<float> texCoord, Vector3D<float> maskCoord)
 {

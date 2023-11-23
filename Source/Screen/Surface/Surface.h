@@ -69,12 +69,12 @@ public:
     void resetBezierPoints();
     Trigger* resetBezierBtn;
 
-    void triggerTriggered(Trigger* t) override;
 
     unsigned int verticesVersion;
     Array<GLfloat> vertices;
     Array<GLuint> verticesElements;
     CriticalSection verticesLock;
+
 
     void addToVertices(Point<float> posDisplay, Point<float>itnernalCoord, Vector3D<float> texCoord, Vector3D<float> maskCoord);
     void addLastFourAsQuad();
@@ -83,6 +83,10 @@ public:
     Media* getMedia();
 
     Point<int> getMediaSize();
+    
+    Array<Point2DParameter*> getCornerHandles();
+    Array<Point2DParameter*> getAllHandles();
+    Array<Point2DParameter*> getBezierHandles(Point2DParameter* corner = nullptr);
 
     String getTypeString() const override { return objectType; }
     static Surface* create(var params) { return new Surface(params); }

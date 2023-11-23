@@ -92,13 +92,16 @@ void ScreenEditorView::paint(Graphics& g)
 		g.setColour(col.withAlpha(.5f));
 		g.fillPath(p);
 
-		Surface* s = screen->getSurfaceAt(getRelativeMousePos());
-		if (s != nullptr && s->bezierCC.enabled->boolValue())
+		for (auto& s : screen->surfaces.items)
 		{
-			Array<Point2DParameter*> bezierPoints = { s->handleBezierTopLeft, s->handleBezierTopRight, s->handleBezierBottomLeft, s->handleBezierBottomRight, s->handleBezierLeftTop, s->handleBezierLeftBottom, s->handleBezierRightTop, s->handleBezierRightBottom };
 
-			for (auto& b : bezierPoints)
+			Array<Point2DParameter*> handles = s->getAllHandles();
+			for (auto& b : handles)
 			{
+				bool isCorner = b == s->topLeft || b == s->topRight || b == s->bottomLeft || b == s->bottomRight;
+
+				if (!isCorner && !s->bezierCC.enabled->boolValue()) continue;
+
 				bool isCurrent = b == closestHandle;
 				Colour c = isCurrent ? Colours::yellow : Colours::white;
 				g.setColour(c.withAlpha(isCurrent ? .8f : .5f));
@@ -109,6 +112,19 @@ void ScreenEditorView::paint(Graphics& g)
 				g.drawEllipse(Rectangle<float>(0, 0, size, size).withCentre(center.toFloat()), 1);
 			}
 
+			Array<Line<float>> handleBezierLines = {
+			Line<float>(getPointOnScreen(s->topLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierTopLeft->getPoint()).toFloat()),
+			Line<float>(getPointOnScreen(s->topLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierLeftTop->getPoint()).toFloat()),
+			Line<float>(getPointOnScreen(s->topRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierTopRight->getPoint()).toFloat()),
+			Line<float>(getPointOnScreen(s->topRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierRightTop->getPoint()).toFloat()),
+			Line<float>(getPointOnScreen(s->bottomLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierBottomLeft->getPoint()).toFloat()),
+			Line<float>(getPointOnScreen(s->bottomLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierLeftBottom->getPoint()).toFloat()),
+			Line<float>(getPointOnScreen(s->bottomRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierBottomRight->getPoint()).toFloat()),
+			Line<float>(getPointOnScreen(s->bottomRight->getPoint()).toFloat(), getPointOnScreen(s->handleBezierRightBottom->getPoint()).toFloat()),
+			};
+
+			g.setColour(Colours::white.withAlpha(.5f));
+			for (auto& l : handleBezierLines) g.drawLine(l, 1);
 		}
 	}
 }
@@ -139,12 +155,21 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 	//surface manip mode
 	if (manipSurface != nullptr)
 	{
-		posAtMouseDown = { manipSurface->topLeft->getPoint(), manipSurface->topRight->getPoint(), manipSurface->bottomLeft->getPoint(), manipSurface->bottomRight->getPoint() };
-
+		Array<Point2DParameter*> handles = manipSurface->getAllHandles();
+		posAtMouseDown.clear();
+		for (auto& h : handles) posAtMouseDown.add(h->getPoint());
 	}
 	else if (closestHandle != nullptr)
 	{
 		posAtMouseDown = { closestHandle->getPoint() };
+
+		Surface* s = ControllableUtil::findParentAs<Surface>(closestHandle);
+		bool isCorner = closestHandle == s->topLeft || closestHandle == s->topRight || closestHandle == s->bottomLeft || closestHandle == s->bottomRight;
+		if (isCorner)
+		{
+			for (auto& h : s->getBezierHandles(closestHandle)) posAtMouseDown.add(h->getPoint());
+		}
+
 		overlapHandles.clear();
 		if (e.mods.isShiftDown()) overlapHandles = screen->getOverlapHandles(closestHandle);
 	}
@@ -193,22 +218,29 @@ void ScreenEditorView::mouseDrag(const MouseEvent& e)
 
 	if (manipSurface != nullptr)
 	{
-		Array<Point2DParameter*> handles = { manipSurface->topLeft, manipSurface->topRight, manipSurface->bottomLeft, manipSurface->bottomRight };
-
-
+		Array<Point2DParameter*> handles = manipSurface->getAllHandles();
 		for (int i = 0; i < handles.size(); i++) handles[i]->setPoint(posAtMouseDown[i] + offsetRelative);
 	}
 	else if (closestHandle != nullptr)
 	{
-		Point<float> tp = posAtMouseDown[0] + offsetRelative;
-		if (e.mods.isCommandDown())
-		{
-			Point2DParameter* th = screen->getSnapHandle(tp, closestHandle);
-			if (th != nullptr) tp = th->getPoint();
-		}
+		Array<Point2DParameter*> handles = { closestHandle };
+		Surface* s = ControllableUtil::findParentAs<Surface>(closestHandle);
+		bool isCorner = closestHandle == s->topLeft || closestHandle == s->topRight || closestHandle == s->bottomLeft || closestHandle == s->bottomRight;
+		if (isCorner) handles.addArray(s->getBezierHandles(closestHandle));
 
-		closestHandle->setPoint(tp);
-		for (auto& h : overlapHandles) h->setPoint(tp);
+		for (int i = 0; i < handles.size(); i++)
+		{
+			Point<float> tp = posAtMouseDown[i] + offsetRelative;
+
+			if (i == 0 && e.mods.isCommandDown()) //only corner
+			{
+				Point2DParameter* th = screen->getSnapHandle(tp, closestHandle);
+				if (th != nullptr) tp = th->getPoint();
+			}
+
+			handles[i]->setPoint(tp);
+			for (auto& h : overlapHandles) h->setPoint(tp);
+		}
 
 	}
 
@@ -231,7 +263,7 @@ void ScreenEditorView::mouseUp(const MouseEvent& e)
 
 	if (manipSurface != nullptr)
 	{
-		Array<Point2DParameter*> handles = { manipSurface->topLeft, manipSurface->topRight, manipSurface->bottomLeft, manipSurface->bottomRight };
+		Array<Point2DParameter*> handles = manipSurface->getAllHandles();
 		Array<UndoableAction*> actions;
 		for (int i = 0; i < handles.size(); i++) actions.add(handles[i]->setUndoablePoint(posAtMouseDown[i], handles[i]->getPoint(), true));
 		UndoMaster::getInstance()->performActions("Move surface", actions);
@@ -239,17 +271,18 @@ void ScreenEditorView::mouseUp(const MouseEvent& e)
 	}
 	else if (closestHandle != nullptr)
 	{
+		Array<Point2DParameter*> handles = { closestHandle };
+		Surface* s = ControllableUtil::findParentAs<Surface>(closestHandle);
+		bool isCorner = closestHandle == s->topLeft || closestHandle == s->topRight || closestHandle == s->bottomLeft || closestHandle == s->bottomRight;
+		if (isCorner) handles.addArray(s->getBezierHandles(closestHandle));
+		handles.addArray(overlapHandles);
 
-		if (overlapHandles.size() > 0)
-		{
-			Array<UndoableAction*> actions;
-			actions.add(closestHandle->setUndoablePoint(posAtMouseDown[0], closestHandle->getPoint(), true));
-			for (auto& h : overlapHandles) actions.add(h->setUndoablePoint(posAtMouseDown[0], closestHandle->getPoint(), true));
-			UndoMaster::getInstance()->performActions("Move handles", actions);
-		}
-		else closestHandle->setUndoablePoint(posAtMouseDown[0], closestHandle->getPoint());
+		Array<UndoableAction*> actions;
+		for (int i = 0; i < handles.size(); i++) actions.add(handles[i]->setUndoablePoint(posAtMouseDown[i], handles[i]->getPoint(), true));
+		UndoMaster::getInstance()->performActions("Move handles", actions);
 		overlapHandles.clear();
 	}
+
 	repaint();
 }
 
@@ -291,7 +324,6 @@ void ScreenEditorView::renderOpenGL()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	Init2DMatrix(getWidth(), getHeight());
-
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
