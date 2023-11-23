@@ -94,14 +94,13 @@ ImageMedia::~ImageMedia()
 
 void ImageMedia::renderGL()
 {
-
+	if (!shouldRedraw) {return;}
 	GenericScopedLock lock(imageLock);
 
 	glMatrixMode(GL_TEXTURE);
 	glBindTexture(GL_TEXTURE_2D, frameBuffer.getTextureID());
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.getWidth(), image.getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, bitmapData->data);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
 }
 
 void ImageMedia::initFrameBuffer()
