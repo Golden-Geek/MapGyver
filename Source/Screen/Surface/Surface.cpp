@@ -344,9 +344,9 @@ void Surface::updateVertices()
 					brMask.y = 1 - brMask.y;
 				}
 				addToVertices(grid[i][j], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), tlTex, tlMask);
-				addToVertices(grid[i + 1][j], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), trTex, trMask);
-				addToVertices(grid[i][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), blTex, blMask);
-				addToVertices(grid[i + 1][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), brTex, brMask);
+				addToVertices(grid[i + 1][j], Point<float>(((i+1) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), trTex, trMask);
+				addToVertices(grid[i][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j+1) * 2 * ratio) - 1)), blTex, blMask);
+				addToVertices(grid[i + 1][j + 1], Point<float>(((i+1) * 2 * ratio) - 1, -(((j+1) * 2 * ratio) - 1)), brTex, brMask);
 				addLastFourAsQuad();
 			}
 		}
