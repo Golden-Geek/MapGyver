@@ -51,6 +51,7 @@ public:
 	SpinLock imageLock;
 	Image image;
 	std::shared_ptr<Image::BitmapData> bitmapData;
+	GLuint textureID;
 
 	virtual void renderGL();
 	virtual void initFrameBuffer() override;

@@ -32,22 +32,22 @@ void ColorMedia::onContainerParameterChangedInternal(Parameter* p)
 
 void ColorMedia::renderGL()
 {
+
+	Init2DViewport(1, 1);
+
 	Colour c = color->getColor();
-
-	Init2DViewport(100, 100);
-
 	glClearColor(c.getFloatRed(), c.getFloatGreen(), c.getFloatBlue(), c.getFloatAlpha());
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	Draw2DRect(0, 0, 20, 20);
+	//Draw2DRect(0, 0, 20, 20);
 }
 
 Point<int> ColorMedia::getMediaSize()
 {
-	return Point<int>(100, 100);
+	return Point<int>(1, 1);
 }
 
 
