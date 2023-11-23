@@ -22,14 +22,16 @@ public:
     String objectType;
     var objectData;
 
-    BoolParameter* showTestPattern;
 
+    TargetParameter* media;
+
+    ControllableContainer positionningCC;
     Point2DParameter* topLeft;
     Point2DParameter* topRight;
     Point2DParameter* bottomLeft;
     Point2DParameter* bottomRight;
 
-    BoolParameter* isBezier;
+    EnablingControllableContainer bezierCC;
     Point2DParameter* handleBezierTopLeft;
     Point2DParameter* handleBezierTopRight;
     Point2DParameter* handleBezierBottomLeft;
@@ -38,6 +40,11 @@ public:
     Point2DParameter* handleBezierLeftBottom;
     Point2DParameter* handleBezierRightTop;
     Point2DParameter* handleBezierRightBottom;
+
+    ControllableContainer adjustmentsCC;
+    BoolParameter* showTestPattern;
+    TargetParameter* mask;
+    BoolParameter* invertMask;
 
     FloatParameter* softEdgeTop;
     FloatParameter* softEdgeRight;
@@ -49,15 +56,11 @@ public:
     FloatParameter* cropBottom;
     FloatParameter* cropLeft;
 
-    TargetParameter* media;
-    TargetParameter* mask;
-    BoolParameter* invertMask;
-
     Media* previewMedia;
-
     Path quadPath;
 
     void onContainerParameterChangedInternal(Parameter* p);
+    void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
     void updatePath();
 

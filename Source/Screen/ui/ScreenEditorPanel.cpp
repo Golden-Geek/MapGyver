@@ -91,9 +91,27 @@ void ScreenEditorView::paint(Graphics& g)
 
 		g.setColour(col.withAlpha(.5f));
 		g.fillPath(p);
+
+		Surface* s = screen->getSurfaceAt(getRelativeMousePos());
+		if (s != nullptr && s->bezierCC.enabled->boolValue())
+		{
+			Array<Point2DParameter*> bezierPoints = { s->handleBezierTopLeft, s->handleBezierTopRight, s->handleBezierBottomLeft, s->handleBezierBottomRight, s->handleBezierLeftTop, s->handleBezierLeftBottom, s->handleBezierRightTop, s->handleBezierRightBottom };
+
+			for (auto& b : bezierPoints)
+			{
+				bool isCurrent = b == closestHandle;
+				Colour c = isCurrent ? Colours::yellow : Colours::white;
+				g.setColour(c.withAlpha(isCurrent ? .8f : .5f));
+				Point<int> center = getPointOnScreen(b->getPoint());
+				float size = isCurrent ? 10 : 5;
+				g.fillEllipse(Rectangle<float>(0, 0, size, size).withCentre(center.toFloat()));
+				g.setColour(c.darker());
+				g.drawEllipse(Rectangle<float>(0, 0, size, size).withCentre(center.toFloat()), 1);
+			}
+
+		}
 	}
 }
-
 
 void ScreenEditorView::mouseDown(const MouseEvent& e)
 {
@@ -295,7 +313,7 @@ void ScreenEditorView::renderOpenGL()
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, frameBuffer->getTextureID());
 
-	
+
 
 	int fw = frameBuffer->getWidth();
 	int fh = frameBuffer->getHeight();
@@ -345,7 +363,7 @@ void ScreenEditorView::openGLContextClosing()
 bool ScreenEditorView::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
 	if (dragSourceDetails.description.getProperty("dataType", "") == "Media") return true;
-	
+
 	return false;
 }
 

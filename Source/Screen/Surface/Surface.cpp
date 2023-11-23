@@ -14,6 +14,9 @@
 
 Surface::Surface(var params) :
 	BaseItem(params.getProperty("name", "Surface")),
+	positionningCC("Positionning"),
+	bezierCC("Bezier"),
+	adjustmentsCC("Adjustments"),
 	objectType(params.getProperty("type", "Surface").toString()),
 	objectData(params),
 	previewMedia(nullptr)
@@ -23,38 +26,39 @@ Surface::Surface(var params) :
 
 	itemDataType = "Surface";
 
-	showTestPattern = addBoolParameter("Show Test Pattern", "If checked this will not use the media but generate a TestPatterns", false);
-
-	topLeft = addPoint2DParameter("topLeft ", "");
-	topRight = addPoint2DParameter("topRight ", "");
-	bottomLeft = addPoint2DParameter("bottomLeft ", "");
-	bottomRight = addPoint2DParameter("bottomRight ", "");
-
-	isBezier = addBoolParameter("Bezier sides", "", false);
-	resetBezierBtn = addTrigger("Reset bezier values", "");
-
-	handleBezierTopLeft = addPoint2DParameter("Handle Top Left", "");
-	handleBezierTopRight = addPoint2DParameter("Handle Top Right", "");
-	handleBezierBottomLeft = addPoint2DParameter("Handle Bottom Left", "");
-	handleBezierBottomRight = addPoint2DParameter("Handle Bottom Right", "");
-	handleBezierLeftTop = addPoint2DParameter("Handle Left Top", "");
-	handleBezierLeftBottom = addPoint2DParameter("Handle Left Bottom", "");
-	handleBezierRightTop = addPoint2DParameter("Handle Right Top", "");
-	handleBezierRightBottom = addPoint2DParameter("Handle Right Bottom", "");
-
-	softEdgeTop = addFloatParameter("Soft Edge Top", "", 0, 0, 1);
-	softEdgeRight = addFloatParameter("Soft Edge Right", "", 0, 0, 1);
-	softEdgeBottom = addFloatParameter("Soft Edge Bottom", "", 0, 0, 1);
-	softEdgeLeft = addFloatParameter("Soft Edge Left", "", 0, 0, 1);
-
-	cropTop = addFloatParameter("Crop Top", "", 0, 0, 1);
-	cropRight = addFloatParameter("Crop Right", "", 0, 0, 1);
-	cropBottom = addFloatParameter("Crop Bottom", "", 0, 0, 1);
-	cropLeft = addFloatParameter("Crop Left", "", 0, 0, 1);
-
 	media = addTargetParameter("Media", "Media to read on this surface", MediaManager::getInstance());
-	mask = addTargetParameter("Mask", "Apply a mask to this surface", MediaManager::getInstance());
-	invertMask = addBoolParameter("Invert mask", "Invert mask", false);
+	media->maxDefaultSearchLevel = 0;
+	media->targetType = TargetParameter::CONTAINER;
+
+	topLeft = positionningCC.addPoint2DParameter("topLeft ", "");
+	topRight = positionningCC.addPoint2DParameter("topRight ", "");
+	bottomLeft = positionningCC.addPoint2DParameter("bottomLeft ", "");
+	bottomRight = positionningCC.addPoint2DParameter("bottomRight ", "");
+
+	resetBezierBtn = bezierCC.addTrigger("Reset bezier values", "");
+
+	handleBezierTopLeft = bezierCC.addPoint2DParameter("Handle Top Left", "");
+	handleBezierTopRight = bezierCC.addPoint2DParameter("Handle Top Right", "");
+	handleBezierBottomLeft = bezierCC.addPoint2DParameter("Handle Bottom Left", "");
+	handleBezierBottomRight = bezierCC.addPoint2DParameter("Handle Bottom Right", "");
+	handleBezierLeftTop = bezierCC.addPoint2DParameter("Handle Left Top", "");
+	handleBezierLeftBottom = bezierCC.addPoint2DParameter("Handle Left Bottom", "");
+	handleBezierRightTop = bezierCC.addPoint2DParameter("Handle Right Top", "");
+	handleBezierRightBottom = bezierCC.addPoint2DParameter("Handle Right Bottom", "");
+
+	softEdgeTop = adjustmentsCC.addFloatParameter("Soft Edge Top", "", 0, 0, 1);
+	softEdgeRight = adjustmentsCC.addFloatParameter("Soft Edge Right", "", 0, 0, 1);
+	softEdgeBottom = adjustmentsCC.addFloatParameter("Soft Edge Bottom", "", 0, 0, 1);
+	softEdgeLeft = adjustmentsCC.addFloatParameter("Soft Edge Left", "", 0, 0, 1);
+
+	cropTop = adjustmentsCC.addFloatParameter("Crop Top", "", 0, 0, 1);
+	cropRight = adjustmentsCC.addFloatParameter("Crop Right", "", 0, 0, 1);
+	cropBottom = adjustmentsCC.addFloatParameter("Crop Bottom", "", 0, 0, 1);
+	cropLeft = adjustmentsCC.addFloatParameter("Crop Left", "", 0, 0, 1);
+
+	showTestPattern = adjustmentsCC.addBoolParameter("Show Test Pattern", "If checked this will not use the media but generate a TestPatterns", false);
+	mask = adjustmentsCC.addTargetParameter("Mask", "Apply a mask to this surface", MediaManager::getInstance());
+	invertMask = adjustmentsCC.addBoolParameter("Invert mask", "Invert mask", false);
 
 	topLeft->setDefaultPoint(0, 1);
 	topLeft->setBounds(-1, -1, 2, 2);
@@ -83,10 +87,18 @@ Surface::Surface(var params) :
 	handleBezierRightBottom->setDefaultPoint(1, 1 / 3.0f);
 	handleBezierRightBottom->setBounds(0, 0, 1, 1);
 
-	media->maxDefaultSearchLevel = 0;
-	media->targetType = TargetParameter::CONTAINER;
 	mask->maxDefaultSearchLevel = 0;
 	mask->targetType = TargetParameter::CONTAINER;
+
+	bezierCC.enabled->setDefaultValue(false);
+
+	positionningCC.editorIsCollapsed = true;
+	bezierCC.editorIsCollapsed = true;
+	adjustmentsCC.editorIsCollapsed = true;
+
+	positionningCC.addChildControllableContainer(&bezierCC);
+	addChildControllableContainer(&positionningCC);
+	addChildControllableContainer(&adjustmentsCC);
 
 	if (!Engine::mainEngine->isLoadingFile)
 	{
@@ -100,12 +112,19 @@ Surface::~Surface()
 
 void Surface::onContainerParameterChangedInternal(Parameter* p)
 {
+	if (p == media)
+	{
+		updateVertices();
+	}
+}
+
+void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
+{
 	updateVertices();
-	if (p == topLeft || p == topRight || p == bottomLeft || p == bottomRight)
+	if (c == topLeft || c == topRight || c == bottomLeft || c == bottomRight)
 	{
 		updatePath();
 	}
-
 }
 
 void Surface::updatePath()
@@ -249,7 +268,7 @@ void Surface::updateVertices()
 	blMask *= zbl;
 	brMask *= zbr;
 
-	if (isBezier->boolValue()) {
+	if (bezierCC.enabled->boolValue()) {
 		const int gridSize = 40;
 		Point<float> grid[gridSize][gridSize];
 
