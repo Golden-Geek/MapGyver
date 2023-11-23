@@ -77,7 +77,8 @@ RMPEngine::~RMPEngine()
 	MediaManager::deleteInstance();
 	ScreenManager::deleteInstance();
 	NDIManager::deleteInstance();
-	libvlc_release(VLCInstance); 
+	USBCamManager::deleteInstance();
+	libvlc_release(VLCInstance);
 	VLCInstance = nullptr;
 }
 

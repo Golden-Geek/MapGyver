@@ -38,6 +38,12 @@
     <Filter Include="RuleMapPool\Source\Media\medias\sharedtexture">
       <UniqueIdentifier>{DD7DA2D1-CE8F-D765-3D87-5C527B5E3315}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RuleMapPool\Source\Media\medias\USBCam\ui">
+      <UniqueIdentifier>{38B470A3-405B-2983-46C4-8069BB286E44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMapPool\Source\Media\medias\USBCam">
+      <UniqueIdentifier>{50AA6F9A-3CBD-2191-A52C-8C115DBEC9E5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="RuleMapPool\Source\Media\medias\video\vlcpp">
       <UniqueIdentifier>{ABBA3131-B99C-FF82-6794-376A251C6484}</UniqueIdentifier>
     </Filter>
@@ -717,6 +723,24 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.cpp">
       <Filter>RuleMapPool\Source\Media\medias\sharedtexture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\USBCam\ui\USBCamDeviceChooser.cpp">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\USBCam\ui\USBCamDeviceParameterUI.cpp">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\USBCam\USBCamDevice.cpp">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\USBCam\USBCamDeviceParameter.cpp">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\USBCam\USBCamManager.cpp">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\USBCam\USBCamMedia.cpp">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\video\VideoMedia.cpp">
       <Filter>RuleMapPool\Source\Media\medias\video</Filter>
@@ -3060,6 +3084,24 @@
     <ClInclude Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.h">
       <Filter>RuleMapPool\Source\Media\medias\sharedtexture</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\USBCam\ui\USBCamDeviceChooser.h">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\USBCam\ui\USBCamDeviceParameterUI.h">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\USBCam\USBCamDevice.h">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\USBCam\USBCamDeviceParameter.h">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\USBCam\USBCamManager.h">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\USBCam\USBCamMedia.h">
+      <Filter>RuleMapPool\Source\Media\medias\USBCam</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\common.hpp">
       <Filter>RuleMapPool\Source\Media\medias\video\vlcpp</Filter>
     </ClInclude>
@@ -3627,7 +3669,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_core\zip\juce_ZipFile.h">
       <Filter>JUCE Modules\juce_core\zip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_core\juce_core.h">
+    <ClInclude Include="..\..\..\JUCE\modules\juce_core\juce_core.h">
       <Filter>JUCE Modules\juce_core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_cryptography\encryption\juce_BlowFish.h">
@@ -3648,7 +3690,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_cryptography\hashing\juce_Whirlpool.h">
       <Filter>JUCE Modules\juce_cryptography\hashing</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_cryptography\juce_cryptography.h">
+    <ClInclude Include="..\..\..\JUCE\modules\juce_cryptography\juce_cryptography.h">
       <Filter>JUCE Modules\juce_cryptography</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_data_structures\app_properties\juce_ApplicationProperties.h">
@@ -3678,7 +3720,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.h">
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_data_structures\juce_data_structures.h">
+    <ClInclude Include="..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.h">
       <Filter>JUCE Modules\juce_data_structures</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_events\broadcasters\juce_ActionBroadcaster.h">
@@ -3765,7 +3807,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_events\timers\juce_Timer.h">
       <Filter>JUCE Modules\juce_events\timers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_events\juce_events.h">
+    <ClInclude Include="..\..\..\JUCE\modules\juce_events\juce_events.h">
       <Filter>JUCE Modules\juce_events</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\colour\juce_Colour.h">
@@ -3945,7 +3987,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\placement\juce_RectanglePlacement.h">
       <Filter>JUCE Modules\juce_graphics\placement</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_graphics\juce_graphics.h">
+    <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\juce_graphics.h">
       <Filter>JUCE Modules\juce_graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_basics\accessibility\enums\juce_AccessibilityActions.h">
@@ -4554,7 +4596,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_gui_basics\windows\juce_WindowUtils.h">
       <Filter>JUCE Modules\juce_gui_basics\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_gui_basics\juce_gui_basics.h">
+    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.h">
       <Filter>JUCE Modules\juce_gui_basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_extra\code_editor\juce_CodeDocument.h">
@@ -4638,7 +4680,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_gui_extra\native\juce_NSViewFrameWatcher_mac.h">
       <Filter>JUCE Modules\juce_gui_extra\native</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_gui_extra\juce_gui_extra.h">
+    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h">
       <Filter>JUCE Modules\juce_gui_extra</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_opengl\geometry\juce_Draggable3DOrientation.h">
@@ -4713,7 +4755,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_opengl\utils\juce_OpenGLAppComponent.h">
       <Filter>JUCE Modules\juce_opengl\utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_opengl\juce_opengl.h">
+    <ClInclude Include="..\..\..\JUCE\modules\juce_opengl\juce_opengl.h">
       <Filter>JUCE Modules\juce_opengl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Modules\juce_organicui\app\CrashHandler.h">
@@ -5352,7 +5394,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_osc\osc\juce_OSCTypes.h">
       <Filter>JUCE Modules\juce_osc\osc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_osc\juce_osc.h">
+    <ClInclude Include="..\..\..\JUCE\modules\juce_osc\juce_osc.h">
       <Filter>JUCE Modules\juce_osc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Modules\juce_sharedtexture\SharedTexture.h">
@@ -8247,7 +8289,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_video\playback\juce_VideoComponent.h">
       <Filter>JUCE Modules\juce_video\playback</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_video\juce_video.h">
+    <ClInclude Include="..\..\..\JUCE\modules\juce_video\juce_video.h">
       <Filter>JUCE Modules\juce_video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">

@@ -84,6 +84,30 @@
             <FILE id="dPIWw1" name="SharedTextureMedia.h" compile="0" resource="0"
                   file="Source/Media/medias/sharedtexture/SharedTextureMedia.h"/>
           </GROUP>
+          <GROUP id="{ECF94977-7C42-1EEE-821C-A13327ABD69A}" name="USBCam">
+            <GROUP id="{E6FEF759-DA69-00EA-2827-F93CB697DB8A}" name="ui">
+              <FILE id="Gh9pbs" name="USBCamDeviceChooser.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/USBCam/ui/USBCamDeviceChooser.cpp"/>
+              <FILE id="TY2bWT" name="USBCamDeviceChooser.h" compile="0" resource="0"
+                    file="Source/Media/medias/USBCam/ui/USBCamDeviceChooser.h"/>
+              <FILE id="eQzEjS" name="USBCamDeviceParameterUI.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/USBCam/ui/USBCamDeviceParameterUI.cpp"/>
+              <FILE id="jqGSme" name="USBCamDeviceParameterUI.h" compile="0" resource="0"
+                    file="Source/Media/medias/USBCam/ui/USBCamDeviceParameterUI.h"/>
+            </GROUP>
+            <FILE id="qKNeGj" name="USBCamDevice.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/USBCam/USBCamDevice.cpp"/>
+            <FILE id="LDMnrw" name="USBCamDevice.h" compile="0" resource="0" file="Source/Media/medias/USBCam/USBCamDevice.h"/>
+            <FILE id="IIFTmy" name="USBCamDeviceParameter.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/USBCam/USBCamDeviceParameter.cpp"/>
+            <FILE id="IxkzWl" name="USBCamDeviceParameter.h" compile="0" resource="0"
+                  file="Source/Media/medias/USBCam/USBCamDeviceParameter.h"/>
+            <FILE id="GwwCp0" name="USBCamManager.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/USBCam/USBCamManager.cpp"/>
+            <FILE id="I9iq4i" name="USBCamManager.h" compile="0" resource="0" file="Source/Media/medias/USBCam/USBCamManager.h"/>
+            <FILE id="jQO7cr" name="USBCamMedia.cpp" compile="0" resource="0" file="Source/Media/medias/USBCam/USBCamMedia.cpp"/>
+            <FILE id="oL55u4" name="USBCamMedia.h" compile="0" resource="0" file="Source/Media/medias/USBCam/USBCamMedia.h"/>
+          </GROUP>
           <GROUP id="{789B912B-C9EF-806B-BBB4-78AE0DD44723}" name="video">
             <GROUP id="{9D414D54-55FD-3F32-B9A7-89C67E1127A7}" name="vlcpp">
               <FILE id="WQyaU2" name="common.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/common.hpp"/>
@@ -195,7 +219,7 @@
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" ORGANICUI_USE_SHAREDTEXTURE="1"
                ORGANICUI_USE_WEBSERVER="1" ORGANICUI_USE_SERVUS="1" JUCE_ALLOW_SPECIAL_CHARS_IN_ADDRESS="1"
                JUCE_ENABLE_BROADCAST_BY_DEFAULT="1" JUCE_EXCLUSIVE_BINDING_BY_DEFAULT="1"
-               JUCE_IP_AND_PORT_DETECTION="1"/>
+               JUCE_IP_AND_PORT_DETECTION="1" JUCE_USE_CAMERA="1"/>
   <EXPORTFORMATS>
     <VS2022 targetFolder="Builds/VisualStudio2022" smallIcon="AKcEsb" bigIcon="AKcEsb"
             externalLibraries="libvlc.lib&#10;libvlccore.lib&#10;Servus.lib"
