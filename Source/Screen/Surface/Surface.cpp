@@ -206,10 +206,28 @@ void Surface::updateVertices()
 	Vector3D<float> blTex(cropLeft->floatValue(), cropBottom->floatValue(), 1.0f);
 	Vector3D<float> brTex(1 - cropRight->floatValue(), cropBottom->floatValue(), 1.0f);
 
+	Media* med = dynamic_cast<Media*>(media->targetContainer.get());
+	
+	if (med!= nullptr && med->flipY) {
+		tlTex.y = 1 - tlTex.y;
+		trTex.y = 1 - trTex.y;
+		blTex.y = 1 - blTex.y;
+		brTex.y = 1 - brTex.y;
+	}
+
+
 	Vector3D<float> tlMask(0, 1, 1.0f);
 	Vector3D<float> trMask(1, 1, 1.0f);
 	Vector3D<float> blMask(0, 0, 1.0f);
 	Vector3D<float> brMask(1, 0, 1.0f);
+
+	Media* msk = dynamic_cast<Media*>(mask->targetContainer.get());
+	if (msk != nullptr && msk->flipY) {
+		tlMask.y = 1 - tlMask.y;
+		trMask.y = 1 - trMask.y;
+		blMask.y = 1 - blMask.y;
+		brMask.y = 1 - brMask.y;
+	}
 
 	float dtl = center.getDistanceFrom(tl);
 	float dtr = center.getDistanceFrom(tr);

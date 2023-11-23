@@ -12,7 +12,8 @@
 
 Media::Media(const String& name, var params) :
 	BaseItem(name),
-	shouldRedraw(false)
+	shouldRedraw(false),
+	flipY(false)
 {
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
 	saveAndLoadRecursiveData = true;
@@ -86,6 +87,7 @@ Point<int> Media::getMediaSize()
 ImageMedia::ImageMedia(const String& name, var params) :
 	Media(name, params)
 {
+	flipY = true;
 }
 
 ImageMedia::~ImageMedia()

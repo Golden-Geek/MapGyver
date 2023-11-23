@@ -76,13 +76,16 @@ void CompositionMedia::renderOpenGL()
             glRotatef(rotationAngle, 0.0f, 0.0f, 1.0f);
             glTranslatef(-width / 2.0f, -height / 2.0f, 0.0f);
 
+            float yA = m->flipY ? y + height : y;
+            float yB = m->flipY ? y : y + height;
+
             // Dessine le rectangle avec la texture
             glColor4f(1.0f, 1.0f, 1.0f, alpha);
             glBegin(GL_QUADS);
-            glTexCoord2f(0.0f, 0.0f); glVertex2f(x, y+height);
-            glTexCoord2f(1.0f, 0.0f); glVertex2f(x + width, y+height);
-            glTexCoord2f(1.0f, 1.0f); glVertex2f(x + width, y);
-            glTexCoord2f(0.0f, 1.0f); glVertex2f(x, y);
+            glTexCoord2f(0.0f, 0.0f); glVertex2f(x, yB);
+            glTexCoord2f(1.0f, 0.0f); glVertex2f(x + width, yB);
+            glTexCoord2f(1.0f, 1.0f); glVertex2f(x + width, yA);
+            glTexCoord2f(0.0f, 1.0f); glVertex2f(x, yA);
             glEnd();
             juce::gl::glPopMatrix();
         }

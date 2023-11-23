@@ -22,6 +22,7 @@ public:
 	OpenGLFrameBuffer frameBuffer;
 	bool shouldRedraw;
 
+	bool flipY;
 	void onContainerParameterChangedInternal(Parameter* p);
 
 	void newOpenGLContextCreated() override;
