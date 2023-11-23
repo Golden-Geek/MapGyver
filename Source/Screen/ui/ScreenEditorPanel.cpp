@@ -112,7 +112,9 @@ void ScreenEditorView::paint(Graphics& g)
 				g.drawEllipse(Rectangle<float>(0, 0, size, size).withCentre(center.toFloat()), 1);
 			}
 
-			if (s->bezierCC.enabled->boolValue()) {
+			if (s->bezierCC.enabled->boolValue())
+			{
+
 				Array<Line<float>> handleBezierLines = {
 				Line<float>(getPointOnScreen(s->topLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierTopLeft->getPoint()).toFloat()),
 				Line<float>(getPointOnScreen(s->topLeft->getPoint()).toFloat(), getPointOnScreen(s->handleBezierLeftTop->getPoint()).toFloat()),

@@ -21,15 +21,20 @@ MediaManager::MediaManager() :
     factory.defs.add(Factory<Media>::Definition::createDef<PictureMedia>(""));
     factory.defs.add(Factory<Media>::Definition::createDef<VideoMedia>(""));
     factory.defs.add(Factory<Media>::Definition::createDef<NDIMedia>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<ShaderMedia>(""));
     factory.defs.add(Factory<Media>::Definition::createDef<CompositionMedia>(""));
 
     itemDataType = "Media";
     selectItemWhenCreated = true;
+
+    ShaderCheckTimer::getInstance();
 }
 
 MediaManager::~MediaManager()
 {
     // stopThread(1000);
+
+    ShaderCheckTimer::deleteInstance();
 }
 
 

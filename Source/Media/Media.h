@@ -16,10 +16,15 @@ class Media :
 	public OpenGLRenderer
 {
 public:
-	Media(const String& name = "Media", var params = var());
+	Media(const String& name = "Media", var params = var(), bool hasCustomSize = false);
 	virtual ~Media();
 
+
+	IntParameter* width;
+	IntParameter* height;
+
 	OpenGLFrameBuffer frameBuffer;
+	bool alwaysRedraw;
 	bool shouldRedraw;
 	bool flipY;
 

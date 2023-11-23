@@ -10,11 +10,20 @@
 
 #include "Media/MediaIncludes.h"
 
-Media::Media(const String& name, var params) :
+Media::Media(const String& name, var params, bool hasCustomSize) :
 	BaseItem(name),
+	width(nullptr),
+	height(nullptr),
+	alwaysRedraw(false),
 	shouldRedraw(false),
 	flipY(false)
 {
+	if (hasCustomSize)
+	{
+		width = addIntParameter("Width", "Width of the media", 512, 1, 10000);
+		height = addIntParameter("Height", "Height of the media", 512, 1, 10000);
+	}
+
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
 	saveAndLoadRecursiveData = true;
 
@@ -42,7 +51,7 @@ void Media::renderOpenGL()
 
 	if (!frameBuffer.isValid()) return;
 
-	if (shouldRedraw)
+	if (shouldRedraw || alwaysRedraw)
 	{
 		frameBuffer.makeCurrentRenderingTarget();
 		renderGL();
@@ -78,6 +87,7 @@ void Media::initFrameBuffer()
 
 Point<int> Media::getMediaSize()
 {
+	if(width != nullptr && height != nullptr) return Point<int>(width->intValue(), height->intValue());
 	return Point<int>(0, 0);
 }
 
@@ -106,7 +116,7 @@ void ImageMedia::renderGL()
 
 void ImageMedia::initFrameBuffer()
 {
-	if(frameBuffer.isValid()) frameBuffer.release();
+	if (frameBuffer.isValid()) frameBuffer.release();
 	frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
 	shouldRedraw = true;
 }
