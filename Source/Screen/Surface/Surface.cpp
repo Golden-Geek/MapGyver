@@ -19,7 +19,8 @@ Surface::Surface(var params) :
 	adjustmentsCC("Adjustments"),
 	objectType(params.getProperty("type", "Surface").toString()),
 	objectData(params),
-	previewMedia(nullptr)
+	previewMedia(nullptr),
+	shouldUpdateVertices(true)
 {
 	saveAndLoadRecursiveData = true;
 	canBeDisabled = true;
@@ -115,7 +116,7 @@ void Surface::onContainerParameterChangedInternal(Parameter* p)
 {
 	if (p == media)
 	{
-		updateVertices();
+		shouldUpdateVertices = true;
 	}
 }
 
@@ -125,7 +126,7 @@ void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Co
 		resetBezierPoints();
 	}
 	
-	updateVertices();
+	shouldUpdateVertices = true;
 	
 	if (c == topLeft || c == topRight || c == bottomLeft || c == bottomRight)
 	{
@@ -199,7 +200,6 @@ Array<Point2DParameter*> Surface::getBezierHandles(Point2DParameter* corner)
 
 	return { handleBezierTopLeft, handleBezierTopRight, handleBezierBottomLeft, handleBezierBottomRight, handleBezierLeftTop, handleBezierLeftBottom, handleBezierRightTop, handleBezierRightBottom };
 }
-
 
 void Surface::addToVertices(Point<float> posDisplay, Point<float> internalCoord, Vector3D<float> texCoord, Vector3D<float> maskCoord)
 {
@@ -362,6 +362,124 @@ void Surface::updateVertices()
 	}
 
 	verticesLock.exit();
+}
+
+void Surface::draw(GLuint shaderID)
+{
+	if (!enabled->boolValue()) return;
+
+	Point<float> tl, tr, bl, br;
+
+	Media* maskMedia = mask->getTargetContainerAs<Media>();// dynamic_cast<Media*>(mask->targetContainer.get());
+	std::shared_ptr<OpenGLTexture> texMask = nullptr;
+
+	GLuint maskLocation = glGetUniformLocation(shaderID, "mask");
+	glUniform1i(maskLocation, 0);
+	glActiveTexture(GL_TEXTURE0);
+
+	if (maskMedia != nullptr)
+	{
+		glBindTexture(GL_TEXTURE_2D, maskMedia->getTextureID());
+	}
+	else
+	{
+		juce::Image whiteImage(juce::Image::PixelFormat::ARGB, 1, 1, true);
+		whiteImage.setPixelAt(0, 0, Colours::white);
+		texMask = std::make_shared<OpenGLTexture>();
+		texMask->loadImage(whiteImage);
+		texMask->bind();
+	}
+	glGetError();
+
+	Media* media = getMedia();
+
+	GLuint textureLocation = glGetUniformLocation(shaderID, "tex");
+	glUniform1i(textureLocation, 1);
+	glActiveTexture(GL_TEXTURE1);
+	glGetError();
+
+	if (media == nullptr)
+	{
+		return;
+	}
+	glBindTexture(GL_TEXTURE_2D, media->getTextureID());
+
+	// vertices start
+	if (shouldUpdateVertices) {
+		shouldUpdateVertices = false;
+		updateVertices();
+	
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+		posAttrib = glGetAttribLocation(shaderID, "position");
+		glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), 0);
+		
+		surfacePosAttrib = glGetAttribLocation(shaderID, "surfacePosition");
+		glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+		
+		texAttrib = glGetAttribLocation(shaderID, "texcoord");
+		glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
+		
+		maskAttrib = glGetAttribLocation(shaderID, "maskcoord");
+		glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
+		
+		borderSoftLocation = glGetUniformLocation(shaderID, "borderSoft");
+		glUniform4f(borderSoftLocation, softEdgeTop->floatValue(), softEdgeRight->floatValue(), softEdgeBottom->floatValue(), softEdgeLeft->floatValue());
+		
+		invertMaskLocation = glGetUniformLocation(shaderID, "invertMask");
+		glUniform1i(invertMaskLocation, invertMask->boolValue() ? 1 : 0);
+
+		glGenBuffers(1, &ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), 0);
+	glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+	glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
+	glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
+	glUniform4f(borderSoftLocation, softEdgeTop->floatValue(), softEdgeRight->floatValue(), softEdgeBottom->floatValue(), softEdgeLeft->floatValue());
+	glUniform1i(invertMaskLocation, invertMask->boolValue() ? 1 : 0);
+
+	glEnableVertexAttribArray(posAttrib);
+	glGetError();
+
+	glEnableVertexAttribArray(surfacePosAttrib);
+	glGetError();
+
+	glEnableVertexAttribArray(texAttrib);
+	glGetError();
+
+	glEnableVertexAttribArray(maskAttrib);
+	glGetError();
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glGetError();
+
+	verticesLock.enter();
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.getRawDataPointer(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, verticesElements.size() * sizeof(GLuint), verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
+	verticesLock.exit();
+
+	glDrawElements(GL_TRIANGLES, verticesElements.size(), GL_UNSIGNED_INT, 0);
+	glGetError();
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	//glDeleteBuffers(1, &ebo);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glDeleteBuffers(1, &vbo);
+
+	glActiveTexture(GL_TEXTURE1);
+	glDisable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glActiveTexture(GL_TEXTURE0);
+	glDisable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glGetError();
 }
 
 Media* Surface::getMedia()

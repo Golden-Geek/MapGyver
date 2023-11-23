@@ -51,7 +51,7 @@ void ScreenRenderer::renderOpenGL()
 	{
 		shader->use();
 
-		for (auto& s : screen->surfaces.items) drawSurface(s);
+		for (auto& s : screen->surfaces.items) s->draw(shader->getProgramID());
 
 		glUseProgram(0);
 		glGetError();
@@ -69,119 +69,6 @@ void ScreenRenderer::renderOpenGL()
 	frameBuffer.releaseAsRenderingTarget();
 
 }
-
-void ScreenRenderer::drawSurface(Surface* s)
-{
-	if (!s->enabled->boolValue()) return;
-
-	Point<float> tl, tr, bl, br;
-
-	Media* mask = s->mask->getTargetContainerAs<Media>();// dynamic_cast<Media*>(s->mask->targetContainer.get());
-	std::shared_ptr<OpenGLTexture> texMask = nullptr;
-
-
-	GLuint maskLocation = glGetUniformLocation(shader->getProgramID(), "mask");
-	glUniform1i(maskLocation, 0);
-	glActiveTexture(GL_TEXTURE0);
-
-	if (mask != nullptr)
-	{
-		glBindTexture(GL_TEXTURE_2D, mask->getTextureID());
-	}
-	else
-	{
-		juce::Image whiteImage(juce::Image::PixelFormat::ARGB, 1, 1, true);
-		whiteImage.setPixelAt(0, 0, Colours::white);
-		texMask = std::make_shared<OpenGLTexture>();
-		texMask->loadImage(whiteImage);
-		texMask->bind();
-	}
-	glGetError();
-
-	Media* media = s->getMedia();
-	std::shared_ptr<OpenGLTexture> tex = nullptr;
-
-	GLuint textureLocation = glGetUniformLocation(shader->getProgramID(), "tex");
-	glUniform1i(textureLocation, 1);
-	glActiveTexture(GL_TEXTURE1);
-	glGetError();
-
-	if (media == nullptr)
-	{
-		return;
-	}
-	glBindTexture(GL_TEXTURE_2D, media->getTextureID());
-
-	// vertices start
-
-	// Create a vertex buffer object
-	GLuint vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glGetError();
-
-	GLint posAttrib = glGetAttribLocation(shader->getProgramID(), "position");
-	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), 0);
-	glGetError();
-
-	GLint surfacePosAttrib = glGetAttribLocation(shader->getProgramID(), "surfacePosition");
-	glEnableVertexAttribArray(surfacePosAttrib);
-	glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
-	glGetError();
-
-	GLint texAttrib = glGetAttribLocation(shader->getProgramID(), "texcoord");
-	glEnableVertexAttribArray(texAttrib);
-	glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
-	glGetError();
-
-	GLint maskAttrib = glGetAttribLocation(shader->getProgramID(), "maskcoord");
-	glEnableVertexAttribArray(maskAttrib);
-	glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
-	glGetError();
-
-	GLuint borderSoftLocation = glGetUniformLocation(shader->getProgramID(), "borderSoft");
-	glUniform4f(borderSoftLocation, s->softEdgeTop->floatValue(), s->softEdgeRight->floatValue(), s->softEdgeBottom->floatValue(), s->softEdgeLeft->floatValue());
-	glGetError();
-
-	GLuint invertMaskLocation = glGetUniformLocation(shader->getProgramID(), "invertMask");
-	glUniform1i(invertMaskLocation, s->invertMask->boolValue() ? 1 : 0);
-	glGetError();
-
-	GLuint ebo;
-	glGenBuffers(1, &ebo);
-	glGetError();
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glGetError();
-
-	s->verticesLock.enter();
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * s->vertices.size(), s->vertices.getRawDataPointer(), GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, s->verticesElements.size() * sizeof(GLuint), s->verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
-	s->verticesLock.exit();
-	glGetError();
-
-	glDrawElements(GL_TRIANGLES, s->verticesElements.size(), GL_UNSIGNED_INT, 0);
-	glGetError();
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &ebo);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &vbo);
-
-	glActiveTexture(GL_TEXTURE1);
-	glDisable(GL_TEXTURE_2D);
-	if (tex != nullptr) tex->unbind();
-
-	glActiveTexture(GL_TEXTURE0);
-	glDisable(GL_TEXTURE_2D);
-	if (texMask != nullptr) texMask->unbind();
-
-	glGetError();
-
-
-}
-
 
 void ScreenRenderer::openGLContextClosing()
 {

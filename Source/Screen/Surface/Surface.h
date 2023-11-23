@@ -22,6 +22,7 @@ public:
     String objectType;
     var objectData;
 
+    bool shouldUpdateVertices;
 
     TargetParameter* media;
 
@@ -59,6 +60,17 @@ public:
     Media* previewMedia;
     Path quadPath;
 
+    // openGL variables
+    GLuint vbo;
+    GLint posAttrib;
+    GLint surfacePosAttrib;
+    GLint texAttrib;
+    GLint maskAttrib;
+    GLuint borderSoftLocation;
+    GLuint invertMaskLocation;
+    GLuint ebo;
+
+
     void onContainerParameterChangedInternal(Parameter* p);
     void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
@@ -69,16 +81,15 @@ public:
     void resetBezierPoints();
     Trigger* resetBezierBtn;
 
-
     unsigned int verticesVersion;
     Array<GLfloat> vertices;
     Array<GLuint> verticesElements;
     CriticalSection verticesLock;
 
-
     void addToVertices(Point<float> posDisplay, Point<float>itnernalCoord, Vector3D<float> texCoord, Vector3D<float> maskCoord);
     void addLastFourAsQuad();
     void updateVertices();
+    void draw(GLuint shaderID);
 
     Media* getMedia();
 

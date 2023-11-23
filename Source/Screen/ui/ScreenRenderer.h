@@ -26,8 +26,6 @@ public:
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 
-	void drawSurface(Surface* s);
-
 	void openGLContextClosing() override;
 
 	void createAndLoadShaders();
