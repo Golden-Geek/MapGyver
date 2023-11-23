@@ -10,8 +10,10 @@
 
 #pragma once
 
+
 class CompositionLayer :
-    public BaseItem
+    public BaseItem,
+    public MediaTarget
 {
 public:
     CompositionLayer(var params = var());
@@ -27,6 +29,8 @@ public:
     FloatParameter* rotation;
 
     void onContainerParameterChangedInternal(Parameter* p);
+
+    bool isUsingMedia(Media* m) override;
 
     String getTypeString() const override { return objectType; }
     static CompositionLayer* create(var params) { return new CompositionLayer(params); }

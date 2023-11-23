@@ -11,6 +11,7 @@
 #pragma once
 
 
+
 class Media :
 	public BaseItem,
 	public OpenGLRenderer
@@ -19,7 +20,6 @@ public:
 	Media(const String& name = "Media", var params = var(), bool hasCustomSize = false);
 	virtual ~Media();
 
-
 	IntParameter* width;
 	IntParameter* height;
 
@@ -27,6 +27,8 @@ public:
 	bool alwaysRedraw;
 	bool shouldRedraw;
 	bool flipY;
+
+	Array<MediaTarget*> usedTargets;
 
 	void onContainerParameterChangedInternal(Parameter* p);
 
@@ -42,6 +44,11 @@ public:
 
 	OpenGLFrameBuffer* getFrameBuffer();
 	GLint getTextureID();
+
+	void registerTarget(MediaTarget * target);
+	void unregisterTarget(MediaTarget * target);
+
+	bool isBeingUsed();
 
 	virtual Point<int> getMediaSize();
 };

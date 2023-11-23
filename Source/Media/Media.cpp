@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "Media.h"
 
 Media::Media(const String& name, var params, bool hasCustomSize) :
 	BaseItem(name),
@@ -20,8 +21,8 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 {
 	if (hasCustomSize)
 	{
-		width = addIntParameter("Width", "Width of the media", 512, 1, 10000);
-		height = addIntParameter("Height", "Height of the media", 512, 1, 10000);
+		width = addIntParameter("Width", "Width of the media", 1920, 1, 10000);
+		height = addIntParameter("Height", "Height of the media", 1080, 1, 10000);
 	}
 
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
@@ -45,6 +46,9 @@ void Media::newOpenGLContextCreated()
 
 void Media::renderOpenGL()
 {
+	if (!enabled->boolValue()) return;
+	if(!isBeingUsed()) return;
+
 	Point<int> size = getMediaSize();
 	if (size.isOrigin()) return;
 	if (frameBuffer.getWidth() != size.x || frameBuffer.getHeight() != size.y) initFrameBuffer();
@@ -68,6 +72,23 @@ OpenGLFrameBuffer* Media::getFrameBuffer()
 GLint Media::getTextureID()
 {
 	return getFrameBuffer()->getTextureID();
+}
+
+void Media::registerTarget(MediaTarget* target)
+{
+	usedTargets.addIfNotAlreadyThere(target);
+}
+
+void Media::unregisterTarget(MediaTarget* target)
+{
+	usedTargets.removeAllInstancesOf(target);
+}
+
+bool Media::isBeingUsed()
+{
+	if(usedTargets.size() == 0) return false;
+	for(auto & u : usedTargets) if(u->isUsingMedia(this)) return true;
+	return false;
 }
 
 void Media::openGLContextClosing()

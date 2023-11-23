@@ -10,10 +10,14 @@
 
 #pragma once
 
+
+
+
 class Media;
 
 class Surface :
-    public BaseItem
+    public BaseItem,
+    public MediaTarget
 {
 public:
     Surface(var params = var());
@@ -92,8 +96,9 @@ public:
     void draw(GLuint shaderID);
 
     Media* getMedia();
-
     Point<int> getMediaSize();
+
+    bool isUsingMedia(Media* m) override;
     
     Array<Point2DParameter*> getCornerHandles();
     Array<Point2DParameter*> getAllHandles();

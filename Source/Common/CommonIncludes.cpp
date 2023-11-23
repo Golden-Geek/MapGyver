@@ -17,3 +17,5 @@
 #include "NDI/ui/NDIDeviceParameterUI.cpp"
 
 #include "OpenGLManager.cpp"
+
+#include "MediaTarget.cpp"

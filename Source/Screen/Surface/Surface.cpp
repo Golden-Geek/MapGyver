@@ -10,7 +10,9 @@
 
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
-#include "Surface.h"
+
+#define SURFACE_TARGET_MEDIA_ID 0
+#define SURFACE_TARGET_MASK_ID 1
 
 Surface::Surface(var params) :
 	BaseItem(params.getProperty("name", "Surface")),
@@ -116,6 +118,9 @@ void Surface::onContainerParameterChangedInternal(Parameter* p)
 {
 	if (p == media)
 	{
+		if (Media* m = media->getTargetContainerAs<Media>()) registerUseMedia(SURFACE_TARGET_MEDIA_ID, m);
+		else unregisterUseMedia(SURFACE_TARGET_MEDIA_ID);
+
 		shouldUpdateVertices = true;
 	}
 }
@@ -131,6 +136,11 @@ void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Co
 	if (c == topLeft || c == topRight || c == bottomLeft || c == bottomRight)
 	{
 		updatePath();
+	}
+	else if (c == mask)
+	{
+		if (Media* m = mask->getTargetContainerAs<Media>()) registerUseMedia(SURFACE_TARGET_MASK_ID, m);
+		else unregisterUseMedia(SURFACE_TARGET_MASK_ID);
 	}
 }
 
@@ -176,6 +186,12 @@ Point<int> Surface::getMediaSize()
 		return m->getMediaSize();
 
 	return Point<int>();
+}
+
+bool Surface::isUsingMedia(Media* m)
+{
+	if (!enabled->boolValue()) return false;
+	return MediaTarget::isUsingMedia(m);
 }
 
 Array<Point2DParameter*> Surface::getCornerHandles()

@@ -32,3 +32,5 @@
 
 #include "GLHelpers.h"
 #include "OpenGLManager.h"
+
+#include "MediaTarget.h"

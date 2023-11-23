@@ -17,7 +17,9 @@ juce_ImplementSingleton(ShaderCheckTimer);
 ShaderMedia::ShaderMedia(var params) :
 	Media(getTypeString(), params, true),
 	shouldReloadShader(false),
-	lastModificationTime(0)
+	lastModificationTime(0),
+	VBO(0),
+	VAO(0)
 {
 	shaderFile = addFileParameter("Fragment Shader", "Fragment Shader");
 	alwaysRedraw = true;
@@ -35,6 +37,9 @@ void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
 
 void ShaderMedia::initGL()
 {
+	if (VBO != 0) glDeleteBuffers(1, &VBO);
+	if (VAO != 0) glDeleteVertexArrays(1, &VAO);
+
 	glGenBuffers(1, &VBO);
 	glGenVertexArrays(1, &VAO);
 }
@@ -48,14 +53,19 @@ void ShaderMedia::renderGL()
 
 	Point<int> size = getMediaSize();
 
-	glClearColor(0, 0, 1, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
 	shader->use();
-	//shader->setUniform("u_resolution", (GLfloat*)&size, 2);
+	shader->setUniform("u_resolution", size.x, size.y);
 	shader->setUniform("u_time", Time::getMillisecondCounter() / 1000.f);
+	
 
-	//this should not be necessary here but it seems it is right now
+	Init2DViewport(size.x, size.y);
+
+	glClearColor(0, 0, 1, .2f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+	//Init2DMatrix(size.x, size.y);
+	
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -115,9 +125,8 @@ void ShaderMedia::loadShader()
 		{
 			shader.reset();
 		}
-
-
 	}
+
 	shouldReloadShader = false;
 }
 

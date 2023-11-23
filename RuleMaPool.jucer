@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="DMftGm" name="RuleMapPool" projectType="guiapp" useAppConfig="1"
-              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/vlc/include&#10;../../External/NDI/include&#10;../../External/servus/include">
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/vlc/include&#10;../../External/NDI/include&#10;../../External/servus/include"
+              defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1">
   <MAINGROUP id="HVgNxl" name="RuleMapPool">
     <GROUP id="{F38B7255-1DCA-93A3-BDC5-0B94B29FDCE3}" name="Resources">
       <FILE id="YIE66F" name="default.rmplayout" compile="0" resource="1"
@@ -35,6 +36,8 @@
         <FILE id="NqNVGJ" name="CommonIncludes.h" compile="0" resource="0"
               file="Source/Common/CommonIncludes.h"/>
         <FILE id="lfDzBU" name="GLHelpers.h" compile="0" resource="0" file="Source/Common/GLHelpers.h"/>
+        <FILE id="JIDsB2" name="MediaTarget.cpp" compile="0" resource="0" file="Source/Common/MediaTarget.cpp"/>
+        <FILE id="gxOSlQ" name="MediaTarget.h" compile="0" resource="0" file="Source/Common/MediaTarget.h"/>
         <FILE id="JPNfCK" name="OpenGLManager.cpp" compile="0" resource="0"
               file="Source/Common/OpenGLManager.cpp"/>
         <FILE id="mHGAjV" name="OpenGLManager.h" compile="0" resource="0" file="Source/Common/OpenGLManager.h"/>
