@@ -95,7 +95,6 @@ ImageMedia::~ImageMedia()
 
 void ImageMedia::renderGL()
 {
-
 	GenericScopedLock lock(imageLock);
 
 	glEnable(GL_BLEND);
@@ -119,7 +118,6 @@ void ImageMedia::renderGL()
 
 	glDisable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glFinish();
 }
 
 void ImageMedia::initFrameBuffer()
