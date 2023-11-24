@@ -33,7 +33,7 @@ void USBCamInputDevice::addUSBCamInputListener(USBCamInputListener* newListener)
 	{
 		StringArray names = CameraDevice::getAvailableDevices();
 		int index = names.indexOf(name);
-		device = CameraDevice::openDevice(index);
+		device = CameraDevice::openDevice(index, 128,64,1920,1080,true);
 		if (device != nullptr) {
 			device->addListener(this);
 			shouldProcess = true;
