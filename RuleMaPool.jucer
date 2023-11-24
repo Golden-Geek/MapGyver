@@ -165,6 +165,10 @@
       </GROUP>
       <GROUP id="{7B97F172-AD12-D845-791F-697250E41BF4}" name="Screen">
         <GROUP id="{B1E6FD4B-534C-4F1B-7B6F-D363C0DFB5E1}" name="Surface">
+          <GROUP id="{6622099E-00A8-BACB-9648-AF5B3A81F508}" name="ui">
+            <FILE id="YzFRQf" name="SurfaceUI.cpp" compile="0" resource="0" file="Source/Screen/Surface/ui/SurfaceUI.cpp"/>
+            <FILE id="x4H8IP" name="SurfaceUI.h" compile="0" resource="0" file="Source/Screen/Surface/ui/SurfaceUI.h"/>
+          </GROUP>
           <FILE id="D3Q4xT" name="Surface.cpp" compile="0" resource="0" file="Source/Screen/Surface/Surface.cpp"/>
           <FILE id="ZQKMyQ" name="Surface.h" compile="0" resource="0" file="Source/Screen/Surface/Surface.h"/>
           <FILE id="zrruYX" name="SurfaceManager.cpp" compile="0" resource="0"

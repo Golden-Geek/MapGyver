@@ -94,7 +94,7 @@ void ScreenEditorView::paint(Graphics& g)
 
 		for (auto& s : screen->surfaces.items)
 		{
-
+			if (!s->enabled->boolValue() || s->isUILocked->boolValue()) continue;
 			Array<Point2DParameter*> handles = s->getAllHandles();
 			for (auto& b : handles)
 			{

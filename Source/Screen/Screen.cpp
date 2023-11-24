@@ -55,7 +55,7 @@ Point2DParameter* Screen::getClosestHandle(Point<float> pos, float maxDistance, 
 	float closestDist = maxDistance;
 	for (auto& s : surfaces.items)
 	{
-		if (!s->enabled->boolValue()) continue;
+		if (!s->enabled->boolValue() || s->isUILocked->boolValue()) continue;
 
 		Array<Point2DParameter*> handles = { s->topLeft, s->topRight, s->bottomLeft, s->bottomRight };
 		
@@ -90,7 +90,7 @@ Array<Point2DParameter*> Screen::getOverlapHandles(Point2DParameter* handle)
 	Array<Point2DParameter*> result;
 	for (auto& s : surfaces.items)
 	{
-		if (!s->enabled->boolValue()) continue;
+		if (!s->enabled->boolValue() || s->isUILocked->boolValue()) continue;
 		Array<Point2DParameter*> handles = { s->topLeft, s->topRight, s->bottomLeft, s->bottomRight };
 		for (auto& h : handles)
 		{

@@ -20,4 +20,5 @@
 #include "ui/ScreenOutput.h"
 #include "ui/ScreenRenderer.h"
 #include "ui/ScreenManagerUI.h"
+#include "Surface/ui/SurfaceUI.h"
 #include "ui/ScreenEditorPanel.h"

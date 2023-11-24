@@ -27,12 +27,14 @@ Surface::Surface(var params) :
 	saveAndLoadRecursiveData = true;
 	canBeDisabled = true;
 
+	isUILocked->hideInEditor = false;
+
 	itemDataType = "Surface";
 
 	media = addTargetParameter("Media", "Media to read on this surface", MediaManager::getInstance());
 	media->maxDefaultSearchLevel = 0;
 	media->targetType = TargetParameter::CONTAINER;
-
+		
 	topLeft = positionningCC.addPoint2DParameter("topLeft ", "");
 	topRight = positionningCC.addPoint2DParameter("topRight ", "");
 	bottomLeft = positionningCC.addPoint2DParameter("bottomLeft ", "");
@@ -123,6 +125,30 @@ void Surface::onContainerParameterChangedInternal(Parameter* p)
 
 		shouldUpdateVertices = true;
 	}
+	if (p == isUILocked) {
+		bool e = !isUILocked->boolValue();
+		topLeft->setEnabled(e);
+		topRight->setEnabled(e);
+		bottomLeft->setEnabled(e);
+		bottomRight->setEnabled(e);
+		handleBezierTopLeft->setEnabled(e);
+		handleBezierTopRight->setEnabled(e);
+		handleBezierBottomLeft->setEnabled(e);
+		handleBezierBottomRight->setEnabled(e);
+		handleBezierLeftTop->setEnabled(e);
+		handleBezierLeftBottom->setEnabled(e);
+		handleBezierRightTop->setEnabled(e);
+		handleBezierRightBottom->setEnabled(e);
+		softEdgeTop->setEnabled(e);
+		softEdgeRight->setEnabled(e);
+		softEdgeBottom->setEnabled(e);
+		softEdgeLeft->setEnabled(e);
+		cropTop->setEnabled(e);
+		cropRight->setEnabled(e);
+		cropBottom->setEnabled(e);
+		cropLeft->setEnabled(e);
+	}
+
 }
 
 void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
