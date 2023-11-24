@@ -24,6 +24,7 @@ public:
 
 	String name;
 	String description;
+	bool isMultipass;
 	Image previewImage;
 
 	void paint(Graphics& g) override;

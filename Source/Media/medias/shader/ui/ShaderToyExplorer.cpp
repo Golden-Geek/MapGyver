@@ -164,6 +164,8 @@ void ShaderToyItem::paint(Graphics& g)
 
 void ShaderToyItem::mouseDrag(const MouseEvent& e)
 {
+	if (isMultipass) return;
+
 	if (e.getDistanceFromDragStart() > 10 && !isDragAndDropActive())
 	{
 		var data(new DynamicObject());
@@ -191,6 +193,10 @@ void ShaderToyItem::run()
 		name = data["Shader"]["info"]["name"].toString();
 		description = data["Shader"]["info"]["description"].toString();
 		bool usePreview = data["Shader"]["info"]["usePreview"];
+		isMultipass = data["Shader"]["renderpass"].size() > 1;
+		if (isMultipass)
+		{
+		}
 
 		if (usePreview)
 		{
@@ -209,7 +215,15 @@ void ShaderToyItem::run()
 
 	if (threadShouldExit()) return;
 
-	MessageManager::callAsync([this]() {
+	MessageManagerLock mmLock;
+	if (mmLock.lockWasGained())
+	{
+		if (isMultipass)
+		{
+			setEnabled(false);
+			setAlpha(.3f);
+		}
+		
 		repaint();
-		});
+	}
 }

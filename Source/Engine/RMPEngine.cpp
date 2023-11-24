@@ -39,7 +39,7 @@ RMPEngine::RMPEngine() :
 
 	// getAppSettings()->addChildControllableContainer(&defaultBehaviors);
 
-	NDIManager::getInstance();
+	//NDIManager::getInstance();
 }
 
 RMPEngine::~RMPEngine()
