@@ -317,22 +317,49 @@ void Surface::updateVertices()
 			}
 		}
 
+		float distTop = 0;
+		float distBottom = 0;
 		for (int i = 0; i < gridSize; i++) {
 			float ratio = i / (float)(gridSize - 1);
 			grid[i][0] = getBeziers(openGLPoint(topLeft), openGLPoint(handleBezierTopLeft), openGLPoint(handleBezierTopRight), openGLPoint(topRight), ratio);
 			grid[i][gridSize - 1] = getBeziers(openGLPoint(bottomLeft), openGLPoint(handleBezierBottomLeft), openGLPoint(handleBezierBottomRight), openGLPoint(bottomRight), ratio);
 
-			Point<float> aAxis = openGLPoint(handleBezierRightTop) - openGLPoint(handleBezierLeftTop);
-			Point<float> bAxis = openGLPoint(handleBezierRightBottom) - openGLPoint(handleBezierLeftBottom);
-			Point<float> tempA = aAxis * ratio + openGLPoint(handleBezierLeftTop);
-			Point<float> tempB = bAxis * ratio + openGLPoint(handleBezierLeftBottom);
-			for (int j = 1; j < gridSize - 1; j++) {
-				float ratio2 = j / (float)(gridSize - 1);
-				grid[i][j] = getBeziers(grid[i][0], tempA, tempB, grid[i][gridSize - 1], ratio2);
+			if (i > 0) {
+				distTop += grid[i][0].getDistanceFrom(grid[i - 1][0]);
+				distBottom += grid[i][gridSize - 1].getDistanceFrom(grid[i-1][gridSize - 1]);
 			}
 		}
 
-		float ratio = 1 / (float)(gridSize - 1);
+		Point<float>deltaHandleLT = openGLPoint(handleBezierLeftTop) - openGLPoint(topLeft);
+		Point<float>deltaHandleRT = openGLPoint(handleBezierRightTop) - openGLPoint(topRight);
+		Point<float>deltaHandleLB = openGLPoint(handleBezierLeftBottom) - openGLPoint(bottomLeft);
+		Point<float>deltaHandleRB = openGLPoint(handleBezierRightBottom) - openGLPoint(bottomRight);
+
+		Point<float> deltaTop = deltaHandleRT - deltaHandleLT;
+		Point<float> deltaBottom = deltaHandleRB - deltaHandleLB;
+
+		float currentDistTop = 0;
+		float currentDistBottom = 0;
+		for (int i = 0; i < gridSize; i++) {
+			if (i > 0) {
+				currentDistTop += grid[i][0].getDistanceFrom(grid[i - 1][0]);
+				currentDistBottom += grid[i][gridSize - 1].getDistanceFrom(grid[i - 1][gridSize - 1]);
+			}
+
+			float ratioTop = currentDistTop / distTop;
+			float ratioBottom = currentDistBottom / distBottom;
+
+			Point<float> handleTop = deltaHandleLT +(deltaTop*ratioTop)+  grid[i][0];
+			Point<float> handleBottom = deltaHandleLB+(deltaBottom*ratioBottom) + grid[i][gridSize - 1];
+
+			for (int j = 1; j < gridSize - 1; j++) {
+				float ratio2 = j / (float)(gridSize - 1);
+				grid[i][j] = getBeziers(grid[i][0], handleTop, handleBottom, grid[i][gridSize - 1], ratio2);
+			}
+
+		}
+
+		float ratio = 1.0f / (float)(gridSize - 1);
 
 		float fromX = cropLeft->floatValue();
 		float toX = 1 - cropRight->floatValue();
