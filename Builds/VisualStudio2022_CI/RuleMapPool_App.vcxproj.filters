@@ -32,6 +32,9 @@
     <Filter Include="RuleMapPool\Source\Media\medias\picture">
       <UniqueIdentifier>{084FFDCD-D536-1975-8846-5F0F29F358AB}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RuleMapPool\Source\Media\medias\shader\ui">
+      <UniqueIdentifier>{4408EADF-08AE-7F77-7613-62BE8B9FB784}</UniqueIdentifier>
+    </Filter>
     <Filter Include="RuleMapPool\Source\Media\medias\shader">
       <UniqueIdentifier>{A1B2CE72-E285-BF92-C7E6-738AADAC13E0}</UniqueIdentifier>
     </Filter>
@@ -720,6 +723,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\picture\PictureMedia.cpp">
       <Filter>RuleMapPool\Source\Media\medias\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\shader\ui\ShaderToyExplorer.cpp">
+      <Filter>RuleMapPool\Source\Media\medias\shader\ui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\shader\ShaderMedia.cpp">
       <Filter>RuleMapPool\Source\Media\medias\shader</Filter>
@@ -3083,6 +3089,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\picture\PictureMedia.h">
       <Filter>RuleMapPool\Source\Media\medias\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\shader\ui\ShaderToyExplorer.h">
+      <Filter>RuleMapPool\Source\Media\medias\shader\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\shader\ShaderMedia.h">
       <Filter>RuleMapPool\Source\Media\medias\shader</Filter>

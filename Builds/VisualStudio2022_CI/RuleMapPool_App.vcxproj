@@ -130,6 +130,9 @@
     <ClCompile Include="..\..\Source\Media\medias\picture\PictureMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\shader\ui\ShaderToyExplorer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\shader\ShaderMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2265,6 +2268,7 @@
     <ClInclude Include="..\..\Source\Media\medias\composition\CompositionMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\ndi\NDIMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\picture\PictureMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\shader\ui\ShaderToyExplorer.h"/>
     <ClInclude Include="..\..\Source\Media\medias\shader\ShaderMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\USBCam\ui\USBCamDeviceChooser.h"/>

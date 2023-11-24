@@ -12,20 +12,44 @@
 
 
 class ShaderMedia :
-	public Media
+	public Media,
+	public Thread
 {
 public:
 	ShaderMedia(var params = var());
 	~ShaderMedia();
 
+	enum ShaderType
+	{
+		ShaderGLSLFile,
+		ShaderToyFile,
+		ShaderToyURL
+	};
+
+	EnumParameter* shaderType;
 	FileParameter* shaderFile;
+	StringParameter* shaderToyID;
+	StringParameter* shaderToyKey;
+	ColorParameter* backgroundColor;
+	BoolParameter* mouseClick;
+	Point2DParameter* mouseInputPos;
+
 	Time lastModificationTime;
+
+	int currentFrame;
+	float lastFrameTime;
 
 	SpinLock shaderLock;
 	std::unique_ptr<OpenGLShaderProgram> shader;
 	GLuint VBO, VAO;
 
 	bool shouldReloadShader;
+
+	String resolutionUniformName;
+	String timeUniformName;
+	String mouseUniformName;
+	String frameUniformName;
+	String deltaFrameUniformName;
 
 	const float vertices[24] = {
 	-1.0f, -1.0f, 0.0f,
@@ -40,9 +64,15 @@ public:
 
 	void initGL() override;
 	void renderGL() override;
-	void loadShader();
+	void reloadShader();
+	void loadFragmentShader(const String& fragmentShader);
+
+	void checkForHotReload();
+
+	void run() override;
 
 	DECLARE_TYPE("Shader")
+
 };
 
 class ShaderCheckTimer :

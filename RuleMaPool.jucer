@@ -78,6 +78,12 @@
             <FILE id="E6j3FS" name="PictureMedia.h" compile="0" resource="0" file="Source/Media/medias/picture/PictureMedia.h"/>
           </GROUP>
           <GROUP id="{85865C8C-AC14-E279-F737-BC93A4D8B6E0}" name="shader">
+            <GROUP id="{3CFEF496-92F2-7331-1132-33362B638A2F}" name="ui">
+              <FILE id="eDA6N9" name="ShaderToyExplorer.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/shader/ui/ShaderToyExplorer.cpp"/>
+              <FILE id="lBPNd1" name="ShaderToyExplorer.h" compile="0" resource="0"
+                    file="Source/Media/medias/shader/ui/ShaderToyExplorer.h"/>
+            </GROUP>
             <FILE id="EY9yW4" name="ShaderMedia.cpp" compile="0" resource="0" file="Source/Media/medias/shader/ShaderMedia.cpp"/>
             <FILE id="hDwXde" name="ShaderMedia.h" compile="0" resource="0" file="Source/Media/medias/shader/ShaderMedia.h"/>
           </GROUP>
