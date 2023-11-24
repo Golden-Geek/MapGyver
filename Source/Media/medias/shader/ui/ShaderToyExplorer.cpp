@@ -16,7 +16,7 @@ ShaderToyExplorer::ShaderToyExplorer(const String& name) :
 	Thread("ShaderToy Explorer"),
 	search("Search", "", ""),
 	pageCount("Page Count", "", 1, 1, 100),
-	maxResults("Max Results", "", 10, 1, 100)
+	maxResults("Max Results", "", 15, 1, 100)
 {
 
 	search.addParameterListener(this);
@@ -27,15 +27,26 @@ ShaderToyExplorer::ShaderToyExplorer(const String& name) :
 	pageCountUI.reset(pageCount.createStepper());
 	maxResultsUI.reset(maxResults.createStepper());
 
+	searchUI->useCustomBGColor = true;
+	searchUI->customBGColor = Colours::black.brighter(.2f);
+	searchUI->updateUIParams();
+
 	addAndMakeVisible(searchUI.get());
 	addAndMakeVisible(pageCountUI.get());
 	addAndMakeVisible(maxResultsUI.get());
+	addAndMakeVisible(viewport);
+	viewport.setViewedComponent(&itemsComp, false);
+	addAndMakeVisible(&viewport);
 
-	startThread();
+	repaint();
+
+	//startThread();
 }
 
 ShaderToyExplorer::~ShaderToyExplorer()
 {
+	stopThread(1000);
+	items.clear();
 }
 
 void ShaderToyExplorer::resized()
@@ -45,31 +56,33 @@ void ShaderToyExplorer::resized()
 	Rectangle<int> hr = r.removeFromTop(30);
 
 	searchUI->setBounds(hr.removeFromLeft(200).reduced(2));
-	pageCountUI->setBounds(hr.removeFromLeft(100).reduced(2));
-	maxResultsUI->setBounds(hr.removeFromLeft(100).reduced(2));
+	pageCountUI->setBounds(hr.removeFromLeft(200).reduced(2));
+	maxResultsUI->setBounds(hr.removeFromLeft(200).reduced(2));
 
 	r.removeFromTop(10);
 	r.reduce(10, 10);
 
-	//draw grid of items
-	Point<int> itemSize = Point<int>(200, 140);
-	int itemMargin = 10;
-	int itemsPerRow = r.getWidth() / (itemSize.x + itemMargin);
+	//draw grid with 5 elements per row, keeping ratio of 16/9
+	viewport.setBounds(r);
 
-	int x = 0;
-	int y = 0;
+	r.removeFromRight(20);
 
-	for (auto& item : items)
+	int num = items.size();
+	int numPerRow = 5;
+	int itemWidth = r.getWidth() / numPerRow;
+	int itemHeight = itemWidth * 9 / 16;
+
+	Rectangle<int> itemBounds = Rectangle<int>(itemWidth, itemHeight);
+	for (int i = 0; i < num; i++)
 	{
-		item->setBounds(r.getX() + x * (itemSize.x + itemMargin), r.getY() + y * (itemSize.y + itemMargin), itemSize.x, itemSize.y);
+		int row = i / numPerRow;
+		int col = i % numPerRow;
 
-		x++;
-		if (x >= itemsPerRow)
-		{
-			x = 0;
-			y++;
-		}
+		items[i]->setBounds(itemBounds.withPosition(col * itemWidth, row * itemHeight).reduced(2));
 	}
+
+	if (!items.isEmpty()) itemsComp.setBounds(viewport.getLocalBounds().withBottom(items[num - 1]->getBottom() + 2));
+	else itemsComp.setBounds(viewport.getLocalBounds());
 }
 
 void ShaderToyExplorer::updateItems()
@@ -77,13 +90,11 @@ void ShaderToyExplorer::updateItems()
 	for (auto& i : items) removeChildComponent(i);
 	items.clear();
 
-	LOG(JSON::toString(itemsData, true));
-
 	var results = itemsData["Results"];
 	for (int i = 0; i < results.size(); i++)
 	{
 		ShaderToyItem* item = new ShaderToyItem(results[i].toString());
-		addAndMakeVisible(item);
+		itemsComp.addAndMakeVisible(item);
 		items.add(item);
 	}
 
@@ -100,12 +111,16 @@ void ShaderToyExplorer::run()
 
 	String s = URL(url).readEntireTextStream();
 
+	if (threadShouldExit()) return;
+
 	if (s.isEmpty()) return;
 
 	var result = JSON::parse(s);
 	if (result.isObject())
 	{
 		itemsData = result;
+
+		if (threadShouldExit()) return;
 
 		MessageManager::callAsync([this]() {
 			updateItems();
@@ -128,11 +143,13 @@ ShaderToyItem::ShaderToyItem(const String& id) :
 	Thread("ShaderToy Item"),
 	id(id)
 {
+	repaint();
 	startThread();
 }
 
 ShaderToyItem::~ShaderToyItem()
 {
+	stopThread(1000);
 }
 
 void ShaderToyItem::paint(Graphics& g)
@@ -145,8 +162,15 @@ void ShaderToyItem::paint(Graphics& g)
 	g.drawText(name, getLocalBounds(), Justification::centred);
 }
 
-void ShaderToyItem::resized()
+void ShaderToyItem::mouseDrag(const MouseEvent& e)
 {
+	if (e.getDistanceFromDragStart() > 10 && !isDragAndDropActive())
+	{
+		var data(new DynamicObject());
+		data.getDynamicObject()->setProperty("type", "ShaderToyItem");
+		data.getDynamicObject()->setProperty("id", id);
+		startDragging(data, this, ScaledImage(), true);
+	}
 }
 
 void ShaderToyItem::run()
@@ -158,6 +182,7 @@ void ShaderToyItem::run()
 	LOG("Loading " + url.toString(true));
 
 	String dataStr = url.readEntireTextStream();
+	if (threadShouldExit()) return;
 
 	data = JSON::parse(dataStr);
 
@@ -182,7 +207,9 @@ void ShaderToyItem::run()
 
 	}
 
+	if (threadShouldExit()) return;
+
 	MessageManager::callAsync([this]() {
-		resized();
+		repaint();
 		});
 }

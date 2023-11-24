@@ -12,7 +12,8 @@
 
 class ShaderToyItem :
 	public Component,
-	public Thread
+	public Thread,
+	public DragAndDropContainer
 {
 public:
 	ShaderToyItem(const String& id);
@@ -26,7 +27,7 @@ public:
 	Image previewImage;
 
 	void paint(Graphics& g) override;
-	void resized() override;
+	void mouseDrag(const MouseEvent& e) override;
 
 	void run() override;
 };
@@ -52,6 +53,9 @@ public:
 	OwnedArray<ShaderToyItem> items;
 
 	var itemsData;
+
+	Viewport viewport;
+	Component itemsComp;
 
 	void resized();
 

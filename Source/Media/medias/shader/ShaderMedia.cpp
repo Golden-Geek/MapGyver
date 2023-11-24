@@ -178,7 +178,11 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	//unload shader
 	shader.reset();
 
-	if (fragmentShader.isEmpty()) return;
+	if (fragmentShader.isEmpty())
+	{
+		isLoadingShader = false;
+		return;
+	}
 
 	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
 	bool isShaderToy = st == ShaderToyFile || st == ShaderToyURL;
@@ -359,7 +363,14 @@ void ShaderMedia::run()
 					}
 				}
 
-				shaderStr = data["Shader"]["renderpass"][0]["code"].toString();
+				if (data["Shader"]["renderpass"].size() > 1)
+				{
+					LOGWARNING("ShaderToy has more than one render pass, not supported right now");
+				}
+				else
+				{
+					shaderStr = data["Shader"]["renderpass"][0]["code"].toString();
+				}
 			}
 		}
 	}
