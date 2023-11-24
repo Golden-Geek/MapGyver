@@ -26,6 +26,7 @@ void GlContextHolder::setup(juce::Component* topLevelComponent)
 	parent = topLevelComponent;
 	if(OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(parent)) registerOpenGlRenderer(r);
 
+	context.setSwapInterval(0);
 	context.setRenderer(this);
 	context.setContinuousRepainting(true);
 	context.setComponentPaintingEnabled(true);
