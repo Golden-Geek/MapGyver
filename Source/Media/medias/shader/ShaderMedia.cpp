@@ -34,8 +34,10 @@ ShaderMedia::ShaderMedia(var params) :
 	shaderToyID = addStringParameter("ShaderToy ID", "ID of the shader toy. It's the last part of the URL when viewing it on the website", "tsXBzS", false);
 	shaderToyKey = addStringParameter("ShaderToy Key", "Key of the shader toy. It's the last part of the URL when viewing it on the website", "Bd8jRr", false);
 
-	backgroundColor = addColorParameter("Background Color", "Background Color", Colours::black);
 
+	fps = addIntParameter("FPS", "FPS", 60, 1, 1000);
+
+	backgroundColor = addColorParameter("Background Color", "Background Color", Colours::black);
 	mouseClick = addBoolParameter("Mouse Click", "Simulates mouse click, for shader toy", false);
 	mouseInputPos = addPoint2DParameter("Mouse Input Pos", "Mouse Input Pos");
 	mouseInputPos->setBounds(0, 0, 1, 1);
@@ -79,17 +81,23 @@ void ShaderMedia::initGL()
 
 void ShaderMedia::renderGL()
 {
+	float t = Time::getMillisecondCounter() / 1000.0f;
+	float delta = t - lastFrameTime;
+
+	float frameTime = 1.0f / fps->floatValue();
+	if (t < lastFrameTime + frameTime) return;
+	
+	lastFrameTime = t;
+
 	if (shouldReloadShader) reloadShader();
 
-	GenericScopedLock lock(shaderLock);
+	//GenericScopedLock lock(shaderLock);
 	if (shader == nullptr) return;
 
 	Point<int> size = getMediaSize();
 
 	shader->use();
 
-	float t = Time::getMillisecondCounter() / 1000.0f;
-	float delta = t - lastFrameTime;
 
 	Point<float> mousePos = mouseInputPos->getPoint() * Point<float>(size.x, size.y);
 
@@ -100,7 +108,7 @@ void ShaderMedia::renderGL()
 	if (timeDeltaUniformName.isNotEmpty()) shader->setUniform(timeDeltaUniformName.toStdString().c_str(), delta);
 	if (frameUniformName.isNotEmpty()) shader->setUniform(frameUniformName.toStdString().c_str(), currentFrame);
 
-	
+
 	if (mouseUniformName.isNotEmpty())
 	{
 		if (useMouse4D) shader->setUniform(mouseUniformName.toStdString().c_str(), mousePos.x, mousePos.y, mouseClick->floatValue(), 0.f);
@@ -173,7 +181,7 @@ void ShaderMedia::reloadShader()
 
 void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 {
-	GenericScopedLock lock(shaderLock);
+	//GenericScopedLock lock(shaderLock);
 
 	isLoadingShader = true;
 

@@ -126,7 +126,6 @@ void ScreenOutput::renderOpenGL()
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
-	glFinish();
 }
 
 void ScreenOutput::openGLContextClosing()

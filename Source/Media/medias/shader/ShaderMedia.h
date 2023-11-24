@@ -31,7 +31,9 @@ public:
 	FileParameter* shaderFile;
 	StringParameter* shaderToyID;
 	StringParameter* shaderToyKey;
+	IntParameter* fps;
 	ColorParameter* backgroundColor;
+	
 
 	bool useMouse4D;
 	int useResolution3D;
@@ -45,7 +47,7 @@ public:
 	int currentFrame;
 	float lastFrameTime;
 
-	SpinLock shaderLock;
+	//SpinLock shaderLock;
 	std::unique_ptr<OpenGLShaderProgram> shader;
 	GLuint VBO, VAO;
 
