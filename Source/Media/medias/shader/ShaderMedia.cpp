@@ -338,7 +338,7 @@ void ShaderMedia::run()
 		}
 
 		String dataStr = url.readEntireTextStream(false);
-		if (shaderStr.isEmpty())
+		if (dataStr.isEmpty())
 		{
 			NLOGWARNING(niceName, "Could not retrieve shader at " << url.toString(true));
 		}
