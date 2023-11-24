@@ -25,7 +25,9 @@
 
 #include "medias/ndi/NDIMedia.h"
 #include "medias/sharedtexture/SharedTextureMedia.h"
+
 #include "medias/shader/ShaderMedia.h"
+#include "medias/shader/ui/ShaderToyExplorer.h"
 
 #include "medias/color/ColorMedia.h"
 
@@ -38,3 +40,4 @@
 #include "medias/USBCam/ui/USBCamDeviceChooser.h"
 #include "medias/USBCam/ui/USBCamDeviceParameterUI.h"
 #include "medias/USBCam/USBCamMedia.h"
+
