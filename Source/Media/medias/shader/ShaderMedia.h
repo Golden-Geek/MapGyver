@@ -23,7 +23,8 @@ public:
 	{
 		ShaderGLSLFile,
 		ShaderToyFile,
-		ShaderToyURL
+		ShaderToyURL,
+		ShaderISFFile
 	};
 
 	EnumParameter* shaderType;
@@ -31,8 +32,12 @@ public:
 	StringParameter* shaderToyID;
 	StringParameter* shaderToyKey;
 	ColorParameter* backgroundColor;
+
+	bool useMouse4D;
 	BoolParameter* mouseClick;
 	Point2DParameter* mouseInputPos;
+
+	GenericControllableManager customParamsManager;
 
 	Time lastModificationTime;
 
@@ -44,8 +49,10 @@ public:
 	GLuint VBO, VAO;
 
 	bool shouldReloadShader;
+	bool isLoadingShader;
 
 	String resolutionUniformName;
+	String normCoordUniformName;
 	String timeUniformName;
 	String mouseUniformName;
 	String frameUniformName;

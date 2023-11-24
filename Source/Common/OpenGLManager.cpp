@@ -208,8 +208,8 @@ void GlContextHolder::componentBeingDeleted(juce::Component& component)
 
 void GlContextHolder::newOpenGLContextCreated()
 {
-	//gl::glDebugMessageControl(gl::GL_DEBUG_SOURCE_API, gl::GL_DEBUG_TYPE_OTHER, gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, gl::GL_FALSE);
-	//glDisable(GL_DEBUG_OUTPUT);
+	gl::glDebugMessageControl(gl::GL_DEBUG_SOURCE_API, gl::GL_DEBUG_TYPE_OTHER, gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, gl::GL_FALSE);
+	glDisable(GL_DEBUG_OUTPUT);
 	checkComponents(false, false);
 }
 

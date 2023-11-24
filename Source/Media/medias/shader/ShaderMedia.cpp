@@ -18,14 +18,17 @@ ShaderMedia::ShaderMedia(var params) :
 	Media(getTypeString(), params, true),
 	Thread("ShaderToy Loader"),
 	shouldReloadShader(false),
+	isLoadingShader(false),
 	lastModificationTime(0),
 	currentFrame(0),
 	lastFrameTime(0),
 	VBO(0),
-	VAO(0)
+	VAO(0),
+	useMouse4D(false),
+	customParamsManager("Custom Parameters", true, false, false, false)
 {
 	shaderType = addEnumParameter("Shader Type", "Type Shader to load");
-	shaderType->addOption("Shader GLSL File", ShaderGLSLFile)->addOption("ShaderToy File", ShaderToyFile)->addOption("ShaderToy URL", ShaderToyURL);
+	shaderType->addOption("Shader GLSL File", ShaderGLSLFile)->addOption("ShaderToy File", ShaderToyFile)->addOption("ShaderToy Online", ShaderToyURL);
 
 	shaderFile = addFileParameter("Fragment Shader", "Fragment Shader");
 	shaderToyID = addStringParameter("ShaderToy ID", "ID of the shader toy. It's the last part of the URL when viewing it on the website", "tsXBzS", false);
@@ -36,6 +39,9 @@ ShaderMedia::ShaderMedia(var params) :
 	mouseClick = addBoolParameter("Mouse Click", "Simulates mouse click, for shader toy", false);
 	mouseInputPos = addPoint2DParameter("Mouse Input Pos", "Mouse Input Pos");
 	mouseInputPos->setBounds(0, 0, 1, 1);
+
+
+	addChildControllableContainer(&customParamsManager);
 
 	alwaysRedraw = true;
 }
@@ -51,11 +57,15 @@ void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
 	if (p == shaderType)
 	{
 		ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
-		shaderFile->setEnabled(st == ShaderGLSLFile || st == ShaderToyFile);
+		shaderFile->setEnabled(st == ShaderGLSLFile || st == ShaderToyFile || st == ShaderISFFile);
 		shaderToyID->setEnabled(st == ShaderToyURL);
 		shaderToyKey->setEnabled(st == ShaderToyURL);
 	}
-	if (p == shaderFile || p == shaderToyID || p == shaderToyKey) shouldReloadShader = true;
+
+	if (p == shaderType || p == shaderFile || p == shaderToyID || p == shaderToyKey)
+	{
+		if (!isLoadingShader) shouldReloadShader = true;
+	}
 }
 
 void ShaderMedia::initGL()
@@ -81,15 +91,35 @@ void ShaderMedia::renderGL()
 	float t = Time::getMillisecondCounter() / 1000.0f;
 	float delta = t - lastFrameTime;
 
-	Point<float> mousePos;
-	if(mouseClick->boolValue()) mousePos = mouseInputPos->getPoint() * Point<float>(size.x, size.y);
+	Point<float> mousePos = mouseInputPos->getPoint() * Point<float>(size.x, size.y);
 
 	//Set uniforms
 	if (resolutionUniformName.isNotEmpty())	shader->setUniform(resolutionUniformName.toStdString().c_str(), size.x, size.y);
 	if (timeUniformName.isNotEmpty()) shader->setUniform(timeUniformName.toStdString().c_str(), (float)t);
 	if (deltaFrameUniformName.isNotEmpty()) shader->setUniform(deltaFrameUniformName.toStdString().c_str(), delta);
 	if (frameUniformName.isNotEmpty()) shader->setUniform(frameUniformName.toStdString().c_str(), currentFrame);
-	if (mouseUniformName.isNotEmpty()) shader->setUniform(mouseUniformName.toStdString().c_str(), mousePos.x, mousePos.y, mouseClick->floatValue(), 0.f);
+
+	if (mouseUniformName.isNotEmpty())
+	{
+		if (useMouse4D) shader->setUniform(mouseUniformName.toStdString().c_str(), mousePos.x, mousePos.y, mouseClick->floatValue(), 0.f);
+		else if (mouseUniformName.isNotEmpty()) shader->setUniform(mouseUniformName.toStdString().c_str(), mousePos.x, mousePos.y);
+	}
+
+
+	for (auto& cp : customParamsManager.items)
+	{
+		if (!cp->enabled->boolValue()) continue;
+		Parameter* p = dynamic_cast<Parameter*>(cp->controllable);
+		var val = p->getValue();
+		switch (val.size())
+		{
+		case 0: shader->setUniform(p->niceName.toStdString().c_str(), (float)val); break;
+		case 1: shader->setUniform(p->niceName.toStdString().c_str(), (float)val[0]); break;
+		case 2: shader->setUniform(p->niceName.toStdString().c_str(), (float)val[0], (float)val[1]); break;
+		case 3: shader->setUniform(p->niceName.toStdString().c_str(), (float)val[0], (float)val[1], (float)val[2]); break;
+		case 4: shader->setUniform(p->niceName.toStdString().c_str(), (float)val[0], (float)val[1], (float)val[2], (float)val[3]); break;
+		}
+	}
 
 	//Draw
 	Init2DViewport(size.x, size.y);
@@ -118,7 +148,7 @@ void ShaderMedia::reloadShader()
 {
 	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
 
-	bool isFile = st == ShaderGLSLFile || st == ShaderToyFile;
+	bool isFile = st == ShaderGLSLFile || st == ShaderToyFile || st == ShaderISFFile;
 	if (isFile)
 	{
 		File sf = shaderFile->getFile();
@@ -142,19 +172,28 @@ void ShaderMedia::reloadShader()
 void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 {
 	GenericScopedLock lock(shaderLock);
+
+	isLoadingShader = true;
+
 	//unload shader
 	shader.reset();
 
-
 	if (fragmentShader.isEmpty()) return;
+
+	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
+	bool isShaderToy = st == ShaderToyFile || st == ShaderToyURL;
+	bool fragmentIsShaderToy = fragmentShader.contains("mainImage");
+	if (isShaderToy != fragmentIsShaderToy) shaderType->setValueWithData(fragmentIsShaderToy ? ShaderToyFile : ShaderGLSLFile);
 
 	shader.reset(new OpenGLShaderProgram(GlContextHolder::getInstance()->context));
 
 	String fShader = fragmentShader.contains("#version") ? "" : "#version 330\n";
+	st = shaderType->getValueDataAsEnum<ShaderType>();
 
-	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
-
-	if (st == ShaderToyFile || st == ShaderToyURL)
+	switch (st)
+	{
+	case ShaderToyFile:
+	case ShaderToyURL:
 	{
 		fShader = R"(
 			#ifdef GL_ES
@@ -184,18 +223,41 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 		mouseUniformName = "iMouse";
 		frameUniformName = "iFrame";
 		deltaFrameUniformName = "iDeltaFrame";
+		normCoordUniformName = "";
+
+		useMouse4D = true;
 
 	}
-	else
+	break;
+
+	case ShaderGLSLFile:
 	{
 		resolutionUniformName = "u_resolution";
 		timeUniformName = "u_time";
 		mouseUniformName = "u_mouse";
 		frameUniformName = "";
 		deltaFrameUniformName = "";
+		normCoordUniformName = "";
+
+		useMouse4D = false;
 
 		fShader = fragmentShader;
 
+	}
+	break;
+
+	case ShaderISFFile:
+	{
+		resolutionUniformName = "RENDERSIZE";
+		timeUniformName = "TIME";
+		deltaFrameUniformName = "TIMEDELTA";
+		frameUniformName = "FRAMEINDEX";
+		normCoordUniformName = "isf_FragNormCoord";
+
+		useMouse4D = false;
+		fShader = fragmentShader;
+	}
+	break;
 	}
 
 
@@ -232,18 +294,21 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 		shader.reset();
 	}
 
-
+	isLoadingShader = false;
 }
 
 void ShaderMedia::checkForHotReload()
 {
 	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
-	bool isFile = st == ShaderGLSLFile || st == ShaderToyFile;
+	bool isFile = st == ShaderGLSLFile || st == ShaderToyFile || st == ShaderISFFile;
 	if (!isFile) return;
 
 	File f = shaderFile->getFile();
 	if (!f.existsAsFile()) return;
-	if (f.getLastModificationTime() != lastModificationTime) shouldReloadShader = true;
+	if (f.getLastModificationTime() != lastModificationTime)
+	{
+		if(!isLoadingShader) shouldReloadShader = true;
+	}
 }
 
 void ShaderMedia::run()
