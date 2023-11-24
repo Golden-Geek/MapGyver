@@ -230,7 +230,7 @@ void ScreenEditorView::mouseDrag(const MouseEvent& e)
 		Array<Point2DParameter*> handles = { closestHandle };
 		Surface* s = ControllableUtil::findParentAs<Surface>(closestHandle);
 		bool isCorner = closestHandle == s->topLeft || closestHandle == s->topRight || closestHandle == s->bottomLeft || closestHandle == s->bottomRight;
-		if (isCorner) handles.addArray(s->getBezierHandles(closestHandle));
+		if (isCorner && s->bezierCC.enabled->boolValue()) handles.addArray(s->getBezierHandles(closestHandle));
 
 		for (int i = 0; i < handles.size(); i++)
 		{
@@ -243,7 +243,9 @@ void ScreenEditorView::mouseDrag(const MouseEvent& e)
 			}
 
 			handles[i]->setPoint(tp);
-			for (auto& h : overlapHandles) h->setPoint(tp);
+			if (handles[i] == closestHandle) {
+				for (auto& h : overlapHandles) h->setPoint(tp);
+			}
 		}
 
 	}
