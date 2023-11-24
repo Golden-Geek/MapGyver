@@ -420,7 +420,7 @@ void Surface::draw(GLuint shaderID)
 	glUniform1i(maskLocation, 0);
 	glActiveTexture(GL_TEXTURE0);
 
-	if (maskMedia != nullptr)
+	if (maskMedia != nullptr && !showTestPattern->boolValue())
 	{
 		glBindTexture(GL_TEXTURE_2D, maskMedia->getTextureID());
 	}
@@ -441,11 +441,16 @@ void Surface::draw(GLuint shaderID)
 	glActiveTexture(GL_TEXTURE1);
 	glGetError();
 
-	if (media == nullptr)
+	if (media == nullptr && !showTestPattern->boolValue())
 	{
 		return;
 	}
-	glBindTexture(GL_TEXTURE_2D, media->getTextureID());
+	if (showTestPattern->boolValue()) {
+		glBindTexture(GL_TEXTURE_2D, GlContextHolder::getInstance()->testPattern.getTextureID());
+	}
+	else {
+		glBindTexture(GL_TEXTURE_2D, media->getTextureID());
+	}
 
 	// vertices start
 	if (shouldUpdateVertices) {

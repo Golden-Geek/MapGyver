@@ -8,6 +8,7 @@
       <FILE id="YIE66F" name="default.rmplayout" compile="0" resource="1"
             file="Resources/default.rmplayout"/>
       <FILE id="AKcEsb" name="icon.png" compile="0" resource="1" file="Resources/icon.png"/>
+      <FILE id="PvxFYN" name="testPattern.png" compile="0" resource="1" file="Resources/testPattern.png"/>
     </GROUP>
     <GROUP id="{1C2049A4-F05D-7C48-44EC-DD606A3617AC}" name="Source">
       <GROUP id="{B19EA5C3-367A-80C3-EC20-D9B7AA16E911}" name="Common">

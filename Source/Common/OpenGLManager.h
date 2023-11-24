@@ -21,6 +21,8 @@ public:
 	GlContextHolder();
 	~GlContextHolder();
 
+	OpenGLTexture testPattern;
+
 	void setup(juce::Component* topLevelComponent);
 
 	//==============================================================================
