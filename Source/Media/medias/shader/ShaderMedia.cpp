@@ -94,11 +94,13 @@ void ShaderMedia::renderGL()
 	Point<float> mousePos = mouseInputPos->getPoint() * Point<float>(size.x, size.y);
 
 	//Set uniforms
-	if (resolutionUniformName.isNotEmpty())	shader->setUniform(resolutionUniformName.toStdString().c_str(), size.x, size.y);
+	if (useResolution3D) shader->setUniform(resolutionUniformName.toStdString().c_str(), size.x, size.y, 0.f);
+	else if (resolutionUniformName.isNotEmpty())	shader->setUniform(resolutionUniformName.toStdString().c_str(), size.x, size.y);
 	if (timeUniformName.isNotEmpty()) shader->setUniform(timeUniformName.toStdString().c_str(), (float)t);
-	if (deltaFrameUniformName.isNotEmpty()) shader->setUniform(deltaFrameUniformName.toStdString().c_str(), delta);
+	if (timeDeltaUniformName.isNotEmpty()) shader->setUniform(timeDeltaUniformName.toStdString().c_str(), delta);
 	if (frameUniformName.isNotEmpty()) shader->setUniform(frameUniformName.toStdString().c_str(), currentFrame);
 
+	
 	if (mouseUniformName.isNotEmpty())
 	{
 		if (useMouse4D) shader->setUniform(mouseUniformName.toStdString().c_str(), mousePos.x, mousePos.y, mouseClick->floatValue(), 0.f);
@@ -178,7 +180,11 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	//unload shader
 	shader.reset();
 
-	if (fragmentShader.isEmpty()) return;
+	if (fragmentShader.isEmpty())
+	{
+		isLoadingShader = false;
+		return;
+	}
 
 	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
 	bool isShaderToy = st == ShaderToyFile || st == ShaderToyURL;
@@ -200,15 +206,22 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 			precision mediump float;
 			#endif
 
-			uniform vec2 iResolution;
-			uniform int iFrame;
-			uniform float iTime;
-			uniform float iDeltaTime;
-			uniform vec4 iMouse;
-	
-			)" +
-			fragmentShader +
-			R"(
+			uniform vec3      iResolution;           // viewport resolution (in pixels)
+			uniform float     iTime;                 // shader playback time (in seconds)
+			uniform float     iTimeDelta;            // render time (in seconds)
+			uniform float     iFrameRate;            // shader frame rate
+			uniform int       iFrame;                // shader playback frame
+			uniform float     iChannelTime[4];       // channel playback time (in seconds)
+			uniform vec3      iChannelResolution[4]; // channel resolution (in pixels)
+			uniform vec4      iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: click
+			uniform vec4      iDate;                 // (year, month, day, time in seconds)
+			uniform sampler2D iChannel0;             // input channel. XX = 2D/Cube
+			uniform sampler2D iChannel1;             // input channel. XX = 2D/Cube
+			uniform sampler2D iChannel2;             // input channel. XX = 2D/Cube
+			uniform sampler2D iChannel3;             // input channel. XX = 2D/Cube
+			)"
+			+ fragmentShader
+			+ R"(
 
 			void main()
 			{
@@ -222,10 +235,11 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 		timeUniformName = "iTime";
 		mouseUniformName = "iMouse";
 		frameUniformName = "iFrame";
-		deltaFrameUniformName = "iDeltaFrame";
+		timeDeltaUniformName = "iTimeDelta";
 		normCoordUniformName = "";
 
 		useMouse4D = true;
+		useResolution3D = true;
 
 	}
 	break;
@@ -236,10 +250,11 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 		timeUniformName = "u_time";
 		mouseUniformName = "u_mouse";
 		frameUniformName = "";
-		deltaFrameUniformName = "";
+		timeDeltaUniformName = "";
 		normCoordUniformName = "";
 
 		useMouse4D = false;
+		useResolution3D = false;
 
 		fShader = fragmentShader;
 
@@ -250,11 +265,12 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	{
 		resolutionUniformName = "RENDERSIZE";
 		timeUniformName = "TIME";
-		deltaFrameUniformName = "TIMEDELTA";
+		timeDeltaUniformName = "TIMEDELTA";
 		frameUniformName = "FRAMEINDEX";
 		normCoordUniformName = "isf_FragNormCoord";
 
 		useMouse4D = false;
+		useResolution3D = false;
 		fShader = fragmentShader;
 	}
 	break;
@@ -307,7 +323,7 @@ void ShaderMedia::checkForHotReload()
 	if (!f.existsAsFile()) return;
 	if (f.getLastModificationTime() != lastModificationTime)
 	{
-		if(!isLoadingShader) shouldReloadShader = true;
+		if (!isLoadingShader) shouldReloadShader = true;
 	}
 }
 
@@ -334,7 +350,7 @@ void ShaderMedia::run()
 		}
 
 		String dataStr = url.readEntireTextStream(false);
-		if (shaderStr.isEmpty())
+		if (dataStr.isEmpty())
 		{
 			NLOGWARNING(niceName, "Could not retrieve shader at " << url.toString(true));
 		}
@@ -359,7 +375,14 @@ void ShaderMedia::run()
 					}
 				}
 
-				shaderStr = data["Shader"]["renderpass"][0]["code"].toString();
+				if (data["Shader"]["renderpass"].size() > 1)
+				{
+					LOGWARNING("ShaderToy has more than one render pass, not supported right now");
+				}
+				else
+				{
+					shaderStr = data["Shader"]["renderpass"][0]["code"].toString();
+				}
 			}
 		}
 	}

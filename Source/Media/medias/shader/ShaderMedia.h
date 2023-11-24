@@ -34,6 +34,7 @@ public:
 	ColorParameter* backgroundColor;
 
 	bool useMouse4D;
+	int useResolution3D;
 	BoolParameter* mouseClick;
 	Point2DParameter* mouseInputPos;
 
@@ -54,9 +55,9 @@ public:
 	String resolutionUniformName;
 	String normCoordUniformName;
 	String timeUniformName;
+	String timeDeltaUniformName;
 	String mouseUniformName;
 	String frameUniformName;
-	String deltaFrameUniformName;
 
 	const float vertices[24] = {
 	-1.0f, -1.0f, 0.0f,

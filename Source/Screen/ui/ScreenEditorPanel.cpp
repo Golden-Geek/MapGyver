@@ -401,7 +401,7 @@ void ScreenEditorView::openGLContextClosing()
 bool ScreenEditorView::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
 	if (dragSourceDetails.description.getProperty("dataType", "") == "Media") return true;
-
+	if (dragSourceDetails.description.getProperty("type", "") == "ShaderToyItem") return true;
 	return false;
 }
 
@@ -409,19 +409,20 @@ bool ScreenEditorView::isInterestedInDragSource(const SourceDetails& dragSourceD
 
 void ScreenEditorView::itemDragEnter(const SourceDetails& source)
 {
-	if (BaseItemMinimalUI<Media>* m = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get()))
-	{
-		setCandidateDropSurface(screen->getSurfaceAt(getRelativeMousePos()), m->item); repaint();
-	}
+	Media* m = nullptr;
+	if (BaseItemMinimalUI<Media>* mui = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())) mui->item;
+	
+	setCandidateDropSurface(screen->getSurfaceAt(getRelativeMousePos()), m);
+	repaint();
 }
 
 void ScreenEditorView::itemDragMove(const SourceDetails& source)
 {
-	if (BaseItemMinimalUI<Media>* m = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get()))
-	{
-		setCandidateDropSurface(screen->getSurfaceAt(getRelativeMousePos()), m->item);
-		repaint();
-	}
+	Media* m = nullptr;
+	if (BaseItemMinimalUI<Media>* mui = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())) mui->item;
+
+	setCandidateDropSurface(screen->getSurfaceAt(getRelativeMousePos()), m);
+	repaint();
 }
 
 void ScreenEditorView::itemDragExit(const SourceDetails& source)
@@ -434,7 +435,24 @@ void ScreenEditorView::itemDragExit(const SourceDetails& source)
 void ScreenEditorView::itemDropped(const SourceDetails& source)
 {
 	if (candidateDropSurface == nullptr) return;
-	candidateDropSurface->media->setValueFromTarget(dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())->item);
+
+	if (source.description.getProperty("type", "") == "ShaderToyItem")
+	{
+		ShaderMedia* sm = candidateDropSurface->media->getTargetContainerAs<ShaderMedia>();
+		if (sm == nullptr)
+		{
+			sm = dynamic_cast<ShaderMedia*>(MediaManager::getInstance()->addItem(new ShaderMedia()));
+			candidateDropSurface->media->setValueFromTarget(sm);
+		}
+
+		sm->shaderToyID->setValue(source.description.getProperty("id", ""));
+		sm->shaderType->setValueWithData(ShaderMedia::ShaderType::ShaderToyURL);
+	}
+	else
+	{
+		candidateDropSurface->media->setValueFromTarget(dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())->item);
+	}
+
 	setCandidateDropSurface(nullptr);
 	repaint();
 }
