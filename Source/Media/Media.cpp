@@ -137,6 +137,7 @@ void ImageMedia::renderGL()
 
 void ImageMedia::initFrameBuffer()
 {
+	GenericScopedLock lock(imageLock);
 	if (frameBuffer.isValid()) frameBuffer.release();
 	frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
 	shouldRedraw = true;

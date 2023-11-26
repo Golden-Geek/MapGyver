@@ -439,6 +439,10 @@ void Surface::draw(GLuint shaderID)
 {
 	if (!enabled->boolValue()) return;
 
+	Media* media = getMedia();
+
+	if (media == nullptr) return;
+
 	Point<float> tl, tr, bl, br;
 
 	Media* maskMedia = mask->getTargetContainerAs<Media>();// dynamic_cast<Media*>(mask->targetContainer.get());
@@ -462,7 +466,7 @@ void Surface::draw(GLuint shaderID)
 	}
 	glGetError();
 
-	Media* media = getMedia();
+
 
 	GLuint textureLocation = glGetUniformLocation(shaderID, "tex");
 	glUniform1i(textureLocation, 1);

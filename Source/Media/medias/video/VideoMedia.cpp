@@ -75,6 +75,7 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 	if (p == source || p == filePath || p == url)
 	{
 		stop();
+
 		VLCMediaList = libvlc_media_list_new(VLCInstance);
 		
 		VideoSource s = source->getValueDataAsEnum<VideoSource>();
@@ -98,6 +99,8 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 		libvlc_media_player_play(VLCMediaPlayer);
 
 		libvlc_media_release(VLCMedia); VLCMedia = nullptr;
+		if (playAtLoad->boolValue()) restart();
+
 	}
 	else if (p == mediaVolume)
 	{
@@ -132,7 +135,6 @@ void VideoMedia::triggerTriggered(Trigger* t)
 void VideoMedia::afterLoadJSONDataInternal()
 {
 	Media::afterLoadJSONDataInternal();
-	if (playAtLoad->boolValue()) play();
 }
 
 void VideoMedia::play()
@@ -198,6 +200,7 @@ unsigned VideoMedia::setup_video(char* chroma, unsigned* width, unsigned* height
 	memcpy(chroma, "RV32", 4);
 	(*pitches) = imageWidth * 4;
 	(*lines) = imageHeight;
+
 
 	return 1;
 }
