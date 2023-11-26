@@ -147,7 +147,7 @@ void OnlineContentExplorer::run()
 
 	OnlineSource os = source.getValueDataAsEnum<OnlineSource>();
 
-	std::unique_ptr<InputStream> is = URL(url).createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withExtraHeaders(getExtraHeadersForSource(os)));
+	std::unique_ptr<InputStream> is = URL(url).createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withExtraHeaders(getExtraHeadersForSource(os)).withProgressCallback([this](int, int) { return !threadShouldExit();  }));
 
 	if (threadShouldExit()) return;
 
@@ -270,7 +270,7 @@ OnlineContentItem::OnlineContentItem(OnlineContentExplorer::OnlineSource source,
 
 OnlineContentItem::~OnlineContentItem()
 {
-	stopThread(1000);
+	stopThread(2000);
 }
 
 void OnlineContentItem::paint(Graphics& g)
@@ -316,7 +316,10 @@ void OnlineContentItem::run()
 
 		LOG("Loading " + url.toString(true));
 
-		String dataStr = url.readEntireTextStream();
+		std::unique_ptr<InputStream> is = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withProgressCallback([this](int, int) { return !threadShouldExit();  }));
+		
+		
+		String dataStr = is->readEntireStreamAsString();
 		if (threadShouldExit()) return;
 
 		data = JSON::parse(dataStr);
@@ -373,7 +376,7 @@ void OnlineContentItem::run()
 
 
 			StringPairArray headers;
-			std::unique_ptr<InputStream> is = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withResponseHeaders(&headers).withExtraHeaders(OnlineContentExplorer::getExtraHeadersForSource(source)));
+			std::unique_ptr<InputStream> is = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withResponseHeaders(&headers).withProgressCallback([this](int, int) { return !threadShouldExit();  }));
 
 
 			if (is != nullptr)
@@ -405,15 +408,15 @@ void OnlineContentItem::run()
 
 	if (threadShouldExit()) return;
 
-	MessageManagerLock mmLock;
-	if (mmLock.lockWasGained())
-	{
-		if (!isSupported)
+	MessageManager::callAsync([&]()
 		{
-			setEnabled(false);
-			setAlpha(.3f);
-		}
+			if (!isSupported)
+			{
+				setEnabled(false);
+				setAlpha(.3f);
+			}
 
-		repaint();
-	}
+			repaint();
+
+		});
 }
