@@ -19,3 +19,5 @@
 #include "OpenGLManager.cpp"
 
 #include "MediaTarget.cpp"
+
+#include "ContentExplorer/OnlineContentExplorer.cpp"

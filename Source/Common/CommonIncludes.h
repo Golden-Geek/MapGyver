@@ -34,3 +34,5 @@
 #include "OpenGLManager.h"
 
 #include "MediaTarget.h"
+
+#include "ContentExplorer/OnlineContentExplorer.h"

@@ -12,6 +12,12 @@
     </GROUP>
     <GROUP id="{1C2049A4-F05D-7C48-44EC-DD606A3617AC}" name="Source">
       <GROUP id="{B19EA5C3-367A-80C3-EC20-D9B7AA16E911}" name="Common">
+        <GROUP id="{47B9C4FE-5711-16C4-42E1-B7DC7C568799}" name="ContentExplorer">
+          <FILE id="bB8Wvo" name="OnlineContentExplorer.cpp" compile="0" resource="0"
+                file="Source/Common/ContentExplorer/OnlineContentExplorer.cpp"/>
+          <FILE id="nhzpi5" name="OnlineContentExplorer.h" compile="0" resource="0"
+                file="Source/Common/ContentExplorer/OnlineContentExplorer.h"/>
+        </GROUP>
         <GROUP id="{CB174BFA-16BF-AEDE-F181-939536A126AF}" name="NDI">
           <GROUP id="{F036D58F-B5A4-4235-7B68-4C2E247299CF}" name="ui">
             <FILE id="EDoTYi" name="NDIDeviceChooser.cpp" compile="0" resource="0"
@@ -79,12 +85,7 @@
             <FILE id="E6j3FS" name="PictureMedia.h" compile="0" resource="0" file="Source/Media/medias/picture/PictureMedia.h"/>
           </GROUP>
           <GROUP id="{85865C8C-AC14-E279-F737-BC93A4D8B6E0}" name="shader">
-            <GROUP id="{3CFEF496-92F2-7331-1132-33362B638A2F}" name="ui">
-              <FILE id="eDA6N9" name="ShaderToyExplorer.cpp" compile="0" resource="0"
-                    file="Source/Media/medias/shader/ui/ShaderToyExplorer.cpp"/>
-              <FILE id="lBPNd1" name="ShaderToyExplorer.h" compile="0" resource="0"
-                    file="Source/Media/medias/shader/ui/ShaderToyExplorer.h"/>
-            </GROUP>
+            <GROUP id="{3CFEF496-92F2-7331-1132-33362B638A2F}" name="ui"/>
             <FILE id="EY9yW4" name="ShaderMedia.cpp" compile="0" resource="0" file="Source/Media/medias/shader/ShaderMedia.cpp"/>
             <FILE id="hDwXde" name="ShaderMedia.h" compile="0" resource="0" file="Source/Media/medias/shader/ShaderMedia.h"/>
           </GROUP>

@@ -401,7 +401,7 @@ void ScreenEditorView::openGLContextClosing()
 bool ScreenEditorView::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
 	if (dragSourceDetails.description.getProperty("dataType", "") == "Media") return true;
-	if (dragSourceDetails.description.getProperty("type", "") == "ShaderToyItem") return true;
+	if (dragSourceDetails.description.getProperty("type", "") == "OnlineContentItem") return true;
 	return false;
 }
 
@@ -411,7 +411,7 @@ void ScreenEditorView::itemDragEnter(const SourceDetails& source)
 {
 	Media* m = nullptr;
 	if (BaseItemMinimalUI<Media>* mui = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())) mui->item;
-	
+
 	setCandidateDropSurface(screen->getSurfaceAt(getRelativeMousePos()), m);
 	repaint();
 }
@@ -436,17 +436,70 @@ void ScreenEditorView::itemDropped(const SourceDetails& source)
 {
 	if (candidateDropSurface == nullptr) return;
 
-	if (source.description.getProperty("type", "") == "ShaderToyItem")
+	if (source.description.getProperty("type", "") == "OnlineContentItem")
 	{
-		ShaderMedia* sm = candidateDropSurface->media->getTargetContainerAs<ShaderMedia>();
-		if (sm == nullptr)
+		OnlineContentItem* item = dynamic_cast<OnlineContentItem*>(source.sourceComponent.get());
+		if (item == nullptr) return;
+		switch (item->source)
 		{
-			sm = dynamic_cast<ShaderMedia*>(MediaManager::getInstance()->addItem(new ShaderMedia()));
-			candidateDropSurface->media->setValueFromTarget(sm);
+		case OnlineContentExplorer::ShaderToy:
+		{
+			ShaderMedia* sm = candidateDropSurface->media->getTargetContainerAs<ShaderMedia>();
+			if (sm == nullptr)
+			{
+				sm = dynamic_cast<ShaderMedia*>(MediaManager::getInstance()->addItem(new ShaderMedia()));
+				candidateDropSurface->media->setValueFromTarget(sm);
+			}
+
+			sm->shaderToyID->setValue(source.description.getProperty("id", ""));
+			sm->shaderType->setValueWithData(ShaderMedia::ShaderType::ShaderToyURL);
 		}
 
-		sm->shaderToyID->setValue(source.description.getProperty("id", ""));
-		sm->shaderType->setValueWithData(ShaderMedia::ShaderType::ShaderToyURL);
+		case OnlineContentExplorer::ISF:
+		{
+			//ISFMedia* im = candidateDropSurface->media->getTargetContainerAs<ISFMedia>();
+			//if (im == nullptr)
+			//{
+			//	im = dynamic_cast<ISFMedia*>(MediaManager::getInstance()->addItem(new ISFMedia()));
+			//	candidateDropSurface->media->setValueFromTarget(im);
+			//}
+
+			//im->isfURL->setValue(source.description.getProperty("id", ""));
+			//im->shaderType->setValueWithData(ShaderMedia::ShaderType::ISFURL);
+		}
+		break;
+
+		case  OnlineContentExplorer::Pexels_Photo:
+		{
+			PictureMedia* im = candidateDropSurface->media->getTargetContainerAs<PictureMedia>();
+			if (im == nullptr)
+			{
+				im = dynamic_cast<PictureMedia*>(MediaManager::getInstance()->addItem(new PictureMedia()));
+				candidateDropSurface->media->setValueFromTarget(im);
+			}
+
+			//im->url->setValue(source.description.getProperty("url", ""));
+			//im->shaderType->setValueWithData(ShaderMedia::ShaderType::ImageURL);
+		}
+		break;
+
+		case OnlineContentExplorer::Pexels_Video:
+		{
+			VideoMedia* im = candidateDropSurface->media->getTargetContainerAs<VideoMedia>();
+			if (im == nullptr)
+			{
+				im = dynamic_cast<VideoMedia*>(MediaManager::getInstance()->addItem(new VideoMedia()));
+				candidateDropSurface->media->setValueFromTarget(im);
+			}
+
+			//im->url->setValue(source.description.getProperty("url", ""));
+			//im->shaderType->setValueWithData(ShaderMedia::ShaderType::VideoURL);
+		}
+		break;
+
+		default:
+			break;
+		}
 	}
 	else
 	{

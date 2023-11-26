@@ -27,7 +27,6 @@
 #include "medias/sharedtexture/SharedTextureMedia.h"
 
 #include "medias/shader/ShaderMedia.h"
-#include "medias/shader/ui/ShaderToyExplorer.h"
 
 #include "medias/color/ColorMedia.h"
 

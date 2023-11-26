@@ -24,7 +24,6 @@
 #include "medias/ndi/NDIMedia.cpp"
 #include "medias/sharedtexture/SharedTextureMedia.cpp"
 #include "medias/shader/ShaderMedia.cpp"
-#include "medias/shader/ui/ShaderToyExplorer.cpp"
 
 #include "medias/color/ColorMedia.cpp"
 

@@ -110,6 +110,8 @@ Surface::Surface(var params) :
 	{
 		if (!MediaManager::getInstance()->items.isEmpty()) media->setValueFromTarget(MediaManager::getInstance()->items.getFirst());
 	}
+
+	updatePath();
 }
 
 Surface::~Surface()
