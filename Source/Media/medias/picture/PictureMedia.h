@@ -11,16 +11,22 @@
 #pragma once
 
 class PictureMedia :
-	public ImageMedia
+	public ImageMedia,
+	public Thread
 {
 public:
 	PictureMedia(var params = var());
 	~PictureMedia();
 
+	enum PictureSource { Source_File, Source_URL};
+	EnumParameter* source;
 	FileParameter* filePath;
+	StringParameter* url;
 
 	void onContainerParameterChanged(Parameter* p) override;
 
+	void reloadImage();
+	void run() override;
 
 	DECLARE_TYPE("Picture")
 };

@@ -149,6 +149,13 @@ void ImageMedia::initImage(int width, int height)
 
 void ImageMedia::initImage(Image newImage)
 {
+	if (!newImage.isValid())
+	{
+		image = Image();
+		shouldRedraw = true;
+		return;
+	}
+
 	image = newImage.convertedToFormat(Image::ARGB);
 	bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
 	shouldRedraw = true;

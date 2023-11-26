@@ -378,25 +378,13 @@ void OnlineContentItem::run()
 			StringPairArray headers;
 			std::unique_ptr<InputStream> is = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withResponseHeaders(&headers).withProgressCallback([this](int, int) { return !threadShouldExit();  }));
 
-
+			
 			if (is != nullptr)
 			{
-				String contentType = headers.getValue("Content-Type", "png");
-				if (contentType.contains("jpeg") || contentType.contains("jpg"))
-				{
-					JPEGImageFormat jpeg;
-					previewImage = jpeg.decodeImage(*is);
-				}
-				else if (contentType.contains("png"))
-				{
-					PNGImageFormat png;
-					previewImage = png.decodeImage(*is);
-				}
-				else if (contentType.contains("gif"))
-				{
-					GIFImageFormat gif;
-					previewImage = gif.decodeImage(*is);
-				}
+				MemoryBlock block;
+				is->readIntoMemoryBlock(block);
+				MemoryInputStream mis(block, false);
+				previewImage = ImageFileFormat::loadFrom(mis);
 			}
 
 
