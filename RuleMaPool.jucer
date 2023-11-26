@@ -95,30 +95,6 @@
             <FILE id="dPIWw1" name="SharedTextureMedia.h" compile="0" resource="0"
                   file="Source/Media/medias/sharedtexture/SharedTextureMedia.h"/>
           </GROUP>
-          <GROUP id="{ECF94977-7C42-1EEE-821C-A13327ABD69A}" name="USBCam">
-            <GROUP id="{E6FEF759-DA69-00EA-2827-F93CB697DB8A}" name="ui">
-              <FILE id="Gh9pbs" name="USBCamDeviceChooser.cpp" compile="0" resource="0"
-                    file="Source/Media/medias/USBCam/ui/USBCamDeviceChooser.cpp"/>
-              <FILE id="TY2bWT" name="USBCamDeviceChooser.h" compile="0" resource="0"
-                    file="Source/Media/medias/USBCam/ui/USBCamDeviceChooser.h"/>
-              <FILE id="eQzEjS" name="USBCamDeviceParameterUI.cpp" compile="0" resource="0"
-                    file="Source/Media/medias/USBCam/ui/USBCamDeviceParameterUI.cpp"/>
-              <FILE id="jqGSme" name="USBCamDeviceParameterUI.h" compile="0" resource="0"
-                    file="Source/Media/medias/USBCam/ui/USBCamDeviceParameterUI.h"/>
-            </GROUP>
-            <FILE id="qKNeGj" name="USBCamDevice.cpp" compile="0" resource="0"
-                  file="Source/Media/medias/USBCam/USBCamDevice.cpp"/>
-            <FILE id="LDMnrw" name="USBCamDevice.h" compile="0" resource="0" file="Source/Media/medias/USBCam/USBCamDevice.h"/>
-            <FILE id="IIFTmy" name="USBCamDeviceParameter.cpp" compile="0" resource="0"
-                  file="Source/Media/medias/USBCam/USBCamDeviceParameter.cpp"/>
-            <FILE id="IxkzWl" name="USBCamDeviceParameter.h" compile="0" resource="0"
-                  file="Source/Media/medias/USBCam/USBCamDeviceParameter.h"/>
-            <FILE id="GwwCp0" name="USBCamManager.cpp" compile="0" resource="0"
-                  file="Source/Media/medias/USBCam/USBCamManager.cpp"/>
-            <FILE id="I9iq4i" name="USBCamManager.h" compile="0" resource="0" file="Source/Media/medias/USBCam/USBCamManager.h"/>
-            <FILE id="jQO7cr" name="USBCamMedia.cpp" compile="0" resource="0" file="Source/Media/medias/USBCam/USBCamMedia.cpp"/>
-            <FILE id="oL55u4" name="USBCamMedia.h" compile="0" resource="0" file="Source/Media/medias/USBCam/USBCamMedia.h"/>
-          </GROUP>
           <GROUP id="{789B912B-C9EF-806B-BBB4-78AE0DD44723}" name="video">
             <GROUP id="{9D414D54-55FD-3F32-B9A7-89C67E1127A7}" name="vlcpp">
               <FILE id="WQyaU2" name="common.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/common.hpp"/>
@@ -145,6 +121,30 @@
             </GROUP>
             <FILE id="J1IVz4" name="VideoMedia.cpp" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.cpp"/>
             <FILE id="HIszRg" name="VideoMedia.h" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.h"/>
+          </GROUP>
+          <GROUP id="{29E5A0E5-283C-5D87-478F-76221EEB97B9}" name="webcam">
+            <GROUP id="{3C37978B-3D67-185C-B209-94D40418B3D7}" name="ui">
+              <FILE id="ENdr19" name="webcamDeviceChooser.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/webcam/ui/webcamDeviceChooser.cpp"/>
+              <FILE id="AizcoX" name="webcamDeviceChooser.h" compile="0" resource="0"
+                    file="Source/Media/medias/webcam/ui/webcamDeviceChooser.h"/>
+              <FILE id="qHOsfU" name="webcamDeviceParameterUI.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/webcam/ui/webcamDeviceParameterUI.cpp"/>
+              <FILE id="bxPngw" name="webcamDeviceParameterUI.h" compile="0" resource="0"
+                    file="Source/Media/medias/webcam/ui/webcamDeviceParameterUI.h"/>
+            </GROUP>
+            <FILE id="Z4tGLT" name="webcamDevice.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/webcam/webcamDevice.cpp"/>
+            <FILE id="B6Zn0y" name="webcamDevice.h" compile="0" resource="0" file="Source/Media/medias/webcam/webcamDevice.h"/>
+            <FILE id="rRT2pY" name="webcamDeviceParameter.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/webcam/webcamDeviceParameter.cpp"/>
+            <FILE id="oCfLBL" name="webcamDeviceParameter.h" compile="0" resource="0"
+                  file="Source/Media/medias/webcam/webcamDeviceParameter.h"/>
+            <FILE id="QFJLS3" name="webcamManager.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/webcam/webcamManager.cpp"/>
+            <FILE id="NOCGs9" name="webcamManager.h" compile="0" resource="0" file="Source/Media/medias/webcam/webcamManager.h"/>
+            <FILE id="ZBYiVJ" name="webcamMedia.cpp" compile="0" resource="0" file="Source/Media/medias/webcam/webcamMedia.cpp"/>
+            <FILE id="mHVtOO" name="webcamMedia.h" compile="0" resource="0" file="Source/Media/medias/webcam/webcamMedia.h"/>
           </GROUP>
         </GROUP>
         <GROUP id="{246EA82D-0CB9-1D91-B613-BEC53E0B6D70}" name="ui">

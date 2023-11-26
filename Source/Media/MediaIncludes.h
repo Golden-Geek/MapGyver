@@ -33,10 +33,10 @@
 #include "medias/video/vlcpp/vlc.hpp"
 #include "medias/video/VideoMedia.h"
 
-#include "medias/USBCam/USBCamDevice.h"
-#include "medias/USBCam/USBCamManager.h"
-#include "medias/USBCam/USBCamDeviceParameter.h"
-#include "medias/USBCam/ui/USBCamDeviceChooser.h"
-#include "medias/USBCam/ui/USBCamDeviceParameterUI.h"
-#include "medias/USBCam/USBCamMedia.h"
+#include "medias/Webcam/WebcamDevice.h"
+#include "medias/Webcam/WebcamManager.h"
+#include "medias/Webcam/WebcamDeviceParameter.h"
+#include "medias/Webcam/ui/WebcamDeviceChooser.h"
+#include "medias/Webcam/ui/WebcamDeviceParameterUI.h"
+#include "medias/Webcam/WebcamMedia.h"
 

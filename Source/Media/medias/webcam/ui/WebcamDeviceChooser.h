@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    USBCamDeviceChooser.h
+    WebcamDeviceChooser.h
     Created: 20 Dec 2016 12:35:11pm
     Author:  Ben
 
@@ -10,14 +10,14 @@
 
 #pragma once
 
-class USBCamDeviceChooser :
+class WebcamDeviceChooser :
 	public Component,
 	public ComboBox::Listener,
-	public USBCamManager::USBCamManagerListener
+	public WebcamManager::WebcamManagerListener
 {
 public:
-	USBCamDeviceChooser();
-	~USBCamDeviceChooser();
+	WebcamDeviceChooser();
+	~WebcamDeviceChooser();
 
 	bool showInputs;
 	//Label inputLabel;
@@ -27,7 +27,7 @@ public:
 	//Label outputLabel;
 	ComboBox outputBox;
 
-	USBCamInputDevice * currentInputDevice;
+	WebcamInputDevice * currentInputDevice;
 
 	void resized() override;
 
@@ -35,24 +35,24 @@ public:
 
 	void updateInputComboBox();
 
-	void setSelectedInputDevice(USBCamInputDevice * );
+	void setSelectedInputDevice(WebcamInputDevice * );
 	void setSelectedInputDevice(const String &deviceName);
 
 	virtual void comboBoxChanged(ComboBox * ccb) override;
 
-	virtual void USBCamDeviceInAdded(USBCamInputDevice *) override;
-	virtual void USBCamDeviceInRemoved(USBCamInputDevice *) override;
+	virtual void WebcamDeviceInAdded(WebcamInputDevice *) override;
+	virtual void WebcamDeviceInRemoved(WebcamInputDevice *) override;
 
 	class  ChooserListener
 	{
 	public:
 		/** Destructor. */
 		virtual ~ChooserListener() {}
-		virtual void USBCamDeviceInSelected(USBCamInputDevice * /*input*/) {}
+		virtual void WebcamDeviceInSelected(WebcamInputDevice * /*input*/) {}
 	};
 
 	ListenerList<ChooserListener> chooserListeners;
-	void addUSBCamChooserListener(ChooserListener* newListener) { chooserListeners.add(newListener); }
-	void removeUSBCamChooserListener(ChooserListener* listener) { chooserListeners.remove(listener); }
+	void addWebcamChooserListener(ChooserListener* newListener) { chooserListeners.add(newListener); }
+	void removeWebcamChooserListener(ChooserListener* listener) { chooserListeners.remove(listener); }
 
 };

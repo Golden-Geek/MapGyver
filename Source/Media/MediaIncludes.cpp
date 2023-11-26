@@ -29,9 +29,9 @@
 
 #include "medias/video/VideoMedia.cpp"
 
-#include "medias/USBCam/USBCamDevice.cpp"
-#include "medias/USBCam/USBCamManager.cpp"
-#include "medias/USBCam/USBCamDeviceParameter.cpp"
-#include "medias/USBCam/ui/USBCamDeviceChooser.cpp"
-#include "medias/USBCam/ui/USBCamDeviceParameterUI.cpp"
-#include "medias/USBCam/USBCamMedia.cpp"
+#include "medias/Webcam/WebcamDevice.cpp"
+#include "medias/Webcam/WebcamManager.cpp"
+#include "medias/Webcam/WebcamDeviceParameter.cpp"
+#include "medias/Webcam/ui/WebcamDeviceChooser.cpp"
+#include "medias/Webcam/ui/WebcamDeviceParameterUI.cpp"
+#include "medias/Webcam/WebcamMedia.cpp"

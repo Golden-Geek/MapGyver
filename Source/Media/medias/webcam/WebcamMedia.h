@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    USBCamMedia.h
+    WebcamMedia.h
     Created: 26 Sep 2020 1:51:42pm
     Author:  Mediaupe
 
@@ -10,16 +10,16 @@
 
 #pragma once
 
-class USBCamMedia :
+class WebcamMedia :
     public ImageMedia,
-    public USBCamInputDevice::USBCamInputListener
+    public WebcamInputDevice::WebcamInputListener
 {
 public:
-    USBCamMedia(var params = var());
-    ~USBCamMedia();
+    WebcamMedia(var params = var());
+    ~WebcamMedia();
 
-    USBCamDeviceParameter* USBCamParam;
-    USBCamInputDevice* USBCamDevice = nullptr;
+    WebcamDeviceParameter* WebcamParam;
+    WebcamInputDevice* WebcamDevice = nullptr;
     ColorParameter* color;
 
     void clearItem() override;
@@ -27,7 +27,7 @@ public:
 
     void updateDevice();
 
-    void usbCamImageReceived(const Image& image) override;
+    void WebcamImageReceived(const Image& image) override;
 
-    DECLARE_TYPE("USBCam")
+    DECLARE_TYPE("Webcam")
 };
