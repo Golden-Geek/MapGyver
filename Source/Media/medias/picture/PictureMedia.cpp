@@ -79,28 +79,4 @@ void PictureMedia::run()
 	MemoryInputStream mis(block, false);
 	initImage(ImageFileFormat::loadFrom(mis));
 
-	//if (jpeg.canUnderstand(*is))
-	//{
-	//	is->setPosition(0);
-	//	return;
-	//}
-
-	//is->setPosition(0);
-	//PNGImageFormat png;
-	//if (png.canUnderstand(*is))
-	//{
-	//	is->setPosition(0);
-	//	initImage(png.decodeImage(*is));
-	//	return;
-	//}
-
-	//GIFImageFormat gif;
-	//is->setPosition(0);
-	//if (gif.canUnderstand(*is))
-	//{
-	//	is->setPosition(0);
-	//	initImage(gif.decodeImage(*is));
-	//	return;
-	//}
-
 }

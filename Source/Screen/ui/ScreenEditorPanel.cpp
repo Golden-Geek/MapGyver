@@ -443,6 +443,7 @@ void ScreenEditorView::itemDropped(const SourceDetails& source)
 		switch (item->source)
 		{
 		case OnlineContentExplorer::ShaderToy:
+		case OnlineContentExplorer::ISF:
 		{
 			ShaderMedia* sm = candidateDropSurface->media->getTargetContainerAs<ShaderMedia>();
 			if (sm == nullptr)
@@ -452,20 +453,7 @@ void ScreenEditorView::itemDropped(const SourceDetails& source)
 			}
 
 			sm->shaderToyID->setValue(source.description.getProperty("id", ""));
-			sm->shaderType->setValueWithData(ShaderMedia::ShaderType::ShaderToyURL);
-		}
-
-		case OnlineContentExplorer::ISF:
-		{
-			//ISFMedia* im = candidateDropSurface->media->getTargetContainerAs<ISFMedia>();
-			//if (im == nullptr)
-			//{
-			//	im = dynamic_cast<ISFMedia*>(MediaManager::getInstance()->addItem(new ISFMedia()));
-			//	candidateDropSurface->media->setValueFromTarget(im);
-			//}
-
-			//im->isfURL->setValue(source.description.getProperty("id", ""));
-			//im->shaderType->setValueWithData(ShaderMedia::ShaderType::ISFURL);
+			sm->shaderType->setValueWithData(item->source == OnlineContentExplorer::ShaderToy? ShaderMedia::ShaderType::ShaderToyURL : ShaderMedia::ShaderType::ShaderISFURL);
 		}
 		break;
 
@@ -478,22 +466,22 @@ void ScreenEditorView::itemDropped(const SourceDetails& source)
 				candidateDropSurface->media->setValueFromTarget(im);
 			}
 
-			//im->url->setValue(source.description.getProperty("url", ""));
-			//im->shaderType->setValueWithData(ShaderMedia::ShaderType::ImageURL);
+			im->source->setValueWithData(PictureMedia::PictureSource::Source_URL);
+			im->url->setValue(source.description.getProperty("url", ""));
 		}
 		break;
 
 		case OnlineContentExplorer::Pexels_Video:
 		{
-			VideoMedia* im = candidateDropSurface->media->getTargetContainerAs<VideoMedia>();
-			if (im == nullptr)
+			VideoMedia* vm = candidateDropSurface->media->getTargetContainerAs<VideoMedia>();
+			if (vm == nullptr)
 			{
-				im = dynamic_cast<VideoMedia*>(MediaManager::getInstance()->addItem(new VideoMedia()));
-				candidateDropSurface->media->setValueFromTarget(im);
+				vm = dynamic_cast<VideoMedia*>(MediaManager::getInstance()->addItem(new VideoMedia()));
+				candidateDropSurface->media->setValueFromTarget(vm);
 			}
 
-			//im->url->setValue(source.description.getProperty("url", ""));
-			//im->shaderType->setValueWithData(ShaderMedia::ShaderType::VideoURL);
+			vm->source->setValueWithData(VideoMedia::VideoSource::Source_URL);
+			vm->url->setValue(source.description.getProperty("url", ""));
 		}
 		break;
 

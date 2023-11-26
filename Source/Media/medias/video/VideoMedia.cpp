@@ -14,7 +14,11 @@
 VideoMedia::VideoMedia(var params) :
 	ImageMedia(getTypeString(), params)
 {
+	source = addEnumParameter("Source", "Source");
+	source->addOption("File", Source_File)->addOption("URL", Source_URL);
+
 	filePath = addFileParameter("File path", "File path", "");
+	url = addStringParameter("URL", "URL", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", false);
 
 	playAtLoad = addBoolParameter("Play at load", "Play at load", false);
 
@@ -60,12 +64,24 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 {
 	// LIBVLC_API int libvlc_audio_set_volume( libvlc_media_player_t *p_mi, int i_volume );
 
-	if (p == filePath)
+	if (p == source)
 	{
-		String f = filePath->getFile().getFullPathName();
+		bool isFile = source->getValueDataAsEnum<VideoSource>() == Source_File;
+		filePath->setEnabled(isFile);
+		url->setEnabled(!isFile);
+		stop();
+	}
+
+	if (p == source || p == filePath || p == url)
+	{
 		stop();
 		VLCMediaList = libvlc_media_list_new(VLCInstance);
-		VLCMedia = libvlc_media_new_path(VLCInstance, f.toRawUTF8());
+		
+		VideoSource s = source->getValueDataAsEnum<VideoSource>();
+		
+		if(s == Source_File) VLCMedia = libvlc_media_new_path(VLCInstance, filePath->getFile().getFullPathName().toRawUTF8());
+		else VLCMedia = libvlc_media_new_location(VLCInstance, url->stringValue().toRawUTF8());
+
 		libvlc_media_list_add_media(VLCMediaList, VLCMedia);
 
 		VLCMediaPlayer = libvlc_media_player_new(VLCInstance); //libvlc_media_player_new_from_media(VLCMedia);

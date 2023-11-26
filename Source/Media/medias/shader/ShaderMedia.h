@@ -24,7 +24,8 @@ public:
 		ShaderGLSLFile,
 		ShaderToyFile,
 		ShaderToyURL,
-		ShaderISFFile
+		ShaderISFFile,
+		ShaderISFURL
 	};
 
 	EnumParameter* shaderType;

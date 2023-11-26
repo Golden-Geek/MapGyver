@@ -289,10 +289,31 @@ void OnlineContentItem::mouseDrag(const MouseEvent& e)
 
 	if (e.getDistanceFromDragStart() > 10 && !isDragAndDropActive())
 	{
-		var data(new DynamicObject());
-		data.getDynamicObject()->setProperty("type", "OnlineContentItem");
-		data.getDynamicObject()->setProperty("id", id);
-		startDragging(data, this, ScaledImage(), true);
+		var dragData(new DynamicObject());
+		dragData.getDynamicObject()->setProperty("type", "OnlineContentItem");
+		dragData.getDynamicObject()->setProperty("id", id);
+
+		switch (source)
+		{
+		case OnlineContentExplorer::Pexels_Photo:
+		{
+			dragData.getDynamicObject()->setProperty("url", "https://images.pexels.com/photos/" + id + "/pexels-photo-" + id + ".jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&w=1920");
+		}
+		break;
+
+		case OnlineContentExplorer::Pexels_Video:
+		{
+			var videoFiles = data["video_files"];
+			for (int i = 0; i < videoFiles.size(); i++)
+			{
+				if (videoFiles[i]["quality"] == "sd") dragData.getDynamicObject()->setProperty("url", videoFiles[i]["link"]);
+			}
+		}
+		default:
+			break;
+		}
+
+		startDragging(dragData, this, ScaledImage(), true);
 	}
 }
 
@@ -355,7 +376,7 @@ void OnlineContentItem::run()
 
 		case OnlineContentExplorer::Pexels_Photo:
 		{
-			previewURL = "https://images.pexels.com/photos/" + id + "/pexels-photo-" + id + ".jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=135&w=240";
+			previewURL = "https://images.pexels.com/photos/" + id + "/pexels-photo-" + id + ".jpeg?auto=compress&cs=tinysrgb&dpr=1&h=160&w=90";
 			name = data["photographer"].toString() + " - " + data["alt"];
 			description = data["alt"];
 		}
@@ -363,7 +384,7 @@ void OnlineContentItem::run()
 
 		case OnlineContentExplorer::Pexels_Video:
 		{
-			previewURL = "https://images.pexels.com/videos/" + id + "/free-video-" + id + ".jpg?fit=crop&w=135&h=240&auto=compress&cs=tinysrg";
+			previewURL = "https://images.pexels.com/videos/" + id + "/free-video-" + id + ".jpg?w=160&h=90&auto=compress&cs=tinysrg";
 			name = data["user"]["name"].toString() + " - " + id;
 			description = data["user"]["name"].toString() + " - " + id;
 		}

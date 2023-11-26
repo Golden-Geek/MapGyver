@@ -19,7 +19,10 @@ public:
 
 	bool frameUpdated;
 
+	enum VideoSource { Source_File, Source_URL };
+	EnumParameter* source;
 	FileParameter* filePath;
+	StringParameter* url;
 
 	BoolParameter* playAtLoad;
 	Trigger* startBtn;
