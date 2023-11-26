@@ -29,7 +29,7 @@ NDIDeviceParameter::~NDIDeviceParameter()
 
 void NDIDeviceParameter::setInputDevice(NDIInputDevice * i)
 {
-	var val = i != nullptr ? i->id : "";
+	var val = i != nullptr ? i->name : "";
 
 	if (i != nullptr)
 	{
@@ -38,15 +38,16 @@ void NDIDeviceParameter::setInputDevice(NDIInputDevice * i)
 	}
 
 	inputDevice = i;
-
 	setValue(val);
 }
 
 void NDIDeviceParameter::NDIDeviceInAdded(NDIInputDevice * i)
 {	
-	//DBG("Device In added " << i->name << " / " << ghostDeviceIn);
-	if (inputDevice == nullptr && i->id == ghostDeviceIn)
+	//DBG("Device In added " << i->name << " / " << ghostDeviceIn);	
+	LOG(i->name<< " == "<<ghostDeviceIn);
+	if (inputDevice == nullptr && i->name == ghostDeviceIn)
 	{
+		setInputDevice(nullptr);
 		setInputDevice(i);
 	}
 }
@@ -57,7 +58,6 @@ void NDIDeviceParameter::NDIDeviceInRemoved(NDIInputDevice * i)
 	{
 		if (i != nullptr)
 		{
-			ghostDeviceIn = i->id;
 			ghostDeviceNameIn = i->name;
 		}
 		setInputDevice(nullptr);

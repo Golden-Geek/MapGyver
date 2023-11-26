@@ -17,7 +17,6 @@ public:
 	NDIDevice(NDIlib_source_t &deviceName, Type t);
 	virtual ~NDIDevice() {}
 
-	String id;
 	String name;
 	Type type;
 

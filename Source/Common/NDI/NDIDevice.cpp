@@ -10,7 +10,6 @@
 #include "Common/CommonIncludes.h"
 
 NDIDevice::NDIDevice(NDIlib_source_t& info, Type t) :
-	id(info.p_url_address),
 	name(info.p_ndi_name),
 	type(t)
 {}
@@ -21,6 +20,7 @@ NDIInputDevice::NDIInputDevice(NDIlib_source_t & info) :
 	NDIDevice(info, NDI_IN),
 	Thread("NDI Input")
 {
+	p_source = &info;
 	startThread();
 }
 

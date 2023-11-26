@@ -36,10 +36,10 @@ void NDIManager::checkDevices()
     p_sources = NDIlib_find_get_current_sources(pNDI_find, &no_sources);
 
     for (int i = inputs.size()-1; i >= 0; i--) {
-        String key = inputs[i]->id;
+        String key = inputs[i]->name;
         bool isPresent = false;
         for (uint32_t j = 0; j < no_sources && !isPresent; j++) {
-            isPresent = String(p_sources[j].p_url_address) == key;
+            isPresent = String(p_sources[j].p_ndi_name) == key;
         }
         if (!isPresent) {
             removeInputDevice(inputs[i]);
@@ -53,7 +53,7 @@ void NDIManager::checkDevices()
                 NDIlib_source_t t = p_sources[i];
                 input = addInputDeviceIfNotThere(t);
             }
-            input->p_source = const_cast<NDIlib_source_t*>(&p_sources[i]);
+            //input->p_source = const_cast<NDIlib_source_t*>(&p_sources[i]);
         }
     }
 }
@@ -63,7 +63,7 @@ NDIInputDevice* NDIManager::addInputDeviceIfNotThere(NDIlib_source_t info)
 	NDIInputDevice* d = new NDIInputDevice(info);
 	inputs.add(d);
 
-	NLOG("NDI", "Device In Added : " << d->name << " (ID : " << d->id << ")");
+	NLOG("NDI", "Device In Added : " << d->name << "");
 
 	listeners.call(&NDIManagerListener::NDIDeviceInAdded, d);
     return d;
@@ -73,7 +73,7 @@ void NDIManager::removeInputDevice(NDIInputDevice* d)
 {
 	inputs.removeObject(d, false);
 
-	NLOG("NDI", "Device In Removed : " << d->name << " (ID : " << d->id << ")");
+	NLOG("NDI", "Device In Removed : " << d->name << "");
 
 	listeners.call(&NDIManagerListener::NDIDeviceInRemoved, d);
 	delete d;
