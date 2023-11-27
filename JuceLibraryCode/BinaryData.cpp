@@ -112,8 +112,114 @@ static const unsigned char temp_binary_data_0[] =
 
 const char* default_rmplayout = (const char*) temp_binary_data_0;
 
-//================== icon.png ==================
+//================== fragmentShaderMainSurface.glsl ==================
 static const unsigned char temp_binary_data_1[] =
+"in vec3 Texcoord;\r\n"
+"in vec3 Maskcoord;\r\n"
+"in vec2 SurfacePosition;\r\n"
+"out vec4 outColor;\r\n"
+"uniform sampler2D tex;\r\n"
+"uniform sampler2D mask;\r\n"
+"uniform vec4 borderSoft;\r\n"
+"uniform int invertMask;\r\n"
+"\r\n"
+"float map(float value, float min1, float max1, float min2, float max2) {\r\n"
+"\treturn min2 + ((max2-min2)*(value-min1)/(max1-min1)); \r\n"
+"};\r\n"
+"\r\n"
+"void main()\r\n"
+"{\r\n"
+"\toutColor = textureProj(tex, Texcoord);\r\n"
+"   \tvec4 maskColor = textureProj(mask, Maskcoord);\r\n"
+"   \tfloat alpha = 1.0f;\r\n"
+"   \tif (SurfacePosition[1] > 1-borderSoft[0])    {alpha *= map(SurfacePosition[1],1.0f,1-borderSoft[0],0.0f,1.0f);} // top\r\n"
+"   \tif (SurfacePosition[0] > 1.0f-borderSoft[1]) {alpha *= map(SurfacePosition[0], 1.0f, 1 - borderSoft[1], 0.0f, 1.0f); } // right\r\n"
+"   \tif (SurfacePosition[1] < borderSoft[2])      {alpha *= map(SurfacePosition[1],0.0f,borderSoft[2],0.0f,1.0f);} // bottom\r\n"
+"   \tif (SurfacePosition[0] < borderSoft[3])      {alpha *= map(SurfacePosition[0],0.0f,borderSoft[3],0.0f,1.0f);} // left\r\n"
+"\tfloat maskValue = invertMask == 0 ? maskColor[1] : 1-maskColor[1];\r\n"
+"   \talpha *= maskValue; \r\n"
+"   \toutColor[3] = alpha;\r\n"
+"};\r\n";
+
+const char* fragmentShaderMainSurface_glsl = (const char*) temp_binary_data_1;
+
+//================== fragmentShaderTestGrid.glsl ==================
+static const unsigned char temp_binary_data_2[] =
+"in vec3 Texcoord;\r\n"
+"in vec3 Maskcoord;\r\n"
+"in vec2 SurfacePosition;\r\n"
+"out vec4 outColor;\r\n"
+"uniform sampler2D tex;\r\n"
+"uniform sampler2D mask;\r\n"
+"uniform vec4 borderSoft;\r\n"
+"uniform int invertMask;\r\n"
+"\r\n"
+"float map(float value, float min1, float max1, float min2, float max2) {\r\n"
+"\treturn min2 + ((max2-min2)*(value-min1)/(max1-min1)); \r\n"
+"};\r\n"
+"\r\n"
+"void main()\r\n"
+"{\r\n"
+"\toutColor = textureProj(tex, Texcoord);\r\n"
+"   \tvec4 maskColor = textureProj(mask, Maskcoord);\r\n"
+"   \tfloat alpha = 1.0f;\r\n"
+"   \tif (SurfacePosition[1] > 1-borderSoft[0])    {alpha *= map(SurfacePosition[1],1.0f,1-borderSoft[0],0.0f,1.0f);} // top\r\n"
+"   \tif (SurfacePosition[0] > 1.0f-borderSoft[1]) {alpha *= map(SurfacePosition[0], 1.0f, 1 - borderSoft[1], 0.0f, 1.0f); } // right\r\n"
+"   \tif (SurfacePosition[1] < borderSoft[2])      {alpha *= map(SurfacePosition[1],0.0f,borderSoft[2],0.0f,1.0f);} // bottom\r\n"
+"   \tif (SurfacePosition[0] < borderSoft[3])      {alpha *= map(SurfacePosition[0],0.0f,borderSoft[3],0.0f,1.0f);} // left\r\n"
+"\tfloat maskValue = invertMask == 0 ? maskColor[1] : 1-maskColor[1];\r\n"
+"   \talpha *= maskValue; \r\n"
+"   \toutColor[3] = alpha;\r\n"
+"\r\n"
+"\tfloat circle = length(Texcoord);\r\n"
+"\tcircle = sin(circle * 8);\r\n"
+"\tcircle = abs(circle);\r\n"
+"\tcircle = 1-step(0.05, circle);\r\n"
+"\r\n"
+"\t//float cross = abs(abs(Texcoord[0]) - abs(Texcoord[1]));\r\n"
+"\t//cross = 1-step(0.005, cross);\r\n"
+"\r\n"
+"\t//float gridX = abs(sin(Texcoord[0]*16));\r\n"
+"\t//gridX = 1-step(0.03, gridX);\r\n"
+"\r\n"
+"\t//float gridY = abs(sin(Texcoord[1]*16));\r\n"
+"\t//gridY = 1-step(0.03, gridY);\r\n"
+"\r\n"
+"\t//float chan = circle+cross+gridX+gridY;\r\n"
+"\r\n"
+"\tvec4 c = vec4(1-circle, 1-circle, 1-circle, 1);\r\n"
+"\toutColor = c;\r\n"
+"};\r\n"
+"\r\n"
+"\r\n"
+"//void test(out vec4 fragColor, in vec2 fragCoord) {\r\n"
+"\t//vec2 uv = (fragCoord *2.0 - iResolution.xy) / iResolution.y;\r\n"
+"\t//vec2 uv = fragColor;\r\n"
+"\t//float circle = length(uv);\r\n"
+"\t//circle = sin(circle * 8);\r\n"
+"\t//circle = abs(circle);\r\n"
+"\t//circle = 1-step(0.05, circle);\r\n"
+"\r\n"
+"\t//float cross = abs(abs(uv[0]) - abs(uv[1]));\r\n"
+"\t//cross = 1-step(0.005, cross);\r\n"
+"\r\n"
+"\t//float gridX = abs(sin(uv[0]*16));\r\n"
+"\t//gridX = 1-step(0.03, gridX);\r\n"
+"\r\n"
+"\t//float gridY = abs(sin(uv[1]*16));\r\n"
+"\t//gridY = 1-step(0.03, gridY);\r\n"
+"\r\n"
+"\t//float chan = circle+cross+gridX+gridY;\r\n"
+"\r\n"
+"\t//vec4 c = vec4(chan, chan, chan, 1);\r\n"
+"\r\n"
+"\t//fragColor = 1-c;\r\n"
+"//}";
+
+const char* fragmentShaderTestGrid_glsl = (const char*) temp_binary_data_2;
+
+//================== icon.png ==================
+static const unsigned char temp_binary_data_3[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,1,0,0,0,1,0,8,6,0,0,0,92,114,168,102,0,0,0,1,115,82,71,66,0,174,206,28,233,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,0,0,0,9,112,72,89,115,0,0,14,194,0,0,14,194,1,21,40,74,128,0,0,206,133,73,68,65,
 84,120,94,236,125,7,192,29,71,117,245,221,254,250,251,186,122,151,101,89,178,229,222,27,182,49,110,152,98,211,147,16,32,64,66,73,8,9,201,31,210,73,2,36,129,132,144,64,32,244,98,138,49,198,128,105,54,216,198,184,87,92,100,203,178,100,117,233,235,229,213,
 125,219,255,115,102,223,147,228,134,33,1,75,246,247,174,52,223,206,206,206,206,206,238,155,115,238,189,51,179,179,210,149,174,116,101,246,138,214,222,118,165,43,207,9,73,146,68,126,112,193,27,68,44,75,66,183,41,94,165,42,110,173,38,209,220,1,49,102,234,
@@ -866,10 +972,10 @@ static const unsigned char temp_binary_data_1[] =
 106,24,102,215,140,89,203,86,63,247,52,29,119,226,41,185,0,24,133,200,63,7,110,37,20,43,20,151,218,41,177,203,155,54,36,163,84,79,148,223,132,13,103,97,28,242,186,61,242,191,149,252,12,65,240,182,46,122,249,184,31,146,172,168,171,85,221,88,54,240,252,
 163,100,23,172,156,252,163,18,68,255,15,235,215,111,140,58,65,199,188,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* icon_png = (const char*) temp_binary_data_1;
+const char* icon_png = (const char*) temp_binary_data_3;
 
 //================== testPattern.png ==================
-static const unsigned char temp_binary_data_2[] =
+static const unsigned char temp_binary_data_4[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,4,0,0,0,2,64,8,2,0,0,0,156,247,131,130,0,0,0,7,116,73,77,69,7,217,5,13,21,47,3,82,151,184,166,0,0,0,9,112,72,89,115,0,0,30,194,0,0,30,194,1,110,208,117,62,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,
 0,1,79,69,73,68,65,84,120,218,236,189,9,116,86,213,189,254,255,58,0,50,6,8,25,201,64,2,73,24,18,102,130,12,22,132,58,129,120,139,21,181,78,75,219,91,235,173,171,183,174,222,86,219,122,107,181,215,174,78,183,93,246,222,235,253,91,189,214,86,91,171,197,
 169,42,88,171,112,5,153,65,134,4,66,6,134,76,36,100,32,12,130,76,14,255,207,239,60,191,156,223,219,132,132,12,239,112,222,55,223,103,101,189,235,228,125,247,217,103,159,189,159,189,207,243,156,61,249,210,211,211,255,233,159,254,105,229,202,149,199,143,
@@ -2085,7 +2191,27 @@ static const unsigned char temp_binary_data_2[] =
 0,132,16,66,8,33,132,72,33,100,0,132,16,66,8,33,132,72,33,100,0,132,16,66,8,33,132,72,33,100,0,132,16,66,8,33,132,72,33,100,0,132,16,66,8,33,132,72,33,100,0,132,16,66,8,33,132,72,33,100,0,132,16,66,8,33,132,72,33,100,0,132,16,66,8,33,132,72,33,100,0,
 132,16,66,8,33,132,72,33,100,0,132,16,66,8,33,132,72,33,100,0,132,16,66,8,33,132,72,33,100,0,132,16,66,8,33,132,72,33,100,0,132,16,66,8,33,132,72,33,254,47,214,110,70,249,196,194,145,156,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* testPattern_png = (const char*) temp_binary_data_2;
+const char* testPattern_png = (const char*) temp_binary_data_4;
+
+//================== VertexShaderMainSurface.glsl ==================
+static const unsigned char temp_binary_data_5[] =
+"in vec2 position;\r\n"
+"in vec2 surfacePosition;\r\n"
+"in vec3 texcoord;\r\n"
+"in vec3 maskcoord;\r\n"
+"out vec3 Texcoord;\r\n"
+"out vec3 Maskcoord;\r\n"
+"out vec2 SurfacePosition;\r\n"
+"void main()\r\n"
+"{\r\n"
+"    Texcoord = texcoord;\r\n"
+"    Maskcoord = maskcoord;\r\n"
+"    SurfacePosition[0] = (surfacePosition[0]+1.0f)/2.0f;\r\n"
+"    SurfacePosition[1] = (surfacePosition[1]+1.0f)/2.0f;\r\n"
+"    gl_Position = vec4(position,0,1);\r\n"
+"};\r\n";
+
+const char* VertexShaderMainSurface_glsl = (const char*) temp_binary_data_5;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes);
@@ -2100,8 +2226,11 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
     switch (hash)
     {
         case 0x67012481:  numBytes = 2452; return default_rmplayout;
+        case 0x0ffdf71e:  numBytes = 1088; return fragmentShaderMainSurface_glsl;
+        case 0x0ff5b690:  numBytes = 2190; return fragmentShaderTestGrid_glsl;
         case 0xd4093963:  numBytes = 52976; return icon_png;
         case 0x7536b908:  numBytes = 85942; return testPattern_png;
+        case 0xaecbe392:  numBytes = 381; return VertexShaderMainSurface_glsl;
         default: break;
     }
 
@@ -2112,15 +2241,21 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 const char* namedResourceList[] =
 {
     "default_rmplayout",
+    "fragmentShaderMainSurface_glsl",
+    "fragmentShaderTestGrid_glsl",
     "icon_png",
-    "testPattern_png"
+    "testPattern_png",
+    "VertexShaderMainSurface_glsl"
 };
 
 const char* originalFilenames[] =
 {
     "default.rmplayout",
+    "fragmentShaderMainSurface.glsl",
+    "fragmentShaderTestGrid.glsl",
     "icon.png",
-    "testPattern.png"
+    "testPattern.png",
+    "VertexShaderMainSurface.glsl"
 };
 
 const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8);

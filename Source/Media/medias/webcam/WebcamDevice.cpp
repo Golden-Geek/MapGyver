@@ -55,7 +55,7 @@ void WebcamInputDevice::removeWebcamInputListener(WebcamInputListener* listener)
 		device->removeListener(this);
 		delete(device);
 		shouldProcess = false;
-		LOG("close connexion here");
+		//LOG("close connexion here");
 	}
 }
 

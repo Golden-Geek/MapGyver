@@ -4017,8 +4017,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Resources\default.rmplayout"/>
+    <None Include="..\..\Resources\fragmentShaderMainSurface.glsl"/>
+    <None Include="..\..\Resources\fragmentShaderTestGrid.glsl"/>
     <None Include="..\..\Resources\icon.png"/>
     <None Include="..\..\Resources\testPattern.png"/>
+    <None Include="..\..\Resources\VertexShaderMainSurface.glsl"/>
     <None Include="..\..\JUCE\modules\juce_core\native\java\README.txt"/>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt"/>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt"/>

@@ -51,6 +51,14 @@ public:
     TargetParameter* mask;
     BoolParameter* invertMask;
 
+    ControllableContainer formatCC;
+    enum FillType {STRETCH, FIT, FILL};
+    EnumParameter* fillType;
+    enum Ratio { R4_3, R16_9, R16_10, R1, RCUSTOM };
+    EnumParameter* ratioList;
+    FloatParameter* ratio;
+    BoolParameter* considerCrop;
+
     FloatParameter* softEdgeTop;
     FloatParameter* softEdgeRight;
     FloatParameter* softEdgeBottom;
@@ -72,6 +80,7 @@ public:
     GLint maskAttrib;
     GLuint borderSoftLocation;
     GLuint invertMaskLocation;
+    GLuint ratioLocation;
     GLuint ebo;
 
 

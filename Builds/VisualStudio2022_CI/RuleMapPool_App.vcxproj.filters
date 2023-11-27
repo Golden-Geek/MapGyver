@@ -8330,10 +8330,19 @@
     <None Include="..\..\Resources\default.rmplayout">
       <Filter>RuleMapPool\Resources</Filter>
     </None>
+    <None Include="..\..\Resources\fragmentShaderMainSurface.glsl">
+      <Filter>RuleMapPool\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\fragmentShaderTestGrid.glsl">
+      <Filter>RuleMapPool\Resources</Filter>
+    </None>
     <None Include="..\..\Resources\icon.png">
       <Filter>RuleMapPool\Resources</Filter>
     </None>
     <None Include="..\..\Resources\testPattern.png">
+      <Filter>RuleMapPool\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\VertexShaderMainSurface.glsl">
       <Filter>RuleMapPool\Resources</Filter>
     </None>
     <None Include="..\..\JUCE\modules\juce_core\native\java\README.txt">

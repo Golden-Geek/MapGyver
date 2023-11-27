@@ -49,9 +49,17 @@ void ScreenRenderer::renderOpenGL()
 
 	if (shader != nullptr)
 	{
-		shader->use();
 
-		for (auto& s : screen->surfaces.items) s->draw(shader->getProgramID());
+		for (auto& s : screen->surfaces.items) 
+		{
+			shader->use();
+			GLuint shaderProgram = shader->getProgramID();
+			if (s->showTestPattern->boolValue()) {
+				shaderProgram = shaderTest->getProgramID();
+				shaderTest->use();
+			}
+			s->draw(shaderProgram);
+		}
 
 		glUseProgram(0);
 		glGetError();
@@ -75,57 +83,25 @@ void ScreenRenderer::openGLContextClosing()
 	glEnable(GL_BLEND);
 	glDisable(GL_BLEND);
 	shader = nullptr;
+	shaderTest = nullptr;
 }
 
 
 void ScreenRenderer::createAndLoadShaders()
 {
-	//String vertexShader, fragmentShader;
-
-	const char* vertexShaderCode =
-		"in vec2 position;\n"
-		"in vec2 surfacePosition;\n"
-		"in vec3 texcoord;\n"
-		"in vec3 maskcoord;\n"
-		"out vec3 Texcoord;\n"
-		"out vec3 Maskcoord;\n"
-		"out vec2 SurfacePosition;\n"
-		"void main()\n"
-		"{\n"
-		"    Texcoord = texcoord;\n"
-		"    Maskcoord = maskcoord;\n"
-		"    SurfacePosition[0] = (surfacePosition[0]+1.0f)/2.0f;\n"
-		"    SurfacePosition[1] = (surfacePosition[1]+1.0f)/2.0f;\n"
-		"    gl_Position = vec4(position,0,1);\n"
-		"}\n";
-
-	const char* fragmentShaderCode =
-		"in vec3 Texcoord;\n"
-		"in vec3 Maskcoord;\n"
-		"in vec2 SurfacePosition;\n"
-		"out vec4 outColor;\n"
-		"uniform sampler2D tex;\n"
-		"uniform sampler2D mask;\n"
-		"uniform vec4 borderSoft;\n"
-		"uniform int invertMask;\n"
-		"float map(float value, float min1, float max1, float min2, float max2) {\n"
-		"return min2 + ((max2-min2)*(value-min1)/(max1-min1)); };"
-		"void main()\n"
-		"{\n"
-		"   outColor = textureProj(tex, Texcoord);\n"
-		"   vec4 maskColor = textureProj(mask, Maskcoord);\n"
-		"   float alpha = 1.0f;\n"
-		"   if (SurfacePosition[1] > 1-borderSoft[0])    {alpha *= map(SurfacePosition[1],1.0f,1-borderSoft[0],0.0f,1.0f);}\n" // top
-		"   if (SurfacePosition[0] > 1.0f-borderSoft[1]) {alpha *= map(SurfacePosition[0], 1.0f, 1 - borderSoft[1], 0.0f, 1.0f); }\n" // right
-		"   if (SurfacePosition[1] < borderSoft[2])      {alpha *= map(SurfacePosition[1],0.0f,borderSoft[2],0.0f,1.0f);}\n" // bottom
-		"   if (SurfacePosition[0] < borderSoft[3])      {alpha *= map(SurfacePosition[0],0.0f,borderSoft[3],0.0f,1.0f);}\n" // left
-		"	float maskValue = invertMask == 0 ? maskColor[1] : 1-maskColor[1];\n"
-		"   alpha *= maskValue; \n"
-		"   outColor[3] = alpha;\n"
-		"}\n";
-
 	shader.reset(new OpenGLShaderProgram(GlContextHolder::getInstance()->context));
-	shader->addVertexShader(OpenGLHelpers::translateVertexShaderToV3(vertexShaderCode));
-	shader->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(fragmentShaderCode));
+	shader->addVertexShader(OpenGLHelpers::translateVertexShaderToV3(BinaryData::VertexShaderMainSurface_glsl));
+	shader->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(BinaryData::fragmentShaderMainSurface_glsl));
 	shader->link();
+
+	File fileToRead("C:\\repos\\RuleMaPool\\Resources\\fragmentShaderTestGrid.glsl");
+	FileInputStream inputStream(fileToRead);
+	String fileContent = inputStream.readString();
+
+	shaderTest.reset(new OpenGLShaderProgram(GlContextHolder::getInstance()->context));
+	shaderTest->addVertexShader(OpenGLHelpers::translateVertexShaderToV3(BinaryData::VertexShaderMainSurface_glsl));
+	//shaderTest->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(BinaryData::fragmentShaderTestGrid_glsl));
+	shaderTest->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(fileContent));
+	shaderTest->link();
+
 }

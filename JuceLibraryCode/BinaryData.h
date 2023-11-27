@@ -11,14 +11,23 @@ namespace BinaryData
     extern const char*   default_rmplayout;
     const int            default_rmplayoutSize = 2452;
 
+    extern const char*   fragmentShaderMainSurface_glsl;
+    const int            fragmentShaderMainSurface_glslSize = 1088;
+
+    extern const char*   fragmentShaderTestGrid_glsl;
+    const int            fragmentShaderTestGrid_glslSize = 2190;
+
     extern const char*   icon_png;
     const int            icon_pngSize = 52976;
 
     extern const char*   testPattern_png;
     const int            testPattern_pngSize = 85942;
 
+    extern const char*   VertexShaderMainSurface_glsl;
+    const int            VertexShaderMainSurface_glslSize = 381;
+
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 3;
+    const int namedResourceListSize = 6;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

@@ -19,10 +19,12 @@ Surface::Surface(var params) :
 	positionningCC("Positionning"),
 	bezierCC("Bezier"),
 	adjustmentsCC("Adjustments"),
+	formatCC("Aspect Ratio"),
 	objectType(params.getProperty("type", "Surface").toString()),
 	objectData(params),
 	previewMedia(nullptr),
 	shouldUpdateVertices(true)
+
 {
 	saveAndLoadRecursiveData = true;
 	canBeDisabled = true;
@@ -65,6 +67,16 @@ Surface::Surface(var params) :
 	mask = adjustmentsCC.addTargetParameter("Mask", "Apply a mask to this surface", MediaManager::getInstance());
 	invertMask = adjustmentsCC.addBoolParameter("Invert mask", "Invert mask", false);
 
+	fillType = formatCC.addEnumParameter("Fill Type ", "");
+	fillType->addOption("Stretch", STRETCH)->addOption("Fit", FIT)->addOption("Fill", FILL);
+	ratioList = formatCC.addEnumParameter("Ratio", "");
+	ratioList->addOption("16/9", R16_9)->addOption("16/10", R16_10)->addOption("4/3", R4_3)->addOption("square", R1)->addOption("Custom", RCUSTOM);
+	ratioList->hideInEditor = true;
+	ratio = formatCC.addFloatParameter("Ratio value", "", 16/9.0f, 0.01);
+	ratio->hideInEditor = true;
+	considerCrop = formatCC.addBoolParameter("Consider Crop", "", false);
+	considerCrop->hideInEditor = true;
+
 	topLeft->setDefaultPoint(0, 1);
 	topLeft->setBounds(-1, -1, 2, 2);
 	topRight->setDefaultPoint(1, 1);
@@ -76,21 +88,21 @@ Surface::Surface(var params) :
 
 
 	handleBezierTopLeft->setDefaultPoint(1 / 3.0f, 1);
-	handleBezierTopLeft->setBounds(0, 0, 1, 1);
+	handleBezierTopLeft->setBounds(-1, -1, 2, 2);
 	handleBezierTopRight->setDefaultPoint(2 / 3.0f, 1);
-	handleBezierTopRight->setBounds(0, 0, 1, 1);
+	handleBezierTopRight->setBounds(-1, -1, 2, 2);
 	handleBezierBottomLeft->setDefaultPoint(1 / 3.0f, 0);
-	handleBezierBottomLeft->setBounds(0, 0, 1, 1);
+	handleBezierBottomLeft->setBounds(-1, -1, 2, 2);
 	handleBezierBottomRight->setDefaultPoint(2 / 3.0f, 0);
-	handleBezierBottomRight->setBounds(0, 0, 1, 1);
+	handleBezierBottomRight->setBounds(-1, -1, 2, 2);
 	handleBezierLeftTop->setDefaultPoint(0, 2 / 3.0f);
-	handleBezierLeftTop->setBounds(0, 0, 1, 1);
+	handleBezierLeftTop->setBounds(-1, -1, 2, 2);
 	handleBezierLeftBottom->setDefaultPoint(0, 1 / 3.0f);
-	handleBezierLeftBottom->setBounds(0, 0, 1, 1);
+	handleBezierLeftBottom->setBounds(-1, -1, 2, 2);
 	handleBezierRightTop->setDefaultPoint(1, 2 / 3.0f);
-	handleBezierRightTop->setBounds(0, 0, 1, 1);
+	handleBezierRightTop->setBounds(-1, -1, 2, 2);
 	handleBezierRightBottom->setDefaultPoint(1, 1 / 3.0f);
-	handleBezierRightBottom->setBounds(0, 0, 1, 1);
+	handleBezierRightBottom->setBounds(-1, -1, 2, 2);
 
 	mask->maxDefaultSearchLevel = 0;
 	mask->targetType = TargetParameter::CONTAINER;
@@ -105,6 +117,7 @@ Surface::Surface(var params) :
 	positionningCC.addChildControllableContainer(&bezierCC);
 	addChildControllableContainer(&positionningCC);
 	addChildControllableContainer(&adjustmentsCC);
+	addChildControllableContainer(&formatCC);
 
 	if (!Engine::mainEngine->isLoadingFile)
 	{
@@ -158,9 +171,7 @@ void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Co
 	if (c == resetBezierBtn) {
 		resetBezierPoints();
 	}
-	
-	shouldUpdateVertices = true;
-	
+		
 	if (c == topLeft || c == topRight || c == bottomLeft || c == bottomRight)
 	{
 		updatePath();
@@ -170,6 +181,25 @@ void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Co
 		if (Media* m = mask->getTargetContainerAs<Media>()) registerUseMedia(SURFACE_TARGET_MASK_ID, m);
 		else unregisterUseMedia(SURFACE_TARGET_MASK_ID);
 	}
+	else if (c == fillType || c == ratioList) {
+
+		FillType t = fillType->getValueDataAsEnum<FillType>();
+		Ratio r = ratioList->getValueDataAsEnum<Ratio>();
+
+		switch (r) 
+		{
+			case R16_9: ratio->setValue(16 / 9.0f); break;
+			case R16_10: ratio->setValue(16 / 10.0f); break;
+			case R4_3: ratio->setValue(4 / 3.0f); break;
+			case R1: ratio->setValue(1.0f); break;
+		}
+
+		ratioList->hideInEditor = t == STRETCH;
+		ratio->hideInEditor = t == STRETCH || r != RCUSTOM;
+		considerCrop->hideInEditor = t == STRETCH;
+		queuedNotifier.addMessage(new ContainerAsyncEvent(ContainerAsyncEvent::ControllableContainerNeedsRebuild, this));
+	}
+	shouldUpdateVertices = true;
 }
 
 void Surface::updatePath()
@@ -510,6 +540,9 @@ void Surface::draw(GLuint shaderID)
 		invertMaskLocation = glGetUniformLocation(shaderID, "invertMask");
 		glUniform1i(invertMaskLocation, invertMask->boolValue() ? 1 : 0);
 
+		ratioLocation = glGetUniformLocation(shaderID, "ratio");
+		glUniform1f(ratioLocation, ratio->floatValue());
+
 		glGenBuffers(1, &ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
@@ -522,6 +555,7 @@ void Surface::draw(GLuint shaderID)
 	glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
 	glUniform4f(borderSoftLocation, softEdgeTop->floatValue(), softEdgeRight->floatValue(), softEdgeBottom->floatValue(), softEdgeLeft->floatValue());
 	glUniform1i(invertMaskLocation, invertMask->boolValue() ? 1 : 0);
+	glUniform1i(ratioLocation, ratio->floatValue());
 
 	glEnableVertexAttribArray(posAttrib);
 	glGetError();
