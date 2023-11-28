@@ -182,6 +182,8 @@ void VideoMedia::unlock(void* oldBuffer, void* const* pixels)
 void VideoMedia::display(void* nextBuffer)
 {
 	//LOG("display");
+
+	
 }
 
 
@@ -200,7 +202,6 @@ unsigned VideoMedia::setup_video(char* chroma, unsigned* width, unsigned* height
 	memcpy(chroma, "RV32", 4);
 	(*pitches) = imageWidth * 4;
 	(*lines) = imageHeight;
-
 
 	return 1;
 }

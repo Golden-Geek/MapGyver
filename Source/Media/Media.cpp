@@ -41,7 +41,7 @@ void Media::onContainerParameterChangedInternal(Parameter* p) {
 
 void Media::newOpenGLContextCreated()
 {
-	initGL();
+	initGLInternal();
 }
 
 void Media::renderOpenGL()
@@ -58,7 +58,7 @@ void Media::renderOpenGL()
 	if (shouldRedraw || alwaysRedraw)
 	{
 		frameBuffer.makeCurrentRenderingTarget();
-		renderGL();
+		renderGLInternal();
 		frameBuffer.releaseAsRenderingTarget();
 		shouldRedraw = false;
 	}
@@ -93,7 +93,7 @@ bool Media::isBeingUsed()
 
 void Media::openGLContextClosing()
 {
-	closeGL();
+	closeGLInternal();
 	frameBuffer.release();
 }
 
@@ -125,7 +125,7 @@ ImageMedia::~ImageMedia()
 {
 }
 
-void ImageMedia::renderGL()
+void ImageMedia::renderGLInternal()
 {
 	GenericScopedLock lock(imageLock);
 

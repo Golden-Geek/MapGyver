@@ -27,10 +27,12 @@ void ColorMedia::clearItem()
 
 void ColorMedia::onContainerParameterChangedInternal(Parameter* p)
 {
+	Media::onContainerParameterChangedInternal(p);
+
 	if (p == color) shouldRedraw = true;
 }
 
-void ColorMedia::renderGL()
+void ColorMedia::renderGLInternal()
 {
 
 	Init2DViewport(1, 1);

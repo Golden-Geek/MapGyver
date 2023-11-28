@@ -69,7 +69,7 @@ void CompositionMedia::renderOpenGL()
             float alpha = l->alpha->floatValue();
 
             // Active la texture
-            glBindTexture(GL_TEXTURE_2D, m->frameBuffer.getTextureID());
+            glBindTexture(GL_TEXTURE_2D, m->getTextureID());
             // Applique la rotation et la transparence
             glPushMatrix();
             glTranslatef(x + width / 2.0f, y + height / 2.0f, 0.0f);
