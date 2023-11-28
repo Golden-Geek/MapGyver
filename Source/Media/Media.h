@@ -66,6 +66,7 @@ public:
 	SpinLock imageLock;
 	Image image;
 	std::shared_ptr<Image::BitmapData> bitmapData;
+	std::shared_ptr<Graphics> graphics;
 
 	virtual void renderGLInternal();
 	virtual void initFrameBuffer() override;

@@ -163,8 +163,15 @@ void ImageMedia::initImage(Image newImage)
 		return;
 	}
 
-	image = newImage.convertedToFormat(Image::ARGB);
-	bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
+	if (newImage.getWidth() != image.getWidth() || newImage.getHeight() != image.getHeight()) {
+		graphics = std::make_shared<Graphics>(image);
+		image = newImage.convertedToFormat(Image::ARGB);
+		bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
+		graphics = std::make_shared<Graphics>(image);
+	}
+	else {
+		graphics ->drawImageAt(newImage, 0, 0);
+	}
 	shouldRedraw = true;
 }
 
