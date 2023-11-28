@@ -41,6 +41,11 @@ ScreenOutput::~ScreenOutput()
 }
 
 
+void ScreenOutput::timerCallback()
+{
+	openGLContext.triggerRepaint();
+}
+
 void ScreenOutput::update()
 {
 	bool shouldShow = !inspectable.wasObjectDeleted() && screen->enabled->boolValue();
@@ -61,7 +66,8 @@ void ScreenOutput::update()
 
 		if (!prevIsLive)
 		{
-			openGLContext.setContinuousRepainting(true);
+			startTimerHz(60);
+			//openGLContext.setContinuousRepainting(true);
 			addToDesktop(0);
 			setAlwaysOnTop(true);
 		}
@@ -77,7 +83,8 @@ void ScreenOutput::update()
 		if (prevIsLive)
 		{
 			removeFromDesktop();
-			openGLContext.setContinuousRepainting(false);
+			stopTimer();
+			//openGLContext.setContinuousRepainting(false);
 			setAlwaysOnTop(false);
 		}
 

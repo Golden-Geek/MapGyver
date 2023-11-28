@@ -16,7 +16,8 @@ class Media;
 class ScreenOutput :
 	public InspectableContentComponent,
 	public OpenGLRenderer,
-	public KeyListener
+	public KeyListener,
+	public Timer
 {
 public:
 	ScreenOutput(Screen* parent);
@@ -33,6 +34,8 @@ public:
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
+
+	void timerCallback() override;
 
 	void userTriedToCloseWindow() override;
 

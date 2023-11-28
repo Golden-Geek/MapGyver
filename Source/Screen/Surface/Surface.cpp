@@ -305,9 +305,12 @@ void Surface::addLastFourAsQuad()
 
 void Surface::updateVertices()
 {
-	verticesLock.enter();
+	ScopedLock l(verticesLock);
+
 	vertices.clear();
 	verticesElements.clear();
+
+	Media* med = media->getTargetContainerAs<Media>();
 
 	Point<float>tl = openGLPoint(topLeft);
 	Point<float>tr = openGLPoint(topRight);
@@ -322,8 +325,6 @@ void Surface::updateVertices()
 	Vector3D<float> blTex(cropLeft->floatValue(), cropBottom->floatValue(), 1.0f);
 	Vector3D<float> brTex(1 - cropRight->floatValue(), cropBottom->floatValue(), 1.0f);
 
-	Media* med = media->getTargetContainerAs<Media>();
-
 	if (med != nullptr && med->flipY) {
 		tlTex.y = 1 - tlTex.y;
 		trTex.y = 1 - trTex.y;
@@ -331,6 +332,29 @@ void Surface::updateVertices()
 		brTex.y = 1 - brTex.y;
 	}
 
+	FillType t = fillType->getValueDataAsEnum<FillType>();
+	
+	if (t != STRETCH) {
+		float hTex = 1;
+		float wTex = 1;
+		float outputRatio = ratio->floatValue();
+
+		if (considerCrop->boolValue()) {
+			hTex = 1 - cropTop->floatValue() - cropBottom->floatValue();
+			wTex = 1 - cropLeft->floatValue() - cropRight->floatValue();
+			if (hTex == 0) hTex = 0.00001;
+		}
+
+		if (med != nullptr) {
+			Point<int> mediaSize = med->getMediaSize();
+			float mediaRatio = (wTex * mediaSize.x) / (hTex*(float)mediaSize.y);
+
+			if (mediaRatio != outputRatio) {
+			}
+
+		}
+
+	}
 
 	Vector3D<float> tlMask(0, 1, 1.0f);
 	Vector3D<float> trMask(1, 1, 1.0f);
@@ -461,8 +485,6 @@ void Surface::updateVertices()
 		addToVertices(br, Point<float>(1, -1), brTex, brMask);
 		addLastFourAsQuad();
 	}
-
-	verticesLock.exit();
 }
 
 void Surface::draw(GLuint shaderID)
