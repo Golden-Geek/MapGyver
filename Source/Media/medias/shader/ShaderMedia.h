@@ -53,6 +53,7 @@ public:
 	GLuint VBO, VAO;
 
 	bool shouldReloadShader;
+	String fragmentShaderToLoad;
 	bool isLoadingShader;
 
 	String resolutionUniformName;

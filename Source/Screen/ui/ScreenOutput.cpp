@@ -25,7 +25,7 @@ ScreenOutput::ScreenOutput(Screen* screen) :
 	openGLContext.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
 	openGLContext.setRenderer(this);
 	openGLContext.attachTo(*this);
-	openGLContext.setComponentPaintingEnabled(true);
+	//openGLContext.setComponentPaintingEnabled(true);
 
 	setWantsKeyboardFocus(true); // Permet à ce composant de recevoir le focus clavier
 	addKeyListener(this);        // Ajoutez ce composant comme écouteur clavier

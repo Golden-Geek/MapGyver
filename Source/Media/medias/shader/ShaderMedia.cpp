@@ -86,10 +86,13 @@ void ShaderMedia::renderGLInternal()
 
 	float frameTime = 1.0f / fps->floatValue();
 	if (t < lastFrameTime + frameTime) return;
-	
+
 	lastFrameTime = t;
 
 	if (shouldReloadShader) reloadShader();
+	if (fragmentShaderToLoad.isNotEmpty()) loadFragmentShader(fragmentShaderToLoad);
+
+	if (isLoadingShader) return;
 
 	//GenericScopedLock lock(shaderLock);
 	if (shader == nullptr) return;
@@ -156,6 +159,7 @@ void ShaderMedia::renderGLInternal()
 
 void ShaderMedia::reloadShader()
 {
+	LOG("reload shader");
 	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
 
 	bool isFile = st == ShaderGLSLFile || st == ShaderToyFile || st == ShaderISFFile;
@@ -169,7 +173,7 @@ void ShaderMedia::reloadShader()
 			lastModificationTime = sf.getLastModificationTime();
 		}
 
-		loadFragmentShader(s);
+		fragmentShaderToLoad = s;
 	}
 	else
 	{
@@ -181,7 +185,9 @@ void ShaderMedia::reloadShader()
 
 void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 {
-	//GenericScopedLock lock(shaderLock);
+	//GenericScopedLock lock(shader);
+
+	LOG("load fragment shader");
 
 	isLoadingShader = true;
 
@@ -318,7 +324,9 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 		shader.reset();
 	}
 
+	fragmentShaderToLoad = "";
 	isLoadingShader = false;
+
 }
 
 void ShaderMedia::checkForHotReload()
@@ -357,10 +365,18 @@ void ShaderMedia::run()
 			return;
 		}
 
-		String dataStr = url.readEntireTextStream(false);
-		if (dataStr.isEmpty())
+		std::unique_ptr<InputStream> stream = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withProgressCallback(
+			[this](int, int) { return !threadShouldExit(); }));
+
+		if (stream == nullptr)
 		{
 			NLOGWARNING(niceName, "Could not retrieve shader at " << url.toString(true));
+		}
+
+		String dataStr = stream->readEntireStreamAsString();
+		if (dataStr.isEmpty())
+		{
+			NLOGWARNING(niceName, "No responde when loading shader at " << url.toString(true));
 		}
 
 		var data = JSON::parse(dataStr);
@@ -395,7 +411,9 @@ void ShaderMedia::run()
 		}
 	}
 
-	GlContextHolder::getInstance()->context.executeOnGLThread([&](OpenGLContext&) { loadFragmentShader(shaderStr); }, true);
+	fragmentShaderToLoad = shaderStr;
+
+	//GlContextHolder::getInstance()->context.executeOnGLThread([&](OpenGLContext&) { loadFragmentShader(shaderStr); }, true);
 }
 
 
