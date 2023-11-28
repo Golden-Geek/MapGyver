@@ -73,8 +73,8 @@ public:
 
 	void onContainerParameterChangedInternal(Parameter* p) override;
 
-	void initGL() override;
-	void renderGL() override;
+	void initGLInternal() override;
+	void renderGLInternal() override;
 	void reloadShader();
 	void loadFragmentShader(const String& fragmentShader);
 

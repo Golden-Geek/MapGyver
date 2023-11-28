@@ -38,9 +38,9 @@ public:
 
 	virtual void initFrameBuffer();
 
-	virtual void initGL() {}
-	virtual void renderGL() {}
-	virtual void closeGL() {}
+	virtual void initGLInternal() {}
+	virtual void renderGLInternal() {}
+	virtual void closeGLInternal() {}
 
 	OpenGLFrameBuffer* getFrameBuffer();
 	GLint getTextureID();
@@ -65,7 +65,7 @@ public:
 	Image image;
 	std::shared_ptr<Image::BitmapData> bitmapData;
 
-	virtual void renderGL();
+	virtual void renderGLInternal();
 	virtual void initFrameBuffer() override;
 
 	void initImage(int width, int height);

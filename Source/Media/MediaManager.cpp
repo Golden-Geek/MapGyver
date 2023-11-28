@@ -22,6 +22,7 @@ MediaManager::MediaManager() :
     factory.defs.add(Factory<Media>::Definition::createDef<VideoMedia>(""));
     factory.defs.add(Factory<Media>::Definition::createDef<WebcamMedia>(""));
     factory.defs.add(Factory<Media>::Definition::createDef<NDIMedia>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<SharedTextureMedia>(""));
     factory.defs.add(Factory<Media>::Definition::createDef<ShaderMedia>(""));
     factory.defs.add(Factory<Media>::Definition::createDef<CompositionMedia>(""));
 

@@ -40,7 +40,7 @@ void ScreenRenderer::renderOpenGL()
 	frameBuffer.makeCurrentRenderingTarget();
 	glClearColor(0, 0, 0, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
 
 	glEnable(GL_BLEND);
@@ -50,7 +50,7 @@ void ScreenRenderer::renderOpenGL()
 	if (shader != nullptr)
 	{
 
-		for (auto& s : screen->surfaces.items) 
+		for (auto& s : screen->surfaces.items)
 		{
 			shader->use();
 			GLuint shaderProgram = shader->getProgramID();
@@ -94,9 +94,8 @@ void ScreenRenderer::createAndLoadShaders()
 	shader->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(BinaryData::fragmentShaderMainSurface_glsl));
 	shader->link();
 
-	File fileToRead("C:\\repos\\RuleMaPool\\Resources\\fragmentShaderTestGrid.glsl");
-	FileInputStream inputStream(fileToRead);
-	String fileContent = inputStream.readString();
+
+	String fileContent = String(BinaryData::fragmentShaderTestGrid_glsl, BinaryData::fragmentShaderTestGrid_glslSize);
 
 	shaderTest.reset(new OpenGLShaderProgram(GlContextHolder::getInstance()->context));
 	shaderTest->addVertexShader(OpenGLHelpers::translateVertexShaderToV3(BinaryData::VertexShaderMainSurface_glsl));

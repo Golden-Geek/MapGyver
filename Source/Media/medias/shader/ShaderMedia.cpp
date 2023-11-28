@@ -70,7 +70,7 @@ void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
 	}
 }
 
-void ShaderMedia::initGL()
+void ShaderMedia::initGLInternal()
 {
 	if (VBO != 0) glDeleteBuffers(1, &VBO);
 	if (VAO != 0) glDeleteVertexArrays(1, &VAO);
@@ -79,7 +79,7 @@ void ShaderMedia::initGL()
 	glGenVertexArrays(1, &VAO);
 }
 
-void ShaderMedia::renderGL()
+void ShaderMedia::renderGLInternal()
 {
 	float t = Time::getMillisecondCounter() / 1000.0f;
 	float delta = t - lastFrameTime;
