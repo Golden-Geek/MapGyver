@@ -11,11 +11,13 @@
 #include "Screen/ScreenIncludes.h"
 #include "Common/CommonIncludes.h"
 #include "Media/MediaIncludes.h"
+#include "Engine/RMPEngine.h"
 
 using namespace juce::gl;
 
 ScreenRenderer::ScreenRenderer(Screen* screen) :
-	screen(screen)
+	screen(screen),
+	timeAtLastRender(0)
 {
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
 }
@@ -34,8 +36,10 @@ void ScreenRenderer::newOpenGLContextCreated()
 
 void ScreenRenderer::renderOpenGL()
 {
-
-	// Définir la vue OpenGL en fonction de la taille du composant
+	const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
+	double t = GlContextHolder::getInstance()->timeAtRender;
+	if (t < timeAtLastRender + frameTime) return;
+	timeAtLastRender = t;
 
 	frameBuffer.makeCurrentRenderingTarget();
 	glClearColor(0, 0, 0, 1.0f);

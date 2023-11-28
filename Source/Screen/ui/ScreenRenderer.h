@@ -24,6 +24,8 @@ public:
 	std::unique_ptr<OpenGLShaderProgram> shaderTest;
 	juce::OpenGLFrameBuffer frameBuffer;
 
+	long timeAtLastRender;
+
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 

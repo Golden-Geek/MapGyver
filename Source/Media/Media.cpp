@@ -9,7 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "Media.h"
+#include "Engine/RMPEngine.h"
 
 Media::Media(const String& name, var params, bool hasCustomSize) :
 	BaseItem(name),
@@ -17,7 +17,8 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	height(nullptr),
 	alwaysRedraw(false),
 	shouldRedraw(false),
-	flipY(false)
+	flipY(false),
+	timeAtLastRender(0)
 {
 	if (hasCustomSize)
 	{
@@ -48,6 +49,11 @@ void Media::renderOpenGL()
 {
 	if (!enabled->boolValue()) return;
 	if(!isBeingUsed()) return;
+
+	const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
+	double t = GlContextHolder::getInstance()->timeAtRender;
+	if (t < timeAtLastRender + frameTime) return;
+	timeAtLastRender = t;
 
 	Point<int> size = getMediaSize();
 	if (size.isOrigin()) return;

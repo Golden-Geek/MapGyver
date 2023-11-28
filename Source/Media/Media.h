@@ -30,6 +30,8 @@ public:
 
 	Array<MediaTarget*> usedTargets;
 
+	double timeAtLastRender;
+
 	void onContainerParameterChangedInternal(Parameter* p);
 
 	void newOpenGLContextCreated() override;

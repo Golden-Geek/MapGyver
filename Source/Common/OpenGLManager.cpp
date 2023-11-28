@@ -9,10 +9,12 @@
 */
 
 #include "Common/CommonIncludes.h"
+#include "Engine/RMPEngine.h"
 
 juce_ImplementSingleton(GlContextHolder)
 
-GlContextHolder::GlContextHolder()
+GlContextHolder::GlContextHolder() :
+	timeAtRender(0)
 {
 }
 
@@ -219,6 +221,8 @@ void GlContextHolder::newOpenGLContextCreated()
 
 void GlContextHolder::renderOpenGL()
 {
+	timeAtRender = Time::getMillisecondCounterHiRes();
+
 	juce::OpenGLHelpers::clear(backgroundColour);
 	checkComponents(false, true);
 }

@@ -11,6 +11,9 @@
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
 
+
+juce_ImplementSingleton(RMPSettings);
+
 ControllableContainer* getAppSettings();
 
 RMPEngine::RMPEngine() :
@@ -34,6 +37,8 @@ RMPEngine::RMPEngine() :
 
 	addChildControllableContainer(MediaManager::getInstance());
 	addChildControllableContainer(ScreenManager::getInstance());
+
+	ProjectSettings::getInstance()->addChildControllableContainer(RMPSettings::getInstance());
 
 	// MIDIManager::getInstance(); //Trigger constructor, declare settings
 
@@ -78,6 +83,7 @@ RMPEngine::~RMPEngine()
 	ScreenManager::deleteInstance();
 	NDIManager::deleteInstance();
 	WebcamManager::deleteInstance();
+	RMPSettings::deleteInstance();
 	libvlc_release(VLCInstance);
 	VLCInstance = nullptr;
 }
@@ -203,4 +209,11 @@ void RMPEngine::parameterValueChanged(Parameter* p) {
 	}
 	*/
 
+}
+
+RMPSettings::RMPSettings() :
+	ControllableContainer("RMP Settings")
+{
+	fpsLimit = addIntParameter("FPS Limit", "Limit the framerate", 60, 0, 360);
+	fpsLimit->canBeDisabledByUser = true;
 }

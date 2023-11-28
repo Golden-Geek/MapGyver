@@ -13,6 +13,17 @@
 
 #include "Media/MediaIncludes.h"
 
+class RMPSettings :
+	public ControllableContainer
+{
+public:
+	juce_DeclareSingleton(RMPSettings, true);
+	RMPSettings();
+	~RMPSettings() {};
+
+	IntParameter* fpsLimit;
+};
+
 class RMPEngine :
 	public Engine
 {
