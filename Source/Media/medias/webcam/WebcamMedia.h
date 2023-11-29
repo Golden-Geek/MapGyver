@@ -22,6 +22,10 @@ public:
     WebcamInputDevice* WebcamDevice = nullptr;
     ColorParameter* color;
 
+    FloatParameter* currentFPS;
+    double lastFPSTick;
+    void FPSTick();
+
     void clearItem() override;
     void onContainerParameterChangedInternal(Parameter* p) override;
 
