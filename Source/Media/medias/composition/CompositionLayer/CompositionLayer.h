@@ -28,11 +28,13 @@ public:
     FloatParameter* alpha;
     FloatParameter* rotation;
 
-    enum blendOption { ZERO, ONE, SRC_ALPHA, ONE_MINUS_SRC_ALPHA, DST_ALPHA, ONE_MINUS_DST_ALPHA, SRC_COLOR, ONE_MINUS_SRC_COLOR, DST_COLOR, ONE_MINUS_DST_COLOR };
+    enum blendPreset {STANDARD, ADDITION, MULTIPLICATION, SCREEN, DARKEN, PREMULTALPHA, LIGHTEN, INVERT, COLORADD, COLORSCREEN, BLUR, INVERTCOLOR, SUBSTRACT, COLORDIFF, INVERTMULT, CUSTOM
+    };
+    enum blendOption {ZERO, ONE, SRC_ALPHA, ONE_MINUS_SRC_ALPHA, DST_ALPHA, ONE_MINUS_DST_ALPHA, SRC_COLOR, ONE_MINUS_SRC_COLOR, DST_COLOR, ONE_MINUS_DST_COLOR };
 
+    EnumParameter* blendFunction;
     EnumParameter* blendFunctionSourceFactor;
     EnumParameter* blendFunctionDestinationFactor;
-
 
     void onContainerParameterChangedInternal(Parameter* p);
 
