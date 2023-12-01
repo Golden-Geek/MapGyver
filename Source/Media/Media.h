@@ -32,6 +32,10 @@ public:
 
 	double timeAtLastRender;
 
+	FloatParameter* currentFPS;
+	double lastFPSTick;
+	void FPSTick();
+
 	void onContainerParameterChangedInternal(Parameter* p);
 
 	void newOpenGLContextCreated() override;

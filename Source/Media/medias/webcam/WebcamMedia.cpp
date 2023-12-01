@@ -16,28 +16,11 @@ WebcamMedia::WebcamMedia(var params) :
 {
 	WebcamParam = new WebcamDeviceParameter("Webcam Source");
 	addParameter(WebcamParam);
-
-	currentFPS = addFloatParameter("current FPS", "", 0);
-	currentFPS->isSavable = false;
-	currentFPS->enabled = false;
 }
 
 WebcamMedia::~WebcamMedia()
 {
 	if (WebcamDevice != nullptr) WebcamDevice->removeWebcamInputListener(this);
-}
-
-void WebcamMedia::FPSTick()
-{
-	double currentTime = juce::Time::getMillisecondCounterHiRes();
-	double elapsedMillis = currentTime - lastFPSTick;
-	lastFPSTick = currentTime;
-
-	// Calcul des FPS
-	MessageManager::callAsync([this, elapsedMillis]()
-	{
-		currentFPS->setValue(1000.0 / elapsedMillis);
-	});
 }
 
 void WebcamMedia::clearItem()
@@ -71,7 +54,7 @@ void WebcamMedia::updateDevice()
 
 void WebcamMedia::WebcamImageReceived(const Image& camImage) {
 	initImage(const_cast<Image&>(camImage));
-	FPSTick();
 	shouldRedraw = true;
+	FPSTick();
 
 }

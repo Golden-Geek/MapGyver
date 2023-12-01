@@ -26,6 +26,10 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 		height = addIntParameter("Height", "Height of the media", 1080, 1, 10000);
 	}
 
+	currentFPS = addFloatParameter("current FPS", "", 0);
+	currentFPS->isSavable = false;
+	currentFPS->enabled = false;
+
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
 	saveAndLoadRecursiveData = true;
 
@@ -117,6 +121,21 @@ Point<int> Media::getMediaSize()
 	if(width != nullptr && height != nullptr) return Point<int>(width->intValue(), height->intValue());
 	return Point<int>(0, 0);
 }
+
+
+void Media::FPSTick()
+{
+	double currentTime = juce::Time::getMillisecondCounterHiRes();
+	double elapsedMillis = currentTime - lastFPSTick;
+	lastFPSTick = currentTime;
+
+	// Calcul des FPS
+	MessageManager::callAsync([this, elapsedMillis]()
+		{
+			currentFPS->setValue(1000.0 / elapsedMillis);
+		});
+}
+
 
 
 // ImageMedia

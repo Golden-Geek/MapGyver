@@ -93,6 +93,7 @@ void CompositionMedia::renderOpenGL()
         // Restaure la matrice de modèle-vue
     }
     frameBuffer.releaseAsRenderingTarget();
+    FPSTick();
 }
 
 void CompositionMedia::updateImagesSize()

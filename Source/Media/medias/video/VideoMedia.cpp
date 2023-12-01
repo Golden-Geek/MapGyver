@@ -176,6 +176,7 @@ void VideoMedia::unlock(void* oldBuffer, void* const* pixels)
 {
 	shouldRedraw = true;
 	imageLock.exit();
+	FPSTick();
 }
 
 

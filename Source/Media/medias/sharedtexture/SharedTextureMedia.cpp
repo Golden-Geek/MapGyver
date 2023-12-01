@@ -62,6 +62,7 @@ void SharedTextureMedia::renderGLInternal()
 	Draw2DTexRect(0, 0, receiver->width, receiver->height);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+	FPSTick();
 }
 
 Point<int> SharedTextureMedia::getMediaSize()

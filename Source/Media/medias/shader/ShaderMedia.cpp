@@ -155,6 +155,7 @@ void ShaderMedia::renderGLInternal()
 	glUseProgram(0);
 
 	currentFrame++;
+	FPSTick();
 }
 
 void ShaderMedia::reloadShader()

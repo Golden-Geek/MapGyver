@@ -62,6 +62,7 @@ void NDIMedia::videoFrameReceived(NDIlib_video_frame_v2_t* frame)
 
 	// Créer une image JUCE et copier les données
 	GenericScopedLock lock(imageLock);
+	FPSTick();
 
 	if (image.getWidth() != width || image.getHeight() != height) {
 		initImage(width, height);
