@@ -206,15 +206,15 @@ bool MainContentComponent::perform(const InvocationInfo& info)
 	break;
 
 	case RMPCommandId::donate:
-		URL("http://RuleMapPool.lighting/").launchInDefaultBrowser();
+		URL("http://RuleMaPool.lighting/").launchInDefaultBrowser();
 		break;
 
 	case RMPCommandId::sponsor:
-		URL("http://RuleMapPool.lighting/").launchInDefaultBrowser();
+		URL("http://RuleMaPool.lighting/").launchInDefaultBrowser();
 		break;
 
 	case RMPCommandId::gotoWebsite:
-		URL("http://RuleMapPool.lighting/").launchInDefaultBrowser();
+		URL("http://RuleMaPool.lighting/").launchInDefaultBrowser();
 		break;
 
 	case RMPCommandId::gotoDiscord:

@@ -15,9 +15,9 @@ BEGIN
   BEGIN
     BLOCK "040904E4"
     BEGIN
-      VALUE "FileDescription",  "RuleMapPool\0"
+      VALUE "FileDescription",  "RuleMaPool\0"
       VALUE "FileVersion",  "1.0.0\0"
-      VALUE "ProductName",  "RuleMapPool\0"
+      VALUE "ProductName",  "RuleMaPool\0"
       VALUE "ProductVersion",  "1.0.0\0"
     END
   END
