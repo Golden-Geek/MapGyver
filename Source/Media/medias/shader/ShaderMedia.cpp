@@ -81,7 +81,9 @@ void ShaderMedia::initGLInternal()
 
 void ShaderMedia::renderGLInternal()
 {
-	float t = Time::getMillisecondCounter() / 1000.0f;
+	if (firstFrameTime == 0) firstFrameTime = Time::getMillisecondCounter() / 1000.0;
+	double t = Time::getMillisecondCounter() / 1000.0;
+	t = t-firstFrameTime;
 	float delta = t - lastFrameTime;
 
 	float frameTime = 1.0f / fps->floatValue();

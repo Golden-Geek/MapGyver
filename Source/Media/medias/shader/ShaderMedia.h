@@ -46,7 +46,8 @@ public:
 	Time lastModificationTime;
 
 	int currentFrame;
-	float lastFrameTime;
+	double lastFrameTime;
+	double firstFrameTime = 0;
 
 	//SpinLock shaderLock;
 	std::unique_ptr<OpenGLShaderProgram> shader;
