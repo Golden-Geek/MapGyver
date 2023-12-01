@@ -121,6 +121,12 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 		}
 		vlcSeekedLast = false;
 	}
+	else if (p == playAtLoad)
+	{
+		if (playAtLoad->boolValue()) {
+			restart();
+		}
+	}
 }
 
 void VideoMedia::triggerTriggered(Trigger* t)
