@@ -20,13 +20,11 @@ CompositionMedia::CompositionMedia(var params) :
 	addChildControllableContainer(&layers);
 
 	updateImagesSize();
-
-	//startThread(Thread::Priority::highest);
+    alwaysRedraw = true;
 }
 
 CompositionMedia::~CompositionMedia()
 {
-	//stopThread(1000);
 }
 
 void CompositionMedia::clearItem()
@@ -41,7 +39,7 @@ void CompositionMedia::onContainerParameterChangedInternal(Parameter* p)
 	}
 }
 
-void CompositionMedia::renderOpenGL()
+void CompositionMedia::renderGLInternal()
 {
     frameBuffer.makeCurrentAndClear();
     glClearColor(0, 0, 0, 0);
@@ -51,8 +49,6 @@ void CompositionMedia::renderOpenGL()
     glLoadIdentity();
     glOrtho(0, frameBuffer.getWidth(), frameBuffer.getHeight(), 0, 0, 1);
     glEnable(GL_BLEND);
-
-    //glBlendFunc(GL_DST_COLOR, GL_ZERO);
 
     for (int i = 0; i < layers.items.size(); i++) {
         CompositionLayer* l = layers.items[i];
@@ -89,8 +85,6 @@ void CompositionMedia::renderOpenGL()
             }
 
             glBlendFunc(sFactor, dFactor);
-
-
 
             int x = l->position->x;
             int y = l->position->y;
@@ -137,6 +131,12 @@ void CompositionMedia::updateImagesSize()
     GlContextHolder::getInstance()->context.executeOnGLThread([this](OpenGLContext &c){
         frameBuffer.initialise(GlContextHolder::getInstance()->context, resolution->x, resolution->y);
     }, true);
+    
+}
+
+Point<int> CompositionMedia::getMediaSize()
+{
+    return Point<int>(resolution->x, resolution->y);
     
 }
 

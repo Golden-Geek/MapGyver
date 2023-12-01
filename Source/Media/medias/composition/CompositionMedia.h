@@ -24,7 +24,7 @@ public:
     void clearItem() override;
     void onContainerParameterChangedInternal(Parameter* p) override;
     
-    void renderOpenGL();
+    void renderGLInternal() override;
 
     std::shared_ptr<Graphics> myGraphics = nullptr;
     std::shared_ptr<Graphics> workGraphics = nullptr;
@@ -32,6 +32,8 @@ public:
 
     void updateImagesSize();
     bool imageNeedRepaint = true;
+
+    Point<int> getMediaSize() override;
 
     
     DECLARE_TYPE("Composition")

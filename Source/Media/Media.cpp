@@ -26,7 +26,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 		height = addIntParameter("Height", "Height of the media", 1080, 1, 10000);
 	}
 
-	currentFPS = addFloatParameter("current FPS", "", 0);
+	currentFPS = addFloatParameter("current FPS", "",0, 0, 60);
 	currentFPS->isSavable = false;
 	currentFPS->enabled = false;
 
@@ -129,10 +129,17 @@ void Media::FPSTick()
 	double elapsedMillis = currentTime - lastFPSTick;
 	lastFPSTick = currentTime;
 
+	float fps = 1000.0 / elapsedMillis;
+
+	int max = ceil(fps/10.0)*10;
+
 	// Calcul des FPS
-	MessageManager::callAsync([this, elapsedMillis]()
+	MessageManager::callAsync([this, max, fps]()
 		{
-			currentFPS->setValue(1000.0 / elapsedMillis);
+			if ((float)currentFPS->maximumValue < max) {
+				currentFPS->maximumValue = max;
+			}
+			currentFPS->setValue(fps);
 		});
 }
 
