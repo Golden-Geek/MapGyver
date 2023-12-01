@@ -87,6 +87,7 @@ void CompositionMedia::renderOpenGL()
             glTexCoord2f(1.0f, 1.0f); glVertex2f(x + width, yA);
             glTexCoord2f(0.0f, 1.0f); glVertex2f(x, yA);
             glEnd();
+            glBindTexture(GL_TEXTURE_2D, 0);
             juce::gl::glPopMatrix();
         }
 
