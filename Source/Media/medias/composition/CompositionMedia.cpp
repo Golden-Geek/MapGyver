@@ -51,12 +51,47 @@ void CompositionMedia::renderOpenGL()
     glLoadIdentity();
     glOrtho(0, frameBuffer.getWidth(), frameBuffer.getHeight(), 0, 0, 1);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //glBlendFunc(GL_DST_COLOR, GL_ZERO);
 
     for (int i = 0; i < layers.items.size(); i++) {
         CompositionLayer* l = layers.items[i];
         Media* m = dynamic_cast<Media*>(l->media->targetContainer.get());
         if (m != nullptr) {
+
+            GLenum sFactor = GL_SRC_ALPHA;
+            GLenum dFactor = GL_ONE_MINUS_SRC_ALPHA;
+
+            switch (l->blendFunctionSourceFactor->getValueDataAsEnum<CompositionLayer::blendOption>()) {
+            case CompositionLayer::ZERO: sFactor = GL_ZERO; break;
+            case CompositionLayer::ONE: sFactor = GL_ONE; break;
+            case CompositionLayer::SRC_ALPHA: sFactor = GL_SRC_ALPHA; break;
+            case CompositionLayer::ONE_MINUS_SRC_ALPHA: sFactor = GL_ONE_MINUS_SRC_ALPHA; break;
+            case CompositionLayer::DST_ALPHA: sFactor = GL_DST_ALPHA; break;
+            case CompositionLayer::ONE_MINUS_DST_ALPHA: sFactor = GL_ONE_MINUS_DST_ALPHA; break;
+            case CompositionLayer::SRC_COLOR: sFactor = GL_SRC_COLOR; break;
+            case CompositionLayer::ONE_MINUS_SRC_COLOR: sFactor = GL_ONE_MINUS_SRC_COLOR; break;
+            case CompositionLayer::DST_COLOR: sFactor = GL_DST_COLOR; break;
+            case CompositionLayer::ONE_MINUS_DST_COLOR: sFactor = GL_ONE_MINUS_DST_COLOR; break;
+            }
+
+            switch (l->blendFunctionDestinationFactor->getValueDataAsEnum<CompositionLayer::blendOption>()) {
+            case CompositionLayer::ZERO: dFactor = GL_ZERO; break;
+            case CompositionLayer::ONE: dFactor = GL_ONE; break;
+            case CompositionLayer::SRC_ALPHA: dFactor = GL_SRC_ALPHA; break;
+            case CompositionLayer::ONE_MINUS_SRC_ALPHA: dFactor = GL_ONE_MINUS_SRC_ALPHA; break;
+            case CompositionLayer::DST_ALPHA: dFactor = GL_DST_ALPHA; break;
+            case CompositionLayer::ONE_MINUS_DST_ALPHA: dFactor = GL_ONE_MINUS_DST_ALPHA; break;
+            case CompositionLayer::SRC_COLOR: dFactor = GL_SRC_COLOR; break;
+            case CompositionLayer::ONE_MINUS_SRC_COLOR: dFactor = GL_ONE_MINUS_SRC_COLOR; break;
+            case CompositionLayer::DST_COLOR: dFactor = GL_DST_COLOR; break;
+            case CompositionLayer::ONE_MINUS_DST_COLOR: dFactor = GL_ONE_MINUS_DST_COLOR; break;
+            }
+
+            glBlendFunc(sFactor, dFactor);
+
+
+
             int x = l->position->x;
             int y = l->position->y;
             int width = l->size->x;
