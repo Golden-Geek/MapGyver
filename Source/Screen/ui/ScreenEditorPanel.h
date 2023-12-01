@@ -13,7 +13,8 @@
 class ScreenEditorView :
 	public InspectableContentComponent,
 	public OpenGLRenderer,
-	public DragAndDropTarget
+	public DragAndDropTarget,
+	public KeyListener
 {
 public:
 	ScreenEditorView(Screen* screen);
@@ -65,6 +66,8 @@ public:
 	void itemDropped(const SourceDetails& source) override;
 
 	void setCandidateDropSurface(Surface* s, Media* m = nullptr);
+
+	bool keyPressed(const KeyPress& key, Component* originatingComponent) override;
 
 	// Inherited via OpenGLRenderer
 	void newOpenGLContextCreated() override;

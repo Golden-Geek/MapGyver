@@ -28,11 +28,14 @@ ScreenEditorView::ScreenEditorView(Screen* screen) :
 {
 	selectionContourColor = NORMAL_COLOR;
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
+	setWantsKeyboardFocus(true); // Permet au composant de recevoir le focus clavier.
+	addKeyListener(this);
 }
 
 ScreenEditorView::~ScreenEditorView()
 {
 	if (GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+	removeKeyListener(this);
 }
 
 void ScreenEditorView::paint(Graphics& g)
@@ -507,6 +510,38 @@ void ScreenEditorView::setCandidateDropSurface(Surface* s, Media* m)
 	candidateDropSurface = s;
 
 	if (candidateDropSurface != nullptr) candidateDropSurface->previewMedia = m;
+}
+
+bool ScreenEditorView::keyPressed(const KeyPress& key, Component* originatingComponent)
+{
+	if (key.getKeyCode() != KeyPress::leftKey && key.getKeyCode() != KeyPress::rightKey && key.getKeyCode() != KeyPress::upKey && key.getKeyCode() != KeyPress::downKey) return false;
+	if (closestHandle != nullptr)
+	{
+		Array<Point2DParameter*> handles = { closestHandle };
+		Surface* s = ControllableUtil::findParentAs<Surface>(closestHandle);
+		bool isCorner = closestHandle == s->topLeft || closestHandle == s->topRight || closestHandle == s->bottomLeft || closestHandle == s->bottomRight;
+		if (isCorner && s->bezierCC.enabled->boolValue()) handles.addArray(s->getBezierHandles(closestHandle));
+
+		float xPixel = 1 / screen->screenWidth->floatValue();
+		float yPixel = 1 / screen->screenHeight->floatValue();
+
+		for (int i = 0; i < handles.size(); i++)
+		{
+			Point<float> tp = handles[i]->getPoint();
+			if (key.getKeyCode() == KeyPress::leftKey) tp.x -= xPixel;
+			else if (key.getKeyCode() == KeyPress::rightKey) tp.x += xPixel;
+			else if (key.getKeyCode() == KeyPress::upKey) tp.y += yPixel;
+			else if (key.getKeyCode() == KeyPress::downKey) tp.y -= yPixel;
+
+			handles[i]->setPoint(tp);
+			//if (handles[i] == closestHandle) {
+			//	for (auto& h : overlapHandles) h->setPoint(tp);
+			//}
+		}
+
+	}
+	repaint();
+	return true;
 }
 
 
