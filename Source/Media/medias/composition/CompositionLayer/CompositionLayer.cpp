@@ -93,8 +93,21 @@ void CompositionLayer::onContainerParameterChangedInternal(Parameter* p)
 {
 	if (p == media)
 	{
-		if (Media* m = media->getTargetContainerAs<Media>()) registerUseMedia(COMPOSITION_TARGET_MEDIA_ID, m);
-		else unregisterUseMedia(COMPOSITION_TARGET_MEDIA_ID);
+		if (Media* m = media->getTargetContainerAs<Media>()) 
+		{
+			registerUseMedia(COMPOSITION_TARGET_MEDIA_ID, m);
+			if (size->x == 0 && size->y == 0) {
+				var newSize;
+				Point mediaSize = m->getMediaSize();
+				newSize.append(mediaSize.x);
+				newSize.append(mediaSize.y);
+				size->setValue(newSize);
+			}
+		}
+		else 
+		{
+			unregisterUseMedia(COMPOSITION_TARGET_MEDIA_ID);
+		}
 	}
 	else if (p == blendFunction) {
 		blendPreset preset = blendFunction->getValueDataAsEnum<blendPreset>();
