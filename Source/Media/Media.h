@@ -34,6 +34,8 @@ public:
 
 	FloatParameter* currentFPS;
 	double lastFPSTick;
+	double lastFPSHistory[10];
+	int lastFPSIndex;
 	void FPSTick();
 
 	void onContainerParameterChangedInternal(Parameter* p);

@@ -128,8 +128,16 @@ void Media::FPSTick()
 	double currentTime = juce::Time::getMillisecondCounterHiRes();
 	double elapsedMillis = currentTime - lastFPSTick;
 	lastFPSTick = currentTime;
+	lastFPSIndex = (lastFPSIndex+1)%10;
+	lastFPSHistory[lastFPSIndex] = elapsedMillis;
 
-	float fps = 1000.0 / elapsedMillis;
+	double averageElapsed = 0;
+	for (int i = 0; i < 10; i++) {
+		averageElapsed += lastFPSHistory[i];
+	}
+	averageElapsed /= 10;
+
+	float fps = 1000.0 / averageElapsed;
 
 	int max = ceil(fps/10.0)*10;
 
