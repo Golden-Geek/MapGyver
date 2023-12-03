@@ -26,6 +26,9 @@ public:
 
     void updateDevice();
 
+    void initImage(Image& newImage) override;
+    void renderGLInternal() override;
+
     void WebcamImageReceived(const Image& image) override;
 
     DECLARE_TYPE("Webcam")
