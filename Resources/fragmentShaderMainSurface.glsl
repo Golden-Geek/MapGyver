@@ -14,6 +14,9 @@ float map(float value, float min1, float max1, float min2, float max2) {
 void main()
 {
 	outColor = textureProj(tex, Texcoord);
+    vec2 tex2D = Texcoord.xy / Texcoord.z;
+    if (tex2D.x>1 || tex2D.x<0 ||tex2D.y>1 || tex2D.y<0) 
+    { outColor = vec4(0,0,0,0); }
    	vec4 maskColor = textureProj(mask, Maskcoord);
    	float alpha = 1.0f;
    	if (SurfacePosition[1] > 1-borderSoft[0])    {alpha *= map(SurfacePosition[1],1.0f,1-borderSoft[0],0.0f,1.0f);} // top
