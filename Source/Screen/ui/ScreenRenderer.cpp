@@ -98,13 +98,9 @@ void ScreenRenderer::createAndLoadShaders()
 	shader->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(BinaryData::fragmentShaderMainSurface_glsl));
 	shader->link();
 
-
-	String fileContent = String(BinaryData::fragmentShaderTestGrid_glsl, BinaryData::fragmentShaderTestGrid_glslSize);
-
 	shaderTest.reset(new OpenGLShaderProgram(GlContextHolder::getInstance()->context));
 	shaderTest->addVertexShader(OpenGLHelpers::translateVertexShaderToV3(BinaryData::VertexShaderMainSurface_glsl));
-	//shaderTest->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(BinaryData::fragmentShaderTestGrid_glsl));
-	shaderTest->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(fileContent));
+	shaderTest->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(BinaryData::fragmentShaderTestGrid_glsl));
 	shaderTest->link();
 
 }

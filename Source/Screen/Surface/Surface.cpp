@@ -72,10 +72,10 @@ Surface::Surface(var params) :
 	ratioList = formatCC.addEnumParameter("Ratio", "");
 	ratioList->addOption("16/9", R16_9)->addOption("16/10", R16_10)->addOption("4/3", R4_3)->addOption("square", R1)->addOption("Custom", RCUSTOM);
 	ratioList->hideInEditor = true;
-	ratio = formatCC.addFloatParameter("Ratio value", "", 16/9.0f, 0.01);
+	ratio = formatCC.addFloatParameter("Ratio value", "", 16/9.0f, 0.0001);
 	ratio->hideInEditor = true;
-	considerCrop = formatCC.addBoolParameter("Consider Crop", "", false);
-	considerCrop->hideInEditor = true;
+	//considerCrop = formatCC.addBoolParameter("Consider Crop", "", false);
+	//considerCrop->hideInEditor = true;
 
 	topLeft->setDefaultPoint(0, 1);
 	topLeft->setBounds(-1, -1, 2, 2);
@@ -196,7 +196,6 @@ void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Co
 
 		ratioList->hideInEditor = t == STRETCH;
 		ratio->hideInEditor = t == STRETCH || r != RCUSTOM;
-		considerCrop->hideInEditor = t == STRETCH;
 		queuedNotifier.addMessage(new ContainerAsyncEvent(ContainerAsyncEvent::ControllableContainerNeedsRebuild, this));
 	}
 	shouldUpdateVertices = true;
@@ -325,31 +324,81 @@ void Surface::updateVertices()
 	Vector3D<float> blTex(cropLeft->floatValue(), cropBottom->floatValue(), 1.0f);
 	Vector3D<float> brTex(1 - cropRight->floatValue(), cropBottom->floatValue(), 1.0f);
 
+	float hTex = tlTex.y - blTex.y;
+	float wTex = trTex.x - tlTex.x;
+	float texMidX = blTex.x + (wTex / 2.0f);
+	float texMidY = blTex.y + (hTex / 2.0f);
+
 	if (med != nullptr && med->flipY) {
 		tlTex.y = 1 - tlTex.y;
 		trTex.y = 1 - trTex.y;
 		blTex.y = 1 - blTex.y;
 		brTex.y = 1 - brTex.y;
+		texMidY = 1 - texMidY;
 	}
 
 	FillType t = fillType->getValueDataAsEnum<FillType>();
 	
 	if (t != STRETCH) {
-		float hTex = 1;
-		float wTex = 1;
 		float outputRatio = ratio->floatValue();
 
-		if (considerCrop->boolValue()) {
-			hTex = 1 - cropTop->floatValue() - cropBottom->floatValue();
-			wTex = 1 - cropLeft->floatValue() - cropRight->floatValue();
-			if (hTex == 0) hTex = 0.00001;
-		}
+		if (hTex == 0) hTex = 0.0000001;
 
 		if (med != nullptr) {
 			Point<int> mediaSize = med->getMediaSize();
-			float mediaRatio = (wTex * mediaSize.x) / (hTex*(float)mediaSize.y);
-
+			float mediaRatio = abs((wTex * mediaSize.x) / (hTex*(float)mediaSize.y));
 			if (mediaRatio != outputRatio) {
+				if (t == FIT) {
+					float transformRatio = mediaRatio / outputRatio;
+
+					if (transformRatio > 1) {
+						float newH = 1 / transformRatio;
+						float allTextHeight = hTex / newH;
+						float midTextHeight = allTextHeight / 2.0f;
+
+						tlTex.y = texMidY - midTextHeight;
+						trTex.y = texMidY - midTextHeight;
+						blTex.y = texMidY + midTextHeight;
+						brTex.y = texMidY + midTextHeight;
+					}
+					else {
+						float newW = transformRatio;
+						float allTextWidth = wTex / newW;
+						float midTextWidth = allTextWidth / 2.0f;
+
+						tlTex.x = texMidX - midTextWidth;
+						blTex.x = texMidX - midTextWidth;
+						trTex.x = texMidX + midTextWidth;
+						brTex.x = texMidX + midTextWidth;
+					}
+
+				}
+				else if (t == FILL) {
+					float transformRatio = mediaRatio / outputRatio;
+
+					if (transformRatio > 1) {
+						float newW = transformRatio;
+						float allTextWidth = hTex / newW;
+						float midTextWidth = allTextWidth / 2.0f;
+
+						tlTex.x = texMidX - midTextWidth;
+						blTex.x = texMidX - midTextWidth;
+						trTex.x = texMidX + midTextWidth;
+						brTex.x = texMidX + midTextWidth;
+					}
+					else {
+						float newH = 1 / transformRatio;
+						float allTextHeight = wTex / newH;
+						float midTextHeight = allTextHeight / 2.0f;
+
+						tlTex.y = texMidY - midTextHeight;
+						trTex.y = texMidY - midTextHeight;
+						blTex.y = texMidY + midTextHeight;
+						brTex.y = texMidY + midTextHeight;
+					}
+
+				}
+
 			}
 
 		}
