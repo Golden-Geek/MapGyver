@@ -1,0 +1,20 @@
+{
+	"testing": false,
+	"winExtension": "exe",
+	"osxExtension": "pkg",
+	"linuxExtension": "AppImage",
+	"betaversion": {
+		"version": "0.0.0b1",
+		"changelog": [
+			""
+		]
+	},
+	"stableversion": {
+		"version": "1.0.0",
+		"changelog": [
+			""
+		]
+	},
+	"archives": [
+	]
+}

@@ -1,0 +1,1199 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		05F027A076D4F6AF77EB6FC6 /* NodeIncludes.cpp */ = {isa = PBXBuildFile; fileRef = 086F94DAA080CAFF435CFBA3; };
+		0EEDA52B0E4F8DCE22059703 /* QuartzCore.framework */ = {isa = PBXBuildFile; fileRef = 198947CBBEE6A348D91EF9FE; };
+		15C7FE4231598BFFD0D2E2F8 /* MainIncludes.cpp */ = {isa = PBXBuildFile; fileRef = C958EF713E08F7E1800B7E12; };
+		2167EAA14B79E37EC87EEEBD /* include_juce_events.mm */ = {isa = PBXBuildFile; fileRef = F7755054FC08E05372EBE65F; };
+		248B91E53A36F071D95F2CFA /* Foundation.framework */ = {isa = PBXBuildFile; fileRef = EC484241E4DF8872B89F9773; };
+		2C383889D146B1B5574D800F /* include_juce_sharedtexture.cpp */ = {isa = PBXBuildFile; fileRef = D2870424A1C0AE2EA4222B3D; };
+		383896065DD4F1C2ED27024D /* include_juce_graphics.mm */ = {isa = PBXBuildFile; fileRef = 530C2E5FACB1B66468D0D03B; };
+		3BEC0BF5E926DEC2AA8CF2A4 /* WebKit.framework */ = {isa = PBXBuildFile; fileRef = 1FBB907BF52AA26D092BB515; };
+		40668BF70BE66104AD08931D /* Security.framework */ = {isa = PBXBuildFile; fileRef = 7FBD3116FE14ED4E88109D55; };
+		408C24D6DCE375F1E3BDD037 /* include_juce_opengl.mm */ = {isa = PBXBuildFile; fileRef = 6AB8DE71714CBCBD809CE98F; };
+		43584DFF5885B5AF98EB4102 /* IOKit.framework */ = {isa = PBXBuildFile; fileRef = E3CCDF0749D08884DBFFFCAF; };
+		4A7255651E91F7FC60580E1D /* ScreenIncludes.cpp */ = {isa = PBXBuildFile; fileRef = D815DD20B788110DB5612CAB; };
+		4B1AF77E8EFF7D1938B050FD /* include_juce_video.mm */ = {isa = PBXBuildFile; fileRef = 6AD228C97881C89C01069C1E; };
+		52E04CA9331616AE85A16C92 /* RMPEngine.cpp */ = {isa = PBXBuildFile; fileRef = 1072149CF6F837D01CA534F5; };
+		609DCE95819E33248AC3569A /* AVKit.framework */ = {isa = PBXBuildFile; fileRef = 0DFE95F9BB2618BF02FCCBC0; };
+		62141715F816F29328ADC577 /* include_juce_organicui.cpp */ = {isa = PBXBuildFile; fileRef = 5471E6E4DC31E4693E58A9E3; };
+		675F10B20F4F2B512CBFF47E /* OpenGL.framework */ = {isa = PBXBuildFile; fileRef = F633F0B7401E9D55CB431D4F; };
+		750C1B7A3D4763E1AE857396 /* include_juce_gui_basics.mm */ = {isa = PBXBuildFile; fileRef = 56496F85887CE23A3F761A62; };
+		7C8D336DCCDCC58E1479A018 /* include_juce_core.mm */ = {isa = PBXBuildFile; fileRef = 975E420793DDB7D324796960; };
+		8C9AC2248E1F0C4BB8C69F71 /* include_juce_simpleweb.cpp */ = {isa = PBXBuildFile; fileRef = 5FD84472CBF008500C037D53; };
+		998C82A3387B4961F54930C1 /* App */ = {isa = PBXBuildFile; fileRef = A4B021A8788CEB43B6F55810; };
+		A90B4F8BFB9B47EF61891C61 /* include_juce_cryptography.mm */ = {isa = PBXBuildFile; fileRef = 9E7424C037982675296F8A0D; };
+		A9760A2C0E5C4F265F8356C1 /* include_juce_organicui2.cpp */ = {isa = PBXBuildFile; fileRef = 72B993C2D698814B3C31FE2F; };
+		AC61B568D3788BFFA01664F3 /* include_juce_organicui4.cpp */ = {isa = PBXBuildFile; fileRef = 2217BF767413530B5A45BC7F; };
+		AD3297F1FF7517AE72D20064 /* RecentFilesMenuTemplate.nib */ = {isa = PBXBuildFile; fileRef = FAD60D310B79F00B85399328; };
+		C54A97F18B1B16DFC3FBCBEB /* MediaIncludes.cpp */ = {isa = PBXBuildFile; fileRef = 4CA5D3BF6753A36D1CD72D33; };
+		C82F2995B8165ED0751C594F /* include_juce_gui_extra.mm */ = {isa = PBXBuildFile; fileRef = 6BD749992FC12D51E1B1F436; };
+		C9EBE4D28288E704C73598F3 /* Cocoa.framework */ = {isa = PBXBuildFile; fileRef = 185B784B15D32476C9A05651; };
+		CEB1617933A8BB8B4A089969 /* Icon.icns */ = {isa = PBXBuildFile; fileRef = 1DE7D7218F031CDF73ACF4AB; };
+		D371A9697D8CE4070C9AC2E4 /* include_juce_osc.cpp */ = {isa = PBXBuildFile; fileRef = F465803ADDFFB86379AF981C; };
+		DE56516F560B165B702BB69D /* include_juce_organicui2b.cpp */ = {isa = PBXBuildFile; fileRef = 3309271808D885121DEB163E; };
+		E51C9FAA56CDB74501C272A6 /* AVFoundation.framework */ = {isa = PBXBuildFile; fileRef = F097430EB3C3FCE258B4ED03; };
+		E5F44AA7A551FCCE3AA71EC4 /* include_juce_data_structures.mm */ = {isa = PBXBuildFile; fileRef = 3DDDF83BCEB53C649DC8147E; };
+		E8090C8BA62272AD91310E8F /* include_juce_simpleweb2.cpp */ = {isa = PBXBuildFile; fileRef = 1B5D79576A494981FEE963EE; };
+		E81D4CC1E90BD3BF6D5FFE2F /* CoreMedia.framework */ = {isa = PBXBuildFile; fileRef = CE85E6B722CF2AD3F8D10777; };
+		EAB2F1D5A6FE647A38E59D54 /* MetalKit.framework */ = {isa = PBXBuildFile; fileRef = 03F081A282FDA78557D8056B; settings = { ATTRIBUTES = (Weak, ); }; };
+		F1FA7F3FDBC6B2172BC5F168 /* CommonIncludes.cpp */ = {isa = PBXBuildFile; fileRef = 6D0B9E9579989832F91EE3AA; };
+		F78066066D0FF0F034EDF5E3 /* include_juce_organicui3.cpp */ = {isa = PBXBuildFile; fileRef = C88E1CE00E9C351BC930CA82; };
+		FBAACB9F77161A4E3EF70FE2 /* Metal.framework */ = {isa = PBXBuildFile; fileRef = 191B0F2FA86F31DE09193DA1; settings = { ATTRIBUTES = (Weak, ); }; };
+		FBCA3F1279967972F1143E84 /* BinaryData.cpp */ = {isa = PBXBuildFile; fileRef = C052F251EC349D63E56C6B0B; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		01838BF30EF8162A66C0CAE5 /* NDIDeviceParameter.h */ /* NDIDeviceParameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIDeviceParameter.h; path = ../../Source/Common/NDI/NDIDeviceParameter.h; sourceTree = SOURCE_ROOT; };
+		01D00A6F0EDD06FAAA2B9BD7 /* juce_video */ /* juce_video */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_video; path = ../../JUCE/modules/juce_video; sourceTree = SOURCE_ROOT; };
+		0290AC746B36233ACA0C2661 /* NodeManagerViewUI.cpp */ /* NodeManagerViewUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeManagerViewUI.cpp; path = ../../Source/Node/ui/NodeManagerViewUI.cpp; sourceTree = SOURCE_ROOT; };
+		03F081A282FDA78557D8056B /* MetalKit.framework */ /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
+		0461E7E99E5A9E9B058E9C20 /* common.hpp */ /* common.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = common.hpp; path = ../../Source/Media/medias/video/vlcpp/common.hpp; sourceTree = SOURCE_ROOT; };
+		0674C4BE92E12C2FE6EABDA3 /* NDIDevice.cpp */ /* NDIDevice.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NDIDevice.cpp; path = ../../Source/Common/NDI/NDIDevice.cpp; sourceTree = SOURCE_ROOT; };
+		086F94DAA080CAFF435CFBA3 /* NodeIncludes.cpp */ /* NodeIncludes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeIncludes.cpp; path = ../../Source/Node/NodeIncludes.cpp; sourceTree = SOURCE_ROOT; };
+		088714EC6F652895CF37ABAB /* VideoMedia.h */ /* VideoMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VideoMedia.h; path = ../../Source/Media/medias/video/VideoMedia.h; sourceTree = SOURCE_ROOT; };
+		088ACC68AC3963E6B473A27F /* NDIManager.h */ /* NDIManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIManager.h; path = ../../Source/Common/NDI/NDIManager.h; sourceTree = SOURCE_ROOT; };
+		08B2FCCD0BF1D07821A3EBAF /* Surface.h */ /* Surface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Surface.h; path = ../../Source/Screen/Surface/Surface.h; sourceTree = SOURCE_ROOT; };
+		08CBCDF8B192B8A76BF1BFDB /* Screen.h */ /* Screen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Screen.h; path = ../../Source/Screen/Screen.h; sourceTree = SOURCE_ROOT; };
+		08F715713800BDFA23333762 /* CompositionLayer.cpp */ /* CompositionLayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CompositionLayer.cpp; path = ../../Source/Media/medias/composition/CompositionLayer/CompositionLayer.cpp; sourceTree = SOURCE_ROOT; };
+		0A940BCB47DE196611911B19 /* ScreenRenderer.cpp */ /* ScreenRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenRenderer.cpp; path = ../../Source/Screen/ui/ScreenRenderer.cpp; sourceTree = SOURCE_ROOT; };
+		0BEB7482AF749F1EA50E2CF0 /* NodeConnectionManagerViewUI.h */ /* NodeConnectionManagerViewUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnectionManagerViewUI.h; path = ../../Source/Node/Connection/ui/NodeConnectionManagerViewUI.h; sourceTree = SOURCE_ROOT; };
+		0DFE95F9BB2618BF02FCCBC0 /* AVKit.framework */ /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
+		0E9602AA6EA3E72D9070DD0F /* ScreenIncludes.h */ /* ScreenIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenIncludes.h; path = ../../Source/Screen/ScreenIncludes.h; sourceTree = SOURCE_ROOT; };
+		0FC3B25BD7E5349FA38491D1 /* webcamDeviceParameter.cpp */ /* webcamDeviceParameter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamDeviceParameter.cpp; path = ../../Source/Media/medias/webcam/webcamDeviceParameter.cpp; sourceTree = SOURCE_ROOT; };
+		1072149CF6F837D01CA534F5 /* RMPEngine.cpp */ /* RMPEngine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RMPEngine.cpp; path = ../../Source/Engine/RMPEngine.cpp; sourceTree = SOURCE_ROOT; };
+		1278284E6FFB63AA9C3EAA62 /* NodeConnectionViewUI.h */ /* NodeConnectionViewUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnectionViewUI.h; path = ../../Source/Node/Connection/ui/NodeConnectionViewUI.h; sourceTree = SOURCE_ROOT; };
+		16C9718D7ACE14A91A291FC3 /* webcamMedia.cpp */ /* webcamMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamMedia.cpp; path = ../../Source/Media/medias/webcam/webcamMedia.cpp; sourceTree = SOURCE_ROOT; };
+		1716875BAD35E43C29152CC8 /* juce_organicui */ /* juce_organicui */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_organicui; path = ../../Modules/juce_organicui; sourceTree = SOURCE_ROOT; };
+		185B784B15D32476C9A05651 /* Cocoa.framework */ /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		191B0F2FA86F31DE09193DA1 /* Metal.framework */ /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		198947CBBEE6A348D91EF9FE /* QuartzCore.framework */ /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		1B5D79576A494981FEE963EE /* include_juce_simpleweb2.cpp */ /* include_juce_simpleweb2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_simpleweb2.cpp; path = ../../JuceLibraryCode/include_juce_simpleweb2.cpp; sourceTree = SOURCE_ROOT; };
+		1CD053DC77C6ADB93DFAED33 /* CompositionMedia.h */ /* CompositionMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CompositionMedia.h; path = ../../Source/Media/medias/composition/CompositionMedia.h; sourceTree = SOURCE_ROOT; };
+		1DE7D7218F031CDF73ACF4AB /* Icon.icns */ /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = file.icns; name = Icon.icns; path = Icon.icns; sourceTree = SOURCE_ROOT; };
+		1FBB907BF52AA26D092BB515 /* WebKit.framework */ /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		2217BF767413530B5A45BC7F /* include_juce_organicui4.cpp */ /* include_juce_organicui4.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_organicui4.cpp; path = ../../JuceLibraryCode/include_juce_organicui4.cpp; sourceTree = SOURCE_ROOT; };
+		2471C695EB6BEE664BF88684 /* ScreenEditorPanel.cpp */ /* ScreenEditorPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenEditorPanel.cpp; path = ../../Source/Screen/ui/ScreenEditorPanel.cpp; sourceTree = SOURCE_ROOT; };
+		24E787248DA5C935FA363260 /* MediaUI.h */ /* MediaUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaUI.h; path = ../../Source/Media/ui/MediaUI.h; sourceTree = SOURCE_ROOT; };
+		252151FBA71A7FEDACC06D3F /* VideoMedia.cpp */ /* VideoMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VideoMedia.cpp; path = ../../Source/Media/medias/video/VideoMedia.cpp; sourceTree = SOURCE_ROOT; };
+		255AEA75893BC588D1624E45 /* NodeConnectionViewUI.cpp */ /* NodeConnectionViewUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeConnectionViewUI.cpp; path = ../../Source/Node/Connection/ui/NodeConnectionViewUI.cpp; sourceTree = SOURCE_ROOT; };
+		258B9A92D267289673735DDD /* CommonIncludes.h */ /* CommonIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommonIncludes.h; path = ../../Source/Common/CommonIncludes.h; sourceTree = SOURCE_ROOT; };
+		26A384E8BB15BEACE6F792FD /* webcamDeviceParameter.h */ /* webcamDeviceParameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = webcamDeviceParameter.h; path = ../../Source/Media/medias/webcam/webcamDeviceParameter.h; sourceTree = SOURCE_ROOT; };
+		26BB3D965A8D105F7020C3C0 /* EventManager.hpp */ /* EventManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EventManager.hpp; path = ../../Source/Media/medias/video/vlcpp/EventManager.hpp; sourceTree = SOURCE_ROOT; };
+		26E253919F7347BBF7880E3D /* MediaManagerUI.cpp */ /* MediaManagerUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaManagerUI.cpp; path = ../../Source/Media/ui/MediaManagerUI.cpp; sourceTree = SOURCE_ROOT; };
+		2B601FBEDE72FEA2D63285D4 /* NodeConnectionSlot.cpp */ /* NodeConnectionSlot.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeConnectionSlot.cpp; path = ../../Source/Node/Connection/NodeConnectionSlot.cpp; sourceTree = SOURCE_ROOT; };
+		2B9367CCEC55F585777CF3DE /* NodeMedia.h */ /* NodeMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeMedia.h; path = ../../Source/Media/medias/node/NodeMedia.h; sourceTree = SOURCE_ROOT; };
+		2BE65373DEFEEC1467C2FF5A /* NodeViewUI.h */ /* NodeViewUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeViewUI.h; path = ../../Source/Node/ui/NodeViewUI.h; sourceTree = SOURCE_ROOT; };
+		2C7C7CE301749DD96540D16C /* GroupNode.cpp */ /* GroupNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GroupNode.cpp; path = ../../Source/Node/nodes/Group/GroupNode.cpp; sourceTree = SOURCE_ROOT; };
+		3309271808D885121DEB163E /* include_juce_organicui2b.cpp */ /* include_juce_organicui2b.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_organicui2b.cpp; path = ../../JuceLibraryCode/include_juce_organicui2b.cpp; sourceTree = SOURCE_ROOT; };
+		359258D74FC121939A0A13AA /* MediaListPlayer.hpp */ /* MediaListPlayer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaListPlayer.hpp; path = ../../Source/Media/medias/video/vlcpp/MediaListPlayer.hpp; sourceTree = SOURCE_ROOT; };
+		369DF698AB82C016479478F6 /* CompositionMedia.cpp */ /* CompositionMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CompositionMedia.cpp; path = ../../Source/Media/medias/composition/CompositionMedia.cpp; sourceTree = SOURCE_ROOT; };
+		38B089F1EDE79F46BCE5B9F2 /* NodeConnectionManagerViewUI.cpp */ /* NodeConnectionManagerViewUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeConnectionManagerViewUI.cpp; path = ../../Source/Node/Connection/ui/NodeConnectionManagerViewUI.cpp; sourceTree = SOURCE_ROOT; };
+		3CDFF236DF07E27A5BEA8B6A /* webcamDeviceChooser.cpp */ /* webcamDeviceChooser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamDeviceChooser.cpp; path = ../../Source/Media/medias/webcam/ui/webcamDeviceChooser.cpp; sourceTree = SOURCE_ROOT; };
+		3DDDF83BCEB53C649DC8147E /* include_juce_data_structures.mm */ /* include_juce_data_structures.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_data_structures.mm; path = ../../JuceLibraryCode/include_juce_data_structures.mm; sourceTree = SOURCE_ROOT; };
+		40998EAFD9807FE60E9D7888 /* ScreenEditorPanel.h */ /* ScreenEditorPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenEditorPanel.h; path = ../../Source/Screen/ui/ScreenEditorPanel.h; sourceTree = SOURCE_ROOT; };
+		468683707ACEFD489C92BBFB /* SurfaceUI.cpp */ /* SurfaceUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SurfaceUI.cpp; path = ../../Source/Screen/Surface/ui/SurfaceUI.cpp; sourceTree = SOURCE_ROOT; };
+		46AB9CCB970DAABAA8C07CCE /* GLHelpers.h */ /* GLHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GLHelpers.h; path = ../../Source/Common/GLHelpers.h; sourceTree = SOURCE_ROOT; };
+		47CFFDB5896ECC0B40E7430F /* SharedTextureMedia.cpp */ /* SharedTextureMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SharedTextureMedia.cpp; path = ../../Source/Media/medias/sharedtexture/SharedTextureMedia.cpp; sourceTree = SOURCE_ROOT; };
+		49D439939DFFAA7885A91C49 /* Media.cpp */ /* Media.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Media.cpp; path = ../../Source/Media/Media.cpp; sourceTree = SOURCE_ROOT; };
+		4AE55A46150550B83C4E77D1 /* Main.h */ /* Main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Main.h; path = ../../Source/Main.h; sourceTree = SOURCE_ROOT; };
+		4CA5D3BF6753A36D1CD72D33 /* MediaIncludes.cpp */ /* MediaIncludes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaIncludes.cpp; path = ../../Source/Media/MediaIncludes.cpp; sourceTree = SOURCE_ROOT; };
+		4DE81665A1EC868211C9E16D /* juce_graphics */ /* juce_graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_graphics; path = ../../JUCE/modules/juce_graphics; sourceTree = SOURCE_ROOT; };
+		4E84CE5D77C4631041014FA6 /* OutputNode.cpp */ /* OutputNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OutputNode.cpp; path = ../../Source/Node/nodes/Output/OutputNode.cpp; sourceTree = SOURCE_ROOT; };
+		530C2E5FACB1B66468D0D03B /* include_juce_graphics.mm */ /* include_juce_graphics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_graphics.mm; path = ../../JuceLibraryCode/include_juce_graphics.mm; sourceTree = SOURCE_ROOT; };
+		5471E6E4DC31E4693E58A9E3 /* include_juce_organicui.cpp */ /* include_juce_organicui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_organicui.cpp; path = ../../JuceLibraryCode/include_juce_organicui.cpp; sourceTree = SOURCE_ROOT; };
+		56496F85887CE23A3F761A62 /* include_juce_gui_basics.mm */ /* include_juce_gui_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_basics.mm; path = ../../JuceLibraryCode/include_juce_gui_basics.mm; sourceTree = SOURCE_ROOT; };
+		585B3635C903E213012732E4 /* ColorMedia.h */ /* ColorMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColorMedia.h; path = ../../Source/Media/medias/color/ColorMedia.h; sourceTree = SOURCE_ROOT; };
+		5B73D9F808608FF64879E2DD /* ShapeNode.cpp */ /* ShapeNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ShapeNode.cpp; path = ../../Source/Node/nodes/Drawing/shape/ShapeNode.cpp; sourceTree = SOURCE_ROOT; };
+		5BA1BF943A6DB48187A1B412 /* juce_simpleweb */ /* juce_simpleweb */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_simpleweb; path = ../../Modules/juce_simpleweb; sourceTree = SOURCE_ROOT; };
+		5BBD4C990334C40835D848F5 /* fragmentShaderMainSurface.glsl */ /* fragmentShaderMainSurface.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; name = fragmentShaderMainSurface.glsl; path = ../../Resources/fragmentShaderMainSurface.glsl; sourceTree = SOURCE_ROOT; };
+		5CCF236420CD70FB88CDA70C /* Instance.hpp */ /* Instance.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Instance.hpp; path = ../../Source/Media/medias/video/vlcpp/Instance.hpp; sourceTree = SOURCE_ROOT; };
+		5D852BB5C02BE7D55C05B598 /* NDIDeviceParameterUI.h */ /* NDIDeviceParameterUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIDeviceParameterUI.h; path = ../../Source/Common/NDI/ui/NDIDeviceParameterUI.h; sourceTree = SOURCE_ROOT; };
+		5DE3C5F889C6C6F9C802B403 /* structures.hpp */ /* structures.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = structures.hpp; path = ../../Source/Media/medias/video/vlcpp/structures.hpp; sourceTree = SOURCE_ROOT; };
+		5FD84472CBF008500C037D53 /* include_juce_simpleweb.cpp */ /* include_juce_simpleweb.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_simpleweb.cpp; path = ../../JuceLibraryCode/include_juce_simpleweb.cpp; sourceTree = SOURCE_ROOT; };
+		61058676EDDC022BC30C27AB /* MediaManager.h */ /* MediaManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaManager.h; path = ../../Source/Media/MediaManager.h; sourceTree = SOURCE_ROOT; };
+		61B9F7F2DFE694B0E208E75B /* testPattern.png */ /* testPattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = testPattern.png; path = ../../Resources/testPattern.png; sourceTree = SOURCE_ROOT; };
+		61C4E8B7450CABFFEB98B500 /* NDIDeviceParameter.cpp */ /* NDIDeviceParameter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NDIDeviceParameter.cpp; path = ../../Source/Common/NDI/NDIDeviceParameter.cpp; sourceTree = SOURCE_ROOT; };
+		644028F7EC5232567FD138AD /* vlc.hpp */ /* vlc.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = vlc.hpp; path = ../../Source/Media/medias/video/vlcpp/vlc.hpp; sourceTree = SOURCE_ROOT; };
+		646F1E0D929CAD95D6071976 /* PictureMedia.h */ /* PictureMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PictureMedia.h; path = ../../Source/Media/medias/picture/PictureMedia.h; sourceTree = SOURCE_ROOT; };
+		66A47B068289318E7D2C36A1 /* ShaderMedia.cpp */ /* ShaderMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ShaderMedia.cpp; path = ../../Source/Media/medias/shader/ShaderMedia.cpp; sourceTree = SOURCE_ROOT; };
+		67511A7D33FFE58491EAE421 /* OnlineContentExplorer.cpp */ /* OnlineContentExplorer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OnlineContentExplorer.cpp; path = ../../Source/Common/ContentExplorer/OnlineContentExplorer.cpp; sourceTree = SOURCE_ROOT; };
+		6758ED784D188B4800323ADB /* juce_osc */ /* juce_osc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_osc; path = ../../JUCE/modules/juce_osc; sourceTree = SOURCE_ROOT; };
+		6878FA315CD422F3A3F3431D /* MediaTarget.cpp */ /* MediaTarget.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaTarget.cpp; path = ../../Source/Common/MediaTarget.cpp; sourceTree = SOURCE_ROOT; };
+		695EA09E033EEC1C9695C354 /* NDIDeviceParameterUI.cpp */ /* NDIDeviceParameterUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NDIDeviceParameterUI.cpp; path = ../../Source/Common/NDI/ui/NDIDeviceParameterUI.cpp; sourceTree = SOURCE_ROOT; };
+		69C0FFF5E9C012D9999D77B5 /* NodeFactory.cpp */ /* NodeFactory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeFactory.cpp; path = ../../Source/Node/NodeFactory.cpp; sourceTree = SOURCE_ROOT; };
+		6A4C27DF7E0D846971209FEB /* OnlineContentExplorer.h */ /* OnlineContentExplorer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OnlineContentExplorer.h; path = ../../Source/Common/ContentExplorer/OnlineContentExplorer.h; sourceTree = SOURCE_ROOT; };
+		6AB8DE71714CBCBD809CE98F /* include_juce_opengl.mm */ /* include_juce_opengl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_opengl.mm; path = ../../JuceLibraryCode/include_juce_opengl.mm; sourceTree = SOURCE_ROOT; };
+		6AD228C97881C89C01069C1E /* include_juce_video.mm */ /* include_juce_video.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_video.mm; path = ../../JuceLibraryCode/include_juce_video.mm; sourceTree = SOURCE_ROOT; };
+		6B21DF06EFACA175EEF85BF0 /* NDIMedia.h */ /* NDIMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIMedia.h; path = ../../Source/Media/medias/ndi/NDIMedia.h; sourceTree = SOURCE_ROOT; };
+		6BD749992FC12D51E1B1F436 /* include_juce_gui_extra.mm */ /* include_juce_gui_extra.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_extra.mm; path = ../../JuceLibraryCode/include_juce_gui_extra.mm; sourceTree = SOURCE_ROOT; };
+		6C5701EBD06A2121F2AA5412 /* juce_sharedtexture */ /* juce_sharedtexture */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_sharedtexture; path = ../../Modules/juce_sharedtexture; sourceTree = SOURCE_ROOT; };
+		6C6AFBC1704E2E14FFC679A6 /* NodeConnection.h */ /* NodeConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnection.h; path = ../../Source/Node/Connection/NodeConnection.h; sourceTree = SOURCE_ROOT; };
+		6C91F2EA804DF99A95FB0FF2 /* ScreenRenderer.h */ /* ScreenRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenRenderer.h; path = ../../Source/Screen/ui/ScreenRenderer.h; sourceTree = SOURCE_ROOT; };
+		6D0B9E9579989832F91EE3AA /* CommonIncludes.cpp */ /* CommonIncludes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CommonIncludes.cpp; path = ../../Source/Common/CommonIncludes.cpp; sourceTree = SOURCE_ROOT; };
+		6D3863EA536186BF8D60C972 /* webcamManager.h */ /* webcamManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = webcamManager.h; path = ../../Source/Media/medias/webcam/webcamManager.h; sourceTree = SOURCE_ROOT; };
+		6DA45123F0497E97F0682E46 /* juce_opengl */ /* juce_opengl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_opengl; path = ../../JUCE/modules/juce_opengl; sourceTree = SOURCE_ROOT; };
+		6DD74F3491BE603B8CAD59D3 /* Equalizer.hpp */ /* Equalizer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Equalizer.hpp; path = ../../Source/Media/medias/video/vlcpp/Equalizer.hpp; sourceTree = SOURCE_ROOT; };
+		6E0A004814F0581C2995EE84 /* NodeManager.h */ /* NodeManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeManager.h; path = ../../Source/Node/NodeManager.h; sourceTree = SOURCE_ROOT; };
+		6E1E1FC10BC9A62BAD3054EF /* MediaManagerUI.h */ /* MediaManagerUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaManagerUI.h; path = ../../Source/Media/ui/MediaManagerUI.h; sourceTree = SOURCE_ROOT; };
+		6EF190D8E38D1025568382A9 /* MediaList.hpp */ /* MediaList.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaList.hpp; path = ../../Source/Media/medias/video/vlcpp/MediaList.hpp; sourceTree = SOURCE_ROOT; };
+		6F391643AAE4BB692CA8A120 /* Media.hpp */ /* Media.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Media.hpp; path = ../../Source/Media/medias/video/vlcpp/Media.hpp; sourceTree = SOURCE_ROOT; };
+		6F823315377F8F9F3C87958B /* RendererDiscoverer.hpp */ /* RendererDiscoverer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RendererDiscoverer.hpp; path = ../../Source/Media/medias/video/vlcpp/RendererDiscoverer.hpp; sourceTree = SOURCE_ROOT; };
+		70C459AD219BDC7880D0E5DF /* NDIDevice.h */ /* NDIDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIDevice.h; path = ../../Source/Common/NDI/NDIDevice.h; sourceTree = SOURCE_ROOT; };
+		72B993C2D698814B3C31FE2F /* include_juce_organicui2.cpp */ /* include_juce_organicui2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_organicui2.cpp; path = ../../JuceLibraryCode/include_juce_organicui2.cpp; sourceTree = SOURCE_ROOT; };
+		737D83C0B98E4DBFB4E8E72C /* icon.png */ /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../../Resources/icon.png; sourceTree = SOURCE_ROOT; };
+		73C1EC972E4F55EFD7C927EB /* Surface.cpp */ /* Surface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Surface.cpp; path = ../../Source/Screen/Surface/Surface.cpp; sourceTree = SOURCE_ROOT; };
+		77951BA97EAAFDB9ED15EC1A /* OpenGLManager.cpp */ /* OpenGLManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OpenGLManager.cpp; path = ../../Source/Common/OpenGLManager.cpp; sourceTree = SOURCE_ROOT; };
+		77ADB0014F436BDA6FF8E309 /* NodeViewUI.cpp */ /* NodeViewUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeViewUI.cpp; path = ../../Source/Node/ui/NodeViewUI.cpp; sourceTree = SOURCE_ROOT; };
+		78E7C626A1AEC2DE0E15CCDC /* NodeManagerUI.h */ /* NodeManagerUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeManagerUI.h; path = ../../Source/Node/ui/NodeManagerUI.h; sourceTree = SOURCE_ROOT; };
+		791CA801F47DD6EBB07A9CEA /* juce_data_structures */ /* juce_data_structures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_data_structures; path = ../../JUCE/modules/juce_data_structures; sourceTree = SOURCE_ROOT; };
+		794846D538AA4CA1B516F8FE /* webcamDeviceParameterUI.h */ /* webcamDeviceParameterUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = webcamDeviceParameterUI.h; path = ../../Source/Media/medias/webcam/ui/webcamDeviceParameterUI.h; sourceTree = SOURCE_ROOT; };
+		79BAA794F779BE252B851B17 /* NodeManagerUI.cpp */ /* NodeManagerUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeManagerUI.cpp; path = ../../Source/Node/ui/NodeManagerUI.cpp; sourceTree = SOURCE_ROOT; };
+		7AFA2DF58D490DD81901E7C7 /* RMPEngine.h */ /* RMPEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RMPEngine.h; path = ../../Source/Engine/RMPEngine.h; sourceTree = SOURCE_ROOT; };
+		7B25BC9010119C6A3F387F42 /* CompositionLayerManager.cpp */ /* CompositionLayerManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CompositionLayerManager.cpp; path = ../../Source/Media/medias/composition/CompositionLayer/CompositionLayerManager.cpp; sourceTree = SOURCE_ROOT; };
+		7B50ABF425B671BBDDF4FC52 /* SurfaceManager.cpp */ /* SurfaceManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SurfaceManager.cpp; path = ../../Source/Screen/Surface/SurfaceManager.cpp; sourceTree = SOURCE_ROOT; };
+		7C79E2CD3664791F986EF4AA /* webcamDevice.cpp */ /* webcamDevice.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamDevice.cpp; path = ../../Source/Media/medias/webcam/webcamDevice.cpp; sourceTree = SOURCE_ROOT; };
+		7DA25AF9AB5840B1B9F5D676 /* MediaManager.cpp */ /* MediaManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaManager.cpp; path = ../../Source/Media/MediaManager.cpp; sourceTree = SOURCE_ROOT; };
+		7F6FC88CF39B5F6AB0395A58 /* NodeIncludes.h */ /* NodeIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeIncludes.h; path = ../../Source/Node/NodeIncludes.h; sourceTree = SOURCE_ROOT; };
+		7FBD3116FE14ED4E88109D55 /* Security.framework */ /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		7FF7C3D0A6219998E3BF28B3 /* Info-App.plist */ /* Info-App.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-App.plist"; path = "Info-App.plist"; sourceTree = SOURCE_ROOT; };
+		80EC7628908DE0872B6EF76D /* SurfaceUI.h */ /* SurfaceUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SurfaceUI.h; path = ../../Source/Screen/Surface/ui/SurfaceUI.h; sourceTree = SOURCE_ROOT; };
+		81B02584A5BCC16036F73AD5 /* ScreenManagerUI.cpp */ /* ScreenManagerUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenManagerUI.cpp; path = ../../Source/Screen/ui/ScreenManagerUI.cpp; sourceTree = SOURCE_ROOT; };
+		82049708545125654CC13352 /* CompositionLayerManager.h */ /* CompositionLayerManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CompositionLayerManager.h; path = ../../Source/Media/medias/composition/CompositionLayer/CompositionLayerManager.h; sourceTree = SOURCE_ROOT; };
+		83E13A36BB30D2A5BCE4EB03 /* MediaUI.cpp */ /* MediaUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaUI.cpp; path = ../../Source/Media/ui/MediaUI.cpp; sourceTree = SOURCE_ROOT; };
+		843186034E9E0DD5207EF950 /* NodeConnector.h */ /* NodeConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnector.h; path = ../../Source/Node/Connection/ui/NodeConnector.h; sourceTree = SOURCE_ROOT; };
+		84E62BF5EC7B5CAC29CFDB3F /* Main.cpp */ /* Main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Main.cpp; path = ../../Source/Main.cpp; sourceTree = SOURCE_ROOT; };
+		864A8376A0B54677732FFA85 /* NDIMedia.cpp */ /* NDIMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NDIMedia.cpp; path = ../../Source/Media/medias/ndi/NDIMedia.cpp; sourceTree = SOURCE_ROOT; };
+		86A1D03F9FBEEF04F29A1073 /* ColorMedia.cpp */ /* ColorMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ColorMedia.cpp; path = ../../Source/Media/medias/color/ColorMedia.cpp; sourceTree = SOURCE_ROOT; };
+		8720E8253DC9A6A00387488F /* VertexShaderMainSurface.glsl */ /* VertexShaderMainSurface.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; name = VertexShaderMainSurface.glsl; path = ../../Resources/VertexShaderMainSurface.glsl; sourceTree = SOURCE_ROOT; };
+		87CFE6CFA45FD210B5181899 /* MediaPlayer.hpp */ /* MediaPlayer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaPlayer.hpp; path = ../../Source/Media/medias/video/vlcpp/MediaPlayer.hpp; sourceTree = SOURCE_ROOT; };
+		89F22E858DCF4246F858836A /* ShapeNode.h */ /* ShapeNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShapeNode.h; path = ../../Source/Node/nodes/Drawing/shape/ShapeNode.h; sourceTree = SOURCE_ROOT; };
+		8A811D963E35F3D14A1E99DF /* MediaNode.cpp */ /* MediaNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaNode.cpp; path = ../../Source/Node/nodes/Source/MediaNode.cpp; sourceTree = SOURCE_ROOT; };
+		8BDAA82DC4CA3392C3D766BA /* AppConfig.h */ /* AppConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppConfig.h; path = ../../JuceLibraryCode/AppConfig.h; sourceTree = SOURCE_ROOT; };
+		8C7CBFA4168B7E00CC5DDF3E /* MediaNode.h */ /* MediaNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaNode.h; path = ../../Source/Node/nodes/Source/MediaNode.h; sourceTree = SOURCE_ROOT; };
+		8CEF4E64D4AEA1D768EBEA86 /* SurfaceManager.h */ /* SurfaceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SurfaceManager.h; path = ../../Source/Screen/Surface/SurfaceManager.h; sourceTree = SOURCE_ROOT; };
+		8EE2AD5B93991977D88BF794 /* NDIManager.cpp */ /* NDIManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NDIManager.cpp; path = ../../Source/Common/NDI/NDIManager.cpp; sourceTree = SOURCE_ROOT; };
+		8EF16D5FDB2F1AD6A234A097 /* juce_gui_basics */ /* juce_gui_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_basics; path = ../../JUCE/modules/juce_gui_basics; sourceTree = SOURCE_ROOT; };
+		8F672130CECCECB331FCE20C /* SharedTextureMedia.h */ /* SharedTextureMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SharedTextureMedia.h; path = ../../Source/Media/medias/sharedtexture/SharedTextureMedia.h; sourceTree = SOURCE_ROOT; };
+		922E5555E45EA796288B582D /* Node.h */ /* Node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Node.h; path = ../../Source/Node/Node.h; sourceTree = SOURCE_ROOT; };
+		94ABDDCF5D3E6A7C1ABAB043 /* NodeConnectionSlot.h */ /* NodeConnectionSlot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnectionSlot.h; path = ../../Source/Node/Connection/NodeConnectionSlot.h; sourceTree = SOURCE_ROOT; };
+		975E420793DDB7D324796960 /* include_juce_core.mm */ /* include_juce_core.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_core.mm; path = ../../JuceLibraryCode/include_juce_core.mm; sourceTree = SOURCE_ROOT; };
+		98FDF8BDA5441759B22FF30A /* OpenGLManager.h */ /* OpenGLManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OpenGLManager.h; path = ../../Source/Common/OpenGLManager.h; sourceTree = SOURCE_ROOT; };
+		99884F2281A85B1ECBE1F73B /* OutputNode.h */ /* OutputNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OutputNode.h; path = ../../Source/Node/nodes/Output/OutputNode.h; sourceTree = SOURCE_ROOT; };
+		99A4AE99F3EFE1C4B584E2C4 /* MainComponent.cpp */ /* MainComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MainComponent.cpp; path = ../../Source/MainComponent.cpp; sourceTree = SOURCE_ROOT; };
+		9B1D57DA473F0C2E220E0507 /* GroupNode.h */ /* GroupNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GroupNode.h; path = ../../Source/Node/nodes/Group/GroupNode.h; sourceTree = SOURCE_ROOT; };
+		9B6DECFBC545599C8EBF9A88 /* NodeMedia.cpp */ /* NodeMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeMedia.cpp; path = ../../Source/Media/medias/node/NodeMedia.cpp; sourceTree = SOURCE_ROOT; };
+		9E7424C037982675296F8A0D /* include_juce_cryptography.mm */ /* include_juce_cryptography.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_cryptography.mm; path = ../../JuceLibraryCode/include_juce_cryptography.mm; sourceTree = SOURCE_ROOT; };
+		A004F4AA3BFCA2EAC33D951E /* ScreenManager.cpp */ /* ScreenManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenManager.cpp; path = ../../Source/Screen/ScreenManager.cpp; sourceTree = SOURCE_ROOT; };
+		A398038D50F9BF04043368C5 /* webcamDeviceChooser.h */ /* webcamDeviceChooser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = webcamDeviceChooser.h; path = ../../Source/Media/medias/webcam/ui/webcamDeviceChooser.h; sourceTree = SOURCE_ROOT; };
+		A4825B334BDEB0A56EB705E8 /* NodeConnector.cpp */ /* NodeConnector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeConnector.cpp; path = ../../Source/Node/Connection/ui/NodeConnector.cpp; sourceTree = SOURCE_ROOT; };
+		A4B021A8788CEB43B6F55810 /* App */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RuleMaPool.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6A3C10A2D5AA1DD8EEF9E86 /* MediaIncludes.h */ /* MediaIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaIncludes.h; path = ../../Source/Media/MediaIncludes.h; sourceTree = SOURCE_ROOT; };
+		AF882763241B734884F9DA01 /* juce_cryptography */ /* juce_cryptography */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_cryptography; path = ../../JUCE/modules/juce_cryptography; sourceTree = SOURCE_ROOT; };
+		B3E6FEAA5CC7D67264C53864 /* NDIDeviceChooser.h */ /* NDIDeviceChooser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIDeviceChooser.h; path = ../../Source/Common/NDI/ui/NDIDeviceChooser.h; sourceTree = SOURCE_ROOT; };
+		B53215E9D2E0EB0FB5B1ACB4 /* juce_events */ /* juce_events */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_events; path = ../../JUCE/modules/juce_events; sourceTree = SOURCE_ROOT; };
+		B6B71B862AA4C0B01B0207D1 /* MediaTarget.h */ /* MediaTarget.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaTarget.h; path = ../../Source/Common/MediaTarget.h; sourceTree = SOURCE_ROOT; };
+		B77ADE5770568D7A1E1DC024 /* Node.cpp */ /* Node.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cpp; path = ../../Source/Node/Node.cpp; sourceTree = SOURCE_ROOT; };
+		B80C3FDE70F6FF55E871D57A /* CompositionLayer.h */ /* CompositionLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CompositionLayer.h; path = ../../Source/Media/medias/composition/CompositionLayer/CompositionLayer.h; sourceTree = SOURCE_ROOT; };
+		BAC40E097A2EFD0B626DA71D /* default.rmplayout */ /* default.rmplayout */ = {isa = PBXFileReference; lastKnownFileType = file.rmplayout; name = default.rmplayout; path = ../../Resources/default.rmplayout; sourceTree = SOURCE_ROOT; };
+		BCD66E9A995775AF6B8F629A /* NodeFactory.h */ /* NodeFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeFactory.h; path = ../../Source/Node/NodeFactory.h; sourceTree = SOURCE_ROOT; };
+		BE56D510EB32C1CBA3DB2144 /* NodeManager.cpp */ /* NodeManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeManager.cpp; path = ../../Source/Node/NodeManager.cpp; sourceTree = SOURCE_ROOT; };
+		BEB6674ADCCFF487A993CCF1 /* juce_gui_extra */ /* juce_gui_extra */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_extra; path = ../../JUCE/modules/juce_gui_extra; sourceTree = SOURCE_ROOT; };
+		BEBD9D4F96604EED790FB26B /* PictureMedia.cpp */ /* PictureMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PictureMedia.cpp; path = ../../Source/Media/medias/picture/PictureMedia.cpp; sourceTree = SOURCE_ROOT; };
+		C052F251EC349D63E56C6B0B /* BinaryData.cpp */ /* BinaryData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BinaryData.cpp; path = ../../JuceLibraryCode/BinaryData.cpp; sourceTree = SOURCE_ROOT; };
+		C6C69B5FAA9B2514D86B4E91 /* JuceHeader.h */ /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
+		C88E1CE00E9C351BC930CA82 /* include_juce_organicui3.cpp */ /* include_juce_organicui3.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_organicui3.cpp; path = ../../JuceLibraryCode/include_juce_organicui3.cpp; sourceTree = SOURCE_ROOT; };
+		C958EF713E08F7E1800B7E12 /* MainIncludes.cpp */ /* MainIncludes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MainIncludes.cpp; path = ../../Source/MainIncludes.cpp; sourceTree = SOURCE_ROOT; };
+		CC5AD0AA0391F9B54043F241 /* Media.h */ /* Media.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Media.h; path = ../../Source/Media/Media.h; sourceTree = SOURCE_ROOT; };
+		CE85E6B722CF2AD3F8D10777 /* CoreMedia.framework */ /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		D02441BB8516F835469ABB6E /* MediaDiscoverer.hpp */ /* MediaDiscoverer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaDiscoverer.hpp; path = ../../Source/Media/medias/video/vlcpp/MediaDiscoverer.hpp; sourceTree = SOURCE_ROOT; };
+		D1E750D2361ACC5B501007A3 /* Picture.hpp */ /* Picture.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Picture.hpp; path = ../../Source/Media/medias/video/vlcpp/Picture.hpp; sourceTree = SOURCE_ROOT; };
+		D2870424A1C0AE2EA4222B3D /* include_juce_sharedtexture.cpp */ /* include_juce_sharedtexture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_sharedtexture.cpp; path = ../../JuceLibraryCode/include_juce_sharedtexture.cpp; sourceTree = SOURCE_ROOT; };
+		D2BD3079B0858239915D1618 /* webcamMedia.h */ /* webcamMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = webcamMedia.h; path = ../../Source/Media/medias/webcam/webcamMedia.h; sourceTree = SOURCE_ROOT; };
+		D5D87A0441414C08682662E8 /* ViewStatsTimer.h */ /* ViewStatsTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ViewStatsTimer.h; path = ../../Source/Node/ui/ViewStatsTimer.h; sourceTree = SOURCE_ROOT; };
+		D5E4E48B45D3FC4548FA1D32 /* MediaLibrary.hpp */ /* MediaLibrary.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaLibrary.hpp; path = ../../Source/Media/medias/video/vlcpp/MediaLibrary.hpp; sourceTree = SOURCE_ROOT; };
+		D63934237EA061ACD2F416A0 /* MainComponentCommands.cpp */ /* MainComponentCommands.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MainComponentCommands.cpp; path = ../../Source/MainComponentCommands.cpp; sourceTree = SOURCE_ROOT; };
+		D74D63A3805983EAEDAA8D9A /* MainComponent.h */ /* MainComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MainComponent.h; path = ../../Source/MainComponent.h; sourceTree = SOURCE_ROOT; };
+		D815DD20B788110DB5612CAB /* ScreenIncludes.cpp */ /* ScreenIncludes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenIncludes.cpp; path = ../../Source/Screen/ScreenIncludes.cpp; sourceTree = SOURCE_ROOT; };
+		D94F9DA9A766805EDEE0AEB8 /* NodeManagerViewUI.h */ /* NodeManagerViewUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeManagerViewUI.h; path = ../../Source/Node/ui/NodeManagerViewUI.h; sourceTree = SOURCE_ROOT; };
+		DB2BCE2387EA9A51C7034593 /* NDIDeviceChooser.cpp */ /* NDIDeviceChooser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NDIDeviceChooser.cpp; path = ../../Source/Common/NDI/ui/NDIDeviceChooser.cpp; sourceTree = SOURCE_ROOT; };
+		DB8B42A2EC2A878B01849944 /* juce_core */ /* juce_core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_core; path = ../../JUCE/modules/juce_core; sourceTree = SOURCE_ROOT; };
+		DBFED058905DF25E3EDAE5E7 /* ShaderMedia.h */ /* ShaderMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShaderMedia.h; path = ../../Source/Media/medias/shader/ShaderMedia.h; sourceTree = SOURCE_ROOT; };
+		DE03D51D03A659370E12BED8 /* NodeUI.h */ /* NodeUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeUI.h; path = ../../Source/Node/ui/NodeUI.h; sourceTree = SOURCE_ROOT; };
+		DEC1B8C7330FE2FE579C1524 /* webcamDeviceParameterUI.cpp */ /* webcamDeviceParameterUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamDeviceParameterUI.cpp; path = ../../Source/Media/medias/webcam/ui/webcamDeviceParameterUI.cpp; sourceTree = SOURCE_ROOT; };
+		DF5FA0F7CEB6708E13CB7E47 /* ScreenManager.h */ /* ScreenManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenManager.h; path = ../../Source/Screen/ScreenManager.h; sourceTree = SOURCE_ROOT; };
+		E3CCDF0749D08884DBFFFCAF /* IOKit.framework */ /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		E6D7BE0956E688EEC661ADBF /* ScreenOutput.h */ /* ScreenOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenOutput.h; path = ../../Source/Screen/ui/ScreenOutput.h; sourceTree = SOURCE_ROOT; };
+		E7560CD548F5168FB6533433 /* MainIncludes.h */ /* MainIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MainIncludes.h; path = ../../Source/MainIncludes.h; sourceTree = SOURCE_ROOT; };
+		EA3474E12B7266C444AA1ED0 /* NodeConnectionManager.h */ /* NodeConnectionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnectionManager.h; path = ../../Source/Node/Connection/NodeConnectionManager.h; sourceTree = SOURCE_ROOT; };
+		EB2895D1CCC3C4DAF0A0F774 /* webcamManager.cpp */ /* webcamManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamManager.cpp; path = ../../Source/Media/medias/webcam/webcamManager.cpp; sourceTree = SOURCE_ROOT; };
+		EC484241E4DF8872B89F9773 /* Foundation.framework */ /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		ECF95EA12287B29074B5124E /* ScreenOutput.cpp */ /* ScreenOutput.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenOutput.cpp; path = ../../Source/Screen/ui/ScreenOutput.cpp; sourceTree = SOURCE_ROOT; };
+		EDA6DC9FB3EACD745726EBD1 /* fragmentShaderTestGrid.glsl */ /* fragmentShaderTestGrid.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; name = fragmentShaderTestGrid.glsl; path = ../../Resources/fragmentShaderTestGrid.glsl; sourceTree = SOURCE_ROOT; };
+		EE224875B9AC60F4064A607E /* BinaryData.h */ /* BinaryData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BinaryData.h; path = ../../JuceLibraryCode/BinaryData.h; sourceTree = SOURCE_ROOT; };
+		EF396BAC567849222F475856 /* webcamDevice.h */ /* webcamDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = webcamDevice.h; path = ../../Source/Media/medias/webcam/webcamDevice.h; sourceTree = SOURCE_ROOT; };
+		F00DF21073435B9EF792C5E3 /* Screen.cpp */ /* Screen.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Screen.cpp; path = ../../Source/Screen/Screen.cpp; sourceTree = SOURCE_ROOT; };
+		F097430EB3C3FCE258B4ED03 /* AVFoundation.framework */ /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		F1FB2D019B5CEE0EC0FF9EFD /* Internal.hpp */ /* Internal.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Internal.hpp; path = ../../Source/Media/medias/video/vlcpp/Internal.hpp; sourceTree = SOURCE_ROOT; };
+		F30EFAEA819EBFE96A0D3BC2 /* ScreenManagerUI.h */ /* ScreenManagerUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenManagerUI.h; path = ../../Source/Screen/ui/ScreenManagerUI.h; sourceTree = SOURCE_ROOT; };
+		F3A68EDD6F4746FF67C94733 /* NodeConnection.cpp */ /* NodeConnection.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeConnection.cpp; path = ../../Source/Node/Connection/NodeConnection.cpp; sourceTree = SOURCE_ROOT; };
+		F45430B11470B0EB98526AC5 /* Dialog.hpp */ /* Dialog.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Dialog.hpp; path = ../../Source/Media/medias/video/vlcpp/Dialog.hpp; sourceTree = SOURCE_ROOT; };
+		F465803ADDFFB86379AF981C /* include_juce_osc.cpp */ /* include_juce_osc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_osc.cpp; path = ../../JuceLibraryCode/include_juce_osc.cpp; sourceTree = SOURCE_ROOT; };
+		F633F0B7401E9D55CB431D4F /* OpenGL.framework */ /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		F7755054FC08E05372EBE65F /* include_juce_events.mm */ /* include_juce_events.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_events.mm; path = ../../JuceLibraryCode/include_juce_events.mm; sourceTree = SOURCE_ROOT; };
+		F80D8FD0CEACE62B0B102BC4 /* NodeConnectionManager.cpp */ /* NodeConnectionManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeConnectionManager.cpp; path = ../../Source/Node/Connection/NodeConnectionManager.cpp; sourceTree = SOURCE_ROOT; };
+		F8E4533F2EE61C0F07F96A5A /* NodeUI.cpp */ /* NodeUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeUI.cpp; path = ../../Source/Node/ui/NodeUI.cpp; sourceTree = SOURCE_ROOT; };
+		FAD60D310B79F00B85399328 /* RecentFilesMenuTemplate.nib */ /* RecentFilesMenuTemplate.nib */ = {isa = PBXFileReference; lastKnownFileType = file.nib; name = RecentFilesMenuTemplate.nib; path = RecentFilesMenuTemplate.nib; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AE23FF7A7192B69F15AE6FFF = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E51C9FAA56CDB74501C272A6,
+				609DCE95819E33248AC3569A,
+				C9EBE4D28288E704C73598F3,
+				E81D4CC1E90BD3BF6D5FFE2F,
+				248B91E53A36F071D95F2CFA,
+				43584DFF5885B5AF98EB4102,
+				675F10B20F4F2B512CBFF47E,
+				0EEDA52B0E4F8DCE22059703,
+				40668BF70BE66104AD08931D,
+				3BEC0BF5E926DEC2AA8CF2A4,
+				FBAACB9F77161A4E3EF70FE2,
+				EAB2F1D5A6FE647A38E59D54,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0023274E29B8ECD23977E4BE /* Screen */ = {
+			isa = PBXGroup;
+			children = (
+				7BBDA46214069965C43271C8,
+				717E0BC80069A8610841CD87,
+				F00DF21073435B9EF792C5E3,
+				08CBCDF8B192B8A76BF1BFDB,
+				D815DD20B788110DB5612CAB,
+				0E9602AA6EA3E72D9070DD0F,
+				A004F4AA3BFCA2EAC33D951E,
+				DF5FA0F7CEB6708E13CB7E47,
+			);
+			name = Screen;
+			sourceTree = "<group>";
+		};
+		193FEF9E1F2AF52B432E7A9B /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				26E253919F7347BBF7880E3D,
+				6E1E1FC10BC9A62BAD3054EF,
+				83E13A36BB30D2A5BCE4EB03,
+				24E787248DA5C935FA363260,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		20A5659F39142A18B9990CE8 /* vlcpp */ = {
+			isa = PBXGroup;
+			children = (
+				0461E7E99E5A9E9B058E9C20,
+				F45430B11470B0EB98526AC5,
+				6DD74F3491BE603B8CAD59D3,
+				26BB3D965A8D105F7020C3C0,
+				5CCF236420CD70FB88CDA70C,
+				F1FB2D019B5CEE0EC0FF9EFD,
+				6F391643AAE4BB692CA8A120,
+				D02441BB8516F835469ABB6E,
+				D5E4E48B45D3FC4548FA1D32,
+				6EF190D8E38D1025568382A9,
+				359258D74FC121939A0A13AA,
+				87CFE6CFA45FD210B5181899,
+				D1E750D2361ACC5B501007A3,
+				6F823315377F8F9F3C87958B,
+				5DE3C5F889C6C6F9C802B403,
+				644028F7EC5232567FD138AD,
+			);
+			name = vlcpp;
+			sourceTree = "<group>";
+		};
+		2678D85C7025A22CEB43D4FA /* webcam */ = {
+			isa = PBXGroup;
+			children = (
+				469138D613796B0AF5946137,
+				7C79E2CD3664791F986EF4AA,
+				EF396BAC567849222F475856,
+				0FC3B25BD7E5349FA38491D1,
+				26A384E8BB15BEACE6F792FD,
+				EB2895D1CCC3C4DAF0A0F774,
+				6D3863EA536186BF8D60C972,
+				16C9718D7ACE14A91A291FC3,
+				D2BD3079B0858239915D1618,
+			);
+			name = webcam;
+			sourceTree = "<group>";
+		};
+		28BE4016658772DE05DF03B2 /* node */ = {
+			isa = PBXGroup;
+			children = (
+				9B6DECFBC545599C8EBF9A88,
+				2B9367CCEC55F585777CF3DE,
+			);
+			name = node;
+			sourceTree = "<group>";
+		};
+		2EC22ADD1C7C4BA622FFF235 /* video */ = {
+			isa = PBXGroup;
+			children = (
+				20A5659F39142A18B9990CE8,
+				252151FBA71A7FEDACC06D3F,
+				088714EC6F652895CF37ABAB,
+			);
+			name = video;
+			sourceTree = "<group>";
+		};
+		348512E1381803AADF3CDF61 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				8A811D963E35F3D14A1E99DF,
+				8C7CBFA4168B7E00CC5DDF3E,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		356D170DC8E38A1B2E14E3AF /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7FF7C3D0A6219998E3BF28B3,
+				FAD60D310B79F00B85399328,
+				1DE7D7218F031CDF73ACF4AB,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		35B10DC1072BCC2A3FE32B4C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F097430EB3C3FCE258B4ED03,
+				0DFE95F9BB2618BF02FCCBC0,
+				185B784B15D32476C9A05651,
+				CE85E6B722CF2AD3F8D10777,
+				EC484241E4DF8872B89F9773,
+				E3CCDF0749D08884DBFFFCAF,
+				F633F0B7401E9D55CB431D4F,
+				198947CBBEE6A348D91EF9FE,
+				7FBD3116FE14ED4E88109D55,
+				1FBB907BF52AA26D092BB515,
+				191B0F2FA86F31DE09193DA1,
+				03F081A282FDA78557D8056B,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3975E81F4E600870035B92EB /* Node */ = {
+			isa = PBXGroup;
+			children = (
+				72005294BEF061234158162C,
+				9D14551140C156E51413B0C4,
+				5BC2AE968FFA5E56161E0154,
+				B77ADE5770568D7A1E1DC024,
+				922E5555E45EA796288B582D,
+				69C0FFF5E9C012D9999D77B5,
+				BCD66E9A995775AF6B8F629A,
+				086F94DAA080CAFF435CFBA3,
+				7F6FC88CF39B5F6AB0395A58,
+				BE56D510EB32C1CBA3DB2144,
+				6E0A004814F0581C2995EE84,
+			);
+			name = Node;
+			sourceTree = "<group>";
+		};
+		40A15B198666A0F97C5BAEE0 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				38B089F1EDE79F46BCE5B9F2,
+				0BEB7482AF749F1EA50E2CF0,
+				255AEA75893BC588D1624E45,
+				1278284E6FFB63AA9C3EAA62,
+				A4825B334BDEB0A56EB705E8,
+				843186034E9E0DD5207EF950,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		43C22B585397CF8C04CBB601 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				CA645C1D82ED57A07133C4DB,
+				9DEA80687D6D9E02836AE1EB,
+				8758FDAD0DD5911EE2D8F035,
+				356D170DC8E38A1B2E14E3AF,
+				35B10DC1072BCC2A3FE32B4C,
+				A9464B4FE0B59C47B2401C8C,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		469138D613796B0AF5946137 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				3CDFF236DF07E27A5BEA8B6A,
+				A398038D50F9BF04043368C5,
+				DEC1B8C7330FE2FE579C1524,
+				794846D538AA4CA1B516F8FE,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		4800E4570580FDBE7DFA1E31 /* medias */ = {
+			isa = PBXGroup;
+			children = (
+				28BE4016658772DE05DF03B2,
+				F72E8D3231C16AF7D62A5A23,
+				FFC1137F48A22A578A985233,
+				D3F3B0C7254C6F8FB8D39DE8,
+				DDB70F610360D1E30C6FBC68,
+				D7008069D80BF6EE2E49FE9F,
+				D2336A10CAAF91BF71E42519,
+				2EC22ADD1C7C4BA622FFF235,
+				2678D85C7025A22CEB43D4FA,
+			);
+			name = medias;
+			sourceTree = "<group>";
+		};
+		5BC2AE968FFA5E56161E0154 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				79BAA794F779BE252B851B17,
+				78E7C626A1AEC2DE0E15CCDC,
+				0290AC746B36233ACA0C2661,
+				D94F9DA9A766805EDEE0AEB8,
+				F8E4533F2EE61C0F07F96A5A,
+				DE03D51D03A659370E12BED8,
+				77ADB0014F436BDA6FF8E309,
+				2BE65373DEFEEC1467C2FF5A,
+				D5D87A0441414C08682662E8,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		5E9DB6AA61F44C13BFFAC025 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BAC40E097A2EFD0B626DA71D,
+				5BBD4C990334C40835D848F5,
+				EDA6DC9FB3EACD745726EBD1,
+				737D83C0B98E4DBFB4E8E72C,
+				61B9F7F2DFE694B0E208E75B,
+				8720E8253DC9A6A00387488F,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		65C93E965F1F78DAEDAF64D2 /* ContentExplorer */ = {
+			isa = PBXGroup;
+			children = (
+				67511A7D33FFE58491EAE421,
+				6A4C27DF7E0D846971209FEB,
+			);
+			name = ContentExplorer;
+			sourceTree = "<group>";
+		};
+		670229599B710791A809A590 /* Drawing */ = {
+			isa = PBXGroup;
+			children = (
+				EF0034FEBB52685D8AD849B8,
+			);
+			name = Drawing;
+			sourceTree = "<group>";
+		};
+		717E0BC80069A8610841CD87 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				2471C695EB6BEE664BF88684,
+				40998EAFD9807FE60E9D7888,
+				81B02584A5BCC16036F73AD5,
+				F30EFAEA819EBFE96A0D3BC2,
+				ECF95EA12287B29074B5124E,
+				E6D7BE0956E688EEC661ADBF,
+				0A940BCB47DE196611911B19,
+				6C91F2EA804DF99A95FB0FF2,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		72005294BEF061234158162C /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				40A15B198666A0F97C5BAEE0,
+				F3A68EDD6F4746FF67C94733,
+				6C6AFBC1704E2E14FFC679A6,
+				F80D8FD0CEACE62B0B102BC4,
+				EA3474E12B7266C444AA1ED0,
+				2B601FBEDE72FEA2D63285D4,
+				94ABDDCF5D3E6A7C1ABAB043,
+			);
+			name = Connection;
+			sourceTree = "<group>";
+		};
+		7BBDA46214069965C43271C8 /* Surface */ = {
+			isa = PBXGroup;
+			children = (
+				BA2F4276DC1B9ABF2CDDD010,
+				73C1EC972E4F55EFD7C927EB,
+				08B2FCCD0BF1D07821A3EBAF,
+				7B50ABF425B671BBDDF4FC52,
+				8CEF4E64D4AEA1D768EBEA86,
+			);
+			name = Surface;
+			sourceTree = "<group>";
+		};
+		8758FDAD0DD5911EE2D8F035 /* JUCE Library Code */ = {
+			isa = PBXGroup;
+			children = (
+				8BDAA82DC4CA3392C3D766BA,
+				C052F251EC349D63E56C6B0B,
+				EE224875B9AC60F4064A607E,
+				975E420793DDB7D324796960,
+				9E7424C037982675296F8A0D,
+				3DDDF83BCEB53C649DC8147E,
+				F7755054FC08E05372EBE65F,
+				530C2E5FACB1B66468D0D03B,
+				56496F85887CE23A3F761A62,
+				6BD749992FC12D51E1B1F436,
+				6AB8DE71714CBCBD809CE98F,
+				5471E6E4DC31E4693E58A9E3,
+				72B993C2D698814B3C31FE2F,
+				3309271808D885121DEB163E,
+				C88E1CE00E9C351BC930CA82,
+				2217BF767413530B5A45BC7F,
+				F465803ADDFFB86379AF981C,
+				D2870424A1C0AE2EA4222B3D,
+				5FD84472CBF008500C037D53,
+				1B5D79576A494981FEE963EE,
+				6AD228C97881C89C01069C1E,
+				C6C69B5FAA9B2514D86B4E91,
+			);
+			name = "JUCE Library Code";
+			sourceTree = "<group>";
+		};
+		8CF6F95C4E52E452F8B2A5AB /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				DB2BCE2387EA9A51C7034593,
+				B3E6FEAA5CC7D67264C53864,
+				695EA09E033EEC1C9695C354,
+				5D852BB5C02BE7D55C05B598,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		9625F7ADBD0158A1BC49EB4F /* Output */ = {
+			isa = PBXGroup;
+			children = (
+				4E84CE5D77C4631041014FA6,
+				99884F2281A85B1ECBE1F73B,
+			);
+			name = Output;
+			sourceTree = "<group>";
+		};
+		9A183C4539FB233FB96CEBE3 /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				2C7C7CE301749DD96540D16C,
+				9B1D57DA473F0C2E220E0507,
+			);
+			name = Group;
+			sourceTree = "<group>";
+		};
+		9D14551140C156E51413B0C4 /* nodes */ = {
+			isa = PBXGroup;
+			children = (
+				9625F7ADBD0158A1BC49EB4F,
+				670229599B710791A809A590,
+				9A183C4539FB233FB96CEBE3,
+				348512E1381803AADF3CDF61,
+			);
+			name = nodes;
+			sourceTree = "<group>";
+		};
+		9DEA80687D6D9E02836AE1EB /* JUCE Modules */ = {
+			isa = PBXGroup;
+			children = (
+				DB8B42A2EC2A878B01849944,
+				AF882763241B734884F9DA01,
+				791CA801F47DD6EBB07A9CEA,
+				B53215E9D2E0EB0FB5B1ACB4,
+				4DE81665A1EC868211C9E16D,
+				8EF16D5FDB2F1AD6A234A097,
+				BEB6674ADCCFF487A993CCF1,
+				6DA45123F0497E97F0682E46,
+				1716875BAD35E43C29152CC8,
+				6758ED784D188B4800323ADB,
+				6C5701EBD06A2121F2AA5412,
+				5BA1BF943A6DB48187A1B412,
+				01D00A6F0EDD06FAAA2B9BD7,
+			);
+			name = "JUCE Modules";
+			sourceTree = "<group>";
+		};
+		A9464B4FE0B59C47B2401C8C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A4B021A8788CEB43B6F55810,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B03B3C31F9F094E63A10567D /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				65C93E965F1F78DAEDAF64D2,
+				F9F56F5EF84FC7D9CD0A4DC5,
+				6D0B9E9579989832F91EE3AA,
+				258B9A92D267289673735DDD,
+				46AB9CCB970DAABAA8C07CCE,
+				6878FA315CD422F3A3F3431D,
+				B6B71B862AA4C0B01B0207D1,
+				77951BA97EAAFDB9ED15EC1A,
+				98FDF8BDA5441759B22FF30A,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
+		B122E0AC668AE6EF0667CB34 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				B03B3C31F9F094E63A10567D,
+				FED018546D0F4F14A1B4C770,
+				E2DC68D5A6A52D6063AC6714,
+				3975E81F4E600870035B92EB,
+				0023274E29B8ECD23977E4BE,
+				84E62BF5EC7B5CAC29CFDB3F,
+				4AE55A46150550B83C4E77D1,
+				99A4AE99F3EFE1C4B584E2C4,
+				D74D63A3805983EAEDAA8D9A,
+				D63934237EA061ACD2F416A0,
+				C958EF713E08F7E1800B7E12,
+				E7560CD548F5168FB6533433,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		BA2F4276DC1B9ABF2CDDD010 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				468683707ACEFD489C92BBFB,
+				80EC7628908DE0872B6EF76D,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		CA645C1D82ED57A07133C4DB /* RuleMaPool */ = {
+			isa = PBXGroup;
+			children = (
+				5E9DB6AA61F44C13BFFAC025,
+				B122E0AC668AE6EF0667CB34,
+			);
+			name = RuleMaPool;
+			sourceTree = "<group>";
+		};
+		D2336A10CAAF91BF71E42519 /* sharedtexture */ = {
+			isa = PBXGroup;
+			children = (
+				47CFFDB5896ECC0B40E7430F,
+				8F672130CECCECB331FCE20C,
+			);
+			name = sharedtexture;
+			sourceTree = "<group>";
+		};
+		D3F3B0C7254C6F8FB8D39DE8 /* ndi */ = {
+			isa = PBXGroup;
+			children = (
+				864A8376A0B54677732FFA85,
+				6B21DF06EFACA175EEF85BF0,
+			);
+			name = ndi;
+			sourceTree = "<group>";
+		};
+		D7008069D80BF6EE2E49FE9F /* shader */ = {
+			isa = PBXGroup;
+			children = (
+				66A47B068289318E7D2C36A1,
+				DBFED058905DF25E3EDAE5E7,
+			);
+			name = shader;
+			sourceTree = "<group>";
+		};
+		DDB70F610360D1E30C6FBC68 /* picture */ = {
+			isa = PBXGroup;
+			children = (
+				BEBD9D4F96604EED790FB26B,
+				646F1E0D929CAD95D6071976,
+			);
+			name = picture;
+			sourceTree = "<group>";
+		};
+		E2DC68D5A6A52D6063AC6714 /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				4800E4570580FDBE7DFA1E31,
+				193FEF9E1F2AF52B432E7A9B,
+				49D439939DFFAA7885A91C49,
+				CC5AD0AA0391F9B54043F241,
+				4CA5D3BF6753A36D1CD72D33,
+				A6A3C10A2D5AA1DD8EEF9E86,
+				7DA25AF9AB5840B1B9F5D676,
+				61058676EDDC022BC30C27AB,
+			);
+			name = Media;
+			sourceTree = "<group>";
+		};
+		EF0034FEBB52685D8AD849B8 /* shape */ = {
+			isa = PBXGroup;
+			children = (
+				5B73D9F808608FF64879E2DD,
+				89F22E858DCF4246F858836A,
+			);
+			name = shape;
+			sourceTree = "<group>";
+		};
+		F72E8D3231C16AF7D62A5A23 /* color */ = {
+			isa = PBXGroup;
+			children = (
+				86A1D03F9FBEEF04F29A1073,
+				585B3635C903E213012732E4,
+			);
+			name = color;
+			sourceTree = "<group>";
+		};
+		F85C51C720461E8BC2840337 /* CompositionLayer */ = {
+			isa = PBXGroup;
+			children = (
+				08F715713800BDFA23333762,
+				B80C3FDE70F6FF55E871D57A,
+				7B25BC9010119C6A3F387F42,
+				82049708545125654CC13352,
+			);
+			name = CompositionLayer;
+			sourceTree = "<group>";
+		};
+		F9F56F5EF84FC7D9CD0A4DC5 /* NDI */ = {
+			isa = PBXGroup;
+			children = (
+				8CF6F95C4E52E452F8B2A5AB,
+				0674C4BE92E12C2FE6EABDA3,
+				70C459AD219BDC7880D0E5DF,
+				61C4E8B7450CABFFEB98B500,
+				01838BF30EF8162A66C0CAE5,
+				8EE2AD5B93991977D88BF794,
+				088ACC68AC3963E6B473A27F,
+			);
+			name = NDI;
+			sourceTree = "<group>";
+		};
+		FED018546D0F4F14A1B4C770 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				1072149CF6F837D01CA534F5,
+				7AFA2DF58D490DD81901E7C7,
+			);
+			name = Engine;
+			sourceTree = "<group>";
+		};
+		FFC1137F48A22A578A985233 /* composition */ = {
+			isa = PBXGroup;
+			children = (
+				F85C51C720461E8BC2840337,
+				369DF698AB82C016479478F6,
+				1CD053DC77C6ADB93DFAED33,
+			);
+			name = composition;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C27F766E5FAA6BE7B4BA3859 /* RuleMaPool - App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 27E5DEE8640F024DF419D470;
+			buildPhases = (
+				63544AE4C0E80351F91B7624,
+				09176D6B389960DE92A57764,
+				AE23FF7A7192B69F15AE6FFF,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RuleMaPool - App";
+			productName = RuleMaPool;
+			productReference = A4B021A8788CEB43B6F55810;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4050A69E21DD8F95C7780B72 = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1340;
+				ORGANIZATIONNAME = "";
+				TargetAttributes = {
+					C27F766E5FAA6BE7B4BA3859 = {
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+							com.apple.HardenedRuntime = {
+								enabled = 0;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+							com.apple.InterAppAudio = {
+								enabled = 0;
+							};
+							com.apple.Push = {
+								enabled = 0;
+							};
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = 742EAA1F7744691AAEA300E8;
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 43C22B585397CF8C04CBB601;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C27F766E5FAA6BE7B4BA3859,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		63544AE4C0E80351F91B7624 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD3297F1FF7517AE72D20064,
+				CEB1617933A8BB8B4A089969,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		09176D6B389960DE92A57764 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F1FA7F3FDBC6B2172BC5F168,
+				52E04CA9331616AE85A16C92,
+				C54A97F18B1B16DFC3FBCBEB,
+				05F027A076D4F6AF77EB6FC6,
+				4A7255651E91F7FC60580E1D,
+				15C7FE4231598BFFD0D2E2F8,
+				FBCA3F1279967972F1143E84,
+				7C8D336DCCDCC58E1479A018,
+				A90B4F8BFB9B47EF61891C61,
+				E5F44AA7A551FCCE3AA71EC4,
+				2167EAA14B79E37EC87EEEBD,
+				383896065DD4F1C2ED27024D,
+				750C1B7A3D4763E1AE857396,
+				C82F2995B8165ED0751C594F,
+				408C24D6DCE375F1E3BDD037,
+				62141715F816F29328ADC577,
+				A9760A2C0E5C4F265F8356C1,
+				DE56516F560B165B702BB69D,
+				F78066066D0FF0F034EDF5E3,
+				AC61B568D3788BFFA01664F3,
+				D371A9697D8CE4070C9AC2E4,
+				2C383889D146B1B5574D800F,
+				8C9AC2248E1F0C4BB8C69F71,
+				E8090C8BA62272AD91310E8F,
+				4B1AF77E8EFF7D1938B050FD,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0B2731681318B84D9EFBEB03 /* ReleaseSilicon */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../Release";
+				DEAD_CODE_STRIPPING = YES;
+				EXCLUDED_ARCHS = "i386 arm64e";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_NDEBUG=1",
+					"NDEBUG=1",
+					"JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1",
+					"JUCE_COREGRAPHICS_DRAW_ASYNC=1",
+					"JUCER_XCODE_MAC_2F3811D6=1",
+					"JUCE_APP_VERSION=1.0.0",
+					"JUCE_APP_VERSION_HEX=0x10000",
+					"JucePlugin_Build_VST=0",
+					"JucePlugin_Build_VST3=0",
+					"JucePlugin_Build_AU=0",
+					"JucePlugin_Build_AUv3=0",
+					"JucePlugin_Build_AAX=0",
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0",
+					"JucePlugin_Build_LV2=0",
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode",
+					"$(SRCROOT)/../../JUCE/modules",
+					"$(SRCROOT)/../../Modules",
+					"$(SRCROOT)/../../External/servus/include",
+					"$(SRCROOT)/../../External/dnssd/include",
+					"$(SRCROOT)/../../External/vlc/include",
+					"$(SRCROOT)/../../External/vlc/include/vlc/plugins",
+					"$(SRCROOT)/../../External/NDI/include/",
+					"$(SRCROOT)/../../Source",
+					"$(SRCROOT)/../../External/vlc/include",
+					"$(SRCROOT)/../../External/NDI/include",
+					"$(SRCROOT)/../../External/servus/include",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = Info-App.plist;
+				INFOPLIST_PREPROCESS = NO;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"../../External/servus/lib/silicon/release\"",
+					"\"../../External/vlc/lib/osx\"",
+					"\"../../External/NDI/lib/osx\"",
+					"\"../../External/NDI/lib/osx\"",
+					"\"../../Modules/juce_simpleweb/libs/MacOSX\"",
+					"\"../../Modules/juce_simpleweb/libs/MacOSX/${CURRENT_ARCH}\"",
+				);
+				LLVM_LTO = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
+				OTHER_LDFLAGS = "-lServus -lssl -lcrypto -lz";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.RuleMaPool;
+				PRODUCT_NAME = "RuleMaPool";
+				USE_HEADERMAP = NO;
+				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGL;
+				VALID_ARCHS = "arm64 x86_64";
+			};
+			name = ReleaseSilicon;
+		};
+		4BD0A3FB7E1AB0EF7C1712CA /* ReleaseSilicon */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = NO;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PRODUCT_NAME = "RuleMaPool";
+				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wreorder";
+				ZERO_LINK = NO;
+			};
+			name = ReleaseSilicon;
+		};
+		847D2636B6BB2EF146725DDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../Release";
+				DEAD_CODE_STRIPPING = YES;
+				EXCLUDED_ARCHS = "i386 arm64e";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_NDEBUG=1",
+					"NDEBUG=1",
+					"JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1",
+					"JUCE_COREGRAPHICS_DRAW_ASYNC=1",
+					"JUCER_XCODE_MAC_2F3811D6=1",
+					"JUCE_APP_VERSION=1.0.0",
+					"JUCE_APP_VERSION_HEX=0x10000",
+					"JucePlugin_Build_VST=0",
+					"JucePlugin_Build_VST3=0",
+					"JucePlugin_Build_AU=0",
+					"JucePlugin_Build_AUv3=0",
+					"JucePlugin_Build_AAX=0",
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0",
+					"JucePlugin_Build_LV2=0",
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode",
+					"$(SRCROOT)/../../JUCE/modules",
+					"$(SRCROOT)/../../Modules",
+					"$(SRCROOT)/../../External/servus/include",
+					"$(SRCROOT)/../../External/dnssd/include",
+					"$(SRCROOT)/../../External/vlc/include",
+					"$(SRCROOT)/../../External/vlc/include/vlc/plugins",
+					"$(SRCROOT)/../../External/NDI/include/",
+					"$(SRCROOT)/../../Source",
+					"$(SRCROOT)/../../External/vlc/include",
+					"$(SRCROOT)/../../External/NDI/include",
+					"$(SRCROOT)/../../External/servus/include",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = Info-App.plist;
+				INFOPLIST_PREPROCESS = NO;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"../../External/servus/lib/osx/release\"",
+					"\"../../External/vlc/lib/osx\"",
+					"\"../../External/NDI/lib/osx\"",
+					"\"../../External/NDI/lib/osx\"",
+					"\"../../Modules/juce_simpleweb/libs/MacOSX\"",
+					"\"../../Modules/juce_simpleweb/libs/MacOSX/${CURRENT_ARCH}\"",
+				);
+				LLVM_LTO = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
+				OTHER_LDFLAGS = "-lServus -lssl -lcrypto -lz";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.RuleMaPool;
+				PRODUCT_NAME = "RuleMaPool";
+				USE_HEADERMAP = NO;
+				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGL;
+				VALID_ARCHS = "arm64 x86_64";
+			};
+			name = Release;
+		};
+		9EB6D133141AAB36D47224E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = NO;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PRODUCT_NAME = "RuleMaPool";
+				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wreorder";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		27E5DEE8640F024DF419D470 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				847D2636B6BB2EF146725DDF,
+				0B2731681318B84D9EFBEB03,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		742EAA1F7744691AAEA300E8 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4BD0A3FB7E1AB0EF7C1712CA,
+				9EB6D133141AAB36D47224E8,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4050A69E21DD8F95C7780B72 /* Project object */;
+}

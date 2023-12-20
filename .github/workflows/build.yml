@@ -16,9 +16,9 @@ jobs:
           buildFolder: "VisualStudio2022_CI"
           installerName: install
 
-        - arch: win7-x64
-          buildFolder: "VisualStudio2022_Win7CI"
-          installerName: installWin7
+        # - arch: win7-x64
+        #   buildFolder: "VisualStudio2022_Win7CI"
+        #   installerName: installWin7
 
       fail-fast: false
 
@@ -72,21 +72,21 @@ jobs:
           url: ${{ secrets.UPLOADURL }}
           pass: ${{ secrets.UPLOADPASS }}
 
-      - name: Rename PDB
-        if: ${{ steps.set_variables.outputs.config == 'Release' && matrix.arch == 'win-x64' }}
-        id: rename_pdb
-        shell: powershell
-        run: |
-          Rename-Item -Path "./${{ env.ProjectName }}.pdb" -NewName "${{ steps.create_package.outputs.pdb-name }}"
-        working-directory: ./Builds/${{ matrix.buildFolder }}/x64/${{ steps.set_variables.outputs.config }}/App
+      # - name: Rename PDB
+      #   if: ${{ steps.set_variables.outputs.config == 'Release' && matrix.arch == 'win-x64' }}
+      #   id: rename_pdb
+      #   shell: powershell
+      #   run: |
+      #     Rename-Item -Path "./${{ env.ProjectName }}.pdb" -NewName "${{ steps.create_package.outputs.pdb-name }}"
+      #   working-directory: ./Builds/${{ matrix.buildFolder }}/x64/${{ steps.set_variables.outputs.config }}/App
 
-      - name: Upload PDB
-        if: ${{ steps.set_variables.outputs.config == 'Release' && matrix.arch == 'win-x64' }}
-        uses: ./.github/actions/upload
-        with:
-          pkg-name: ./Builds/${{ matrix.buildFolder }}/x64/${{ steps.set_variables.outputs.config }}/App/${{ steps.create_package.outputs.pdb-name }}
-          url: ${{ secrets.PDBUPLOADURL }}
-          pass: ${{ secrets.UPLOADPASS }}
+      # - name: Upload PDB
+      #   if: ${{ steps.set_variables.outputs.config == 'Release' && matrix.arch == 'win-x64' }}
+      #   uses: ./.github/actions/upload
+      #   with:
+      #     pkg-name: ./Builds/${{ matrix.buildFolder }}/x64/${{ steps.set_variables.outputs.config }}/App/${{ steps.create_package.outputs.pdb-name }}
+      #     url: ${{ secrets.PDBUPLOADURL }}
+      #     pass: ${{ secrets.UPLOADPASS }}
 
   osx:
     # if: false # tmp disable
@@ -306,7 +306,7 @@ jobs:
             apt-get update
             echo "Installing JUCE lib dependencies and extra tools"
             apt-get install -qyf libcurl3-gnutls libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev libasound2-dev freeglut3-dev libcurl4-gnutls-dev libasound2-dev libjack-dev libbluetooth-dev libgtk-3-dev libwebkit2gtk-4.0-dev libsdl2-dev libusb-1.0-0-dev libhidapi-dev ladspa-sdk libssl-dev
-            apt-get install -qy curl
+            apt-get install -qy curl libvlc-dev
 
             cd Builds/${{ matrix.buildFolder }}
             make -j2 CONFIG=${{ matrix.buildConfig }}
