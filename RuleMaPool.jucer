@@ -61,6 +61,10 @@
       </GROUP>
       <GROUP id="{924D741D-3B07-1454-A4CF-6C278ABC753A}" name="Media">
         <GROUP id="{284332BF-9D8F-13AD-1288-491679B1B400}" name="medias">
+          <GROUP id="{CF059ADF-8184-8DDC-E70E-02555368170C}" name="node">
+            <FILE id="h7viUd" name="NodeMedia.cpp" compile="0" resource="0" file="Source/Media/medias/node/NodeMedia.cpp"/>
+            <FILE id="PcIfQQ" name="NodeMedia.h" compile="0" resource="0" file="Source/Media/medias/node/NodeMedia.h"/>
+          </GROUP>
           <GROUP id="{34DE5101-50DD-DFBC-E9E3-99E1944439CD}" name="color">
             <FILE id="Zex5T9" name="ColorMedia.cpp" compile="0" resource="0" file="Source/Media/medias/color/ColorMedia.cpp"/>
             <FILE id="SgIxxG" name="ColorMedia.h" compile="0" resource="0" file="Source/Media/medias/color/ColorMedia.h"/>
@@ -170,6 +174,79 @@
               file="Source/Media/MediaManager.cpp"/>
         <FILE id="XTtx72" name="MediaManager.h" compile="0" resource="0" file="Source/Media/MediaManager.h"/>
       </GROUP>
+      <GROUP id="{FC63C548-493F-5EC6-9F20-217C89606A74}" name="Node">
+        <GROUP id="{AF2000C8-AF64-9BD5-A075-1F980FCB6D49}" name="Connection">
+          <GROUP id="{2B461789-8A64-7E76-78A0-8F6904C9E20D}" name="ui">
+            <FILE id="NlKy26" name="NodeConnectionManagerViewUI.cpp" compile="0"
+                  resource="0" file="Source/Node/Connection/ui/NodeConnectionManagerViewUI.cpp"/>
+            <FILE id="M7OJ8j" name="NodeConnectionManagerViewUI.h" compile="0"
+                  resource="0" file="Source/Node/Connection/ui/NodeConnectionManagerViewUI.h"/>
+            <FILE id="wNXy9K" name="NodeConnectionViewUI.cpp" compile="0" resource="0"
+                  file="Source/Node/Connection/ui/NodeConnectionViewUI.cpp"/>
+            <FILE id="H8xI3E" name="NodeConnectionViewUI.h" compile="0" resource="0"
+                  file="Source/Node/Connection/ui/NodeConnectionViewUI.h"/>
+            <FILE id="bqtO4F" name="NodeConnector.cpp" compile="0" resource="0"
+                  file="Source/Node/Connection/ui/NodeConnector.cpp"/>
+            <FILE id="gjnxEz" name="NodeConnector.h" compile="0" resource="0" file="Source/Node/Connection/ui/NodeConnector.h"/>
+          </GROUP>
+          <FILE id="ThZ7lf" name="NodeConnection.cpp" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnection.cpp"/>
+          <FILE id="X0l1Os" name="NodeConnection.h" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnection.h"/>
+          <FILE id="RAc6pQ" name="NodeConnectionManager.cpp" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnectionManager.cpp"/>
+          <FILE id="JjvGoV" name="NodeConnectionManager.h" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnectionManager.h"/>
+          <FILE id="oP8lPG" name="NodeConnectionSlot.cpp" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnectionSlot.cpp"/>
+          <FILE id="yBYQyo" name="NodeConnectionSlot.h" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnectionSlot.h"/>
+        </GROUP>
+        <GROUP id="{C170BEA4-4901-BA4E-6700-96866E3D18E8}" name="nodes">
+          <GROUP id="{6D1824C7-54FE-FCC8-2C45-8A7D64597024}" name="Output">
+            <FILE id="wcY2lX" name="OutputNode.cpp" compile="0" resource="0" file="Source/Node/nodes/Output/OutputNode.cpp"/>
+            <FILE id="dLaBT2" name="OutputNode.h" compile="0" resource="0" file="Source/Node/nodes/Output/OutputNode.h"/>
+          </GROUP>
+          <GROUP id="{7E9D8955-7F2C-8885-110C-DBA655FF9A75}" name="Drawing">
+            <GROUP id="{863F2D6B-F945-4B83-7BE6-24D895453820}" name="shape">
+              <FILE id="RheTn6" name="ShapeNode.cpp" compile="0" resource="0" file="Source/Node/nodes/Drawing/shape/ShapeNode.cpp"/>
+              <FILE id="TlUoi1" name="ShapeNode.h" compile="0" resource="0" file="Source/Node/nodes/Drawing/shape/ShapeNode.h"/>
+            </GROUP>
+          </GROUP>
+          <GROUP id="{9463CB10-632D-F3F3-AF50-2897AF332712}" name="Group">
+            <FILE id="Arc0BM" name="GroupNode.cpp" compile="0" resource="0" file="Source/Node/nodes/Group/GroupNode.cpp"/>
+            <FILE id="LZRaR2" name="GroupNode.h" compile="0" resource="0" file="Source/Node/nodes/Group/GroupNode.h"/>
+          </GROUP>
+          <GROUP id="{299E505E-1559-AEA1-3A24-EEBB54B9F346}" name="Source">
+            <FILE id="uOxSOq" name="MediaNode.cpp" compile="0" resource="0" file="Source/Node/nodes/Source/MediaNode.cpp"/>
+            <FILE id="be1xHi" name="MediaNode.h" compile="0" resource="0" file="Source/Node/nodes/Source/MediaNode.h"/>
+          </GROUP>
+        </GROUP>
+        <GROUP id="{10F9472F-423C-47E9-C611-4BE5E1A0A9A7}" name="ui">
+          <FILE id="jvOmMf" name="NodeManagerUI.cpp" compile="0" resource="0"
+                file="Source/Node/ui/NodeManagerUI.cpp"/>
+          <FILE id="prGazW" name="NodeManagerUI.h" compile="0" resource="0" file="Source/Node/ui/NodeManagerUI.h"/>
+          <FILE id="LoIPde" name="NodeManagerViewUI.cpp" compile="0" resource="0"
+                file="Source/Node/ui/NodeManagerViewUI.cpp"/>
+          <FILE id="tO7lip" name="NodeManagerViewUI.h" compile="0" resource="0"
+                file="Source/Node/ui/NodeManagerViewUI.h"/>
+          <FILE id="PfdKyk" name="NodeUI.cpp" compile="0" resource="0" file="Source/Node/ui/NodeUI.cpp"/>
+          <FILE id="JhP8AR" name="NodeUI.h" compile="0" resource="0" file="Source/Node/ui/NodeUI.h"/>
+          <FILE id="gBYogB" name="NodeViewUI.cpp" compile="0" resource="0" file="Source/Node/ui/NodeViewUI.cpp"/>
+          <FILE id="CT8yxw" name="NodeViewUI.h" compile="0" resource="0" file="Source/Node/ui/NodeViewUI.h"/>
+          <FILE id="g7FsnD" name="ViewStatsTimer.h" compile="0" resource="0"
+                file="Source/Node/ui/ViewStatsTimer.h"/>
+        </GROUP>
+        <FILE id="KD0yav" name="Node.cpp" compile="0" resource="0" file="Source/Node/Node.cpp"/>
+        <FILE id="UzNpzN" name="Node.h" compile="0" resource="0" file="Source/Node/Node.h"/>
+        <FILE id="biebGy" name="NodeFactory.cpp" compile="0" resource="0" file="Source/Node/NodeFactory.cpp"/>
+        <FILE id="nlWvf9" name="NodeFactory.h" compile="0" resource="0" file="Source/Node/NodeFactory.h"/>
+        <FILE id="kTjXYh" name="NodeIncludes.cpp" compile="1" resource="0"
+              file="Source/Node/NodeIncludes.cpp"/>
+        <FILE id="NgEDsM" name="NodeIncludes.h" compile="0" resource="0" file="Source/Node/NodeIncludes.h"/>
+        <FILE id="VxWdUv" name="NodeManager.cpp" compile="0" resource="0" file="Source/Node/NodeManager.cpp"/>
+        <FILE id="dRCquJ" name="NodeManager.h" compile="0" resource="0" file="Source/Node/NodeManager.h"/>
+      </GROUP>
       <GROUP id="{7B97F172-AD12-D845-791F-697250E41BF4}" name="Screen">
         <GROUP id="{B1E6FD4B-534C-4F1B-7B6F-D363C0DFB5E1}" name="Surface">
           <GROUP id="{6622099E-00A8-BACB-9648-AF5B3A81F508}" name="ui">
@@ -246,10 +323,10 @@
             externalLibraries="libvlc.lib&#10;libvlccore.lib&#10;Servus.lib"
             extraCompilerFlags="/bigobj">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="RuleMapPool" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
                        libraryPath="../../External/vlc/lib&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;"
                        binaryPath="Binaries/Debug"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="RuleMapPool" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
                        libraryPath="../../External/vlc/lib&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;"
                        binaryPath="Binaries/Release"/>
       </CONFIGURATIONS>

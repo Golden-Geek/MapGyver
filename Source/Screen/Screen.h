@@ -35,9 +35,15 @@ public:
     SurfaceManager surfaces;
 
     std::unique_ptr<ScreenRenderer> renderer;
+    SharedTextureSender* sharedTextureSender;
 
     void clearItem() override;
 
+    void onContainerParameterChangedInternal(Parameter* p) override;
+    void onContainerNiceNameChanged() override;
+
+    void setupOutput();
+    
     Point2DParameter* getClosestHandle(Point<float> pos, float maxDistance = INT32_MAX, Array<Point2DParameter*> excludeHandles = {});
     Point2DParameter* getSnapHandle(Point<float> pos, Point2DParameter* handle);
     Array<Point2DParameter*> getOverlapHandles(Point2DParameter* handle);
@@ -45,6 +51,7 @@ public:
 
     String getTypeString() const override { return objectType; }
     static Screen* create(var params) { return new Screen(params); }
+
 };
 
 

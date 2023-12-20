@@ -20,6 +20,9 @@
     <Filter Include="RuleMaPool\Source\Engine">
       <UniqueIdentifier>{39DD9B0C-EBBE-6B18-3A6A-61AD5E9E9E33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RuleMaPool\Source\Media\medias\node">
+      <UniqueIdentifier>{AC5DB4FB-1345-D99B-E6B1-9B2966E527B4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="RuleMaPool\Source\Media\medias\color">
       <UniqueIdentifier>{DD77564D-C527-ED75-C577-99354CEAB0A0}</UniqueIdentifier>
     </Filter>
@@ -61,6 +64,36 @@
     </Filter>
     <Filter Include="RuleMaPool\Source\Media">
       <UniqueIdentifier>{26EDDA1E-23B2-7160-A4C7-88D8FACC1019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMaPool\Source\Node\Connection\ui">
+      <UniqueIdentifier>{8DF9FA24-8CC7-E418-8C23-11B12D4D1554}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMaPool\Source\Node\Connection">
+      <UniqueIdentifier>{3935FD83-D40C-A8AF-727B-A7EDEF6F1F45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMaPool\Source\Node\nodes\Output">
+      <UniqueIdentifier>{F894AA33-7708-B81B-FD3A-2A2F29B45D4D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMaPool\Source\Node\nodes\Drawing\shape">
+      <UniqueIdentifier>{D7DB59EC-0B38-6BAA-789B-7E9349A304B3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMaPool\Source\Node\nodes\Drawing">
+      <UniqueIdentifier>{FB572792-177E-5391-B307-7CE28EC6458D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMaPool\Source\Node\nodes\Group">
+      <UniqueIdentifier>{0306B2AD-0953-63E3-48DD-C13AB50A38E5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMaPool\Source\Node\nodes\Source">
+      <UniqueIdentifier>{B5251523-56A9-379E-43E0-72F3D3EF0C57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMaPool\Source\Node\nodes">
+      <UniqueIdentifier>{1775E216-BD21-FBDD-B269-2C838BC541C9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMaPool\Source\Node\ui">
+      <UniqueIdentifier>{FC7552AE-8662-B5BA-3F83-1A87F49A617E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RuleMaPool\Source\Node">
+      <UniqueIdentifier>{6224364C-6207-AC33-1806-B7AA5022B3C3}</UniqueIdentifier>
     </Filter>
     <Filter Include="RuleMaPool\Source\Screen\Surface\ui">
       <UniqueIdentifier>{1C22B12F-58C8-DE82-83C7-4025B7BE854B}</UniqueIdentifier>
@@ -712,6 +745,9 @@
     <ClCompile Include="..\..\Source\Engine\RMPEngine.cpp">
       <Filter>RuleMaPool\Source\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\node\NodeMedia.cpp">
+      <Filter>RuleMaPool\Source\Media\medias\node</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\color\ColorMedia.cpp">
       <Filter>RuleMaPool\Source\Media\medias\color</Filter>
     </ClCompile>
@@ -771,6 +807,60 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\MediaManager.cpp">
       <Filter>RuleMaPool\Source\Media</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\ui\NodeConnectionManagerViewUI.cpp">
+      <Filter>RuleMaPool\Source\Node\Connection\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\ui\NodeConnectionViewUI.cpp">
+      <Filter>RuleMaPool\Source\Node\Connection\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\ui\NodeConnector.cpp">
+      <Filter>RuleMaPool\Source\Node\Connection\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\NodeConnection.cpp">
+      <Filter>RuleMaPool\Source\Node\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\NodeConnectionManager.cpp">
+      <Filter>RuleMaPool\Source\Node\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\NodeConnectionSlot.cpp">
+      <Filter>RuleMaPool\Source\Node\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\nodes\Output\OutputNode.cpp">
+      <Filter>RuleMaPool\Source\Node\nodes\Output</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\nodes\Drawing\shape\ShapeNode.cpp">
+      <Filter>RuleMaPool\Source\Node\nodes\Drawing\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\nodes\Group\GroupNode.cpp">
+      <Filter>RuleMaPool\Source\Node\nodes\Group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\nodes\Source\MediaNode.cpp">
+      <Filter>RuleMaPool\Source\Node\nodes\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\ui\NodeManagerUI.cpp">
+      <Filter>RuleMaPool\Source\Node\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\ui\NodeManagerViewUI.cpp">
+      <Filter>RuleMaPool\Source\Node\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\ui\NodeUI.cpp">
+      <Filter>RuleMaPool\Source\Node\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\ui\NodeViewUI.cpp">
+      <Filter>RuleMaPool\Source\Node\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Node.cpp">
+      <Filter>RuleMaPool\Source\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\NodeFactory.cpp">
+      <Filter>RuleMaPool\Source\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\NodeIncludes.cpp">
+      <Filter>RuleMaPool\Source\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\NodeManager.cpp">
+      <Filter>RuleMaPool\Source\Node</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Screen\Surface\ui\SurfaceUI.cpp">
       <Filter>RuleMaPool\Source\Screen\Surface\ui</Filter>
@@ -3081,6 +3171,9 @@
     <ClInclude Include="..\..\Source\Engine\RMPEngine.h">
       <Filter>RuleMaPool\Source\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\node\NodeMedia.h">
+      <Filter>RuleMaPool\Source\Media\medias\node</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\color\ColorMedia.h">
       <Filter>RuleMaPool\Source\Media\medias\color</Filter>
     </ClInclude>
@@ -3188,6 +3281,63 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\MediaManager.h">
       <Filter>RuleMaPool\Source\Media</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Connection\ui\NodeConnectionManagerViewUI.h">
+      <Filter>RuleMaPool\Source\Node\Connection\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Connection\ui\NodeConnectionViewUI.h">
+      <Filter>RuleMaPool\Source\Node\Connection\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Connection\ui\NodeConnector.h">
+      <Filter>RuleMaPool\Source\Node\Connection\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Connection\NodeConnection.h">
+      <Filter>RuleMaPool\Source\Node\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Connection\NodeConnectionManager.h">
+      <Filter>RuleMaPool\Source\Node\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Connection\NodeConnectionSlot.h">
+      <Filter>RuleMaPool\Source\Node\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\nodes\Output\OutputNode.h">
+      <Filter>RuleMaPool\Source\Node\nodes\Output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\nodes\Drawing\shape\ShapeNode.h">
+      <Filter>RuleMaPool\Source\Node\nodes\Drawing\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\nodes\Group\GroupNode.h">
+      <Filter>RuleMaPool\Source\Node\nodes\Group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\nodes\Source\MediaNode.h">
+      <Filter>RuleMaPool\Source\Node\nodes\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\ui\NodeManagerUI.h">
+      <Filter>RuleMaPool\Source\Node\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\ui\NodeManagerViewUI.h">
+      <Filter>RuleMaPool\Source\Node\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\ui\NodeUI.h">
+      <Filter>RuleMaPool\Source\Node\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\ui\NodeViewUI.h">
+      <Filter>RuleMaPool\Source\Node\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\ui\ViewStatsTimer.h">
+      <Filter>RuleMaPool\Source\Node\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Node.h">
+      <Filter>RuleMaPool\Source\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\NodeFactory.h">
+      <Filter>RuleMaPool\Source\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\NodeIncludes.h">
+      <Filter>RuleMaPool\Source\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\NodeManager.h">
+      <Filter>RuleMaPool\Source\Node</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Screen\Surface\ui\SurfaceUI.h">
       <Filter>RuleMaPool\Source\Screen\Surface\ui</Filter>
@@ -3693,7 +3843,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_core\zip\juce_ZipFile.h">
       <Filter>JUCE Modules\juce_core\zip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_core\juce_core.h">
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_core\juce_core.h">
       <Filter>JUCE Modules\juce_core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_cryptography\encryption\juce_BlowFish.h">
@@ -3714,7 +3864,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_cryptography\hashing\juce_Whirlpool.h">
       <Filter>JUCE Modules\juce_cryptography\hashing</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_cryptography\juce_cryptography.h">
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_cryptography\juce_cryptography.h">
       <Filter>JUCE Modules\juce_cryptography</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_data_structures\app_properties\juce_ApplicationProperties.h">
@@ -3744,7 +3894,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.h">
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.h">
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_data_structures\juce_data_structures.h">
       <Filter>JUCE Modules\juce_data_structures</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_events\broadcasters\juce_ActionBroadcaster.h">
@@ -3831,7 +3981,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_events\timers\juce_Timer.h">
       <Filter>JUCE Modules\juce_events\timers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_events\juce_events.h">
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_events\juce_events.h">
       <Filter>JUCE Modules\juce_events</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\colour\juce_Colour.h">
@@ -4011,7 +4161,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\placement\juce_RectanglePlacement.h">
       <Filter>JUCE Modules\juce_graphics\placement</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\juce_graphics.h">
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_graphics\juce_graphics.h">
       <Filter>JUCE Modules\juce_graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_basics\accessibility\enums\juce_AccessibilityActions.h">
@@ -4620,7 +4770,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_gui_basics\windows\juce_WindowUtils.h">
       <Filter>JUCE Modules\juce_gui_basics\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.h">
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_gui_basics\juce_gui_basics.h">
       <Filter>JUCE Modules\juce_gui_basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_extra\code_editor\juce_CodeDocument.h">
@@ -4704,7 +4854,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_gui_extra\native\juce_NSViewFrameWatcher_mac.h">
       <Filter>JUCE Modules\juce_gui_extra\native</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h">
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_gui_extra\juce_gui_extra.h">
       <Filter>JUCE Modules\juce_gui_extra</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JUCE\modules\juce_opengl\geometry\juce_Draggable3DOrientation.h">
@@ -4779,7 +4929,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_opengl\utils\juce_OpenGLAppComponent.h">
       <Filter>JUCE Modules\juce_opengl\utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_opengl\juce_opengl.h">
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_opengl\juce_opengl.h">
       <Filter>JUCE Modules\juce_opengl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Modules\juce_organicui\app\CrashHandler.h">
@@ -5418,7 +5568,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_osc\osc\juce_OSCTypes.h">
       <Filter>JUCE Modules\juce_osc\osc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_osc\juce_osc.h">
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_osc\juce_osc.h">
       <Filter>JUCE Modules\juce_osc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Modules\juce_sharedtexture\SharedTexture.h">
@@ -8313,7 +8463,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_video\playback\juce_VideoComponent.h">
       <Filter>JUCE Modules\juce_video\playback</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_video\juce_video.h">
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_video\juce_video.h">
       <Filter>JUCE Modules\juce_video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">

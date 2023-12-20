@@ -55,7 +55,8 @@ void PictureMedia::reloadImage()
 		if (target.existsAsFile() && target.hasFileExtension("jpg;jpeg;png"))
 		{
 			GenericScopedLock lock(imageLock);
-			initImage(ImageFileFormat::loadFrom(target));
+			Image img = ImageFileFormat::loadFrom(target);
+			initImage(img);
 			shouldRedraw = true;
 		}
 	}
@@ -77,6 +78,7 @@ void PictureMedia::run()
 	MemoryBlock block;
 	is->readIntoMemoryBlock(block);
 	MemoryInputStream mis(block, false);
-	initImage(ImageFileFormat::loadFrom(mis));
+	Image img = ImageFileFormat::loadFrom(mis);
+	initImage(img);
 
 }

@@ -52,7 +52,7 @@ void WebcamMedia::updateDevice()
 
 }
 
-void WebcamMedia::initImage(Image& newImage)
+void WebcamMedia::initImage(const Image& newImage)
 {
 	shouldRedraw = true;
 	if (!newImage.isValid())

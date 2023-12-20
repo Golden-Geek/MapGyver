@@ -115,6 +115,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Engine\RMPEngine.cpp"/>
+    <ClCompile Include="..\..\Source\Media\medias\node\NodeMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\color\ColorMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -171,6 +174,58 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\MediaIncludes.cpp"/>
     <ClCompile Include="..\..\Source\Media\MediaManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\ui\NodeConnectionManagerViewUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\ui\NodeConnectionViewUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\ui\NodeConnector.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\NodeConnection.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\NodeConnectionManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\NodeConnectionSlot.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\nodes\Output\OutputNode.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\nodes\Drawing\shape\ShapeNode.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\nodes\Group\GroupNode.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\nodes\Source\MediaNode.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\ui\NodeManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\ui\NodeManagerViewUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\ui\NodeUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\ui\NodeViewUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Node.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\NodeFactory.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\NodeIncludes.cpp"/>
+    <ClCompile Include="..\..\Source\Node\NodeManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Screen\Surface\ui\SurfaceUI.cpp">
@@ -2266,6 +2321,7 @@
     <ClInclude Include="..\..\Source\Common\MediaTarget.h"/>
     <ClInclude Include="..\..\Source\Common\OpenGLManager.h"/>
     <ClInclude Include="..\..\Source\Engine\RMPEngine.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\node\NodeMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\color\ColorMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\composition\CompositionLayer\CompositionLayer.h"/>
     <ClInclude Include="..\..\Source\Media\medias\composition\CompositionLayer\CompositionLayerManager.h"/>
@@ -2302,6 +2358,25 @@
     <ClInclude Include="..\..\Source\Media\Media.h"/>
     <ClInclude Include="..\..\Source\Media\MediaIncludes.h"/>
     <ClInclude Include="..\..\Source\Media\MediaManager.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\ui\NodeConnectionManagerViewUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\ui\NodeConnectionViewUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\ui\NodeConnector.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\NodeConnection.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\NodeConnectionManager.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\NodeConnectionSlot.h"/>
+    <ClInclude Include="..\..\Source\Node\nodes\Output\OutputNode.h"/>
+    <ClInclude Include="..\..\Source\Node\nodes\Drawing\shape\ShapeNode.h"/>
+    <ClInclude Include="..\..\Source\Node\nodes\Group\GroupNode.h"/>
+    <ClInclude Include="..\..\Source\Node\nodes\Source\MediaNode.h"/>
+    <ClInclude Include="..\..\Source\Node\ui\NodeManagerUI.h"/>
+    <ClInclude Include="..\..\Source\Node\ui\NodeManagerViewUI.h"/>
+    <ClInclude Include="..\..\Source\Node\ui\NodeUI.h"/>
+    <ClInclude Include="..\..\Source\Node\ui\NodeViewUI.h"/>
+    <ClInclude Include="..\..\Source\Node\ui\ViewStatsTimer.h"/>
+    <ClInclude Include="..\..\Source\Node\Node.h"/>
+    <ClInclude Include="..\..\Source\Node\NodeFactory.h"/>
+    <ClInclude Include="..\..\Source\Node\NodeIncludes.h"/>
+    <ClInclude Include="..\..\Source\Node\NodeManager.h"/>
     <ClInclude Include="..\..\Source\Screen\Surface\ui\SurfaceUI.h"/>
     <ClInclude Include="..\..\Source\Screen\Surface\Surface.h"/>
     <ClInclude Include="..\..\Source\Screen\Surface\SurfaceManager.h"/>
@@ -2470,14 +2545,14 @@
     <ClInclude Include="..\..\JUCE\modules\juce_core\zip\juce_GZIPCompressorOutputStream.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_core\zip\juce_GZIPDecompressorInputStream.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_core\zip\juce_ZipFile.h"/>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_core\juce_core.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_core\juce_core.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_cryptography\encryption\juce_BlowFish.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_cryptography\encryption\juce_Primes.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_cryptography\encryption\juce_RSAKey.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_cryptography\hashing\juce_MD5.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_cryptography\hashing\juce_SHA256.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_cryptography\hashing\juce_Whirlpool.h"/>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_cryptography\juce_cryptography.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_cryptography\juce_cryptography.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_data_structures\app_properties\juce_ApplicationProperties.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_data_structures\app_properties\juce_PropertiesFile.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_data_structures\undomanager\juce_UndoableAction.h"/>
@@ -2487,7 +2562,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_data_structures\values\juce_ValueTree.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_data_structures\values\juce_ValueTreePropertyWithDefault.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.h"/>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_data_structures\juce_data_structures.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_events\broadcasters\juce_ActionBroadcaster.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_events\broadcasters\juce_ActionListener.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_events\broadcasters\juce_AsyncUpdater.h"/>
@@ -2516,7 +2591,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_events\native\juce_WinRTWrapper_windows.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_events\timers\juce_MultiTimer.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_events\timers\juce_Timer.h"/>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_events\juce_events.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_events\juce_events.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\colour\juce_Colour.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\colour\juce_ColourGradient.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\colour\juce_Colours.h"/>
@@ -2576,7 +2651,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\native\juce_RenderingHelpers.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\placement\juce_Justification.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\placement\juce_RectanglePlacement.h"/>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\juce_graphics.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_graphics\juce_graphics.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_basics\accessibility\enums\juce_AccessibilityActions.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_basics\accessibility\enums\juce_AccessibilityEvent.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_basics\accessibility\enums\juce_AccessibilityRole.h"/>
@@ -2779,7 +2854,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_gui_basics\windows\juce_TopLevelWindow.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_basics\windows\juce_VBlankAttachment.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_basics\windows\juce_WindowUtils.h"/>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_gui_basics\juce_gui_basics.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_extra\code_editor\juce_CodeDocument.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_extra\code_editor\juce_CodeEditorComponent.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_extra\code_editor\juce_CodeTokeniser.h"/>
@@ -2807,7 +2882,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_gui_extra\misc\juce_SystemTrayIconComponent.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_extra\misc\juce_WebBrowserComponent.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_gui_extra\native\juce_NSViewFrameWatcher_mac.h"/>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_gui_extra\juce_gui_extra.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_opengl\geometry\juce_Draggable3DOrientation.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_opengl\geometry\juce_Matrix3D.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_opengl\geometry\juce_Quaternion.h"/>
@@ -2832,7 +2907,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_opengl\opengl\juce_OpenGLTexture.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_opengl\opengl\juce_wgl.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_opengl\utils\juce_OpenGLAppComponent.h"/>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_opengl\juce_opengl.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_opengl\juce_opengl.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\app\CrashHandler.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\app\OrganicApplication.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\app\OrganicMainComponent.h"/>
@@ -3045,7 +3120,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_osc\osc\juce_OSCSender.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_osc\osc\juce_OSCTimeTag.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_osc\osc\juce_OSCTypes.h"/>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_osc\juce_osc.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_osc\juce_osc.h"/>
     <ClInclude Include="..\..\Modules\juce_sharedtexture\SharedTexture.h"/>
     <ClInclude Include="..\..\Modules\juce_sharedtexture\SpoutLibrary.h"/>
     <ClInclude Include="..\..\Modules\juce_sharedtexture\juce_sharedtexture.h"/>
@@ -4010,7 +4085,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_video\native\juce_Video_mac.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_video\native\juce_Video_windows.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_video\playback\juce_VideoComponent.h"/>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_video\juce_video.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_video\juce_video.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>

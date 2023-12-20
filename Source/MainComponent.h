@@ -35,6 +35,19 @@ public:
     void fillFileMenuInternal(PopupMenu& menu) override;
 
 
+    class SharedTextureDispatcher : public OpenGLRenderer
+    {
+    public:
+        SharedTextureDispatcher() {}
+        ~SharedTextureDispatcher() {}
+        // Inherited via OpenGLRenderer
+        void newOpenGLContextCreated() override;
+        void renderOpenGL() override;
+        void openGLContextClosing() override;
+    };
+
+    SharedTextureDispatcher sharedTextureDispatcher;
+
 private:
     //==============================================================================
     // Your private member variables go here...

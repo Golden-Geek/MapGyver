@@ -49,6 +49,18 @@ OnlineContentExplorer::OnlineContentExplorer(const String& name) :
 	viewport.setViewedComponent(&itemsComp, false);
 	addAndMakeVisible(&viewport);
 
+	linksLabel.setFont(16);
+	linksLabel.setColour(linksLabel.textColourId, Colours::lightblue);
+	linksLabel.setInterceptsMouseClicks(true, false);
+	linksLabel.setJustificationType(Justification::centred);
+	linksLabel.setMouseCursor(MouseCursor::PointingHandCursor);
+	addAndMakeVisible(linksLabel);
+	updateLinksLabel();
+
+	linksLabel.addMouseListener(this, false);
+	
+	setInterceptsMouseClicks(true, true);
+
 	repaint();
 }
 
@@ -81,6 +93,8 @@ void OnlineContentExplorer::resized()
 	r.removeFromTop(10);
 	r.reduce(10, 10);
 
+	Rectangle<int> linksRect = r.removeFromBottom(20);
+	linksLabel.setBounds(linksRect.reduced(2));
 	//draw grid with 5 elements per row, keeping ratio of 16/9
 	viewport.setBounds(r);
 
@@ -104,7 +118,7 @@ void OnlineContentExplorer::resized()
 	else itemsComp.setBounds(viewport.getLocalBounds());
 
 
-	
+
 
 }
 
@@ -139,6 +153,35 @@ var OnlineContentExplorer::getResultsArray(var data)
 	}
 
 	return var();
+}
+
+void OnlineContentExplorer::mouseDown(const MouseEvent& e)
+{
+	if (e.originalComponent == &linksLabel)
+	{
+		OnlineSource s = source.getValueDataAsEnum<OnlineSource>();
+		switch (s)
+		{
+		case ShaderToy: URL("https://www.shadertoy.com/").launchInDefaultBrowser(); break;
+		case ISF: URL("https://editor.isf.video/").launchInDefaultBrowser(); break;
+		case Pexels_Photo:
+		case Pexels_Video:
+			URL("https://www.pexels.com/").launchInDefaultBrowser(); break;
+		}
+	}
+}
+
+void OnlineContentExplorer::updateLinksLabel()
+{
+	OnlineSource s = source.getValueDataAsEnum<OnlineSource>();
+	switch (s)
+	{
+	case ShaderToy: linksLabel.setText("Sources from ShaderToy - https://www.shadertoy.com/", dontSendNotification); break;
+	case ISF: linksLabel.setText("Sources from ISF Editor - https://editor.isf.video/", dontSendNotification); break;
+	case Pexels_Photo:
+	case Pexels_Video:
+		linksLabel.setText("Sources from Pexels - https://www.pexels.com/", dontSendNotification); break;
+	}
 }
 
 void OnlineContentExplorer::run()
@@ -211,6 +254,7 @@ void OnlineContentExplorer::parameterValueChanged(Parameter* p)
 {
 	if (p == &source)
 	{
+		updateLinksLabel();
 		//rebuild category
 		category.clearOptions();
 		category.addOption("All", "");
@@ -283,6 +327,32 @@ void OnlineContentItem::paint(Graphics& g)
 	g.drawText(name, getLocalBounds(), Justification::centred);
 }
 
+void OnlineContentItem::mouseDown(const MouseEvent& e)
+{
+	if (e.mods.isRightButtonDown())
+	{
+		PopupMenu m;
+		m.addItem("Open in browser", [this]() {
+			URL url;
+			switch (source)
+			{
+			case OnlineContentExplorer::ShaderToy: url = URL("https://www.shadertoy.com/view/" + id); break;
+			case OnlineContentExplorer::ISF: url = URL("https://editor.isf.video/?id=" + id); break;
+			case OnlineContentExplorer::Pexels_Photo:
+			case OnlineContentExplorer::Pexels_Video: url = URL(data["url"].toString()); break;
+			}
+
+			url.launchInDefaultBrowser();
+			});
+
+		if (source == OnlineContentExplorer::Pexels_Photo || source == OnlineContentExplorer::Pexels_Video) m.addItem("Go to author's page", [this]() {
+			URL(data["user"]["url"]).launchInDefaultBrowser();
+			});
+
+		m.showMenuAsync(PopupMenu::Options().withTargetComponent(this));
+	}
+}
+
 void OnlineContentItem::mouseDrag(const MouseEvent& e)
 {
 	if (!isSupported) return;
@@ -338,8 +408,8 @@ void OnlineContentItem::run()
 		LOG("Loading " + url.toString(true));
 
 		std::unique_ptr<InputStream> is = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withProgressCallback([this](int, int) { return !threadShouldExit();  }));
-		
-		
+
+
 		String dataStr = is->readEntireStreamAsString();
 		if (threadShouldExit()) return;
 
@@ -399,7 +469,7 @@ void OnlineContentItem::run()
 			StringPairArray headers;
 			std::unique_ptr<InputStream> is = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withResponseHeaders(&headers).withProgressCallback([this](int, int) { return !threadShouldExit();  }));
 
-			
+
 			if (is != nullptr)
 			{
 				MemoryBlock block;

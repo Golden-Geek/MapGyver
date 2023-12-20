@@ -13,7 +13,8 @@
 Screen::Screen(var params) :
 	BaseItem(params.getProperty("name", "Screen")),
 	objectType(params.getProperty("type", "Screen").toString()),
-	objectData(params)
+	objectData(params),
+	sharedTextureSender(nullptr)
 {
 	saveAndLoadRecursiveData = true;
 
@@ -40,12 +41,58 @@ Screen::Screen(var params) :
 
 Screen::~Screen()
 {
+
 }
 
 void Screen::clearItem()
 {
 	BaseItem::clearItem();
+	
+	if(SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->removeSender(sharedTextureSender);
+	sharedTextureSender = nullptr;
+
 	//enabled->setValue(false);
+}
+
+void Screen::onContainerParameterChangedInternal(Parameter* p)
+{
+	if (p == outputType)
+	{
+		setupOutput();
+	}
+
+	if (sharedTextureSender != nullptr)
+	{
+		if (p == enabled) sharedTextureSender->setEnabled(enabled->boolValue());
+		else if (p == screenWidth || p == screenHeight) sharedTextureSender->setSize(screenWidth->intValue(), screenHeight->intValue());
+	}
+}
+
+void Screen::onContainerNiceNameChanged()
+{
+	BaseItem::onContainerNiceNameChanged();
+	if (sharedTextureSender != nullptr) sharedTextureSender->setSharingName(niceName);
+}
+
+void Screen::setupOutput()
+{
+	SharedTextureManager::getInstance()->removeSender(sharedTextureSender);
+	sharedTextureSender = nullptr;
+
+	OutputType type = outputType->getValueDataAsEnum<OutputType>();
+	switch (type)
+	{
+	case DISPLAY:
+		break;
+
+	case SHARED_TEXTURE:
+		sharedTextureSender = SharedTextureManager::getInstance()->addSender(niceName, screenWidth->intValue(), screenHeight->intValue());
+		sharedTextureSender->setExternalFBO(&renderer->frameBuffer);
+		break;
+
+	case NDI:
+		break;
+	}
 }
 
 Point2DParameter* Screen::getClosestHandle(Point<float> pos, float maxDistance, Array<Point2DParameter*> excludeHandles)
@@ -58,8 +105,8 @@ Point2DParameter* Screen::getClosestHandle(Point<float> pos, float maxDistance, 
 		if (!s->enabled->boolValue() || s->isUILocked->boolValue()) continue;
 
 		Array<Point2DParameter*> handles = { s->topLeft, s->topRight, s->bottomLeft, s->bottomRight };
-		
-		
+
+
 		if (s->bezierCC.enabled->boolValue()) {
 			Array<Point2DParameter*> bezierHandles = { s->handleBezierTopLeft, s->handleBezierTopRight, s->handleBezierBottomLeft, s->handleBezierBottomRight, s->handleBezierLeftTop, s->handleBezierLeftBottom, s->handleBezierRightTop, s->handleBezierRightBottom };
 			handles.addArray(bezierHandles);

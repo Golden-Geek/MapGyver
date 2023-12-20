@@ -40,3 +40,4 @@
 #include "medias/Webcam/ui/WebcamDeviceParameterUI.h"
 #include "medias/Webcam/WebcamMedia.h"
 
+#include "medias/node/NodeMedia.h"

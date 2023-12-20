@@ -35,3 +35,5 @@
 #include "medias/Webcam/ui/WebcamDeviceChooser.cpp"
 #include "medias/Webcam/ui/WebcamDeviceParameterUI.cpp"
 #include "medias/Webcam/WebcamMedia.cpp"
+
+#include "medias/node/NodeMedia.cpp"

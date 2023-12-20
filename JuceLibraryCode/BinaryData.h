@@ -12,7 +12,7 @@ namespace BinaryData
     const int            default_rmplayoutSize = 2452;
 
     extern const char*   fragmentShaderMainSurface_glsl;
-    const int            fragmentShaderMainSurface_glslSize = 1088;
+    const int            fragmentShaderMainSurface_glslSize = 1226;
 
     extern const char*   fragmentShaderTestGrid_glsl;
     const int            fragmentShaderTestGrid_glslSize = 1035;

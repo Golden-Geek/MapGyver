@@ -2,6 +2,7 @@
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
 #include "Common/CommonIncludes.h"
+#include "Node/NodeIncludes.h"
 #include "MainComponent.h"
 
 //==============================================================================
@@ -33,6 +34,7 @@ void MainContentComponent::init()
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Screen Editor", &ScreenEditorPanel::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Medias", &MediaManagerUI::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Online Explorer", &OnlineContentExplorer::create));
+	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Node Editor", &NodeManagerViewPanel::create));
 
 	OrganicMainContentComponent::init();
 
@@ -44,10 +46,26 @@ void MainContentComponent::setupOpenGL()
 {
 	//do not use organic one
 	GlContextHolder::getInstance()->setup(this);
+	GlContextHolder::getInstance()->registerOpenGlRenderer(&sharedTextureDispatcher);
 }
 
 void MainContentComponent::paint(Graphics& g)
 {
 	//nothing
 	//OrganicMainContentComponent::paint(g);
+}
+
+void MainContentComponent::SharedTextureDispatcher::newOpenGLContextCreated()
+{
+	if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->initGL();
+}
+
+void MainContentComponent::SharedTextureDispatcher::renderOpenGL()
+{
+	if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->renderGL();
+}
+
+void MainContentComponent::SharedTextureDispatcher::openGLContextClosing()
+{
+	if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->clearGL();
 }

@@ -130,6 +130,9 @@ static const unsigned char temp_binary_data_1[] =
 "void main()\r\n"
 "{\r\n"
 "\toutColor = textureProj(tex, Texcoord);\r\n"
+"    vec2 tex2D = Texcoord.xy / Texcoord.z;\r\n"
+"    if (tex2D.x>1 || tex2D.x<0 ||tex2D.y>1 || tex2D.y<0) \r\n"
+"    { outColor = vec4(0,0,0,0); }\r\n"
 "   \tvec4 maskColor = textureProj(mask, Maskcoord);\r\n"
 "   \tfloat alpha = 1.0f;\r\n"
 "   \tif (SurfacePosition[1] > 1-borderSoft[0])    {alpha *= map(SurfacePosition[1],1.0f,1-borderSoft[0],0.0f,1.0f);} // top\r\n"
@@ -2204,7 +2207,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
     switch (hash)
     {
         case 0x67012481:  numBytes = 2452; return default_rmplayout;
-        case 0x0ffdf71e:  numBytes = 1088; return fragmentShaderMainSurface_glsl;
+        case 0x0ffdf71e:  numBytes = 1226; return fragmentShaderMainSurface_glsl;
         case 0x0ff5b690:  numBytes = 1035; return fragmentShaderTestGrid_glsl;
         case 0xd4093963:  numBytes = 52976; return icon_png;
         case 0x7536b908:  numBytes = 85942; return testPattern_png;

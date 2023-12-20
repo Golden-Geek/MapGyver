@@ -22,6 +22,8 @@ ScreenOutput::ScreenOutput(Screen* screen) :
 {
 	setOpaque(true);
 
+	autoDrawContourWhenSelected = false;
+
 	openGLContext.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
 	openGLContext.setRenderer(this);
 	openGLContext.attachTo(*this);

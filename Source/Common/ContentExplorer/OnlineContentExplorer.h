@@ -45,12 +45,18 @@ public:
 	Viewport viewport;
 	Component itemsComp;
 
+	Label linksLabel;
+
 	void paint(Graphics& g) override;
 	void resized();
 
 	void updateItems();
 
 	var getResultsArray(var data);
+
+	void mouseDown(const MouseEvent& e) override;
+
+	void updateLinksLabel();
 
 	void run() override;
 
@@ -83,6 +89,7 @@ public:
 	Image previewImage;
 
 	void paint(Graphics& g) override;
+	void mouseDown(const MouseEvent& e) override;
 	void mouseDrag(const MouseEvent& e) override;
 
 	void run() override;

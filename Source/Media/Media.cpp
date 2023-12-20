@@ -57,6 +57,9 @@ void Media::renderOpenGL()
 	const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
 	double t = GlContextHolder::getInstance()->timeAtRender;
 	if (t < timeAtLastRender + frameTime) return;
+
+	//log delta
+	//LOG("Delta: " << t - timeAtLastRender);
 	timeAtLastRender = t;
 
 	Point<int> size = getMediaSize();
@@ -188,7 +191,7 @@ void ImageMedia::initImage(int width, int height)
 	initImage(Image(Image::ARGB, width, height, true));
 }
 
-void ImageMedia::initImage(Image &newImage)
+void ImageMedia::initImage(const Image &newImage)
 {
 	shouldRedraw = true;
 	if (!newImage.isValid())

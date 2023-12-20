@@ -25,6 +25,7 @@ MediaManager::MediaManager() :
     factory.defs.add(Factory<Media>::Definition::createDef<SharedTextureMedia>(""));
     factory.defs.add(Factory<Media>::Definition::createDef<ShaderMedia>(""));
     factory.defs.add(Factory<Media>::Definition::createDef<CompositionMedia>(""));
+    factory.defs.add(Factory<Media>::Definition::createDef<NodeMedia>(""));
 
     itemDataType = "Media";
     selectItemWhenCreated = true;

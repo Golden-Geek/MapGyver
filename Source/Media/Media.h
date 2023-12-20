@@ -78,7 +78,7 @@ public:
 	virtual void initFrameBuffer() override;
 
 	void initImage(int width, int height);
-	virtual void initImage(Image &image);
+	virtual void initImage(const Image &image);
 
 	virtual Point<int> getMediaSize() override;
 };
