@@ -32,11 +32,11 @@ WizardStyle=modern
 SetupWindowTitle={#ApplicationName} {#ApplicationVersion} Setup
 
 [Files]
-Source: "Binaries/CI/App/{#ApplicationName}.exe"; DestDir: "{app}" ; Flags: ignoreversion
-Source: "Binaries/CI/App/*.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Binaries/CI/App/server.crt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Binaries/CI/App/server.key"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Binaries/CI/App/plugins/*"; DestDir: "{app}\plugins"; Flags: recursesubdirs
+Source: "Binaries\CI\App\{#ApplicationName}.exe"; DestDir: "{app}" ; Flags: ignoreversion
+Source: "Binaries\CI\App\*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Binaries\CI\App\server.crt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Binaries\CI\App\server.key"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Binaries\CI\App\plugins\*"; DestDir: "{app}\plugins"; Flags: recursesubdirs
 [Icons]                                               
 Name: "{group}\{#ApplicationName}"; Filename: "{app}\{#ApplicationName}.exe"
 
