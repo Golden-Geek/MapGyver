@@ -4,7 +4,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 
 #define ApplicationName 'RuleMaPool'
-#define ApplicationVersion GetStringFileInfo('Binaries/CI/App/Chataigne.exe',"ProductVersion")
+#define ApplicationVersion GetStringFileInfo('Binaries/CI/App/RuleMaPool.exe',"ProductVersion")
 
 [Setup]
 AppName={#ApplicationName}
