@@ -846,7 +846,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1340;
-				ORGANIZATIONNAME = "";
+				ORGANIZATIONNAME = "GoldenGeek";
 				TargetAttributes = {
 					C27F766E5FAA6BE7B4BA3859 = {
 						SystemCapabilities = {
@@ -998,7 +998,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
 				OTHER_LDFLAGS = "-lServus -lssl -lcrypto -lz";
-				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.RuleMaPool;
+				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.rulemapool;
 				PRODUCT_NAME = "RuleMaPool";
 				USE_HEADERMAP = NO;
 				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGL;
@@ -1116,7 +1116,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
 				OTHER_LDFLAGS = "-lServus -lssl -lcrypto -lz";
-				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.RuleMaPool;
+				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.rulemapool;
 				PRODUCT_NAME = "RuleMaPool";
 				USE_HEADERMAP = NO;
 				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGL;

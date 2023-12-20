@@ -15,6 +15,7 @@ BEGIN
   BEGIN
     BLOCK "040904E4"
     BEGIN
+      VALUE "CompanyName",  "GoldenGeek\0"
       VALUE "FileDescription",  "RuleMaPool\0"
       VALUE "FileVersion",  "1.0.0\0"
       VALUE "ProductName",  "RuleMaPool\0"
