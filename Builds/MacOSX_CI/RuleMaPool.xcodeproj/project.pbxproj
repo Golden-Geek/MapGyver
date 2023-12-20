@@ -18,6 +18,7 @@
 		40668BF70BE66104AD08931D /* Security.framework */ = {isa = PBXBuildFile; fileRef = 7FBD3116FE14ED4E88109D55; };
 		408C24D6DCE375F1E3BDD037 /* include_juce_opengl.mm */ = {isa = PBXBuildFile; fileRef = 6AB8DE71714CBCBD809CE98F; };
 		43584DFF5885B5AF98EB4102 /* IOKit.framework */ = {isa = PBXBuildFile; fileRef = E3CCDF0749D08884DBFFFCAF; };
+		449C7E106415900823474787 /* libndi.dylib */ = {isa = PBXBuildFile; fileRef = EEC32EC811117A6F7AD6774D; };
 		4A7255651E91F7FC60580E1D /* ScreenIncludes.cpp */ = {isa = PBXBuildFile; fileRef = D815DD20B788110DB5612CAB; };
 		4B1AF77E8EFF7D1938B050FD /* include_juce_video.mm */ = {isa = PBXBuildFile; fileRef = 6AD228C97881C89C01069C1E; };
 		52E04CA9331616AE85A16C92 /* RMPEngine.cpp */ = {isa = PBXBuildFile; fileRef = 1072149CF6F837D01CA534F5; };
@@ -32,6 +33,7 @@
 		A9760A2C0E5C4F265F8356C1 /* include_juce_organicui2.cpp */ = {isa = PBXBuildFile; fileRef = 72B993C2D698814B3C31FE2F; };
 		AC61B568D3788BFFA01664F3 /* include_juce_organicui4.cpp */ = {isa = PBXBuildFile; fileRef = 2217BF767413530B5A45BC7F; };
 		AD3297F1FF7517AE72D20064 /* RecentFilesMenuTemplate.nib */ = {isa = PBXBuildFile; fileRef = FAD60D310B79F00B85399328; };
+		C37AE221C049C0F09E7652BE /* libvlc.dylib */ = {isa = PBXBuildFile; fileRef = 0E0F1A8E73CF261EC03F402B; };
 		C54A97F18B1B16DFC3FBCBEB /* MediaIncludes.cpp */ = {isa = PBXBuildFile; fileRef = 4CA5D3BF6753A36D1CD72D33; };
 		C82F2995B8165ED0751C594F /* include_juce_gui_extra.mm */ = {isa = PBXBuildFile; fileRef = 6BD749992FC12D51E1B1F436; };
 		C9EBE4D28288E704C73598F3 /* Cocoa.framework */ = {isa = PBXBuildFile; fileRef = 185B784B15D32476C9A05651; };
@@ -43,6 +45,7 @@
 		E8090C8BA62272AD91310E8F /* include_juce_simpleweb2.cpp */ = {isa = PBXBuildFile; fileRef = 1B5D79576A494981FEE963EE; };
 		E81D4CC1E90BD3BF6D5FFE2F /* CoreMedia.framework */ = {isa = PBXBuildFile; fileRef = CE85E6B722CF2AD3F8D10777; };
 		EAB2F1D5A6FE647A38E59D54 /* MetalKit.framework */ = {isa = PBXBuildFile; fileRef = 03F081A282FDA78557D8056B; settings = { ATTRIBUTES = (Weak, ); }; };
+		EB32F6F87A55816B9964A42A /* libvlccore.dylib */ = {isa = PBXBuildFile; fileRef = DC735670B8E6A9821FA71266; };
 		F1FA7F3FDBC6B2172BC5F168 /* CommonIncludes.cpp */ = {isa = PBXBuildFile; fileRef = 6D0B9E9579989832F91EE3AA; };
 		F78066066D0FF0F034EDF5E3 /* include_juce_organicui3.cpp */ = {isa = PBXBuildFile; fileRef = C88E1CE00E9C351BC930CA82; };
 		FBAACB9F77161A4E3EF70FE2 /* Metal.framework */ = {isa = PBXBuildFile; fileRef = 191B0F2FA86F31DE09193DA1; settings = { ATTRIBUTES = (Weak, ); }; };
@@ -65,6 +68,7 @@
 		0A940BCB47DE196611911B19 /* ScreenRenderer.cpp */ /* ScreenRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenRenderer.cpp; path = ../../Source/Screen/ui/ScreenRenderer.cpp; sourceTree = SOURCE_ROOT; };
 		0BEB7482AF749F1EA50E2CF0 /* NodeConnectionManagerViewUI.h */ /* NodeConnectionManagerViewUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnectionManagerViewUI.h; path = ../../Source/Node/Connection/ui/NodeConnectionManagerViewUI.h; sourceTree = SOURCE_ROOT; };
 		0DFE95F9BB2618BF02FCCBC0 /* AVKit.framework */ /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
+		0E0F1A8E73CF261EC03F402B /* libvlc.dylib */ /* libvlc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvlc.dylib; path = ../../External/vlc/lib/osx/libvlc.dylib; sourceTree = SOURCE_ROOT; };
 		0E9602AA6EA3E72D9070DD0F /* ScreenIncludes.h */ /* ScreenIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenIncludes.h; path = ../../Source/Screen/ScreenIncludes.h; sourceTree = SOURCE_ROOT; };
 		0FC3B25BD7E5349FA38491D1 /* webcamDeviceParameter.cpp */ /* webcamDeviceParameter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamDeviceParameter.cpp; path = ../../Source/Media/medias/webcam/webcamDeviceParameter.cpp; sourceTree = SOURCE_ROOT; };
 		1072149CF6F837D01CA534F5 /* RMPEngine.cpp */ /* RMPEngine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RMPEngine.cpp; path = ../../Source/Engine/RMPEngine.cpp; sourceTree = SOURCE_ROOT; };
@@ -225,6 +229,7 @@
 		DB2BCE2387EA9A51C7034593 /* NDIDeviceChooser.cpp */ /* NDIDeviceChooser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NDIDeviceChooser.cpp; path = ../../Source/Common/NDI/ui/NDIDeviceChooser.cpp; sourceTree = SOURCE_ROOT; };
 		DB8B42A2EC2A878B01849944 /* juce_core */ /* juce_core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_core; path = ../../JUCE/modules/juce_core; sourceTree = SOURCE_ROOT; };
 		DBFED058905DF25E3EDAE5E7 /* ShaderMedia.h */ /* ShaderMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShaderMedia.h; path = ../../Source/Media/medias/shader/ShaderMedia.h; sourceTree = SOURCE_ROOT; };
+		DC735670B8E6A9821FA71266 /* libvlccore.dylib */ /* libvlccore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvlccore.dylib; path = ../../External/vlc/lib/osx/libvlccore.dylib; sourceTree = SOURCE_ROOT; };
 		DE03D51D03A659370E12BED8 /* NodeUI.h */ /* NodeUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeUI.h; path = ../../Source/Node/ui/NodeUI.h; sourceTree = SOURCE_ROOT; };
 		DEC1B8C7330FE2FE579C1524 /* webcamDeviceParameterUI.cpp */ /* webcamDeviceParameterUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamDeviceParameterUI.cpp; path = ../../Source/Media/medias/webcam/ui/webcamDeviceParameterUI.cpp; sourceTree = SOURCE_ROOT; };
 		DF5FA0F7CEB6708E13CB7E47 /* ScreenManager.h */ /* ScreenManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenManager.h; path = ../../Source/Screen/ScreenManager.h; sourceTree = SOURCE_ROOT; };
@@ -237,6 +242,7 @@
 		ECF95EA12287B29074B5124E /* ScreenOutput.cpp */ /* ScreenOutput.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenOutput.cpp; path = ../../Source/Screen/ui/ScreenOutput.cpp; sourceTree = SOURCE_ROOT; };
 		EDA6DC9FB3EACD745726EBD1 /* fragmentShaderTestGrid.glsl */ /* fragmentShaderTestGrid.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; name = fragmentShaderTestGrid.glsl; path = ../../Resources/fragmentShaderTestGrid.glsl; sourceTree = SOURCE_ROOT; };
 		EE224875B9AC60F4064A607E /* BinaryData.h */ /* BinaryData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BinaryData.h; path = ../../JuceLibraryCode/BinaryData.h; sourceTree = SOURCE_ROOT; };
+		EEC32EC811117A6F7AD6774D /* libndi.dylib */ /* libndi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libndi.dylib; path = ../../External/NDI/lib/osx/libndi.dylib; sourceTree = SOURCE_ROOT; };
 		EF396BAC567849222F475856 /* webcamDevice.h */ /* webcamDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = webcamDevice.h; path = ../../Source/Media/medias/webcam/webcamDevice.h; sourceTree = SOURCE_ROOT; };
 		F00DF21073435B9EF792C5E3 /* Screen.cpp */ /* Screen.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Screen.cpp; path = ../../Source/Screen/Screen.cpp; sourceTree = SOURCE_ROOT; };
 		F097430EB3C3FCE258B4ED03 /* AVFoundation.framework */ /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -374,6 +380,9 @@
 				7FF7C3D0A6219998E3BF28B3,
 				FAD60D310B79F00B85399328,
 				1DE7D7218F031CDF73ACF4AB,
+				EEC32EC811117A6F7AD6774D,
+				0E0F1A8E73CF261EC03F402B,
+				DC735670B8E6A9821FA71266,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -828,6 +837,7 @@
 				63544AE4C0E80351F91B7624,
 				09176D6B389960DE92A57764,
 				AE23FF7A7192B69F15AE6FFF,
+				724700CB467404C54D8E0D7A,
 			);
 			buildRules = (
 			);
@@ -895,10 +905,27 @@
 			files = (
 				AD3297F1FF7517AE72D20064,
 				CEB1617933A8BB8B4A089969,
+				449C7E106415900823474787,
+				C37AE221C049C0F09E7652BE,
+				EB32F6F87A55816B9964A42A,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		724700CB467404C54D8E0D7A /* Post-build script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "Post-build script";
+			alwaysOutOfDate = 1;
+			shellPath = /bin/sh;
+			shellScript = "cd $TARGET_BUILD_DIR\ninstall_name_tool -add_rpath @executable_path/../Resources RuleMaPool.app/Contents/MacOS/RuleMaPool\ninstall_name_tool -add_rpath @executable_path/../Resources/plugins RuleMaPool.app/Contents/MacOS/RuleMaPool";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		09176D6B389960DE92A57764 = {
@@ -953,7 +980,7 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1",
-					"JUCE_COREGRAPHICS_DRAW_ASYNC=1",
+					"JUCE_COREGRAPHICS_DRAW_ASYNC=0",
 					"JUCER_XCODE_MAC_2F3811D6=1",
 					"JUCE_APP_VERSION=1.0.0",
 					"JUCE_APP_VERSION_HEX=0x10000",
@@ -990,14 +1017,13 @@
 					"\"../../External/servus/lib/silicon/release\"",
 					"\"../../External/vlc/lib/osx\"",
 					"\"../../External/NDI/lib/osx\"",
-					"\"../../External/NDI/lib/osx\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX/${CURRENT_ARCH}\"",
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
-				OTHER_LDFLAGS = "-lServus -lssl -lcrypto -lz";
+				OTHER_LDFLAGS = "-lServus -lvlc -lvlccore -lndi -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.rulemapool;
 				PRODUCT_NAME = "RuleMaPool";
 				USE_HEADERMAP = NO;
@@ -1071,7 +1097,7 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1",
-					"JUCE_COREGRAPHICS_DRAW_ASYNC=1",
+					"JUCE_COREGRAPHICS_DRAW_ASYNC=0",
 					"JUCER_XCODE_MAC_2F3811D6=1",
 					"JUCE_APP_VERSION=1.0.0",
 					"JUCE_APP_VERSION_HEX=0x10000",
@@ -1108,14 +1134,13 @@
 					"\"../../External/servus/lib/osx/release\"",
 					"\"../../External/vlc/lib/osx\"",
 					"\"../../External/NDI/lib/osx\"",
-					"\"../../External/NDI/lib/osx\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX/${CURRENT_ARCH}\"",
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
-				OTHER_LDFLAGS = "-lServus -lssl -lcrypto -lz";
+				OTHER_LDFLAGS = "-lServus -lvlc -lvlccore -lndi -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.rulemapool;
 				PRODUCT_NAME = "RuleMaPool";
 				USE_HEADERMAP = NO;

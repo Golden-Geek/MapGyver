@@ -12,3 +12,9 @@ Binaries/Release/
 Binaries/
 
 RuleMaPool-win-x64-bleedingedge.exe
+
+External/.DS_Store
+
+External/vlc/.DS_Store
+
+Release/

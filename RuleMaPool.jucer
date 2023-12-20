@@ -6,6 +6,14 @@
               companyName="GoldenGeek" bundleIdentifier="com.goldengeek.rulemapool">
   <MAINGROUP id="HVgNxl" name="RuleMaPool">
     <GROUP id="{F38B7255-1DCA-93A3-BDC5-0B94B29FDCE3}" name="Resources">
+      <GROUP id="{2197F95F-2563-5673-95CA-08F7626CAAB1}" name="osx">
+        <FILE id="RBLLda" name="libndi.dylib" compile="0" resource="0" file="External/NDI/lib/osx/libndi.dylib"
+              xcodeResource="1"/>
+        <FILE id="i1qdbi" name="libvlc.dylib" compile="0" resource="0" file="External/vlc/lib/osx/libvlc.dylib"
+              xcodeResource="1"/>
+        <FILE id="towmax" name="libvlccore.dylib" compile="0" resource="0"
+              file="External/vlc/lib/osx/libvlccore.dylib" xcodeResource="1"/>
+      </GROUP>
       <FILE id="YIE66F" name="default.rmplayout" compile="0" resource="1"
             file="Resources/default.rmplayout"/>
       <FILE id="QjCryC" name="fragmentShaderMainSurface.glsl" compile="0"
@@ -370,15 +378,16 @@
         <MODULEPATH id="juce_simpleweb" path="Modules"/>
       </MODULEPATHS>
     </VS2022>
-    <XCODE_MAC targetFolder="Builds/MacOSX_CI" extraDefs="JUCE_COREGRAPHICS_DRAW_ASYNC=1"
-               externalLibraries="Servus" smallIcon="AKcEsb" bigIcon="AKcEsb"
-               xcodeValidArchs="arm64,x86_64">
+    <XCODE_MAC targetFolder="Builds/MacOSX_CI" extraDefs="JUCE_COREGRAPHICS_DRAW_ASYNC=0"
+               externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi" smallIcon="AKcEsb"
+               bigIcon="AKcEsb" xcodeValidArchs="arm64,x86_64" customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;&#9;&lt;dict&gt;&#10;&#9;&#9;&lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;&#9;&#9;&lt;true/&gt;&#10;&#9;&lt;/dict&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
+               postbuildCommand="cd $TARGET_BUILD_DIR&#10;install_name_tool -add_rpath @executable_path/../Resources RuleMaPool.app/Contents/MacOS/RuleMaPool&#10;install_name_tool -add_rpath @executable_path/../Resources/plugins RuleMaPool.app/Contents/MacOS/RuleMaPool">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="0" name="Release" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/servus/lib/osx/release&#10;../../External/vlc/lib/osx&#10;../../External/NDI/lib/osx&#10;../../External/NDI/lib/osx"
+                       libraryPath="../../External/servus/lib/osx/release&#10;../../External/vlc/lib/osx&#10;../../External/NDI/lib/osx"
                        macOSDeploymentTarget="10.10" osxCompatibility="10.10 SDK"/>
         <CONFIGURATION isDebug="0" name="ReleaseSilicon" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/servus/lib/silicon/release&#10;../../External/vlc/lib/osx&#10;../../External/NDI/lib/osx&#10;../../External/NDI/lib/osx"
+                       libraryPath="../../External/servus/lib/silicon/release&#10;../../External/vlc/lib/osx&#10;../../External/NDI/lib/osx"
                        macOSDeploymentTarget="10.10" osxCompatibility="10.10 SDK"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
