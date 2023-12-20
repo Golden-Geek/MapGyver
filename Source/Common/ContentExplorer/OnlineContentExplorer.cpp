@@ -232,7 +232,7 @@ URL OnlineContentExplorer::getSearchURL()
 		return "https ://api.pexels.com/videos/search?query=" + search.stringValue() + "&per_page=" + String(maxResults.intValue()) + "&page=" + String(pageCount.intValue());
 	}
 
-	return "";
+	return URL();
 }
 
 String OnlineContentExplorer::getExtraHeadersForSource(OnlineSource os)
@@ -447,8 +447,8 @@ void OnlineContentItem::run()
 		case OnlineContentExplorer::Pexels_Photo:
 		{
 			previewURL = "https://images.pexels.com/photos/" + id + "/pexels-photo-" + id + ".jpeg?auto=compress&cs=tinysrgb&dpr=1&h=160&w=90";
-			name = data["photographer"].toString() + " - " + data["alt"];
-			description = data["alt"];
+			name = data["photographer"].toString() + " - " + data["alt"].toString();
+            description = data["alt"].toString();
 		}
 		break;
 
