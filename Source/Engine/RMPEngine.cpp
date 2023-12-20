@@ -21,7 +21,7 @@ RMPEngine::RMPEngine() :
 	//defaultBehaviors("Test"),
 	//ossiaFixture(nullptr)
 {
-	convertURL = "http://hazlab.fr/rulemapool/releases/convert.json";
+	convertURL = "https://benjamin.kuperberg.fr/rulemapool/releases/convert.json";
 	
 	//Communication
 	// OSCRemoteControl::getInstance()->addRemoteControlListener(UserInputManager::getInstance());
