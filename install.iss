@@ -4,7 +4,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 
 #define ApplicationName 'RuleMaPool'
-#define ApplicationVersion GetStringFileInfo('Binaries/CI/App/Chataigne.exe',"ProductVersion")
+#define ApplicationVersion GetStringFileInfo('Binaries/CI/App/RuleMaPool.exe',"ProductVersion")
 
 [Setup]
 AppName={#ApplicationName}
@@ -36,7 +36,7 @@ Source: "Binaries/CI/App/{#ApplicationName}.exe"; DestDir: "{app}" ; Flags: igno
 Source: "Binaries/CI/App/*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Binaries/CI/App/server.crt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Binaries/CI/App/server.key"; DestDir: "{app}"; Flags: ignoreversion
-Source: "Binaries/CI/App/plugins/*"; DestDir: "{app}\plugins"; Flags: ignoreversion
+Source: "Binaries/CI/App/plugins/*"; DestDir: "{app}\plugins"; Flags: recursesubdirs
 [Icons]                                               
 Name: "{group}\{#ApplicationName}"; Filename: "{app}\{#ApplicationName}.exe"
 

@@ -8,3 +8,7 @@ Builds/VisualStudio2022/RuleMapPool_App.vcxproj
 Builds/VisualStudio2022/RuleMapPool_App.vcxproj.filters
 
 Binaries/Release/
+
+Binaries/
+
+RuleMaPool-win-x64-bleedingedge.exe
