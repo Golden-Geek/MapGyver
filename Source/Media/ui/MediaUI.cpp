@@ -18,3 +18,14 @@ MediaUI::MediaUI(Media* item) :
 MediaUI::~MediaUI()
 {
 }
+
+void MediaUI::mouseDoubleClick(const MouseEvent& e)
+{
+    if (SequenceMedia* seq = dynamic_cast<SequenceMedia*>(item))
+    {
+        if (TimeMachineView* v = ShapeShifterManager::getInstance()->getContentForType<TimeMachineView>())
+        {
+		   v->setSequence(&seq->sequence);
+	   }
+	}
+}

@@ -41,3 +41,11 @@
 #include "medias/Webcam/WebcamMedia.h"
 
 #include "medias/node/NodeMedia.h"
+
+#include "medias/sequence/MediaClip.h"
+#include "medias/sequence/MediaClipManager.h"
+#include "medias/sequence/MediaLayer.h"
+#include "medias/sequence/SequenceMedia.h"
+#include "medias/sequence/ui/MediaClipUI.h"
+#include "medias/sequence/ui/MediaClipManagerUI.h"
+#include "medias/sequence/ui/MediaLayerTimeline.h"

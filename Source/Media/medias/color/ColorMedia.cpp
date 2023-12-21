@@ -13,7 +13,7 @@
 ColorMedia::ColorMedia(var params) :
 	Media(getTypeString(), params)
 {
-	color = addColorParameter("Color", "", Colour(255, 255, 255));
+	color = mediaParams.addColorParameter("Color", "", Colour(255, 255, 255));
 }
 
 ColorMedia::~ColorMedia()
@@ -23,13 +23,6 @@ ColorMedia::~ColorMedia()
 void ColorMedia::clearItem()
 {
 	BaseItem::clearItem();
-}
-
-void ColorMedia::onContainerParameterChangedInternal(Parameter* p)
-{
-	Media::onContainerParameterChangedInternal(p);
-
-	if (p == color) shouldRedraw = true;
 }
 
 void ColorMedia::renderGLInternal()

@@ -20,7 +20,6 @@ public:
 	ColorParameter* color;
 
 	void clearItem() override;
-	void onContainerParameterChangedInternal(Parameter* p) override;
 
 	void renderGLInternal() override;
 

@@ -16,5 +16,7 @@ class MediaUI :
 public:
     MediaUI(Media* item);
     virtual ~MediaUI();
+
+    void mouseDoubleClick(const MouseEvent& e) override;
 };
 

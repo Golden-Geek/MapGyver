@@ -23,6 +23,8 @@ public:
 	IntParameter* width;
 	IntParameter* height;
 
+	ControllableContainer mediaParams;
+
 	OpenGLFrameBuffer frameBuffer;
 	bool alwaysRedraw;
 	bool shouldRedraw;
@@ -38,7 +40,7 @@ public:
 	int lastFPSIndex;
 	void FPSTick();
 
-	void onContainerParameterChangedInternal(Parameter* p);
+	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
@@ -53,8 +55,8 @@ public:
 	OpenGLFrameBuffer* getFrameBuffer();
 	GLint getTextureID();
 
-	void registerTarget(MediaTarget * target);
-	void unregisterTarget(MediaTarget * target);
+	void registerTarget(MediaTarget* target);
+	void unregisterTarget(MediaTarget* target);
 
 	bool isBeingUsed();
 
@@ -78,7 +80,7 @@ public:
 	virtual void initFrameBuffer() override;
 
 	void initImage(int width, int height);
-	virtual void initImage(const Image &image);
+	virtual void initImage(const Image& image);
 
 	virtual Point<int> getMediaSize() override;
 };

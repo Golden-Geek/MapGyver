@@ -115,6 +115,27 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Engine\RMPEngine.cpp"/>
+    <ClCompile Include="..\..\Source\Media\medias\sequence\ui\MediaClipManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\sequence\ui\MediaClipUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\sequence\ui\MediaLayerTimeline.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\sequence\MediaClip.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\sequence\MediaClipManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\sequence\MediaLayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\sequence\SequenceMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\node\NodeMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -266,6 +287,939 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\MainIncludes.cpp"/>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioProcessLoadMeasurer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\buffers\juce_FloatVectorOperations.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMP_test.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPIterator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPMidi1ToMidi2DefaultTranslator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPSysEx7.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPUtils.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPView.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiBuffer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiFile.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiKeyboardState.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiMessage.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiMessageSequence.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiRPN.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPEInstrument.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPEMessages.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPENote.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPESynthesiser.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPESynthesiserBase.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPESynthesiserVoice.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPEUtils.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPEValue.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPEZoneLayout.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_BufferingAudioSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_ChannelRemappingAudioSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_IIRFilterAudioSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_MemoryAudioSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_MixerAudioSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_PositionableAudioSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_ResamplingAudioSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_ReverbAudioSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_ToneGeneratorAudioSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\synthesisers\juce_Synthesiser.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_ADSR_test.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_AudioWorkgroup.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_IIRFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_Interpolators.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_LagrangeInterpolator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_SmoothedValue.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_WindowedSincInterpolator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\audio_io\juce_AudioDeviceManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\audio_io\juce_AudioIODevice.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\audio_io\juce_AudioIODeviceType.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\audio_io\juce_SampleRateHelpers.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\midi_io\juce_MidiDevices.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\midi_io\juce_MidiMessageCollector.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\aaudio\AAudioLoader.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\aaudio\AudioStreamAAudio.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\AudioSourceCaller.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\AudioStream.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\AudioStreamBuilder.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\DataConversionFlowGraph.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\FilterAudioStream.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\FixedBlockAdapter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\FixedBlockReader.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\FixedBlockWriter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\LatencyTuner.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\QuirksManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\SourceFloatCaller.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\SourceI16Caller.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\SourceI24Caller.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\SourceI32Caller.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\StabilizedCallback.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\Trace.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\Utilities.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\Version.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\fifo\FifoBuffer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\fifo\FifoController.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\fifo\FifoControllerBase.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\fifo\FifoControllerIndirect.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\IntegerRatio.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\LinearResampler.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\MultiChannelResampler.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\PolyphaseResampler.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\PolyphaseResamplerMono.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\PolyphaseResamplerStereo.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\SincResampler.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\SincResamplerStereo.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\ChannelCountConverter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\ClipToRange.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\FlowGraphNode.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\ManyToMultiConverter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\MonoToMultiConverter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\MultiToMonoConverter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\RampLinear.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SampleRateConverter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SinkFloat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SinkI16.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SinkI24.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SinkI32.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SourceFloat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SourceI16.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SourceI24.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SourceI32.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\AudioInputStreamOpenSLES.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\AudioOutputStreamOpenSLES.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\AudioStreamBuffered.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\AudioStreamOpenSLES.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\EngineOpenSLES.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\OpenSLESUtilities.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\OutputMixerOpenSLES.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_ALSA_linux.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_ASIO_windows.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_Audio_android.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_Audio_ios.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_Bela_linux.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_CoreAudio_mac.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_DirectSound_windows.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_JackAudio_linux.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_Midi_android.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_Midi_linux.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_Midi_windows.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_Oboe_android.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_OpenSL_android.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\native\juce_WASAPI_windows.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\sources\juce_AudioSourcePlayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\sources\juce_AudioTransportSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_devices\juce_audio_devices.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\bitmath.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\bitreader.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\bitwriter.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\cpu.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\crc.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\fixed.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\float.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\format.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\lpc_flac.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\md5.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\memory.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\stream_decoder.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\stream_encoder.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\stream_encoder_framing.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\window_flac.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\analysis.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\bitrate.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\block.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\codebook.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\envelope.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\floor0.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\floor1.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\info.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\lookup.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\lpc.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\lsp.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\mapping0.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\mdct.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\misc.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\psy.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\registry.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\res0.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\sharedbook.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\smallft.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\synthesis.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\vorbisenc.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\vorbisfile.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\window.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\bitwise.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\framing.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_AiffAudioFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_CoreAudioFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_FlacAudioFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_LAMEEncoderAudioFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_MP3AudioFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_OggVorbisAudioFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_WavAudioFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_WindowsMediaAudioFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\format\juce_ARAAudioReaders.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatReader.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatReaderSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatWriter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioSubsectionReader.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\format\juce_BufferingAudioFormatReader.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\sampler\juce_Sampler.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_formats\juce_audio_formats.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format\juce_AudioPluginFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format\juce_AudioPluginFormatManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\zix\tree.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\collections.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\filesystem.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\instance.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\lib.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\node.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\plugin.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\pluginclass.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\port.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\query.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\scalepoint.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\state.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\ui.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\util.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\world.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\atom\atom-test-utils.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\atom\atom-test.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\atom\forge-overflow-test.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\base64.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\byte_source.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\env.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\n3.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\node.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\reader.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\serdi.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\string.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\system.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\uri.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\writer.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\zix\btree.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\zix\digest.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\zix\hash.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\sord.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\sord_test.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\sord_validate.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\sordi.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\sordmm_test.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\syntax.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sratom\src\sratom.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\baseiids.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fbuffer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fdebug.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fobject.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fstreamer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fstring.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\updatehandler.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\thread\source\flock.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\conststringtable.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\coreiids.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\funknown.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ustring.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\samples\vst-utilities\moduleinfotool\source\main.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\pluginview.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\readfile.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\hostclasses.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\module.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\module_linux.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\module_win32.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\pluginterfacesupport.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\moduleinfo\moduleinfocreator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\moduleinfo\moduleinfoparser.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\utility\stringconvert.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstbus.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstcomponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstcomponentbase.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vsteditcontroller.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstinitiids.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstparameters.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstpresetfile.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_ARACommon.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_ARAHosting.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_LADSPAPluginFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_LegacyAudioParameter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_LV2PluginFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_LV2PluginFormat_test.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_LV2SupportLibs.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_VST3PluginFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_VST3PluginFormat_test.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_VSTPluginFormat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioPluginInstance.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorEditor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorGraph.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorParameterGroup.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_GenericAudioProcessorEditor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_PluginDescription.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\scanning\juce_KnownPluginList.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\scanning\juce_PluginDirectoryScanner.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\scanning\juce_PluginListComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_ARA_utils.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_ARADocumentController.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_ARADocumentControllerCommon.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_ARAModelObjects.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_ARAPlugInInstanceRoles.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_AudioProcessor_ARAExtensions.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AAXClientExtensions.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioParameterBool.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioParameterChoice.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioParameterFloat.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioParameterInt.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioProcessorParameterWithID.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioProcessorValueTreeState.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_NativeScaleFactorNotifier.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_ParameterAttachments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_PluginHostType.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_RangedAudioParameter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_VST2ClientExtensions.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\juce_audio_processors_ara.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_processors\juce_audio_processors_lv2_libs.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDReader.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_AudioAppComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_AudioDeviceSelectorComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnail.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailCache.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_AudioVisualiserComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_KeyboardComponentBase.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_MidiKeyboardComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_MPEKeyboardComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\native\juce_AudioCDBurner_windows.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\native\juce_AudioCDReader_linux.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\native\juce_AudioCDReader_windows.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\native\juce_BluetoothMidiDevicePairingDialogue_android.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\native\juce_BluetoothMidiDevicePairingDialogue_linux.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\native\juce_BluetoothMidiDevicePairingDialogue_windows.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\players\juce_AudioProcessorPlayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\players\juce_SoundPlayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_audio_utils\juce_audio_utils.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_core\containers\juce_AbstractFifo.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2276,6 +3230,156 @@
     <ClCompile Include="..\..\Modules\juce_simpleweb\SimpleWebSocketServer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\resources\BinaryData.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Cue\ui\TimeCueManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Cue\ui\TimeCueUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Cue\TimeCue.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Cue\TimeCueManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\ui\AudioLayerClipManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\ui\AudioLayerClipUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\ui\AudioLayerPanel.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\ui\AudioLayerTimeline.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\AudioLayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\AudioLayerClip.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\AudioLayerClipManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Block\ui\LayerBlockManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Block\ui\LayerBlockUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Block\LayerBlock.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Block\LayerBlockManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\ui\SequenceBlockLayerPanel.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\ui\SequenceBlockLayerTimeline.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\ui\SequenceBlockManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\ui\SequenceBlockUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\SequenceBlock.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\SequenceBlockLayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\SequenceBlockManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\ui\TimeTriggerManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\ui\TimeTriggerMultiTransformer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\ui\TimeTriggerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\ui\TriggerLayerPanel.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\ui\TriggerLayerTimeline.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\TimeTrigger.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\TimeTriggerManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\TriggerLayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\ui\SequenceLayerPanel.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\ui\SequenceLayerPanelManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\ui\SequenceLayerTimeline.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\ui\SequenceLayerTimelineManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayerManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceEditorView.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceTimelineHeader.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceTimelineNavigationUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceTimelineSeeker.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceTransportUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Metronome.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Sequence.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\ui\SequenceManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\ui\TimeMachineView.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\SequenceManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\juce_timeline.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\TimelineAppCommands.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_video\capture\juce_CameraDevice.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2286,6 +3390,15 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_basics.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_devices.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_formats.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_processors.cpp">
+      <AdditionalOptions> /bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_processors_ara.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_processors_lv2_libs.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_utils.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_core.cpp">
       <AdditionalOptions> /bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -2307,6 +3420,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_sharedtexture.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_simpleweb.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_simpleweb2.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_timeline.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_video.cpp"/>
   </ItemGroup>
   <ItemGroup>
@@ -2321,6 +3435,13 @@
     <ClInclude Include="..\..\Source\Common\MediaTarget.h"/>
     <ClInclude Include="..\..\Source\Common\OpenGLManager.h"/>
     <ClInclude Include="..\..\Source\Engine\RMPEngine.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaClipManagerUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaClipUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaLayerTimeline.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\sequence\MediaClip.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\sequence\MediaClipManager.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\sequence\MediaLayer.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\sequence\SequenceMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\node\NodeMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\color\ColorMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\composition\CompositionLayer\CompositionLayer.h"/>
@@ -2390,6 +3511,459 @@
     <ClInclude Include="..\..\Source\Main.h"/>
     <ClInclude Include="..\..\Source\MainComponent.h"/>
     <ClInclude Include="..\..\Source\MainIncludes.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioProcessLoadMeasurer.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioSampleBuffer.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\buffers\juce_FloatVectorOperations.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMP.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPacket.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPackets.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPConversion.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPConverters.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPDispatcher.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPFactory.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPIterator.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPMidi1ToBytestreamTranslator.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPMidi1ToMidi2DefaultTranslator.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPProtocols.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPReceiver.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPSysEx7.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPUtils.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\ump\juce_UMPView.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiBuffer.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiDataConcatenator.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiFile.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiKeyboardState.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiMessage.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiMessageSequence.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\midi\juce_MidiRPN.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPEInstrument.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPEMessages.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPENote.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPESynthesiser.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPESynthesiserBase.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPESynthesiserVoice.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPEUtils.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPEValue.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\mpe\juce_MPEZoneLayout.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\native\juce_AudioWorkgroup_mac.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\native\juce_CoreAudioLayouts_mac.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\native\juce_CoreAudioTimeConversions_mac.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_AudioSource.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_BufferingAudioSource.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_ChannelRemappingAudioSource.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_IIRFilterAudioSource.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_MemoryAudioSource.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_MixerAudioSource.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_PositionableAudioSource.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_ResamplingAudioSource.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_ReverbAudioSource.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\sources\juce_ToneGeneratorAudioSource.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\synthesisers\juce_Synthesiser.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_ADSR.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_AudioWorkgroup.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_Decibels.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_GenericInterpolator.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_IIRFilter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_Interpolators.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_Reverb.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_basics\utilities\juce_SmoothedValue.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_audio_basics\juce_audio_basics.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\audio_io\juce_AudioDeviceManager.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\audio_io\juce_AudioIODevice.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\audio_io\juce_AudioIODeviceType.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\audio_io\juce_SystemAudioVolume.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\midi_io\ump\juce_UMPBytestreamInputHandler.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\midi_io\ump\juce_UMPU32InputHandler.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\midi_io\juce_MidiDevices.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\midi_io\juce_MidiMessageCollector.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\include\oboe\AudioStream.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\include\oboe\AudioStreamBase.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\include\oboe\AudioStreamBuilder.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\include\oboe\AudioStreamCallback.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\include\oboe\Definitions.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\include\oboe\LatencyTuner.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\include\oboe\Oboe.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\include\oboe\ResultWithValue.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\include\oboe\StabilizedCallback.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\include\oboe\Utilities.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\include\oboe\Version.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\aaudio\AAudioExtensions.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\aaudio\AAudioLoader.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\aaudio\AudioStreamAAudio.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\AudioClock.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\AudioSourceCaller.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\DataConversionFlowGraph.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\FilterAudioStream.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\FixedBlockAdapter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\FixedBlockReader.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\FixedBlockWriter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\MonotonicCounter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\OboeDebug.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\QuirksManager.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\SourceFloatCaller.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\SourceI16Caller.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\SourceI24Caller.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\SourceI32Caller.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\common\Trace.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\fifo\FifoBuffer.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\fifo\FifoController.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\fifo\FifoControllerBase.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\fifo\FifoControllerIndirect.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\HyperbolicCosineWindow.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\IntegerRatio.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\KaiserWindow.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\LinearResampler.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\MultiChannelResampler.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\PolyphaseResampler.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\PolyphaseResamplerMono.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\PolyphaseResamplerStereo.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\SincResampler.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\resampler\SincResamplerStereo.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\ChannelCountConverter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\ClipToRange.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\FlowGraphNode.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\FlowgraphUtilities.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\ManyToMultiConverter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\MonoToMultiConverter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\MultiToMonoConverter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\RampLinear.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SampleRateConverter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SinkFloat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SinkI16.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SinkI24.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SinkI32.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SourceFloat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SourceI16.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SourceI24.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\flowgraph\SourceI32.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\AudioInputStreamOpenSLES.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\AudioOutputStreamOpenSLES.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\AudioStreamBuffered.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\AudioStreamOpenSLES.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\EngineOpenSLES.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\OpenSLESUtilities.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\src\opensles\OutputMixerOpenSLES.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\juce_Audio_ios.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\native\juce_HighPerformanceAudioHelpers_android.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\sources\juce_AudioSourcePlayer.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_devices\sources\juce_AudioTransportSource.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_audio_devices\juce_audio_devices.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\all.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\bitmath.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\bitreader.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\bitwriter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\cpu.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\crc.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\fixed.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\float.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\format.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\lpc.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\md5.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\memory.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\metadata.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\stream_encoder.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\stream_encoder_framing.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\window.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\protected\all.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\protected\stream_decoder.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\protected\stream_encoder.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\all.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\alloc.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\assert.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\callback.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\compat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\endswap.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\export.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\format.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\metadata.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\ordinals.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\stream_decoder.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\stream_encoder.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\books\coupled\res_books_51.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\books\coupled\res_books_stereo.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\books\floor\floor_books.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\books\uncoupled\res_books_uncoupled.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\floor_all.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\psych_8.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\psych_11.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\psych_16.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\psych_44.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\residue_8.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\residue_16.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\residue_44.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\residue_44p51.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\residue_44u.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\setup_8.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\setup_11.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\setup_16.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\setup_22.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\setup_32.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\setup_44.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\setup_44p51.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\setup_44u.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\modes\setup_X.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\backends.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\bitrate.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\codebook.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\codec_internal.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\envelope.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\highlevel.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\lookup.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\lookup_data.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\lpc.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\lsp.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\masking.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\mdct.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\misc.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\os.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\psy.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\registry.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\scales.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\smallft.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\lib\window.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\codec.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\config_types.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\crctable.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\ogg.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\os_types.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\vorbisenc.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\vorbisfile.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_AiffAudioFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_CoreAudioFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_FlacAudioFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_LAMEEncoderAudioFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_MP3AudioFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_OggVorbisAudioFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_WavAudioFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\codecs\juce_WindowsMediaAudioFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_ARAAudioReaders.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatManager.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatReader.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatReaderSource.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatWriter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioSubsectionReader.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_BufferingAudioFormatReader.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_MemoryMappedAudioFormatReader.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\sampler\juce_Sampler.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_audio_formats\juce_audio_formats.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format\juce_AudioPluginFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format\juce_AudioPluginFormatManager.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\lilv\lilv.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\lilv\lilvmm.hpp"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\zix\common.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\zix\tree.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\filesystem.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv\src\lilv_internal.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\atom\atom.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\atom\forge.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\atom\util.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\buf-size\buf-size.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\core\attributes.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\core\lv2.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\core\lv2_util.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\data-access\data-access.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\dynmanifest\dynmanifest.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\event\event-helpers.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\event\event.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\instance-access\instance-access.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\log\log.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\log\logger.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\midi\midi.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\morph\morph.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\options\options.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\parameters\parameters.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\patch\patch.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\port-groups\port-groups.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\port-props\port-props.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\presets\presets.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\resize-port\resize-port.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\state\state.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\time\time.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\ui\ui.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\units\units.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\uri-map\uri-map.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\urid\urid.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lv2\lv2\worker\worker.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\serd\serd.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\attributes.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\base64.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\byte_sink.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\byte_source.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\node.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\reader.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\serd_config.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\serd_internal.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\stack.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\string_utils.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\system.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd\src\uri_utils.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\sord\sord.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\sord\sordmm.hpp"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\zix\btree.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\zix\common.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\zix\digest.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\zix\hash.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\sord_config.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord\src\sord_internal.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sratom\sratom\sratom.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\juce_lv2_config.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\lilv_config.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\serd_config.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\sord_config.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\pslextensions\ipslcontextinfo.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\pslextensions\ipsleditcontroller.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\pslextensions\ipslgainreduction.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\pslextensions\ipslhostcommands.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\pslextensions\ipslviewembedding.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\pslextensions\ipslviewscaling.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\pslextensions\pslauextensions.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\pslextensions\pslvst2extensions.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\classfactoryhelpers.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fbuffer.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fcommandline.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fdebug.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fobject.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fstreamer.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fstring.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\updatehandler.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\thread\include\flock.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\conststringtable.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\falignpop.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\falignpush.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\fplatform.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\fstrdefs.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ftypes.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\funknown.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\futils.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\fvariant.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ibstream.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\icloneable.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ipersistent.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ipluginbase.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\iplugincompatibility.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\istringresult.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\iupdatehandler.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\smartpointer.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\typesizecheck.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ustring.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\gui\iplugview.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\gui\iplugviewcontentscalesupport.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstattributes.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstaudioprocessor.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstautomationstate.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstchannelcontextinfo.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstcomponent.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstcontextmenu.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivsteditcontroller.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstevents.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivsthostapplication.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstinterappaudio.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstmessage.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstmidicontrollers.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstmidilearn.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstnoteexpression.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstparameterchanges.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstparameterfunctionname.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstphysicalui.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstpluginterfacesupport.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstplugview.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstprefetchablesupport.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstprocesscontext.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstrepresentation.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivsttestplugprovider.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstunits.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstpshpack4.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstspeaker.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vsttypes.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\pluginview.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\readfile.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\hostclasses.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\module.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\pluginterfacesupport.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\moduleinfo\json.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\moduleinfo\jsoncxx.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\moduleinfo\moduleinfo.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\moduleinfo\moduleinfocreator.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\moduleinfo\moduleinfoparser.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\utility\optional.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\utility\stringconvert.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\utility\uid.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstbus.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstcomponent.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstcomponentbase.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vsteditcontroller.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstparameters.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstpresetfile.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_ARACommon.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_ARAHosting.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_AU_Shared.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_AudioUnitPluginFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_LADSPAPluginFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_LV2Common.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_LV2PluginFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_LV2Resources.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_VST3Common.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_VST3Headers.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_VST3PluginFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_VSTCommon.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_VSTMidiEventList.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\format_types\juce_VSTPluginFormat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioPluginInstance.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessor.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorEditor.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorEditorHostContext.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorGraph.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorListener.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorParameter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorParameterGroup.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_GenericAudioProcessorEditor.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_HostedAudioProcessorParameter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\processors\juce_PluginDescription.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\scanning\juce_KnownPluginList.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\scanning\juce_PluginDirectoryScanner.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\scanning\juce_PluginListComponent.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_ARA_utils.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_ARADebug.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_ARADocumentController.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_ARAModelObjects.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_ARAPlugInInstanceRoles.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\ARA\juce_AudioProcessor_ARAExtensions.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AAXClientExtensions.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioParameterBool.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioParameterChoice.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioParameterFloat.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioParameterInt.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioProcessorParameterWithID.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_AudioProcessorValueTreeState.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_ExtensionsVisitor.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_FlagCache.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_NativeScaleFactorNotifier.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_ParameterAttachments.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_PluginHostType.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_RangedAudioParameter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_VST2ClientExtensions.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_processors\utilities\juce_VST3ClientExtensions.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_audio_processors\juce_audio_processors.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDBurner.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDReader.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_AudioAppComponent.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_AudioDeviceSelectorComponent.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnail.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailBase.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailCache.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_AudioVisualiserComponent.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_BluetoothMidiDevicePairingDialogue.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_KeyboardComponentBase.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_MidiKeyboardComponent.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\gui\juce_MPEKeyboardComponent.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\players\juce_AudioProcessorPlayer.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_utils\players\juce_SoundPlayer.h"/>
+    <ClInclude Include="..\..\..\..\..\..\Softwares\JUCE\modules\juce_audio_utils\juce_audio_utils.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_core\containers\juce_AbstractFifo.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_core\containers\juce_Array.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_core\containers\juce_ArrayAllocationBase.h"/>
@@ -4075,6 +5649,56 @@
     <ClInclude Include="..\..\Modules\juce_simpleweb\SimpleWebSocketClient.h"/>
     <ClInclude Include="..\..\Modules\juce_simpleweb\SimpleWebSocketServer.h"/>
     <ClInclude Include="..\..\Modules\juce_simpleweb\juce_simpleweb.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\resources\BinaryData.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Cue\ui\TimeCueManagerUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Cue\ui\TimeCueUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Cue\TimeCue.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Cue\TimeCueManager.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\ui\AudioLayerClipManagerUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\ui\AudioLayerClipUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\ui\AudioLayerPanel.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\ui\AudioLayerTimeline.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\AudioLayer.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\AudioLayerClip.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\audio\AudioLayerClipManager.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Block\ui\LayerBlockManagerUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Block\ui\LayerBlockUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Block\LayerBlock.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Block\LayerBlockManager.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\ui\SequenceBlockLayerPanel.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\ui\SequenceBlockLayerTimeline.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\ui\SequenceBlockManagerUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\ui\SequenceBlockUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\SequenceBlock.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\SequenceBlockLayer.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\SequenceBlock\SequenceBlockManager.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\ui\TimeTriggerManagerUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\ui\TimeTriggerMultiTransformer.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\ui\TimeTriggerUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\ui\TriggerLayerPanel.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\ui\TriggerLayerTimeline.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\TimeTrigger.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\TimeTriggerManager.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\layers\Trigger\TriggerLayer.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\ui\SequenceLayerPanel.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\ui\SequenceLayerPanelManagerUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\ui\SequenceLayerTimeline.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\ui\SequenceLayerTimelineManagerUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayer.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayerManager.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceEditorView.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceTimelineHeader.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceTimelineNavigationUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceTimelineSeeker.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceTransportUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Metronome.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Sequence.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\ui\SequenceManagerUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\ui\TimeMachineView.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\SequenceManager.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\TimelineAppCommands.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\juce_timeline.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_video\capture\juce_CameraDevice.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_video\native\juce_CameraDevice_android.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_video\native\juce_CameraDevice_ios.h"/>
@@ -4097,6 +5721,22 @@
     <None Include="..\..\Resources\icon.png"/>
     <None Include="..\..\Resources\testPattern.png"/>
     <None Include="..\..\Resources\VertexShaderMainSurface.glsl"/>
+    <None Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt"/>
+    <None Include="..\..\JUCE\modules\juce_audio_devices\native\oboe\README.md"/>
+    <None Include="..\..\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>
+    <None Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.7\README.md"/>
+    <None Include="..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\Ogg Vorbis Licence.txt"/>
+    <None Include="..\..\JUCE\modules\juce_audio_processors\format_types\LV2_SDK\README.md"/>
+    <None Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\LICENSE.txt"/>
+    <None Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\README.md"/>
+    <None Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\LICENSE.txt"/>
+    <None Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\README.md"/>
+    <None Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\moduleinfo\ReadMe.md"/>
+    <None Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\LICENSE.txt"/>
+    <None Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\README.md"/>
+    <None Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\JUCE_README.md"/>
+    <None Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\LICENSE.txt"/>
+    <None Include="..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\README.md"/>
     <None Include="..\..\JUCE\modules\juce_core\native\java\README.txt"/>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt"/>
     <None Include="..\..\JUCE\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt"/>
@@ -4105,6 +5745,7 @@
     <None Include="..\..\Modules\juce_sharedtexture\README.md"/>
     <None Include="..\..\Modules\juce_simpleweb\asio\README.md"/>
     <None Include="..\..\Modules\juce_simpleweb\README.md"/>
+    <None Include="..\..\Modules\juce_timeline\README.md"/>
     <None Include=".\icon.ico"/>
   </ItemGroup>
   <ItemGroup>

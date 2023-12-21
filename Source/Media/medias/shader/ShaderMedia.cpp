@@ -24,8 +24,7 @@ ShaderMedia::ShaderMedia(var params) :
 	lastFrameTime(0),
 	VBO(0),
 	VAO(0),
-	useMouse4D(false),
-	customParamsManager("Custom Parameters", true, false, false, false)
+	useMouse4D(false)
 {
 	shaderType = addEnumParameter("Shader Type", "Type Shader to load");
 	shaderType->addOption("Shader GLSL File", ShaderGLSLFile)->addOption("ShaderToy File", ShaderToyFile)->addOption("ShaderToy Online", ShaderToyURL);
@@ -42,8 +41,13 @@ ShaderMedia::ShaderMedia(var params) :
 	mouseInputPos = addPoint2DParameter("Mouse Input Pos", "Mouse Input Pos");
 	mouseInputPos->setBounds(0, 0, 1, 1);
 
-
-	addChildControllableContainer(&customParamsManager);
+	mediaParams.userCanAddControllables = true;
+	mediaParams.userAddControllablesFilters.add(BoolParameter::getTypeStringStatic());
+	mediaParams.userAddControllablesFilters.add(IntParameter::getTypeStringStatic());
+	mediaParams.userAddControllablesFilters.add(FloatParameter::getTypeStringStatic());
+	mediaParams.userAddControllablesFilters.add(ColorParameter::getTypeStringStatic());
+	mediaParams.userAddControllablesFilters.add(Point2DParameter::getTypeStringStatic());
+	mediaParams.userAddControllablesFilters.add(Point3DParameter::getTypeStringStatic());
 
 	alwaysRedraw = true;
 }
@@ -121,10 +125,10 @@ void ShaderMedia::renderGLInternal()
 	}
 
 
-	for (auto& cp : customParamsManager.items)
+	for (auto& cp : mediaParams.controllables)
 	{
-		if (!cp->enabled->boolValue()) continue;
-		Parameter* p = dynamic_cast<Parameter*>(cp->controllable);
+		if (!cp->enabled) continue;
+		Parameter* p = dynamic_cast<Parameter*>(cp);
 		var val = p->getValue();
 		switch (val.size())
 		{

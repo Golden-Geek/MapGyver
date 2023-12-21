@@ -78,8 +78,8 @@ CompositionLayer::CompositionLayer(var params) :
 
 	blendFunctionSourceFactor->setDefaultValue("GL_SRC_ALPHA");
 	blendFunctionDestinationFactor->setDefaultValue("GL_ONE_MINUS_SRC_ALPHA");
-	blendFunctionSourceFactor->setEnabled(false);
-	blendFunctionDestinationFactor->setEnabled(false);
+	blendFunctionSourceFactor->setControllableFeedbackOnly(true);
+	blendFunctionDestinationFactor->setControllableFeedbackOnly(true);
 
 
 

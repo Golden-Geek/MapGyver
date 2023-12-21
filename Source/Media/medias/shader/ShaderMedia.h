@@ -41,8 +41,6 @@ public:
 	BoolParameter* mouseClick;
 	Point2DParameter* mouseInputPos;
 
-	GenericControllableManager customParamsManager;
-
 	Time lastModificationTime;
 
 	int currentFrame;

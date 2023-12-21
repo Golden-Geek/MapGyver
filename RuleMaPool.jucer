@@ -70,6 +70,31 @@
       </GROUP>
       <GROUP id="{924D741D-3B07-1454-A4CF-6C278ABC753A}" name="Media">
         <GROUP id="{284332BF-9D8F-13AD-1288-491679B1B400}" name="medias">
+          <GROUP id="{74028E00-52A0-D56B-3373-0305324DB36B}" name="sequence">
+            <GROUP id="{075A33E0-67BA-6E57-7A86-FF46DD2CCC9B}" name="ui">
+              <FILE id="KB0rmV" name="MediaClipManagerUI.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/sequence/ui/MediaClipManagerUI.cpp"/>
+              <FILE id="utz6zj" name="MediaClipManagerUI.h" compile="0" resource="0"
+                    file="Source/Media/medias/sequence/ui/MediaClipManagerUI.h"/>
+              <FILE id="nXlieX" name="MediaClipUI.cpp" compile="0" resource="0" file="Source/Media/medias/sequence/ui/MediaClipUI.cpp"/>
+              <FILE id="votmV6" name="MediaClipUI.h" compile="0" resource="0" file="Source/Media/medias/sequence/ui/MediaClipUI.h"/>
+              <FILE id="x2lchv" name="MediaLayerTimeline.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/sequence/ui/MediaLayerTimeline.cpp"/>
+              <FILE id="pQeoYF" name="MediaLayerTimeline.h" compile="0" resource="0"
+                    file="Source/Media/medias/sequence/ui/MediaLayerTimeline.h"/>
+            </GROUP>
+            <FILE id="KqEYdJ" name="MediaClip.cpp" compile="0" resource="0" file="Source/Media/medias/sequence/MediaClip.cpp"/>
+            <FILE id="xsGIQm" name="MediaClip.h" compile="0" resource="0" file="Source/Media/medias/sequence/MediaClip.h"/>
+            <FILE id="pzOKBh" name="MediaClipManager.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/sequence/MediaClipManager.cpp"/>
+            <FILE id="cqM7QD" name="MediaClipManager.h" compile="0" resource="0"
+                  file="Source/Media/medias/sequence/MediaClipManager.h"/>
+            <FILE id="KcWaJX" name="MediaLayer.cpp" compile="0" resource="0" file="Source/Media/medias/sequence/MediaLayer.cpp"/>
+            <FILE id="DV3Q3Y" name="MediaLayer.h" compile="0" resource="0" file="Source/Media/medias/sequence/MediaLayer.h"/>
+            <FILE id="vVMCka" name="SequenceMedia.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/sequence/SequenceMedia.cpp"/>
+            <FILE id="aeDsTI" name="SequenceMedia.h" compile="0" resource="0" file="Source/Media/medias/sequence/SequenceMedia.h"/>
+          </GROUP>
           <GROUP id="{CF059ADF-8184-8DDC-E70E-02555368170C}" name="node">
             <FILE id="h7viUd" name="NodeMedia.cpp" compile="0" resource="0" file="Source/Media/medias/node/NodeMedia.cpp"/>
             <FILE id="PcIfQQ" name="NodeMedia.h" compile="0" resource="0" file="Source/Media/medias/node/NodeMedia.h"/>
@@ -309,6 +334,11 @@
     </GROUP>
   </MAINGROUP>
   <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
@@ -321,6 +351,7 @@
     <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_sharedtexture" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_simpleweb" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_timeline" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" ORGANICUI_USE_SHAREDTEXTURE="1"
@@ -353,6 +384,12 @@
         <MODULEPATH id="juce_gui_extra"/>
         <MODULEPATH id="juce_sharedtexture" path="Modules"/>
         <MODULEPATH id="juce_simpleweb" path="Modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics"/>
+        <MODULEPATH id="juce_audio_devices"/>
+        <MODULEPATH id="juce_audio_formats"/>
+        <MODULEPATH id="juce_audio_processors"/>
+        <MODULEPATH id="juce_audio_utils"/>
       </MODULEPATHS>
     </VS2022>
     <VS2022 targetFolder="Builds/VisualStudio2022_CI" smallIcon="AKcEsb"
@@ -376,6 +413,12 @@
         <MODULEPATH id="juce_video" path="JUCE/modules"/>
         <MODULEPATH id="juce_sharedtexture" path="Modules"/>
         <MODULEPATH id="juce_simpleweb" path="Modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
       </MODULEPATHS>
     </VS2022>
     <XCODE_MAC targetFolder="Builds/MacOSX_CI" extraDefs="JUCE_COREGRAPHICS_DRAW_ASYNC=0"
@@ -404,6 +447,12 @@
         <MODULEPATH id="juce_sharedtexture" path="Modules"/>
         <MODULEPATH id="juce_simpleweb" path="Modules"/>
         <MODULEPATH id="juce_video" path="JUCE/modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed"
@@ -428,6 +477,12 @@
         <MODULEPATH id="juce_sharedtexture" path="Modules"/>
         <MODULEPATH id="juce_simpleweb" path="Modules"/>
         <MODULEPATH id="juce_video" path="JUCE/modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <LINUX_MAKE targetFolder="Builds/Raspberry" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed&#10;-lm"
@@ -455,6 +510,12 @@
         <MODULEPATH id="juce_sharedtexture" path="Modules"/>
         <MODULEPATH id="juce_simpleweb" path="Modules"/>
         <MODULEPATH id="juce_video" path="JUCE/modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <LINUX_MAKE targetFolder="Builds/Raspberry64" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed"
@@ -480,6 +541,12 @@
         <MODULEPATH id="juce_sharedtexture" path="Modules"/>
         <MODULEPATH id="juce_simpleweb" path="Modules"/>
         <MODULEPATH id="juce_video" path="JUCE/modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>

@@ -15,11 +15,14 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	BaseItem(name),
 	width(nullptr),
 	height(nullptr),
+	mediaParams("Media Parameters"),
 	alwaysRedraw(false),
 	shouldRedraw(false),
 	flipY(false),
 	timeAtLastRender(0)
 {
+	addChildControllableContainer(&mediaParams);
+
 	if (hasCustomSize)
 	{
 		width = addIntParameter("Width", "Width of the media", 1920, 1, 10000);
@@ -41,7 +44,13 @@ Media::~Media()
 	if (GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
 }
 
-void Media::onContainerParameterChangedInternal(Parameter* p) {
+
+void Media::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
+{
+	if (cc == &mediaParams)
+	{
+		shouldRedraw = true;
+	}
 }
 
 void Media::newOpenGLContextCreated()
