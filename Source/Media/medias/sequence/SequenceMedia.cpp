@@ -50,7 +50,7 @@ void SequenceMedia::renderGLInternal()
 		mediaLayers[i]->renderFrameBuffer(width->intValue(), height->intValue()); //generate framebuffers
 
 		frameBuffer.makeCurrentRenderingTarget();
-		mediaLayers[i]->renderGL();
+		mediaLayers[i]->renderGL(-i);
 		frameBuffer.releaseAsRenderingTarget();
 
 	}

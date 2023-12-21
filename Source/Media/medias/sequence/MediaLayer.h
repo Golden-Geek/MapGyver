@@ -26,7 +26,7 @@ public:
 
 	void initFrameBuffer(int width, int height);
 	void renderFrameBuffer(int width, int height);
-	void renderGL();
+	void renderGL(int depth);
 
 	void sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool evaluateSkippedData) override;
 	void sequencePlayStateChanged(Sequence* s) override;

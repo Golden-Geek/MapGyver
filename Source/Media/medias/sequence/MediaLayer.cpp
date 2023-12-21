@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "MediaLayer.h"
 
 MediaLayer::MediaLayer(Sequence* s, var params) :
 	SequenceLayer(s, "Media"),
@@ -41,7 +40,10 @@ void MediaLayer::renderFrameBuffer(int width, int height)
 	if (frameBuffer.getWidth() != width || frameBuffer.getHeight() != height) initFrameBuffer(width, height);
 
 	frameBuffer.makeCurrentRenderingTarget();
-	glColor4f(0, 0, 0, 1);
+
+	BlendMode bm = blendMode->getValueDataAsEnum<BlendMode>();
+	if(bm == Multiply) glClearColor(1, 1, 1, 1);
+	else glColor4f(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -64,15 +66,24 @@ void MediaLayer::renderFrameBuffer(int width, int height)
 			double fadeMultiplier = clip->getFadeMultiplier();
 
 			glColor4f(1, 1, 1, fadeMultiplier);
-			Draw2DTexRect(0, 0, width, height);
+
+			if (clip->media->flipY)
+			{
+				Draw2DTexRectFlipped(0,0, width, height);
+			}
+			else
+			{
+				Draw2DTexRect(0, 0, width, height);
+			}
 
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	}
+	glDisable(GL_BLEND);
 	frameBuffer.releaseAsRenderingTarget();
 }
 
-void MediaLayer::renderGL()
+void MediaLayer::renderGL(int depth)
 {
 	glEnable(GL_BLEND);
 
@@ -93,17 +104,15 @@ void MediaLayer::renderGL()
 		break;
 	}
 
-	glEnable(GL_DEPTH_TEST);
-	glClearDepth(1.0);
-	glDepthFunc(GL_LESS);
-
 	glBindTexture(GL_TEXTURE_2D, frameBuffer.getTextureID());
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glColor3f(1, 1, 1);
-	Draw2DTexRect(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
+	Draw2DTexRectDepth(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight(), depth);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glDisable(GL_BLEND);
 }
 
 void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool evaluateSkippedData)

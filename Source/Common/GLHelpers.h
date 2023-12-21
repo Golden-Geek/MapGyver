@@ -33,6 +33,13 @@ glTexCoord2f(1, 1); glVertex2f(x + w, y + h); \
 glTexCoord2f(0, 1); glVertex2f(x, y + h); \
 glEnd();
 
+#define Draw2DTexRectDepth(x, y, w, h, depth) glBegin(GL_QUADS); \
+glTexCoord3f(0, 0, depth); glVertex2f(x, y); \
+glTexCoord3f(1, 0, depth); glVertex2f(x + w, y); \
+glTexCoord3f(1, 1, depth); glVertex2f(x + w, y + h); \
+glTexCoord3f(0, 1, depth); glVertex2f(x, y + h); \
+glEnd();
+
 #define Draw2DTexRectFlipped(x, y, w, h) glBegin(GL_QUADS); \
 glTexCoord2f(0, 1); glVertex2f(x, y); \
 glTexCoord2f(1, 1); glVertex2f(x + w, y); \
