@@ -19,7 +19,17 @@ public:
 
 	MediaClipManager blockManager;
 
+	enum BlendMode { Alpha, Add, Multiply };
+	EnumParameter* blendMode;
+
+	OpenGLFrameBuffer frameBuffer;
+
+	void initFrameBuffer(int width, int height);
+	void renderFrameBuffer(int width, int height);
 	void renderGL();
+
+	void sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool evaluateSkippedData) override;
+	void sequencePlayStateChanged(Sequence* s) override;
 
 	SequenceLayerTimeline* getTimelineUI() override;
 

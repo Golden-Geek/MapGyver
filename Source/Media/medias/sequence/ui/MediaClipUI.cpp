@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-    MediaClipUI.cpp
-    Created: 21 Dec 2023 10:40:59am
-    Author:  bkupe
+	MediaClipUI.cpp
+	Created: 21 Dec 2023 10:40:59am
+	Author:  bkupe
 
   ==============================================================================
 */
@@ -223,6 +223,11 @@ void MediaClipUI::controllableFeedbackUpdateInternal(Controllable* c)
 
 	if (c == mediaClip->fadeIn) fadeInHandle.setCentrePosition((mediaClip->fadeIn->floatValue() / mediaClip->getTotalLength()) * getWidth(), fadeInHandle.getHeight() / 2);
 	else if (c == mediaClip->fadeOut) fadeOutHandle.setCentrePosition((1 - mediaClip->fadeOut->floatValue() / mediaClip->getTotalLength()) * getWidth(), fadeOutHandle.getHeight() / 2);
+	else if (c == mediaClip->isActive)
+	{
+		bgColor = mediaClip->isActive->boolValue() ? GREEN_COLOR.darker() : BG_COLOR.darker(.4f);
+		repaint();
+	}
 }
 
 void MediaClipUI::newMessage(const MediaClip::MediaClipEvent& e)

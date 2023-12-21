@@ -29,6 +29,7 @@ VideoMedia::VideoMedia(var params) :
 
 	mediaVolume = addFloatParameter("Volume", "Media volume", 1, 0, 1);
 	seek = addFloatParameter("Seek", "Manual seek", 1, 0, 1);
+	seek->defaultUI = FloatParameter::TIME;
 	seek->isSavable = false;
 
 	speedRate = addFloatParameter("Speed rate", "Speed factor of video", 1, 0);
@@ -77,10 +78,10 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 		stop();
 
 		VLCMediaList = libvlc_media_list_new(VLCInstance);
-		
+
 		VideoSource s = source->getValueDataAsEnum<VideoSource>();
-		
-		if(s == Source_File) VLCMedia = libvlc_media_new_path(VLCInstance, filePath->getFile().getFullPathName().toRawUTF8());
+
+		if (s == Source_File) VLCMedia = libvlc_media_new_path(VLCInstance, filePath->getFile().getFullPathName().toRawUTF8());
 		else VLCMedia = libvlc_media_new_location(VLCInstance, url->stringValue().toRawUTF8());
 
 		libvlc_media_list_add_media(VLCMediaList, VLCMedia);
@@ -115,9 +116,9 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 	}
 	else if (p == seek)
 	{
-		if (!vlcSeekedLast)
+		if (!vlcSeekedLast && videoTotalTime > 0)
 		{
-			libvlc_media_player_set_position(VLCMediaPlayer, seek->floatValue());
+			libvlc_media_player_set_position(VLCMediaPlayer, seek->doubleValue() / videoTotalTime);
 		}
 		vlcSeekedLast = false;
 	}
@@ -190,7 +191,7 @@ void VideoMedia::display(void* nextBuffer)
 {
 	//LOG("display");
 
-	
+
 }
 
 
@@ -210,6 +211,9 @@ unsigned VideoMedia::setup_video(char* chroma, unsigned* width, unsigned* height
 	(*pitches) = imageWidth * 4;
 	(*lines) = imageHeight;
 
+	videoTotalTime = libvlc_media_player_get_length(VLCMediaPlayer) / 1000.0;
+	seek->setRange(0, videoTotalTime);
+
 	return 1;
 }
 
@@ -222,7 +226,7 @@ void VideoMedia::vlcSeek()
 {
 	float pos = libvlc_media_player_get_position(VLCMediaPlayer);
 	vlcSeekedLast = true;
-	seek->setValue(pos);
+	seek->setNormalizedValue(pos);
 }
 
 void VideoMedia::tapTempo()
@@ -232,9 +236,37 @@ void VideoMedia::tapTempo()
 	lastTapTempo = now;
 	if (delta < 3000) {
 		delta = delta * (int)beatPerCycle->getValue();
-		float totalTime = libvlc_media_player_get_length(VLCMediaPlayer);
-		float rate = totalTime / delta;
-		speedRate->setValue(rate);
+		if (videoTotalTime > 0)
+		{
+			double rate = videoTotalTime / delta;
+			speedRate->setValue(rate);
+		}
+
 		//speed->setValue(cpm);
 	}
+}
+
+void VideoMedia::handleEnter(double time)
+{
+	if (VLCMediaPlayer != nullptr && videoTotalTime > 0) libvlc_media_player_set_position(VLCMediaPlayer, time / videoTotalTime);
+}
+
+void VideoMedia::handleExit()
+{
+	stop();
+}
+
+void VideoMedia::handleSeek(double time)
+{
+	if (VLCMediaPlayer != nullptr && videoTotalTime > 0) libvlc_media_player_set_position(VLCMediaPlayer, time / videoTotalTime);
+}
+
+void VideoMedia::handleStop()
+{
+	pause();
+}
+
+void VideoMedia::handleStart()
+{
+	play();
 }

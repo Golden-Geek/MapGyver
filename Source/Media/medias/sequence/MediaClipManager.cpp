@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-    MediaClipManager.cpp
-    Created: 21 Dec 2023 11:00:38am
-    Author:  bkupe
+	MediaClipManager.cpp
+	Created: 21 Dec 2023 11:00:38am
+	Author:  bkupe
 
   ==============================================================================
 */
@@ -13,6 +13,7 @@
 MediaClipManager::MediaClipManager(MediaLayer* layer) :
 	LayerBlockManager(layer, "Blocks")
 {
+	managerFactory = MediaClipFactory::getInstance();
 }
 
 MediaClipManager::~MediaClipManager()
@@ -21,7 +22,7 @@ MediaClipManager::~MediaClipManager()
 
 LayerBlock* MediaClipManager::createItem()
 {
-	return new MediaClip();
+	return new ReferenceMediaClip();
 }
 
 void MediaClipManager::addItemInternal(LayerBlock* block, var data)
@@ -114,5 +115,17 @@ void MediaClipManager::computeFadesForBlock(MediaClip* block, bool propagate)
 	{
 		if (prevBlock != nullptr) computeFadesForBlock(prevBlock, false);
 		if (nextBlock != nullptr) computeFadesForBlock(nextBlock, false);
+	}
+}
+
+juce_ImplementSingleton(MediaClipFactory)
+
+MediaClipFactory::MediaClipFactory()
+{
+	defs.add(Definition::createDef<ReferenceMediaClip>(""));
+	for (auto& md : MediaManager::getInstance()->factory.defs)
+	{
+
+		defs.add(Definition::createDef("Owned", md->type, &OwnedMediaClip::create)->addParam("mediaType", md->type));
 	}
 }

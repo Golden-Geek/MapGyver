@@ -47,6 +47,8 @@ public:
 	int imageLines = 0;
 	//uint32_t* vlcData;
 
+	double videoTotalTime = 0;
+
 	bool vlcDataIsValid = false;
 
 	bool vlcSeekedLast = false;
@@ -93,6 +95,12 @@ public:
 
 	
 	void tapTempo();
+
+	virtual void handleEnter(double time) override; 
+	virtual void handleExit() override;
+	virtual void handleSeek(double time) override;
+	virtual void handleStop() override;
+	virtual void handleStart() override;
 
 	DECLARE_TYPE("Video")
 };

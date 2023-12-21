@@ -12,6 +12,17 @@
 
 class MediaLayer;
 
+
+class MediaClipFactory :
+	public Factory<LayerBlock>
+{
+public:
+	juce_DeclareSingleton(MediaClipFactory, true);
+	MediaClipFactory();
+	~MediaClipFactory(){}
+
+};
+
 class MediaClipManager :
 	public LayerBlockManager,
 	public MediaClip::MediaClipListener

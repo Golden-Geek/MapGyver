@@ -16,11 +16,12 @@ class RMPSequence :
 public:
 	RMPSequence();
 
-	void renderGL();
+	void renderGL(int width, int height);
 };
 
 class SequenceMedia :
-	public Media
+	public Media,
+	public Sequence::SequenceListener
 {
 public:
 	SequenceMedia(var params = var());
@@ -29,6 +30,8 @@ public:
 	RMPSequence sequence;
 
 	void renderGLInternal() override;
+
+	void sequenceCurrentTimeChanged(Sequence* sequence, float time, bool evaluateSkippedData) override;
 
 	DECLARE_TYPE("Sequence")
 };

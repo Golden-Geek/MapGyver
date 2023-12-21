@@ -33,6 +33,7 @@ public:
 	Array<MediaTarget*> usedTargets;
 
 	double timeAtLastRender;
+	double customTime;
 
 	FloatParameter* currentFPS;
 	double lastFPSTick;
@@ -57,6 +58,14 @@ public:
 
 	void registerTarget(MediaTarget* target);
 	void unregisterTarget(MediaTarget* target);
+
+	//for sequence or other meta-media systems
+	void setCustomTime(double time, bool seekMode = false);
+	virtual void handleEnter(double time);
+	virtual void handleExit();
+	virtual void handleSeek(double time) {}
+	virtual void handleStop() {}
+	virtual void handleStart() {}
 
 	bool isBeingUsed();
 

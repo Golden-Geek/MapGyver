@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-    MediaClip.h
-    Created: 21 Dec 2023 10:40:39am
-    Author:  bkupe
+	MediaClip.h
+	Created: 21 Dec 2023 10:40:39am
+	Author:  bkupe
 
   ==============================================================================
 */
@@ -17,12 +17,14 @@ class MediaClip :
 	public MediaTarget
 {
 public:
-	MediaClip(var params = var());
-	~MediaClip();
+	MediaClip(const String& name, var params = var());
+	virtual ~MediaClip();
 
 	void clearItem() override;
 
-	TargetParameter* mediaTarget;
+	double relativeTime;
+	bool isPlaying;
+
 	Media* media;
 
 	FloatParameter* fadeIn;
@@ -30,14 +32,18 @@ public:
 	Automation fadeCurve;
 	bool settingLengthFromMethod;
 
+
 	void setMedia(Media* m);
+
+	void setTime(double time, bool seekMode);
+	void setIsPlaying(bool playing);
 
 	void onContainerParameterChangedInternal(Parameter* p) override;
 	virtual void controllableStateChanged(Controllable* c) override;
 
 	void setCoreLength(float value, bool stretch = false, bool stickToCoreEnd = false) override;
 
-	float getFadeMultiplier(float absoluteTime);
+	float getFadeMultiplier();
 
 	bool isUsingMedia(Media* m) override;
 
@@ -76,4 +82,30 @@ public:
 	void removeAsyncMediaClipListener(AsyncListener* listener) { mediaClipNotifier.removeListener(listener); }
 
 	DECLARE_TYPE("Media Clip");
+};
+
+class ReferenceMediaClip :
+	public MediaClip
+{
+public:
+	ReferenceMediaClip(var params = var());
+	virtual ~ReferenceMediaClip();
+
+	TargetParameter* mediaTarget;
+	void onContainerParameterChangedInternal(Parameter* p) override;
+
+	DECLARE_TYPE("Reference");
+};
+
+class OwnedMediaClip :
+	public MediaClip
+{
+public:
+	OwnedMediaClip(var params = var());
+	virtual ~OwnedMediaClip();
+
+	std::unique_ptr<Media> ownedMedia;
+
+	String getTypeString() const override { return media != nullptr ? media->getTypeString() : ""; }
+	static OwnedMediaClip* create(var params = var()) { return new OwnedMediaClip(params); }
 };
