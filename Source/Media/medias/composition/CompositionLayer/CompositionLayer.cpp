@@ -112,13 +112,13 @@ void CompositionLayer::onContainerParameterChangedInternal(Parameter* p)
 	else if (p == blendFunction) {
 		blendPreset preset = blendFunction->getValueDataAsEnum<blendPreset>();
 		if (preset == CUSTOM) {
-			blendFunctionSourceFactor->setEnabled(true);
-			blendFunctionDestinationFactor->setEnabled(true);
+			blendFunctionSourceFactor->setControllableFeedbackOnly(false);
+			blendFunctionDestinationFactor->setControllableFeedbackOnly(false);
 		}
 		else 
 		{
-			blendFunctionSourceFactor->setEnabled(false);
-			blendFunctionDestinationFactor->setEnabled(false);
+			blendFunctionSourceFactor->setControllableFeedbackOnly(true);
+			blendFunctionDestinationFactor->setControllableFeedbackOnly(true);
 			switch (preset)
 			{
 			case STANDARD:
