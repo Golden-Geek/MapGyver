@@ -48,13 +48,14 @@ void MediaClip::clearItem()
 void MediaClip::setMedia(Media* m)
 {
 	if (m == media) return;
-	if (media != nullptr)
+	if (media != nullptr && !mediaRef.wasObjectDeleted() && !media->isClearing)
 	{
 		media->handleExit();
 		unregisterUseMedia(CLIP_MEDIA_ID);
 	}
 
 	media = m;
+	mediaRef = media;
 
 	if (media != nullptr)
 	{
@@ -110,7 +111,7 @@ void MediaClip::onContainerParameterChangedInternal(Parameter* p)
 void MediaClip::setIsPlaying(bool playing)
 {
 	if (playing == isPlaying) return;
-	
+
 	isPlaying = playing;
 
 	if (media != nullptr && isActive->boolValue() && enabled->boolValue())
@@ -183,6 +184,8 @@ ReferenceMediaClip::~ReferenceMediaClip()
 void ReferenceMediaClip::onContainerParameterChangedInternal(Parameter* p)
 {
 	MediaClip::onContainerParameterChangedInternal(p);
+
+	if (isClearing) return;
 	if (p == mediaTarget) setMedia(mediaTarget->getTargetContainerAs<Media>());
 }
 
@@ -191,6 +194,14 @@ OwnedMediaClip::OwnedMediaClip(var params) :
 	ownedMedia(nullptr)
 {
 	ownedMedia.reset(MediaManager::getInstance()->factory.create(params.getProperty("mediaType", "").toString()));
+	addChildControllableContainer(ownedMedia.get());
+	setMedia(ownedMedia.get());
+}
+
+OwnedMediaClip::OwnedMediaClip(Media* m) :
+	MediaClip(m->getTypeString()),
+	ownedMedia(m)
+{
 	addChildControllableContainer(ownedMedia.get());
 	setMedia(ownedMedia.get());
 }

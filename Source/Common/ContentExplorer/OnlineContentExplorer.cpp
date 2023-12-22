@@ -58,7 +58,7 @@ OnlineContentExplorer::OnlineContentExplorer(const String& name) :
 	updateLinksLabel();
 
 	linksLabel.addMouseListener(this, false);
-	
+
 	setInterceptsMouseClicks(true, true);
 
 	repaint();
@@ -362,26 +362,7 @@ void OnlineContentItem::mouseDrag(const MouseEvent& e)
 		var dragData(new DynamicObject());
 		dragData.getDynamicObject()->setProperty("type", "OnlineContentItem");
 		dragData.getDynamicObject()->setProperty("id", id);
-
-		switch (source)
-		{
-		case OnlineContentExplorer::Pexels_Photo:
-		{
-			dragData.getDynamicObject()->setProperty("url", "https://images.pexels.com/photos/" + id + "/pexels-photo-" + id + ".jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&w=1920");
-		}
-		break;
-
-		case OnlineContentExplorer::Pexels_Video:
-		{
-			var videoFiles = data["video_files"];
-			for (int i = 0; i < videoFiles.size(); i++)
-			{
-				if (videoFiles[i]["quality"] == "sd") dragData.getDynamicObject()->setProperty("url", videoFiles[i]["link"]);
-			}
-		}
-		default:
-			break;
-		}
+		dragData.getDynamicObject()->setProperty("url", getMediaURL());
 
 		startDragging(dragData, this, ScaledImage(), true);
 	}
@@ -448,7 +429,7 @@ void OnlineContentItem::run()
 		{
 			previewURL = "https://images.pexels.com/photos/" + id + "/pexels-photo-" + id + ".jpeg?auto=compress&cs=tinysrgb&dpr=1&h=160&w=90";
 			name = data["photographer"].toString() + " - " + data["alt"].toString();
-            description = data["alt"].toString();
+			description = data["alt"].toString();
 		}
 		break;
 
@@ -498,4 +479,66 @@ void OnlineContentItem::run()
 			repaint();
 
 		});
+}
+
+String OnlineContentItem::getMediaURL()
+{
+	switch (source)
+	{
+	case OnlineContentExplorer::Pexels_Photo:
+	{
+		return "https://images.pexels.com/photos/" + id + "/pexels-photo-" + id + ".jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&w=1920";
+	}
+	break;
+
+	case OnlineContentExplorer::Pexels_Video:
+	{
+		var videoFiles = data["video_files"];
+		for (int i = 0; i < videoFiles.size(); i++) if (videoFiles[i]["quality"] == "sd") return videoFiles[i]["link"];
+	}
+	default:
+		break;
+	}
+
+	return "";
+}
+
+Media* OnlineContentItem::createMedia()
+{
+	switch (source)
+	{
+	case OnlineContentExplorer::ShaderToy:
+	case OnlineContentExplorer::ISF:
+	{
+		ShaderMedia* sm = new ShaderMedia();
+
+		sm->shaderToyID->setValue(id);
+		sm->shaderType->setValueWithData(source == OnlineContentExplorer::ShaderToy ? ShaderMedia::ShaderType::ShaderToyURL : ShaderMedia::ShaderType::ShaderISFURL);
+
+		return sm;
+	}
+
+	case  OnlineContentExplorer::Pexels_Photo:
+	{
+		PictureMedia* im = new PictureMedia();
+		im->source->setValueWithData(PictureMedia::PictureSource::Source_URL);
+		im->url->setValue(getMediaURL());
+		return im;
+	}
+
+	case OnlineContentExplorer::Pexels_Video:
+	{
+		VideoMedia* vm = new VideoMedia();
+
+		vm->source->setValueWithData(VideoMedia::VideoSource::Source_URL);
+		vm->url->setValue(getMediaURL());
+
+		return vm;
+	}
+
+	default:
+		break;
+	}
+
+	return nullptr;
 }

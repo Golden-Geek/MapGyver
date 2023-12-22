@@ -39,6 +39,7 @@ public:
 	double lastFPSTick;
 	double lastFPSHistory[10];
 	int lastFPSIndex;
+	bool customFPSTick;
 	void FPSTick();
 
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;

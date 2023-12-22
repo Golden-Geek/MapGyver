@@ -26,6 +26,7 @@ public:
 	bool isPlaying;
 
 	Media* media;
+	WeakReference<Inspectable> mediaRef;
 
 	FloatParameter* fadeIn;
 	FloatParameter* fadeOut;
@@ -102,6 +103,7 @@ class OwnedMediaClip :
 {
 public:
 	OwnedMediaClip(var params = var());
+	OwnedMediaClip(Media* m);
 	virtual ~OwnedMediaClip();
 
 	std::unique_ptr<Media> ownedMedia;

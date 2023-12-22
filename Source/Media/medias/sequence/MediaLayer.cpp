@@ -16,8 +16,10 @@ MediaLayer::MediaLayer(Sequence* s, var params) :
 {
 	saveAndLoadRecursiveData = true;
 
+	backgroundColor = addColorParameter("Background Color", "Background Color for this layer", Colours::transparentBlack);
+
 	blendMode = addEnumParameter("Blend Mode", "Blend Mode for this layer");
-	blendMode->addOption("Alpha", Alpha)->addOption("Add", Add)->addOption("Multiply", Multiply);
+	blendMode->addOption("Add", Add)->addOption("Alpha", Alpha)->addOption("Multiply", Multiply);
 
 	addChildControllableContainer(&blockManager);
 }
@@ -32,60 +34,79 @@ void MediaLayer::initFrameBuffer(int width, int height)
 	frameBuffer.initialise(GlContextHolder::getInstance()->context, width, height);
 }
 
-void MediaLayer::renderFrameBuffer(int width, int height)
+bool MediaLayer::renderFrameBuffer(int width, int height)
 {
 	float time = sequence->currentTime->floatValue();
 	Array<LayerBlock*> blocks = blockManager.getBlocksAtTime(time, false);
+
+	Array<MediaClip*> clipsToProcess;
+	for (auto& b : blocks)
+	{
+		if (MediaClip* clip = dynamic_cast<MediaClip*>(b))
+		{
+			if (clip->media == nullptr) continue;
+			clipsToProcess.add(clip);
+		}
+	}
+
+
+	//if (clipsToProcess.isEmpty()) return false;
 
 	if (frameBuffer.getWidth() != width || frameBuffer.getHeight() != height) initFrameBuffer(width, height);
 
 	frameBuffer.makeCurrentRenderingTarget();
 
 	BlendMode bm = blendMode->getValueDataAsEnum<BlendMode>();
-	if(bm == Multiply) glClearColor(1, 1, 1, 1);
-	else glColor4f(0, 0, 0, 1);
+	Colour c = backgroundColor->getColor();
+
+	if (bm == Multiply) glClearColor(1, 1, 1, 1);
+	else glClearColor(c.getFloatRed(), c.getFloatGreen(), c.getFloatBlue(), c.getFloatAlpha());
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	for (auto& b : blocks)
+	bool isTransition = clipsToProcess.size() > 1;
+	int index = 0;
+	for (auto& clip : clipsToProcess)
 	{
-		if (MediaClip* clip = dynamic_cast<MediaClip*>(b))
+		EnumParameter* bs = index == 0 ? blendFunctionSourceFactorFirst : blendFunctionSourceFactor;
+		EnumParameter* bd = index == 0 ? blendFunctionDestinationFactorFirst : blendFunctionDestinationFactor;
+		glBlendFunc((GLenum)(int)bs->getValueData(), (GLenum)(int)bd->getValueData());
+
+		glBindTexture(GL_TEXTURE_2D, clip->media->frameBuffer.getTextureID());
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+
+		//draw full quad
+
+		double fadeMultiplier = clip->getFadeMultiplier();
+
+		glColor4f(1, 1, 1, fadeMultiplier);
+
+		if (clip->media->flipY)
 		{
-			if (clip->media == nullptr) continue;
-
-
-			glBindTexture(GL_TEXTURE_2D, clip->media->frameBuffer.getTextureID());
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-
-			//draw full quad
-
-			double fadeMultiplier = clip->getFadeMultiplier();
-
-			glColor4f(1, 1, 1, fadeMultiplier);
-
-			if (clip->media->flipY)
-			{
-				Draw2DTexRectFlipped(0,0, width, height);
-			}
-			else
-			{
-				Draw2DTexRect(0, 0, width, height);
-			}
-
-			glBindTexture(GL_TEXTURE_2D, 0);
+			Draw2DTexRectFlipped(0, 0, width, height);
 		}
+		else
+		{
+			Draw2DTexRect(0, 0, width, height);
+		}
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		index++;
 	}
-	glDisable(GL_BLEND);
+
 	frameBuffer.releaseAsRenderingTarget();
+
+	return true;
 }
 
 void MediaLayer::renderGL(int depth)
 {
-	glEnable(GL_BLEND);
 
 	BlendMode bm = blendMode->getValueDataAsEnum<BlendMode>();
 
@@ -112,7 +133,6 @@ void MediaLayer::renderGL(int depth)
 	Draw2DTexRectDepth(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight(), depth);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glDisable(GL_BLEND);
 }
 
 void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool evaluateSkippedData)

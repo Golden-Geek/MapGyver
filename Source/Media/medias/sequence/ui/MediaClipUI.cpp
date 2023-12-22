@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "MediaClipUI.h"
 
 MediaClipUI::MediaClipUI(MediaClip* b) :
 	LayerBlockUI(b),
@@ -26,6 +27,8 @@ MediaClipUI::MediaClipUI(MediaClip* b) :
 	fadeOutHandle.addMouseListener(this, false);
 
 	bgColor = BG_COLOR.darker(.4f);
+
+	if (dynamic_cast<ReferenceMediaClip*>(item) != nullptr) acceptedDropTypes.add("Media");
 
 	mediaClip->addAsyncMediaClipListener(this);
 }
@@ -215,6 +218,46 @@ void MediaClipUI::mouseUp(const MouseEvent& e)
 		mediaClip->fadeOut->setUndoableValue(fadeValueAtMouseDown, mediaClip->fadeOut->floatValue());
 		resized();
 	}
+}
+
+bool MediaClipUI::isInterestedInDragSource(const SourceDetails& source)
+{
+	if (source.description.getProperty("type", "") == "OnlineContentItem") return dynamic_cast<ReferenceMediaClip*>(item) == nullptr;
+	return LayerBlockUI::isInterestedInDragSource(source);
+}
+
+void MediaClipUI::itemDropped(const SourceDetails& source)
+{
+	LayerBlockUI::itemDropped(source);
+
+	if (source.description.getProperty("type", "") == "OnlineContentItem")
+	{
+		OnlineContentItem* item = dynamic_cast<OnlineContentItem*>(source.sourceComponent.get());
+		if (item != nullptr)
+		{
+			if (Media* media = item->createMedia())
+			{
+				if (OwnedMediaClip* om = dynamic_cast<OwnedMediaClip*>(item))
+				{
+					om->setMedia(nullptr);
+					om->ownedMedia.reset(media);
+					om->setMedia(media);
+				}
+			}
+		}
+	}
+	else
+	{
+		if (MediaUI* mui = dynamic_cast<MediaUI*>(source.sourceComponent.get()))
+		{
+			if (ReferenceMediaClip* rmc = dynamic_cast<ReferenceMediaClip*>(item))
+			{
+				rmc->mediaTarget->setValueFromTarget(mui->item);
+			}
+		}
+	}
+
+	repaint();
 }
 
 void MediaClipUI::controllableFeedbackUpdateInternal(Controllable* c)

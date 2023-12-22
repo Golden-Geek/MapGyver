@@ -48,6 +48,10 @@ public:
     void mouseDrag(const MouseEvent& e) override;
     void mouseUp(const MouseEvent& e) override;
 
+    bool isInterestedInDragSource(const SourceDetails& source) override;
+    void itemDropped(const SourceDetails& source) override;
+
+
     void controllableFeedbackUpdateInternal(Controllable*) override;
     void newMessage(const MediaClip::MediaClipEvent& e) override;
 

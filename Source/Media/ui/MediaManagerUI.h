@@ -18,5 +18,8 @@ public:
 	~MediaManagerUI();
 
 	static MediaManagerUI * create(const String &name) { return new MediaManagerUI(name); }
+
+	bool isInterestedInDragSource(const SourceDetails& source) override;
+	void itemDropped(const SourceDetails& source) override;
 };
 

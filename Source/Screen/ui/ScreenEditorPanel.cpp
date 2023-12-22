@@ -408,8 +408,6 @@ bool ScreenEditorView::isInterestedInDragSource(const SourceDetails& dragSourceD
 	return false;
 }
 
-
-
 void ScreenEditorView::itemDragEnter(const SourceDetails& source)
 {
 	Media* m = nullptr;
@@ -442,54 +440,13 @@ void ScreenEditorView::itemDropped(const SourceDetails& source)
 	if (source.description.getProperty("type", "") == "OnlineContentItem")
 	{
 		OnlineContentItem* item = dynamic_cast<OnlineContentItem*>(source.sourceComponent.get());
-		if (item == nullptr) return;
-		switch (item->source)
+		if (item != nullptr)
 		{
-		case OnlineContentExplorer::ShaderToy:
-		case OnlineContentExplorer::ISF:
-		{
-			ShaderMedia* sm = candidateDropSurface->media->getTargetContainerAs<ShaderMedia>();
-			if (sm == nullptr)
+			if (Media* m = item->createMedia())
 			{
-				sm = dynamic_cast<ShaderMedia*>(MediaManager::getInstance()->addItem(new ShaderMedia()));
-				candidateDropSurface->media->setValueFromTarget(sm);
+				MediaManager::getInstance()->addItem(m);
+				candidateDropSurface->media->setValueFromTarget(m);
 			}
-
-			sm->shaderToyID->setValue(source.description.getProperty("id", ""));
-			sm->shaderType->setValueWithData(item->source == OnlineContentExplorer::ShaderToy? ShaderMedia::ShaderType::ShaderToyURL : ShaderMedia::ShaderType::ShaderISFURL);
-		}
-		break;
-
-		case  OnlineContentExplorer::Pexels_Photo:
-		{
-			PictureMedia* im = candidateDropSurface->media->getTargetContainerAs<PictureMedia>();
-			if (im == nullptr)
-			{
-				im = dynamic_cast<PictureMedia*>(MediaManager::getInstance()->addItem(new PictureMedia()));
-				candidateDropSurface->media->setValueFromTarget(im);
-			}
-
-			im->source->setValueWithData(PictureMedia::PictureSource::Source_URL);
-			im->url->setValue(source.description.getProperty("url", ""));
-		}
-		break;
-
-		case OnlineContentExplorer::Pexels_Video:
-		{
-			VideoMedia* vm = candidateDropSurface->media->getTargetContainerAs<VideoMedia>();
-			if (vm == nullptr)
-			{
-				vm = dynamic_cast<VideoMedia*>(MediaManager::getInstance()->addItem(new VideoMedia()));
-				candidateDropSurface->media->setValueFromTarget(vm);
-			}
-
-			vm->source->setValueWithData(VideoMedia::VideoSource::Source_URL);
-			vm->url->setValue(source.description.getProperty("url", ""));
-		}
-		break;
-
-		default:
-			break;
 		}
 	}
 	else
@@ -504,11 +461,9 @@ void ScreenEditorView::itemDropped(const SourceDetails& source)
 void ScreenEditorView::setCandidateDropSurface(Surface* s, Media* m)
 {
 	if (candidateDropSurface == s) return;
-
 	if (candidateDropSurface != nullptr) candidateDropSurface->previewMedia = nullptr;
 
 	candidateDropSurface = s;
-
 	if (candidateDropSurface != nullptr) candidateDropSurface->previewMedia = m;
 }
 

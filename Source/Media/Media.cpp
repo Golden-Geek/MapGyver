@@ -20,7 +20,10 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	alwaysRedraw(false),
 	shouldRedraw(false),
 	flipY(false),
-	timeAtLastRender(0)
+	timeAtLastRender(0),
+	lastFPSTick(0),
+	lastFPSIndex(0),
+	customFPSTick(false)
 {
 	addChildControllableContainer(&mediaParams);
 
@@ -84,6 +87,8 @@ void Media::renderOpenGL()
 		renderGLInternal();
 		frameBuffer.releaseAsRenderingTarget();
 		shouldRedraw = false;
+
+		if(!customFPSTick) FPSTick();
 	}
 }
 
@@ -176,6 +181,8 @@ void Media::FPSTick()
 	// Calcul des FPS
 	MessageManager::callAsync([this, max, fps]()
 		{
+			if (Engine::mainEngine->isClearing) return;
+
 			if ((float)currentFPS->maximumValue < max) {
 				currentFPS->maximumValue = max;
 			}

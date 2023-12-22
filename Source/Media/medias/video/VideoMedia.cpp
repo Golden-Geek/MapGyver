@@ -39,6 +39,8 @@ VideoMedia::VideoMedia(var params) :
 	RMPEngine* e = dynamic_cast<RMPEngine*>(Engine::mainEngine);
 	VLCInstance = e->VLCInstance;
 	frameUpdated = false;
+
+	customFPSTick = true;
 }
 
 VideoMedia::~VideoMedia()

@@ -16,6 +16,8 @@ WebcamMedia::WebcamMedia(var params) :
 {
 	WebcamParam = new WebcamDeviceParameter("Webcam Source");
 	addParameter(WebcamParam);
+
+	customFPSTick = true;
 }
 
 WebcamMedia::~WebcamMedia()

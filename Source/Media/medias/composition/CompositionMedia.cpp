@@ -11,15 +11,11 @@
 #include "Media/MediaIncludes.h"
 
 CompositionMedia::CompositionMedia(var params) :
-	Media(getTypeString(), params)
+	Media(getTypeString(), params, true)
 {
-	resolution = addPoint2DParameter("Resolution", "Size of your composition");
-	var d; d.append(1920); d.append(1080);
-	resolution->setDefaultValue(d);
+    backgroundColor = addColorParameter("Background Color", "Background Color", Colour::fromFloatRGBA(0, 0, 0, 0));
 
 	addChildControllableContainer(&layers);
-
-	updateImagesSize();
     alwaysRedraw = true;
 }
 
@@ -32,17 +28,12 @@ void CompositionMedia::clearItem()
 	BaseItem::clearItem();
 }
 
-void CompositionMedia::onContainerParameterChangedInternal(Parameter* p)
-{
-	if (p == resolution) {
-		updateImagesSize();
-	}
-}
 
 void CompositionMedia::renderGLInternal()
 {
-    frameBuffer.makeCurrentAndClear();
-    glClearColor(0, 0, 0, 0);
+    //frameBuffer.makeCurrentAndClear();
+    Colour c = backgroundColor->getColor();
+    glClearColor(c.getFloatRed(), c.getFloatGreen(), c.getFloatBlue(), c.getFloatAlpha());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
     glMatrixMode(GL_PROJECTION);
@@ -122,26 +113,8 @@ void CompositionMedia::renderGLInternal()
 
         // Restaure la matrice de modèle-vue
     }
-    frameBuffer.releaseAsRenderingTarget();
-    FPSTick();
+    //frameBuffer.releaseAsRenderingTarget();
+
 }
 
-void CompositionMedia::updateImagesSize()
-{
-    GlContextHolder::getInstance()->context.executeOnGLThread([this](OpenGLContext &c){
-        frameBuffer.initialise(GlContextHolder::getInstance()->context, resolution->x, resolution->y);
-    }, true);
-    
-}
-
-Point<int> CompositionMedia::getMediaSize()
-{
-    return Point<int>(resolution->x, resolution->y);
-    
-}
-
-void CompositionMedia::controllableFeedbackUpdate(ControllableContainer* cc, Controllable* c)
-{
-	imageNeedRepaint = true;
-}
 

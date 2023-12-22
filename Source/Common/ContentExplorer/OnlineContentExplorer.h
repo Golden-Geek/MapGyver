@@ -93,4 +93,8 @@ public:
 	void mouseDrag(const MouseEvent& e) override;
 
 	void run() override;
+
+	String getMediaURL();
+
+	Media* createMedia();
 };

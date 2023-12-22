@@ -19,13 +19,15 @@ public:
 
 	MediaClipManager blockManager;
 
+	ColorParameter* backgroundColor;
+
 	enum BlendMode { Alpha, Add, Multiply };
 	EnumParameter* blendMode;
 
 	OpenGLFrameBuffer frameBuffer;
 
 	void initFrameBuffer(int width, int height);
-	void renderFrameBuffer(int width, int height);
+	bool renderFrameBuffer(int width, int height);
 	void renderGL(int depth);
 
 	void sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool evaluateSkippedData) override;
