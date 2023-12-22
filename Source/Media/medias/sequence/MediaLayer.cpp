@@ -70,9 +70,7 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 	int index = 0;
 	for (auto& clip : clipsToProcess)
 	{
-		EnumParameter* bs = index == 0 ? blendFunctionSourceFactorFirst : blendFunctionSourceFactor;
-		EnumParameter* bd = index == 0 ? blendFunctionDestinationFactorFirst : blendFunctionDestinationFactor;
-		glBlendFunc((GLenum)(int)bs->getValueData(), (GLenum)(int)bd->getValueData());
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glBindTexture(GL_TEXTURE_2D, clip->media->frameBuffer.getTextureID());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -129,7 +127,7 @@ void MediaLayer::renderGL(int depth)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glColor3f(1, 1, 1);
+	glColor4f(1, 1, 1, 1);
 	Draw2DTexRectDepth(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight(), depth);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
