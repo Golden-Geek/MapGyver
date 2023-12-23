@@ -3,7 +3,8 @@
 <JUCERPROJECT id="DMftGm" name="RuleMaPool" projectType="guiapp" useAppConfig="1"
               addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/vlc/include&#10;../../External/NDI/include&#10;../../External/servus/include"
               defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" companyWebsite="https://benjamin.kuperberg.fr/rulemapool"
-              companyName="GoldenGeek" bundleIdentifier="com.goldengeek.rulemapool">
+              companyName="GoldenGeek" bundleIdentifier="com.goldengeek.rulemapool"
+              displaySplashScreen="1">
   <MAINGROUP id="HVgNxl" name="RuleMaPool">
     <GROUP id="{F38B7255-1DCA-93A3-BDC5-0B94B29FDCE3}" name="Resources">
       <GROUP id="{2197F95F-2563-5673-95CA-08F7626CAAB1}" name="osx">
@@ -287,6 +288,8 @@
             <FILE id="YzFRQf" name="SurfaceUI.cpp" compile="0" resource="0" file="Source/Screen/Surface/ui/SurfaceUI.cpp"/>
             <FILE id="x4H8IP" name="SurfaceUI.h" compile="0" resource="0" file="Source/Screen/Surface/ui/SurfaceUI.h"/>
           </GROUP>
+          <FILE id="zcGwG6" name="Pin.cpp" compile="0" resource="0" file="Source/Screen/Surface/Pin.cpp"/>
+          <FILE id="JRExr9" name="Pin.h" compile="0" resource="0" file="Source/Screen/Surface/Pin.h"/>
           <FILE id="D3Q4xT" name="Surface.cpp" compile="0" resource="0" file="Source/Screen/Surface/Surface.cpp"/>
           <FILE id="ZQKMyQ" name="Surface.h" compile="0" resource="0" file="Source/Screen/Surface/Surface.h"/>
           <FILE id="zrruYX" name="SurfaceManager.cpp" compile="0" resource="0"

@@ -70,6 +70,7 @@
 		01838BF30EF8162A66C0CAE5 /* NDIDeviceParameter.h */ /* NDIDeviceParameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIDeviceParameter.h; path = ../../Source/Common/NDI/NDIDeviceParameter.h; sourceTree = SOURCE_ROOT; };
 		01D00A6F0EDD06FAAA2B9BD7 /* juce_video */ /* juce_video */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_video; path = ../../JUCE/modules/juce_video; sourceTree = SOURCE_ROOT; };
 		0290AC746B36233ACA0C2661 /* NodeManagerViewUI.cpp */ /* NodeManagerViewUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeManagerViewUI.cpp; path = ../../Source/Node/ui/NodeManagerViewUI.cpp; sourceTree = SOURCE_ROOT; };
+		030E0702DDCEDB157C38758E /* Pin.cpp */ /* Pin.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Pin.cpp; path = ../../Source/Screen/Surface/Pin.cpp; sourceTree = SOURCE_ROOT; };
 		03F081A282FDA78557D8056B /* MetalKit.framework */ /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		0461E7E99E5A9E9B058E9C20 /* common.hpp */ /* common.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = common.hpp; path = ../../Source/Media/medias/video/vlcpp/common.hpp; sourceTree = SOURCE_ROOT; };
 		0674C4BE92E12C2FE6EABDA3 /* NDIDevice.cpp */ /* NDIDevice.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NDIDevice.cpp; path = ../../Source/Common/NDI/NDIDevice.cpp; sourceTree = SOURCE_ROOT; };
@@ -86,6 +87,7 @@
 		0E02A7F52209BBE4D07E16DD /* MediaLayer.cpp */ /* MediaLayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaLayer.cpp; path = ../../Source/Media/medias/sequence/MediaLayer.cpp; sourceTree = SOURCE_ROOT; };
 		0E0F1A8E73CF261EC03F402B /* libvlc.dylib */ /* libvlc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvlc.dylib; path = ../../External/vlc/lib/osx/libvlc.dylib; sourceTree = SOURCE_ROOT; };
 		0E9602AA6EA3E72D9070DD0F /* ScreenIncludes.h */ /* ScreenIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenIncludes.h; path = ../../Source/Screen/ScreenIncludes.h; sourceTree = SOURCE_ROOT; };
+		0F9CC6EE106D4E6D0C60FF5F /* Pin.h */ /* Pin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Pin.h; path = ../../Source/Screen/Surface/Pin.h; sourceTree = SOURCE_ROOT; };
 		0FC3B25BD7E5349FA38491D1 /* webcamDeviceParameter.cpp */ /* webcamDeviceParameter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamDeviceParameter.cpp; path = ../../Source/Media/medias/webcam/webcamDeviceParameter.cpp; sourceTree = SOURCE_ROOT; };
 		1072149CF6F837D01CA534F5 /* RMPEngine.cpp */ /* RMPEngine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RMPEngine.cpp; path = ../../Source/Engine/RMPEngine.cpp; sourceTree = SOURCE_ROOT; };
 		1278284E6FFB63AA9C3EAA62 /* NodeConnectionViewUI.h */ /* NodeConnectionViewUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnectionViewUI.h; path = ../../Source/Node/Connection/ui/NodeConnectionViewUI.h; sourceTree = SOURCE_ROOT; };
@@ -617,6 +619,8 @@
 			isa = PBXGroup;
 			children = (
 				BA2F4276DC1B9ABF2CDDD010,
+				030E0702DDCEDB157C38758E,
+				0F9CC6EE106D4E6D0C60FF5F,
 				73C1EC972E4F55EFD7C927EB,
 				08B2FCCD0BF1D07821A3EBAF,
 				7B50ABF425B671BBDDF4FC52,

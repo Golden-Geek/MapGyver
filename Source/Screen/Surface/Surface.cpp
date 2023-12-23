@@ -20,6 +20,7 @@ Surface::Surface(var params) :
 	bezierCC("Bezier"),
 	adjustmentsCC("Adjustments"),
 	formatCC("Aspect Ratio"),
+	pinsCC("Pins"),
 	objectType(params.getProperty("type", "Surface").toString()),
 	objectData(params),
 	previewMedia(nullptr),
@@ -112,12 +113,14 @@ Surface::Surface(var params) :
 	positionningCC.editorIsCollapsed = true;
 	bezierCC.editorIsCollapsed = true;
 	adjustmentsCC.editorIsCollapsed = true;
+	pinsCC.selectItemWhenCreated = false;
 
 	positionningCC.saveAndLoadRecursiveData = true;
 	positionningCC.addChildControllableContainer(&bezierCC);
 	addChildControllableContainer(&positionningCC);
 	addChildControllableContainer(&adjustmentsCC);
 	addChildControllableContainer(&formatCC);
+	addChildControllableContainer(&pinsCC);
 
 	if (!Engine::mainEngine->isLoadingFile)
 	{
@@ -258,7 +261,12 @@ Array<Point2DParameter*> Surface::getCornerHandles()
 
 Array<Point2DParameter*> Surface::getAllHandles()
 {
-	return { topLeft, topRight, bottomLeft, bottomRight, handleBezierTopLeft, handleBezierTopRight, handleBezierBottomLeft, handleBezierBottomRight, handleBezierLeftTop, handleBezierLeftBottom, handleBezierRightTop, handleBezierRightBottom };
+	Array<Point2DParameter*> ret = { topLeft, topRight, bottomLeft, bottomRight, handleBezierTopLeft, handleBezierTopRight, handleBezierBottomLeft, handleBezierBottomRight, handleBezierLeftTop, handleBezierLeftBottom, handleBezierRightTop, handleBezierRightBottom };
+	for (int i = 0; i < pinsCC.items.size(); i++) 
+	{
+		ret.add(pinsCC.items[i]->position);
+	}
+	return ret;
 }
 
 Array<Point2DParameter*> Surface::getBezierHandles(Point2DParameter* corner)
@@ -274,7 +282,7 @@ Array<Point2DParameter*> Surface::getBezierHandles(Point2DParameter* corner)
 	return { handleBezierTopLeft, handleBezierTopRight, handleBezierBottomLeft, handleBezierBottomRight, handleBezierLeftTop, handleBezierLeftBottom, handleBezierRightTop, handleBezierRightBottom };
 }
 
-void Surface::addToVertices(Point<float> posDisplay, Point<float> internalCoord, Vector3D<float> texCoord, Vector3D<float> maskCoord)
+int Surface::addToVertices(Point<float> posDisplay, Point<float> internalCoord, Vector3D<float> texCoord, Vector3D<float> maskCoord)
 {
 	vertices.add(posDisplay.x);
 	vertices.add(posDisplay.y);
@@ -286,7 +294,8 @@ void Surface::addToVertices(Point<float> posDisplay, Point<float> internalCoord,
 	vertices.add(maskCoord.x);
 	vertices.add(maskCoord.y);
 	vertices.add(maskCoord.z);
-
+	int nVertices = vertices.size() / 10;
+	return nVertices-1;
 }
 
 void Surface::addLastFourAsQuad()
@@ -423,21 +432,6 @@ void Surface::updateVertices()
 	float dbr = center.getDistanceFrom(br);
 	float dbl = center.getDistanceFrom(bl);
 
-	float ztl = ((dtl + dbr) / dbr);
-	float ztr = ((dtr + dbl) / dbl);
-	float zbr = ((dbr + dtl) / dtl);
-	float zbl = ((dbl + dtr) / dtr);
-
-	tlTex *= ztl;
-	trTex *= ztr;
-	blTex *= zbl;
-	brTex *= zbr;
-
-	tlMask *= ztl;
-	trMask *= ztr;
-	blMask *= zbl;
-	brMask *= zbr;
-
 	if (bezierCC.enabled->boolValue()) {
 		const int gridSize = 40;
 		Point<float> grid[gridSize][gridSize];
@@ -527,12 +521,109 @@ void Surface::updateVertices()
 
 
 	}
-	else {
-		addToVertices(tl, Point<float>(-1, 1), tlTex, tlMask);
-		addToVertices(tr, Point<float>(1, 1), trTex, trMask);
-		addToVertices(bl, Point<float>(-1, -1), blTex, blMask);
-		addToVertices(br, Point<float>(1, -1), brTex, brMask);
-		addLastFourAsQuad();
+	else 
+	{
+		Array<Pin*> pins;
+		if (pinsCC.items.size() > 0) {
+			for (int i = 0; i < pinsCC.items.size(); i++) {
+				if (pinsCC.items[i]->enabled->boolValue()) {
+					pins.add(pinsCC.items[i]);
+				}
+			}
+		}
+
+		if (pins.size() > 0)
+		{
+			Pin ptl; 
+			ptl.position->x = topLeft->x; ptl.position->y = topLeft->y; 
+			ptl.mediaPos->x = tlTex.x; ptl.mediaPos->y = tlTex.y;
+			Pin ptr; 
+			ptr.position->x = topRight->x; ptr.position->y = topRight->y; 
+			ptr.mediaPos->x = trTex.x; ptr.mediaPos->y = trTex.y;
+			Pin pbl; 
+			pbl.position->x = bottomLeft->x; pbl.position->y = bottomLeft->y; 
+			pbl.mediaPos->x = blTex.x; pbl.mediaPos->y = blTex.y;
+			Pin pbr; 
+			pbr.position->x = bottomRight->x; pbr.position->y = bottomRight->y; 
+			pbr.mediaPos->x = brTex.x; pbr.mediaPos->y = brTex.y;
+
+			pins.add(&ptl);
+			pins.add(&ptr);
+			pins.add(&pbl);
+			pins.add(&pbr);
+
+			Array<int> verticeId;
+
+			for (int i = 0; i < pins.size(); i++) 
+			{
+				Point<float> pinPos = openGLPoint(pins[i]->position);
+				Point<float> pinMediaCoord = pins[i]->mediaPos->getPoint();
+				Vector3D<float> pinTex = Vector3D<float>(pinMediaCoord.x, pinMediaCoord.y, 1);
+				Vector3D<float> pinMask = Vector3D<float>(pinMediaCoord.x, pinMediaCoord.y, 1);
+				verticeId.add(addToVertices(pinPos, pinMediaCoord, pinTex, pinMask));
+			}
+
+			for (int iA = 0; iA < pins.size(); iA++) 
+			{
+				Pin* pinA = pins[iA];
+				Point<float>a = pinA->position->getPoint();
+				for (int iB = iA+1; iB < pins.size(); iB++)
+				{
+					Pin* pinB = pins[iB];
+					Point<float>b = pinB->position->getPoint();
+					for (int iC = iB+1; iC < pins.size(); iC++)
+					{
+						Pin* pinC = pins[iC];
+						Point<float>c = pinC->position->getPoint();
+						if (pinA != pinB && pinB != pinC && pinA != pinC) 
+						{
+							bool triangleIsValid = true;
+							for (int iD = 0; iD < pins.size() && triangleIsValid; iD++)
+							{
+								Pin* pinD = pins[iD];
+								Point<float>d = pinD->position->getPoint();
+								if (pinD != pinA && pinD != pinB && pinD != pinC)
+								{
+									if (isPointInsideCircumcircle(d, a, b, c))
+									{
+										triangleIsValid = false;
+									}
+								}
+							}
+							if (triangleIsValid) {
+								verticesElements.add(verticeId[iA]);
+								verticesElements.add(verticeId[iB]);
+								verticesElements.add(verticeId[iC]);
+							}
+						}
+					}
+				}
+			}
+
+		}
+		else 
+		{
+			float ztl = ((dtl + dbr) / dbr);
+			float ztr = ((dtr + dbl) / dbl);
+			float zbr = ((dbr + dtl) / dtl);
+			float zbl = ((dbl + dtr) / dtr);
+
+			tlTex *= ztl;
+			trTex *= ztr;
+			blTex *= zbl;
+			brTex *= zbr;
+
+			tlMask *= ztl;
+			trMask *= ztr;
+			blMask *= zbl;
+			brMask *= zbr;
+
+			addToVertices(tl, Point<float>(-1, 1), tlTex, tlMask);
+			addToVertices(tr, Point<float>(1, 1), trTex, trMask);
+			addToVertices(bl, Point<float>(-1, -1), blTex, blMask);
+			addToVertices(br, Point<float>(1, -1), brTex, brMask);
+			addLastFourAsQuad();
+		}
 	}
 }
 
@@ -648,6 +739,7 @@ void Surface::draw(GLuint shaderID)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, verticesElements.size() * sizeof(GLuint), verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
 	verticesLock.exit();
 
+	//glDrawElements(GL_LINES, verticesElements.size(), GL_UNSIGNED_INT, 0);
 	glDrawElements(GL_TRIANGLES, verticesElements.size(), GL_UNSIGNED_INT, 0);
 	glGetError();
 
@@ -713,4 +805,39 @@ Point<float> Surface::openGLPoint(Point2DParameter* p)
 	r.x = (r.x * 2) - 1;
 	r.y = (r.y * 2) - 1;
 	return r;
+}
+
+
+bool Surface::isPointInsideTriangle(Point<float> point, Point<float> vertex1, Point<float> vertex2, Point<float> vertex3)
+{
+	juce::Point<float> AB(vertex2.x - vertex1.x, vertex2.y - vertex1.y);
+	juce::Point<float> BC(vertex3.x - vertex2.x, vertex3.y - vertex2.y);
+	juce::Point<float> CA(vertex1.x - vertex3.x, vertex1.y - vertex3.y);
+
+	juce::Point<float> AP(point.x - vertex1.x, point.y - vertex1.y);
+	juce::Point<float> BP(point.x - vertex2.x, point.y - vertex2.y);
+	juce::Point<float> CP(point.x - vertex3.x, point.y - vertex3.y);
+
+	float crossAB = AB.x * AP.y - AB.y * AP.x;
+	float crossBC = BC.x * BP.y - BC.y * BP.x;
+	float crossCA = CA.x * CP.y - CA.y * CP.x;
+
+	return (crossAB > 0 && crossBC > 0 && crossCA > 0) || (crossAB < 0 && crossBC < 0 && crossCA < 0);
+}
+
+bool Surface::isPointInsideCircumcircle(juce::Point<float> point, juce::Point<float> vertex1, juce::Point<float> vertex2, juce::Point<float> vertex3)
+{
+	float x1 = vertex1.x, y1 = vertex1.y;
+	float x2 = vertex2.x, y2 = vertex2.y;
+	float x3 = vertex3.x, y3 = vertex3.y;
+
+	float D = 2 * (x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2));
+
+	float Ux = ((x1 * x1 + y1 * y1) * (y2 - y3) + (x2 * x2 + y2 * y2) * (y3 - y1) + (x3 * x3 + y3 * y3) * (y1 - y2)) / D;
+	float Uy = ((x1 * x1 + y1 * y1) * (x3 - x2) + (x2 * x2 + y2 * y2) * (x1 - x3) + (x3 * x3 + y3 * y3) * (x2 - x1)) / D;
+	
+	Point<float> center = Point<float>(Ux, Uy);
+
+	// Comparaison des distances au carré
+	return center.getDistanceFrom(point) < center.getDistanceFrom(vertex1);
 }

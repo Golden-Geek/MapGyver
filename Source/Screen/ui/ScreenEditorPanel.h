@@ -25,6 +25,7 @@ public:
 
 	Rectangle<int> frameBufferRect;
 	Point2DParameter* closestHandle;
+	Point2DParameter* selectedPinMediaHandle;
 	Surface* manipSurface;
 	Array<Point<float>> posAtMouseDown;
 

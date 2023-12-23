@@ -112,6 +112,10 @@ Point2DParameter* Screen::getClosestHandle(Point<float> pos, float maxDistance, 
 			handles.addArray(bezierHandles);
 		}
 
+		for (int i = 0; i < s->pinsCC.items.size(); i++) {
+			handles.add(s->pinsCC.items[i]->position);
+		}
+
 		for (auto& h : handles)
 		{
 			if (excludeHandles.contains(h)) continue;

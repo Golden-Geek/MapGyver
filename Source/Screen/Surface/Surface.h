@@ -46,6 +46,8 @@ public:
     Point2DParameter* handleBezierRightTop;
     Point2DParameter* handleBezierRightBottom;
 
+    BaseManager<Pin> pinsCC;
+
     ControllableContainer adjustmentsCC;
     BoolParameter* showTestPattern;
     TargetParameter* mask;
@@ -99,7 +101,7 @@ public:
     Array<GLuint> verticesElements;
     CriticalSection verticesLock;
 
-    void addToVertices(Point<float> posDisplay, Point<float>itnernalCoord, Vector3D<float> texCoord, Vector3D<float> maskCoord);
+    int addToVertices(Point<float> posDisplay, Point<float>itnernalCoord, Vector3D<float> texCoord, Vector3D<float> maskCoord);
     void addLastFourAsQuad();
     void updateVertices();
     void draw(GLuint shaderID);
@@ -119,7 +121,8 @@ public:
     static Point<float> getBeziers(Point<float>a, Point<float>b, Point<float>c, Point<float>d, float r);
     static bool intersection(Point<float> p1, Point<float> p2, Point<float> p3, Point<float> p4, Point<float>* intersect); // should be in another objet
     static Point<float> openGLPoint(Point2DParameter* p);
-
+    static bool isPointInsideTriangle(Point<float> point, Point<float> vertex1, Point<float> vertex2, Point<float> vertex3);
+    static bool isPointInsideCircumcircle(Point<float> point, Point<float> vertex1, Point<float> vertex2, Point<float> vertex3);
 };
 
 

@@ -21,6 +21,7 @@ ScreenEditorView::ScreenEditorView(Screen* screen) :
 	zoomingMode(false),
 	panningMode(false),
 	closestHandle(nullptr),
+	selectedPinMediaHandle(nullptr),
 	manipSurface(nullptr),
 	candidateDropSurface(nullptr),
 	zoom(1),
@@ -102,8 +103,9 @@ void ScreenEditorView::paint(Graphics& g)
 			for (auto& b : handles)
 			{
 				bool isCorner = b == s->topLeft || b == s->topRight || b == s->bottomLeft || b == s->bottomRight;
+				bool isPin = b->niceName == "Position";
 
-				if (!isCorner && !s->bezierCC.enabled->boolValue()) continue;
+				if (!isCorner && !isPin && !s->bezierCC.enabled->boolValue()) continue;
 
 				bool isCurrent = b == closestHandle;
 				Colour c = isCurrent ? Colours::yellow : Colours::white;
@@ -170,6 +172,15 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 	{
 		posAtMouseDown = { closestHandle->getPoint() };
 
+		if (e.mods.isRightButtonDown()) {
+			Pin* p = dynamic_cast<Pin*>(closestHandle->parentContainer.get());
+			if (p != nullptr) {
+				posAtMouseDown = {p->mediaPos->getPoint()};
+				selectedPinMediaHandle = p->mediaPos;
+				return;
+			}
+		}
+
 		Surface* s = ControllableUtil::findParentAs<Surface>(closestHandle);
 		bool isCorner = closestHandle == s->topLeft || closestHandle == s->topRight || closestHandle == s->bottomLeft || closestHandle == s->bottomRight;
 		if (isCorner)
@@ -228,6 +239,10 @@ void ScreenEditorView::mouseDrag(const MouseEvent& e)
 		Array<Point2DParameter*> handles = manipSurface->getAllHandles();
 		for (int i = 0; i < handles.size(); i++) handles[i]->setPoint(posAtMouseDown[i] + offsetRelative);
 	}
+	else if (selectedPinMediaHandle != nullptr) {
+		Point<float> tp = posAtMouseDown[0] + offsetRelative;
+		selectedPinMediaHandle->setPoint(tp);
+	}
 	else if (closestHandle != nullptr)
 	{
 		Array<Point2DParameter*> handles = { closestHandle };
@@ -258,6 +273,7 @@ void ScreenEditorView::mouseDrag(const MouseEvent& e)
 
 void ScreenEditorView::mouseUp(const MouseEvent& e)
 {
+	selectedPinMediaHandle = nullptr;
 	if (zoomingMode)
 	{
 		zoomingMode = false;
