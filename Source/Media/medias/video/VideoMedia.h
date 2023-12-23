@@ -25,6 +25,7 @@ public:
 	StringParameter* url;
 
 	BoolParameter* playAtLoad;
+	BoolParameter* loop;
 	Trigger* startBtn;
 	Trigger* stopBtn;
 	Trigger* restartBtn;

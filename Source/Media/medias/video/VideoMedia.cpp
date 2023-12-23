@@ -20,6 +20,7 @@ VideoMedia::VideoMedia(var params) :
 	filePath = addFileParameter("File path", "File path", "");
 	url = addStringParameter("URL", "URL", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", false);
 
+	loop = addBoolParameter("Loop", "Loop video", false);
 	playAtLoad = addBoolParameter("Play at load", "Play at load", false);
 
 	startBtn = addTrigger("start", "");
@@ -96,13 +97,28 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 
 		libvlc_media_list_player_set_media_list(VLCMediaListPlayer, VLCMediaList);
 		libvlc_media_list_player_set_media_player(VLCMediaListPlayer, VLCMediaPlayer);
-		libvlc_media_list_player_set_playback_mode(VLCMediaListPlayer, libvlc_playback_mode_loop);
+		if (loop->boolValue()) {
+			libvlc_media_list_player_set_playback_mode(VLCMediaListPlayer, libvlc_playback_mode_loop);
+		}
+		else {
+			libvlc_media_list_player_set_playback_mode(VLCMediaListPlayer, libvlc_playback_mode_default);
+		}
 
 		libvlc_event_attach(libvlc_media_player_event_manager(VLCMediaPlayer), libvlc_MediaPlayerPositionChanged, vlcSeek, this);
 		libvlc_media_player_play(VLCMediaPlayer);
 
 		libvlc_media_release(VLCMedia); VLCMedia = nullptr;
 		if (playAtLoad->boolValue()) restart();
+
+	}
+	else if (p == loop)
+	{
+		if (loop->boolValue()) {
+			libvlc_media_list_player_set_playback_mode(VLCMediaListPlayer, libvlc_playback_mode_loop);
+		}
+		else {
+			libvlc_media_list_player_set_playback_mode(VLCMediaListPlayer, libvlc_playback_mode_default);
+		}
 
 	}
 	else if (p == mediaVolume)
