@@ -47,6 +47,8 @@ public:
 	GLuint framebuffer;
 
 	void paint(Graphics& g) override;
+	
+	Path getSurfacePath(Surface* s);
 
 	void mouseDown(const MouseEvent& e) override;
 	void mouseMove(const MouseEvent& e) override;

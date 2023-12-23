@@ -43,10 +43,7 @@ void ScreenEditorView::paint(Graphics& g)
 {
 	if (frameBufferRect.isEmpty()) return;
 
-	if (zoomingMode)
-	{
-		return;
-	}
+	if (zoomingMode) return;
 
 	Colour col = isMouseButtonDown() ? Colours::yellow : Colours::cyan;
 
@@ -56,20 +53,11 @@ void ScreenEditorView::paint(Graphics& g)
 
 		if (candidateDropSurface != nullptr) col = Colours::purple;
 
-		Path surfacePath;
-		surfacePath.addPath(surface->quadPath);
-
-		AffineTransform at = AffineTransform::verticalFlip(1) //inverse the Y axis
-			.followedBy(AffineTransform::translation(-viewOffset.x, viewOffset.y))
-			.followedBy(AffineTransform::scale(frameBufferRect.getWidth() * zoom, frameBufferRect.getHeight() * zoom)) //scale to the component size
-			.followedBy(AffineTransform::translation(frameBufferRect.getX(), frameBufferRect.getY())); //translate to the component position
-		surfacePath.applyTransform(at);
-
-
+		Path p = getSurfacePath(surface);
 		g.setColour(col.withAlpha(.1f));
-		g.fillPath(surfacePath);
+		g.fillPath(p);
 		g.setColour(col.brighter(.3f));
-		g.strokePath(surfacePath, PathStrokeType(2.0f));
+		g.strokePath(p, PathStrokeType(2.0f));
 
 		if (manipSurface != nullptr)
 		{
@@ -99,22 +87,33 @@ void ScreenEditorView::paint(Graphics& g)
 		for (auto& s : screen->surfaces.items)
 		{
 			if (!s->enabled->boolValue() || s->isUILocked->boolValue()) continue;
-			Array<Point2DParameter*> handles = s->getAllHandles();
-			for (auto& b : handles)
+
+			Path p = getSurfacePath(s);
+
+			bool isInPath = p.contains(mp.toFloat());
+
+			g.setColour(NORMAL_COLOR.withAlpha(isInPath ? .8f : .3f));
+			g.strokePath(p, PathStrokeType(1.0f));
+
+			if (isInPath)
 			{
-				bool isCorner = b == s->topLeft || b == s->topRight || b == s->bottomLeft || b == s->bottomRight;
-				bool isPin = b->niceName == "Position";
+				Array<Point2DParameter*> handles = s->getAllHandles();
+				for (auto& b : handles)
+				{
+					bool isCorner = b == s->topLeft || b == s->topRight || b == s->bottomLeft || b == s->bottomRight;
+					bool isPin = b->niceName == "Position";
 
-				if (!isCorner && !isPin && !s->bezierCC.enabled->boolValue()) continue;
+					if (!isCorner && !isPin && !s->bezierCC.enabled->boolValue()) continue;
 
-				bool isCurrent = b == closestHandle;
-				Colour c = isCurrent ? Colours::yellow : Colours::white;
-				g.setColour(c.withAlpha(isCurrent ? .8f : .5f));
-				Point<int> center = getPointOnScreen(b->getPoint());
-				float size = isCurrent ? 10 : 5;
-				g.fillEllipse(Rectangle<float>(0, 0, size, size).withCentre(center.toFloat()));
-				g.setColour(c.darker());
-				g.drawEllipse(Rectangle<float>(0, 0, size, size).withCentre(center.toFloat()), 1);
+					bool isCurrent = b == closestHandle;
+					Colour c = isCurrent ? Colours::yellow : Colours::white;
+					g.setColour(c.withAlpha(isCurrent ? .8f : .5f));
+					Point<int> center = getPointOnScreen(b->getPoint());
+					float size = isCurrent ? 10 : 5;
+					g.fillEllipse(Rectangle<float>(0, 0, size, size).withCentre(center.toFloat()));
+					g.setColour(c.darker());
+					g.drawEllipse(Rectangle<float>(0, 0, size, size).withCentre(center.toFloat()), 1);
+				}
 			}
 
 			if (s->bezierCC.enabled->boolValue())
@@ -136,6 +135,21 @@ void ScreenEditorView::paint(Graphics& g)
 			}
 		}
 	}
+}
+
+Path ScreenEditorView::getSurfacePath(Surface* s)
+{
+	Path surfacePath;
+	surfacePath.addPath(s->quadPath);
+
+	AffineTransform at = AffineTransform::verticalFlip(1) //inverse the Y axis
+		.followedBy(AffineTransform::translation(-viewOffset.x, viewOffset.y))
+		.followedBy(AffineTransform::scale(frameBufferRect.getWidth() * zoom, frameBufferRect.getHeight() * zoom)) //scale to the component size
+		.followedBy(AffineTransform::translation(frameBufferRect.getX(), frameBufferRect.getY())); //translate to the component position
+	surfacePath.applyTransform(at);
+
+	return surfacePath;
+
 }
 
 void ScreenEditorView::mouseDown(const MouseEvent& e)
@@ -172,10 +186,11 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 	{
 		posAtMouseDown = { closestHandle->getPoint() };
 
-		if (e.mods.isRightButtonDown()) {
+		if (e.mods.isRightButtonDown())
+		{
 			Pin* p = dynamic_cast<Pin*>(closestHandle->parentContainer.get());
 			if (p != nullptr) {
-				posAtMouseDown = {p->mediaPos->getPoint()};
+				posAtMouseDown = { p->mediaPos->getPoint() };
 				selectedPinMediaHandle = p->mediaPos;
 				return;
 			}
