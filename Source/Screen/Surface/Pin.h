@@ -23,7 +23,7 @@ public:
 
     Point2DParameter* position;
     Point2DParameter* mediaPos;
-    int verticeId;
+    FloatParameter* ponderation;
 
     String getTypeString() const override { return objectType; }
     static Pin* create(var params) { return new Pin(params); }

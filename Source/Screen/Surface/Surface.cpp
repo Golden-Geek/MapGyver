@@ -559,7 +559,9 @@ void Surface::updateVertices()
 				Point<float> pinPos = openGLPoint(pins[i]->position);
 				Point<float> pinMediaCoord = pins[i]->mediaPos->getPoint();
 				Vector3D<float> pinTex = Vector3D<float>(pinMediaCoord.x, pinMediaCoord.y, 1);
+				pinTex *= pins[i]->ponderation->floatValue();
 				Vector3D<float> pinMask = Vector3D<float>(pinMediaCoord.x, pinMediaCoord.y, 1);
+				pinMask *= pins[i]->ponderation->floatValue();
 				verticeId.add(addToVertices(pinPos, pinMediaCoord, pinTex, pinMask));
 			}
 

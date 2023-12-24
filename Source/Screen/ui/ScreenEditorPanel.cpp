@@ -185,9 +185,18 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 	else if (closestHandle != nullptr)
 	{
 		posAtMouseDown = { closestHandle->getPoint() };
+		Surface* s = ControllableUtil::findParentAs<Surface>(closestHandle);
 
-		if (e.mods.isRightButtonDown())
-		{
+		if (e.mods.isRightButtonDown()) {
+			if (e.mods.isShiftDown()) {
+				if (s != nullptr) {
+					Pin* p = s->pinsCC.addItem();
+					Point<float> pos = (e.mouseDownPosition.toFloat()) / Point<float>(frameBufferRect.getWidth(), frameBufferRect.getHeight());
+					pos.y = 1-pos.y;
+					p->position->setPoint(Point<float>(pos));
+				}
+				return;
+			}
 			Pin* p = dynamic_cast<Pin*>(closestHandle->parentContainer.get());
 			if (p != nullptr) {
 				posAtMouseDown = { p->mediaPos->getPoint() };
@@ -196,7 +205,6 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 			}
 		}
 
-		Surface* s = ControllableUtil::findParentAs<Surface>(closestHandle);
 		bool isCorner = closestHandle == s->topLeft || closestHandle == s->topRight || closestHandle == s->bottomLeft || closestHandle == s->bottomRight;
 		if (isCorner)
 		{

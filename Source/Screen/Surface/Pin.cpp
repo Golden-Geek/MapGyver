@@ -25,8 +25,7 @@ Pin::Pin(var params) :
 	position->setBounds(-1, -1, 2, 2);
 	mediaPos = addPoint2DParameter("Media position", "");
 	mediaPos->setBounds(0, 0, 1, 1);
-
-
+	ponderation = addFloatParameter("Ponderation", "", 1, 0);
 }
 
 Pin::~Pin()
