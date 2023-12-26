@@ -22,7 +22,9 @@ public:
 	EnumParameter* source;
 	FileParameter* filePath;
 	StringParameter* url;
+	Trigger* convertToLocal;
 
+	void onContainerTriggerTriggered(Trigger* t) override;
 	void onContainerParameterChanged(Parameter* p) override;
 
 	void reloadImage();

@@ -19,7 +19,7 @@
             file="Resources/default.rmplayout"/>
       <FILE id="QjCryC" name="fragmentShaderMainSurface.glsl" compile="0"
             resource="1" file="Resources/fragmentShaderMainSurface.glsl"/>
-      <FILE id="QlDWAs" name="fragmentShaderTestGrid.glsl" compile="0" resource="1"
+      <FILE id="zaw2Hw" name="fragmentShaderTestGrid.glsl" compile="0" resource="1"
             file="Resources/fragmentShaderTestGrid.glsl"/>
       <FILE id="AKcEsb" name="icon.png" compile="0" resource="1" file="Resources/icon.png"/>
       <FILE id="PvxFYN" name="testPattern.png" compile="0" resource="1" file="Resources/testPattern.png"/>

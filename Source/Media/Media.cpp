@@ -64,6 +64,14 @@ void Media::newOpenGLContextCreated()
 
 void Media::renderOpenGL()
 {
+	if (isClearing) return;
+
+	Point<int> size = getMediaSize();
+	if (size.isOrigin()) return;
+	if (frameBuffer.getWidth() != size.x || frameBuffer.getHeight() != size.y) initFrameBuffer();
+
+	preRenderGLInternal(); //allow for pre-rendering operations even if not being used or disabled
+
 	if (!enabled->boolValue()) return;
 	if (!isBeingUsed()) return;
 
@@ -75,10 +83,6 @@ void Media::renderOpenGL()
 	//LOG("Delta: " << t - timeAtLastRender);
 	timeAtLastRender = t;
 
-	Point<int> size = getMediaSize();
-	if (size.isOrigin()) return;
-	if (frameBuffer.getWidth() != size.x || frameBuffer.getHeight() != size.y) initFrameBuffer();
-
 	if (!frameBuffer.isValid()) return;
 
 	if (shouldRedraw || alwaysRedraw)
@@ -88,7 +92,7 @@ void Media::renderOpenGL()
 		frameBuffer.releaseAsRenderingTarget();
 		shouldRedraw = false;
 
-		if(!customFPSTick) FPSTick();
+		if (!customFPSTick) FPSTick();
 	}
 }
 
@@ -181,6 +185,7 @@ void Media::FPSTick()
 	// Calcul des FPS
 	MessageManager::callAsync([this, max, fps]()
 		{
+			if(isClearing) return;
 			if (Engine::mainEngine->isClearing) return;
 
 			if ((float)currentFPS->maximumValue < max) {
@@ -241,7 +246,7 @@ void ImageMedia::initImage(const Image& newImage)
 		graphics = std::make_shared<Graphics>(image);
 		bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
 	}
-	else {
+	else if (graphics != nullptr) {
 		graphics->drawImageTransformed(newImage, AffineTransform::translation(0, 0));
 	}
 }

@@ -58,10 +58,6 @@ void ScreenRenderer::renderOpenGL()
 		{
 			shader->use();
 			GLuint shaderProgram = shader->getProgramID();
-			if (s->showTestPattern->boolValue()) {
-				shaderProgram = shaderTest->getProgramID();
-				shaderTest->use();
-			}
 			s->draw(shaderProgram);
 		}
 
@@ -87,7 +83,6 @@ void ScreenRenderer::openGLContextClosing()
 	glEnable(GL_BLEND);
 	glDisable(GL_BLEND);
 	shader = nullptr;
-	shaderTest = nullptr;
 }
 
 
@@ -97,10 +92,4 @@ void ScreenRenderer::createAndLoadShaders()
 	shader->addVertexShader(OpenGLHelpers::translateVertexShaderToV3(BinaryData::VertexShaderMainSurface_glsl));
 	shader->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(BinaryData::fragmentShaderMainSurface_glsl));
 	shader->link();
-
-	shaderTest.reset(new OpenGLShaderProgram(GlContextHolder::getInstance()->context));
-	shaderTest->addVertexShader(OpenGLHelpers::translateVertexShaderToV3(BinaryData::VertexShaderMainSurface_glsl));
-	shaderTest->addFragmentShader(OpenGLHelpers::translateFragmentShaderToV3(BinaryData::fragmentShaderTestGrid_glsl));
-	shaderTest->link();
-
 }

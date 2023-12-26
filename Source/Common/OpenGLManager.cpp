@@ -216,9 +216,6 @@ void GlContextHolder::newOpenGLContextCreated()
 	glDisable(GL_DEBUG_OUTPUT);
 #endif
 	checkComponents(false, false);
-
-	Image testPatternImg = ImageCache::getFromMemory(BinaryData::testPattern_png, BinaryData::testPattern_pngSize);
-	testPattern.loadImage(testPatternImg);
 }
 
 void GlContextHolder::renderOpenGL()
@@ -232,5 +229,4 @@ void GlContextHolder::renderOpenGL()
 void GlContextHolder::openGLContextClosing()
 {
 	checkComponents(true, false);
-	testPattern.release();
 }

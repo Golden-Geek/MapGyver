@@ -21,8 +21,6 @@ public:
 	GlContextHolder();
 	~GlContextHolder();
 
-	OpenGLTexture testPattern;
-
 	double timeAtRender;
 
 	void setup(juce::Component* topLevelComponent);

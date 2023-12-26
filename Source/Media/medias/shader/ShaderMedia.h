@@ -34,6 +34,7 @@ public:
 	StringParameter* shaderToyKey;
 	IntParameter* fps;
 	ColorParameter* backgroundColor;
+	BoolParameter* keepOfflineCache;
 	
 
 	bool useMouse4D;
@@ -53,6 +54,7 @@ public:
 
 	bool shouldReloadShader;
 	String fragmentShaderToLoad;
+	String shaderOfflineData; //for online shader, store the data to be able to reload it offline
 	bool isLoadingShader;
 
 	String resolutionUniformName;
@@ -74,6 +76,7 @@ public:
 	void onContainerParameterChangedInternal(Parameter* p) override;
 
 	void initGLInternal() override;
+	void preRenderGLInternal() override;
 	void renderGLInternal() override;
 	void reloadShader();
 	void loadFragmentShader(const String& fragmentShader);
@@ -81,6 +84,9 @@ public:
 	void checkForHotReload();
 
 	void run() override;
+
+	var getJSONData() override;
+	void loadJSONDataItemInternal(var data) override;
 
 	DECLARE_TYPE("Shader")
 

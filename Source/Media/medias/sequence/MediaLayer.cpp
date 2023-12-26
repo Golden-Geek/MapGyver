@@ -66,7 +66,6 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 
 	glEnable(GL_BLEND);
 
-	bool isTransition = clipsToProcess.size() > 1;
 	int index = 0;
 	for (auto& clip : clipsToProcess)
 	{

@@ -51,6 +51,7 @@ public:
 	virtual void initFrameBuffer();
 
 	virtual void initGLInternal() {}
+	virtual void preRenderGLInternal() {}
 	virtual void renderGLInternal() {}
 	virtual void closeGLInternal() {}
 

@@ -32,6 +32,7 @@ ShaderMedia::ShaderMedia(var params) :
 	shaderFile = addFileParameter("Fragment Shader", "Fragment Shader");
 	shaderToyID = addStringParameter("ShaderToy ID", "ID of the shader toy. It's the last part of the URL when viewing it on the website", "tsXBzS", false);
 	shaderToyKey = addStringParameter("ShaderToy Key", "Key of the shader toy. It's the last part of the URL when viewing it on the website", "Bd8jRr", false);
+	keepOfflineCache = addBoolParameter("Keep Offline Cache", "Keep the offline cache of the shader, to reload if file is missing or if no internet for online shaders", true);
 
 
 	fps = addIntParameter("FPS", "FPS", 60, 1, 1000);
@@ -83,6 +84,12 @@ void ShaderMedia::initGLInternal()
 	glGenVertexArrays(1, &VAO);
 }
 
+void ShaderMedia::preRenderGLInternal()
+{
+	if (shouldReloadShader) reloadShader();
+	if (fragmentShaderToLoad.isNotEmpty()) loadFragmentShader(fragmentShaderToLoad);
+}
+
 void ShaderMedia::renderGLInternal()
 {
 	double t = customTime >= 0 ? customTime : Time::getMillisecondCounter() / 1000.0;
@@ -95,9 +102,6 @@ void ShaderMedia::renderGLInternal()
 	if (customTime < 0 && t < lastFrameTime + frameTime) return;
 
 	lastFrameTime = t;
-
-	if (shouldReloadShader) reloadShader();
-	if (fragmentShaderToLoad.isNotEmpty()) loadFragmentShader(fragmentShaderToLoad);
 
 	if (isLoadingShader) return;
 
@@ -166,7 +170,6 @@ void ShaderMedia::renderGLInternal()
 
 void ShaderMedia::reloadShader()
 {
-	LOG("reload shader");
 	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
 
 	bool isFile = st == ShaderGLSLFile || st == ShaderToyFile || st == ShaderISFFile;
@@ -178,6 +181,10 @@ void ShaderMedia::reloadShader()
 		{
 			s = shaderFile->getFile().loadFileAsString();
 			lastModificationTime = sf.getLastModificationTime();
+		}
+		else if (keepOfflineCache->boolValue())
+		{
+			s = shaderOfflineData;
 		}
 
 		fragmentShaderToLoad = s;
@@ -331,6 +338,7 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 		shader.reset();
 	}
 
+	shaderOfflineData = fragmentShaderToLoad;
 	fragmentShaderToLoad = "";
 	isLoadingShader = false;
 
@@ -375,12 +383,10 @@ void ShaderMedia::run()
 		std::unique_ptr<InputStream> stream = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withProgressCallback(
 			[this](int, int) { return !threadShouldExit(); }));
 
-		if (stream == nullptr)
-		{
-			NLOGWARNING(niceName, "Could not retrieve shader at " << url.toString(true));
-		}
+		String dataStr = "";
+		if (stream != nullptr) dataStr = stream->readEntireStreamAsString();
+		else NLOGWARNING(niceName, "Could not retrieve shader at " << url.toString(true));
 
-		String dataStr = stream->readEntireStreamAsString();
 		if (dataStr.isEmpty())
 		{
 			NLOGWARNING(niceName, "No responde when loading shader at " << url.toString(true));
@@ -418,9 +424,21 @@ void ShaderMedia::run()
 		}
 	}
 
-	fragmentShaderToLoad = shaderStr;
 
-	//GlContextHolder::getInstance()->context.executeOnGLThread([&](OpenGLContext&) { loadFragmentShader(shaderStr); }, true);
+	fragmentShaderToLoad = shaderStr.isNotEmpty() ? shaderStr : shaderOfflineData;
+}
+
+var ShaderMedia::getJSONData()
+{
+	var data = Media::getJSONData();
+	data.getDynamicObject()->setProperty("shaderCache", shaderOfflineData);
+	return data;
+}
+
+void ShaderMedia::loadJSONDataItemInternal(var data)
+{
+	Media::loadJSONDataItemInternal(data);
+	if (data.getDynamicObject()->hasProperty("shaderCache")) shaderOfflineData = data.getDynamicObject()->getProperty("shaderCache");
 }
 
 

@@ -19,11 +19,33 @@ PictureMedia::PictureMedia(var params) :
 
 	filePath = addFileParameter("File path", "File path", "");
 	url = addStringParameter("URL", "URL", "https://i.pinimg.com/564x/9a/92/62/9a926291240989c77bc77d9d2d3fcec6.jpg", false);
+	convertToLocal = addTrigger("Convert to local", "If online picture, downloads it aside the project file and points to it");
 }
 
 PictureMedia::~PictureMedia()
 {
 	stopThread(1000);
+}
+
+void PictureMedia::onContainerTriggerTriggered(Trigger* t)
+{
+	Media::onContainerTriggerTriggered(t);
+	if (t == convertToLocal)
+	{
+		if (source->getValueDataAsEnum<PictureSource>() == Source_File) return;
+
+		if (image.isValid())
+		{
+			PNGImageFormat png;
+			File f = Engine::mainEngine->getFile().getParentDirectory().getChildFile(niceName + ".png");
+			FileOutputStream fs(f);
+			png.writeImageToStream(image, fs);
+			LOG("File saved  to " << f.getFullPathName());
+
+			filePath->setValue(f.getFullPathName());
+			source->setValueWithData(Source_File);
+		}
+	}
 }
 
 void PictureMedia::onContainerParameterChanged(Parameter* p)
@@ -74,6 +96,12 @@ void PictureMedia::run()
 {
 	GenericScopedLock lock(imageLock);
 	std::unique_ptr<InputStream> is = URL(url->stringValue()).createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress));
+
+	if (is == nullptr)
+	{
+		NLOGERROR(niceName, "Couldn't retrieve online picture, are you connected to internet ?");
+		return;
+	}
 
 	MemoryBlock block;
 	is->readIntoMemoryBlock(block);

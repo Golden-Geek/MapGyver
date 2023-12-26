@@ -8,11 +8,13 @@
   ==============================================================================
 */
 
+#include "Common/CommonIncludes.h"
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
 
 #define SURFACE_TARGET_MEDIA_ID 0
 #define SURFACE_TARGET_MASK_ID 1
+#define SURFACE_PATTERN_ID 2
 
 Surface::Surface(var params) :
 	BaseItem(params.getProperty("name", "Surface")),
@@ -37,7 +39,7 @@ Surface::Surface(var params) :
 	media = addTargetParameter("Media", "Media to read on this surface", MediaManager::getInstance());
 	media->maxDefaultSearchLevel = 0;
 	media->targetType = TargetParameter::CONTAINER;
-		
+
 	topLeft = positionningCC.addPoint2DParameter("topLeft ", "");
 	topRight = positionningCC.addPoint2DParameter("topRight ", "");
 	bottomLeft = positionningCC.addPoint2DParameter("bottomLeft ", "");
@@ -73,7 +75,7 @@ Surface::Surface(var params) :
 	ratioList = formatCC.addEnumParameter("Ratio", "");
 	ratioList->addOption("16/9", R16_9)->addOption("16/10", R16_10)->addOption("4/3", R4_3)->addOption("square", R1)->addOption("Custom", RCUSTOM);
 	ratioList->hideInEditor = true;
-	ratio = formatCC.addFloatParameter("Ratio value", "", 16/9.0f, 0.0001);
+	ratio = formatCC.addFloatParameter("Ratio value", "", 16 / 9.0f, 0.0001);
 	ratio->hideInEditor = true;
 	//considerCrop = formatCC.addBoolParameter("Consider Crop", "", false);
 	//considerCrop->hideInEditor = true;
@@ -166,7 +168,6 @@ void Surface::onContainerParameterChangedInternal(Parameter* p)
 		cropBottom->setEnabled(e);
 		cropLeft->setEnabled(e);
 	}
-
 }
 
 void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
@@ -174,7 +175,7 @@ void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Co
 	if (c == resetBezierBtn) {
 		resetBezierPoints();
 	}
-		
+
 	if (c == topLeft || c == topRight || c == bottomLeft || c == bottomRight)
 	{
 		updatePath();
@@ -189,18 +190,38 @@ void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Co
 		FillType t = fillType->getValueDataAsEnum<FillType>();
 		Ratio r = ratioList->getValueDataAsEnum<Ratio>();
 
-		switch (r) 
+		switch (r)
 		{
-			case R16_9: ratio->setValue(16 / 9.0f); break;
-			case R16_10: ratio->setValue(16 / 10.0f); break;
-			case R4_3: ratio->setValue(4 / 3.0f); break;
-			case R1: ratio->setValue(1.0f); break;
+		case R16_9: ratio->setValue(16 / 9.0f); break;
+		case R16_10: ratio->setValue(16 / 10.0f); break;
+		case R4_3: ratio->setValue(4 / 3.0f); break;
+		case R1: ratio->setValue(1.0f); break;
 		}
 
 		ratioList->hideInEditor = t == STRETCH;
 		ratio->hideInEditor = t == STRETCH || r != RCUSTOM;
 		queuedNotifier.addMessage(new ContainerAsyncEvent(ContainerAsyncEvent::ControllableContainerNeedsRebuild, this));
 	}
+	else if (c == showTestPattern)
+	{
+		GenericScopedLock lock(patternMediaLock);
+		ShaderMedia* sm = nullptr;
+
+		unregisterUseMedia(SURFACE_PATTERN_ID);
+
+		if (showTestPattern->boolValue())
+		{
+			sm = new ShaderMedia();
+			sm->keepOfflineCache->setValue(true);
+			sm->shaderType->setValueWithData(ShaderMedia::ShaderToyFile);
+			sm->shaderOfflineData = String(BinaryData::fragmentShaderTestGrid_glsl, BinaryData::fragmentShaderTestGrid_glslSize);
+			sm->shouldReloadShader = true;
+			registerUseMedia(SURFACE_PATTERN_ID, sm);
+		}
+
+		patternMedia.reset(sm);
+	}
+
 	shouldUpdateVertices = true;
 }
 
@@ -262,7 +283,7 @@ Array<Point2DParameter*> Surface::getCornerHandles()
 Array<Point2DParameter*> Surface::getAllHandles()
 {
 	Array<Point2DParameter*> ret = { topLeft, topRight, bottomLeft, bottomRight, handleBezierTopLeft, handleBezierTopRight, handleBezierBottomLeft, handleBezierBottomRight, handleBezierLeftTop, handleBezierLeftBottom, handleBezierRightTop, handleBezierRightBottom };
-	for (int i = 0; i < pinsCC.items.size(); i++) 
+	for (int i = 0; i < pinsCC.items.size(); i++)
 	{
 		ret.add(pinsCC.items[i]->position);
 	}
@@ -273,7 +294,7 @@ Array<Point2DParameter*> Surface::getBezierHandles(Point2DParameter* corner)
 {
 	if (corner != nullptr)
 	{
-		if(corner == topLeft) return { handleBezierTopLeft, handleBezierLeftTop };
+		if (corner == topLeft) return { handleBezierTopLeft, handleBezierLeftTop };
 		else if (corner == topRight) return { handleBezierTopRight, handleBezierRightTop };
 		else if (corner == bottomLeft) return { handleBezierBottomLeft, handleBezierLeftBottom };
 		else if (corner == bottomRight) return { handleBezierBottomRight, handleBezierRightBottom };
@@ -295,7 +316,7 @@ int Surface::addToVertices(Point<float> posDisplay, Point<float> internalCoord, 
 	vertices.add(maskCoord.y);
 	vertices.add(maskCoord.z);
 	int nVertices = vertices.size() / 10;
-	return nVertices-1;
+	return nVertices - 1;
 }
 
 void Surface::addLastFourAsQuad()
@@ -347,7 +368,7 @@ void Surface::updateVertices()
 	}
 
 	FillType t = fillType->getValueDataAsEnum<FillType>();
-	
+
 	if (t != STRETCH) {
 		float outputRatio = ratio->floatValue();
 
@@ -355,7 +376,7 @@ void Surface::updateVertices()
 
 		if (med != nullptr) {
 			Point<int> mediaSize = med->getMediaSize();
-			float mediaRatio = abs((wTex * mediaSize.x) / (hTex*(float)mediaSize.y));
+			float mediaRatio = abs((wTex * mediaSize.x) / (hTex * (float)mediaSize.y));
 			if (mediaRatio != outputRatio) {
 				if (t == FIT) {
 					float transformRatio = mediaRatio / outputRatio;
@@ -451,7 +472,7 @@ void Surface::updateVertices()
 
 			if (i > 0) {
 				distTop += grid[i][0].getDistanceFrom(grid[i - 1][0]);
-				distBottom += grid[i][gridSize - 1].getDistanceFrom(grid[i-1][gridSize - 1]);
+				distBottom += grid[i][gridSize - 1].getDistanceFrom(grid[i - 1][gridSize - 1]);
 			}
 		}
 
@@ -474,8 +495,8 @@ void Surface::updateVertices()
 			float ratioTop = currentDistTop / distTop;
 			float ratioBottom = currentDistBottom / distBottom;
 
-			Point<float> handleTop = deltaHandleLT +(deltaTop*ratioTop)+  grid[i][0];
-			Point<float> handleBottom = deltaHandleLB+(deltaBottom*ratioBottom) + grid[i][gridSize - 1];
+			Point<float> handleTop = deltaHandleLT + (deltaTop * ratioTop) + grid[i][0];
+			Point<float> handleBottom = deltaHandleLB + (deltaBottom * ratioBottom) + grid[i][gridSize - 1];
 
 			for (int j = 1; j < gridSize - 1; j++) {
 				float ratio2 = j / (float)(gridSize - 1);
@@ -491,8 +512,8 @@ void Surface::updateVertices()
 		float fromY = cropBottom->floatValue();
 		float toY = 1 - cropTop->floatValue();
 		if (med != nullptr && med->flipY) {
-			fromY = 1-fromY;
-			toY = 1-toY;
+			fromY = 1 - fromY;
+			toY = 1 - toY;
 		}
 
 		for (int i = 0; i < gridSize - 1; i++) {
@@ -506,22 +527,22 @@ void Surface::updateVertices()
 				blMask = Vector3D<float>(i * ratio, 1 - ((j + 1) * ratio), 1);
 				brMask = Vector3D<float>((i + 1) * ratio, 1 - ((j + 1) * ratio), 1);
 				if (msk != nullptr && msk->flipY) {
-					tlMask.y = 1- tlMask.y;
+					tlMask.y = 1 - tlMask.y;
 					trMask.y = 1 - trMask.y;
 					blMask.y = 1 - blMask.y;
 					brMask.y = 1 - brMask.y;
 				}
 				addToVertices(grid[i][j], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), tlTex, tlMask);
-				addToVertices(grid[i + 1][j], Point<float>(((i+1) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), trTex, trMask);
-				addToVertices(grid[i][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j+1) * 2 * ratio) - 1)), blTex, blMask);
-				addToVertices(grid[i + 1][j + 1], Point<float>(((i+1) * 2 * ratio) - 1, -(((j+1) * 2 * ratio) - 1)), brTex, brMask);
+				addToVertices(grid[i + 1][j], Point<float>(((i + 1) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), trTex, trMask);
+				addToVertices(grid[i][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j + 1) * 2 * ratio) - 1)), blTex, blMask);
+				addToVertices(grid[i + 1][j + 1], Point<float>(((i + 1) * 2 * ratio) - 1, -(((j + 1) * 2 * ratio) - 1)), brTex, brMask);
 				addLastFourAsQuad();
 			}
 		}
 
 
 	}
-	else 
+	else
 	{
 		Array<Pin*> pins;
 		if (pinsCC.items.size() > 0) {
@@ -534,17 +555,17 @@ void Surface::updateVertices()
 
 		if (pins.size() > 0)
 		{
-			Pin ptl; 
-			ptl.position->x = topLeft->x; ptl.position->y = topLeft->y; 
+			Pin ptl;
+			ptl.position->x = topLeft->x; ptl.position->y = topLeft->y;
 			ptl.mediaPos->x = tlTex.x; ptl.mediaPos->y = tlTex.y;
-			Pin ptr; 
-			ptr.position->x = topRight->x; ptr.position->y = topRight->y; 
+			Pin ptr;
+			ptr.position->x = topRight->x; ptr.position->y = topRight->y;
 			ptr.mediaPos->x = trTex.x; ptr.mediaPos->y = trTex.y;
-			Pin pbl; 
-			pbl.position->x = bottomLeft->x; pbl.position->y = bottomLeft->y; 
+			Pin pbl;
+			pbl.position->x = bottomLeft->x; pbl.position->y = bottomLeft->y;
 			pbl.mediaPos->x = blTex.x; pbl.mediaPos->y = blTex.y;
-			Pin pbr; 
-			pbr.position->x = bottomRight->x; pbr.position->y = bottomRight->y; 
+			Pin pbr;
+			pbr.position->x = bottomRight->x; pbr.position->y = bottomRight->y;
 			pbr.mediaPos->x = brTex.x; pbr.mediaPos->y = brTex.y;
 
 			pins.add(&ptl);
@@ -554,7 +575,7 @@ void Surface::updateVertices()
 
 			Array<int> verticeId;
 
-			for (int i = 0; i < pins.size(); i++) 
+			for (int i = 0; i < pins.size(); i++)
 			{
 				Point<float> pinPos = openGLPoint(pins[i]->position);
 				Point<float> pinMediaCoord = pins[i]->mediaPos->getPoint();
@@ -565,19 +586,19 @@ void Surface::updateVertices()
 				verticeId.add(addToVertices(pinPos, pinMediaCoord, pinTex, pinMask));
 			}
 
-			for (int iA = 0; iA < pins.size(); iA++) 
+			for (int iA = 0; iA < pins.size(); iA++)
 			{
 				Pin* pinA = pins[iA];
 				Point<float>a = pinA->position->getPoint();
-				for (int iB = iA+1; iB < pins.size(); iB++)
+				for (int iB = iA + 1; iB < pins.size(); iB++)
 				{
 					Pin* pinB = pins[iB];
 					Point<float>b = pinB->position->getPoint();
-					for (int iC = iB+1; iC < pins.size(); iC++)
+					for (int iC = iB + 1; iC < pins.size(); iC++)
 					{
 						Pin* pinC = pins[iC];
 						Point<float>c = pinC->position->getPoint();
-						if (pinA != pinB && pinB != pinC && pinA != pinC) 
+						if (pinA != pinB && pinB != pinC && pinA != pinC)
 						{
 							bool triangleIsValid = true;
 							for (int iD = 0; iD < pins.size() && triangleIsValid; iD++)
@@ -603,7 +624,7 @@ void Surface::updateVertices()
 			}
 
 		}
-		else 
+		else
 		{
 			float ztl = ((dtl + dbr) / dbr);
 			float ztr = ((dtr + dbl) / dbl);
@@ -633,7 +654,19 @@ void Surface::draw(GLuint shaderID)
 {
 	if (!enabled->boolValue()) return;
 
+
 	Media* media = getMedia();
+
+	{
+		GenericScopedLock lock(patternMediaLock);
+		if (patternMedia != nullptr)
+		{
+			Point<int> ms = media != nullptr ? media->getMediaSize() : Point<int>(512, 512);
+			patternMedia->width->setValue(ms.x);
+			patternMedia->height->setValue(ms.y);
+			media = patternMedia.get();
+		}
+	}
 
 	if (media == nullptr) return;
 
@@ -667,40 +700,34 @@ void Surface::draw(GLuint shaderID)
 	glActiveTexture(GL_TEXTURE1);
 	glGetError();
 
-	if (media == nullptr && !showTestPattern->boolValue())
-	{
-		return;
-	}
-	if (showTestPattern->boolValue()) {
-		glBindTexture(GL_TEXTURE_2D, GlContextHolder::getInstance()->testPattern.getTextureID());
-	}
-	else {
-		glBindTexture(GL_TEXTURE_2D, media->getTextureID());
-	}
+	if (media == nullptr) return;
+
+	glBindTexture(GL_TEXTURE_2D, media->getTextureID());
+
 
 	// vertices start
 	if (shouldUpdateVertices) {
 		shouldUpdateVertices = false;
 		updateVertices();
-	
+
 		glGenBuffers(1, &vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 		posAttrib = glGetAttribLocation(shaderID, "position");
 		glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), 0);
-		
+
 		surfacePosAttrib = glGetAttribLocation(shaderID, "surfacePosition");
 		glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
-		
+
 		texAttrib = glGetAttribLocation(shaderID, "texcoord");
 		glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
-		
+
 		maskAttrib = glGetAttribLocation(shaderID, "maskcoord");
 		glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
-		
+
 		borderSoftLocation = glGetUniformLocation(shaderID, "borderSoft");
 		glUniform4f(borderSoftLocation, softEdgeTop->floatValue(), softEdgeRight->floatValue(), softEdgeBottom->floatValue(), softEdgeLeft->floatValue());
-		
+
 		invertMaskLocation = glGetUniformLocation(shaderID, "invertMask");
 		glUniform1i(invertMaskLocation, invertMask->boolValue() ? 1 : 0);
 
@@ -837,7 +864,7 @@ bool Surface::isPointInsideCircumcircle(juce::Point<float> point, juce::Point<fl
 
 	float Ux = ((x1 * x1 + y1 * y1) * (y2 - y3) + (x2 * x2 + y2 * y2) * (y3 - y1) + (x3 * x3 + y3 * y3) * (y1 - y2)) / D;
 	float Uy = ((x1 * x1 + y1 * y1) * (x3 - x2) + (x2 * x2 + y2 * y2) * (x1 - x3) + (x3 * x3 + y3 * y3) * (x2 - x1)) / D;
-	
+
 	Point<float> center = Point<float>(Ux, Uy);
 
 	// Comparaison des distances au carré

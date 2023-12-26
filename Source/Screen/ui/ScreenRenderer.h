@@ -21,7 +21,6 @@ public:
 	Screen* screen;
 
 	std::unique_ptr<OpenGLShaderProgram> shader;
-	std::unique_ptr<OpenGLShaderProgram> shaderTest;
 	juce::OpenGLFrameBuffer frameBuffer;
 
 	long timeAtLastRender;
