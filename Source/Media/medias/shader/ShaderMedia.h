@@ -13,6 +13,7 @@
 
 class ShaderMedia :
 	public Media,
+	public MediaTarget,
 	public Thread
 {
 public:
@@ -77,6 +78,7 @@ public:
 		};
 
 	void onContainerParameterChangedInternal(Parameter* p) override;
+	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 	void initGLInternal() override;
 	void preRenderGLInternal() override;

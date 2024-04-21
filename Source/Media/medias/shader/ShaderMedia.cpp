@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "ShaderMedia.h"
 
 juce_ImplementSingleton(ShaderCheckTimer);
 
@@ -84,6 +85,23 @@ void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
 	if (p == shaderType || p == shaderFile || p == shaderToyID || p == shaderToyKey)
 	{
 		if (!isLoadingShader) shouldReloadShader = true;
+	}
+}
+
+void ShaderMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
+{
+	Media::onControllableFeedbackUpdateInternal(cc, c);
+	if(cc == &sourceMedias)
+	{
+		int i = 0;
+		for (auto& tp : sourceMedias.controllables)
+		{
+			TargetParameter* p = dynamic_cast<TargetParameter*>(tp);
+			Media* m = p->getTargetContainerAs<Media>();
+			registerUseMedia(i, m);
+			i++;
+		}
+		unregisterUseMedia(i); //if there are less sources than before, force unregister
 	}
 }
 

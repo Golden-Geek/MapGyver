@@ -19,6 +19,12 @@ bool MediaTarget::isUsingMedia(Media* m)
 
 void MediaTarget::registerUseMedia(int id, Media* m)
 {
+	if (m == nullptr)
+	{
+		unregisterUseMedia(id);
+		return;
+	}
+
 	if (usedMedias.contains(id))
 	{
 		if (m == usedMedias[id]) return;
