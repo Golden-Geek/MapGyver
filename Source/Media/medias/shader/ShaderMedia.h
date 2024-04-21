@@ -35,7 +35,9 @@ public:
 	IntParameter* fps;
 	ColorParameter* backgroundColor;
 	BoolParameter* keepOfflineCache;
-	
+
+	ControllableContainer sourceMedias;
+
 
 	bool useMouse4D;
 	int useResolution3D;
@@ -57,6 +59,7 @@ public:
 	String shaderOfflineData; //for online shader, store the data to be able to reload it offline
 	bool isLoadingShader;
 
+	String textureUniformName;
 	String resolutionUniformName;
 	String normCoordUniformName;
 	String timeUniformName;

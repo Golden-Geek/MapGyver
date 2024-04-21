@@ -24,7 +24,8 @@ ShaderMedia::ShaderMedia(var params) :
 	lastFrameTime(0),
 	VBO(0),
 	VAO(0),
-	useMouse4D(false)
+	useMouse4D(false),
+	sourceMedias("Source Medias")
 {
 	shaderType = addEnumParameter("Shader Type", "Type Shader to load");
 	shaderType->addOption("Shader GLSL File", ShaderGLSLFile)->addOption("ShaderToy File", ShaderToyFile)->addOption("ShaderToy Online", ShaderToyURL);
@@ -49,6 +50,17 @@ ShaderMedia::ShaderMedia(var params) :
 	mediaParams.userAddControllablesFilters.add(ColorParameter::getTypeStringStatic());
 	mediaParams.userAddControllablesFilters.add(Point2DParameter::getTypeStringStatic());
 	mediaParams.userAddControllablesFilters.add(Point3DParameter::getTypeStringStatic());
+
+	sourceMedias.userCanAddControllables = true;
+	sourceMedias.customUserCreateControllableFunc = [&](ControllableContainer* cc)
+		{
+			TargetParameter* p = cc->addTargetParameter("Source Media", "Source Media", MediaManager::getInstance());
+			p->targetType = TargetParameter::CONTAINER;
+			p->maxDefaultSearchLevel = 0;
+		};
+	addChildControllableContainer(&sourceMedias);
+
+
 
 	alwaysRedraw = true;
 }
@@ -129,6 +141,22 @@ void ShaderMedia::renderGLInternal()
 		else if (mouseUniformName.isNotEmpty()) shader->setUniform(mouseUniformName.toStdString().c_str(), mousePos.x, mousePos.y);
 	}
 
+
+	int texIndex = 0;
+	for (auto& tp : sourceMedias.controllables)
+	{
+		TargetParameter* p = dynamic_cast<TargetParameter*>(tp);
+		if (Media* m = p->getTargetContainerAs<Media>())
+		{
+			if (textureUniformName.isNotEmpty())
+			{
+				glActiveTexture(GL_TEXTURE0 + texIndex);
+				glBindTexture(GL_TEXTURE_2D, m->getTextureID());
+				shader->setUniform((textureUniformName + String(texIndex)).toStdString().c_str(), texIndex);
+				texIndex++;
+			}
+		}
+	};
 
 	for (auto& cp : mediaParams.controllables)
 	{
@@ -265,6 +293,7 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 		frameUniformName = "iFrame";
 		timeDeltaUniformName = "iTimeDelta";
 		normCoordUniformName = "";
+		textureUniformName = "iChannel";
 
 		useMouse4D = true;
 		useResolution3D = true;
@@ -438,6 +467,13 @@ var ShaderMedia::getJSONData()
 void ShaderMedia::loadJSONDataItemInternal(var data)
 {
 	Media::loadJSONDataItemInternal(data);
+	for (auto& c : sourceMedias.controllables)
+	{
+		((TargetParameter*)c)->setRootContainer(MediaManager::getInstance());
+		((TargetParameter*)c)->targetType = TargetParameter::CONTAINER;
+		((TargetParameter*)c)->maxDefaultSearchLevel = 0;
+	}
+
 	if (data.getDynamicObject()->hasProperty("shaderCache")) shaderOfflineData = data.getDynamicObject()->getProperty("shaderCache");
 }
 
