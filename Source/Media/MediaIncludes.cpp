@@ -39,6 +39,7 @@
 #include "medias/node/NodeMedia.cpp"
 
 #include "medias/sequence/MediaClip.cpp"
+#include "medias/sequence/ClipTransition.cpp"
 #include "medias/sequence/MediaClipManager.cpp"
 #include "medias/sequence/MediaLayer.cpp"
 #include "medias/sequence/SequenceMedia.cpp"

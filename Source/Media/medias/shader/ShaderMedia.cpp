@@ -58,6 +58,7 @@ ShaderMedia::ShaderMedia(var params) :
 			TargetParameter* p = cc->addTargetParameter("Source Media", "Source Media", MediaManager::getInstance());
 			p->targetType = TargetParameter::CONTAINER;
 			p->maxDefaultSearchLevel = 0;
+			p->saveValueOnly = false;
 		};
 	addChildControllableContainer(&sourceMedias);
 
@@ -161,6 +162,7 @@ void ShaderMedia::renderGLInternal()
 
 
 	int texIndex = 0;
+	int offset = 5;
 	for (auto& tp : sourceMedias.controllables)
 	{
 		TargetParameter* p = dynamic_cast<TargetParameter*>(tp);
@@ -168,9 +170,9 @@ void ShaderMedia::renderGLInternal()
 		{
 			if (textureUniformName.isNotEmpty())
 			{
-				glActiveTexture(GL_TEXTURE0 + texIndex);
+				glActiveTexture(GL_TEXTURE0 + texIndex + offset);
 				glBindTexture(GL_TEXTURE_2D, m->getTextureID());
-				shader->setUniform((textureUniformName + String(texIndex)).toStdString().c_str(), texIndex);
+				shader->setUniform((textureUniformName + String(texIndex)).toStdString().c_str(), texIndex + offset);
 				texIndex++;
 			}
 		}
@@ -210,6 +212,14 @@ void ShaderMedia::renderGLInternal()
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glUseProgram(0);
+
+	for (int i = 0; i < texIndex; i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + texIndex + offset);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	glActiveTexture(GL_TEXTURE0);
 
 	currentFrame++;
 }
@@ -479,6 +489,7 @@ var ShaderMedia::getJSONData()
 {
 	var data = Media::getJSONData();
 	data.getDynamicObject()->setProperty("shaderCache", shaderOfflineData);
+	data.getDynamicObject()->setProperty(sourceMedias.shortName, sourceMedias.getJSONData());
 	return data;
 }
 
@@ -490,6 +501,7 @@ void ShaderMedia::loadJSONDataItemInternal(var data)
 		((TargetParameter*)c)->setRootContainer(MediaManager::getInstance());
 		((TargetParameter*)c)->targetType = TargetParameter::CONTAINER;
 		((TargetParameter*)c)->maxDefaultSearchLevel = 0;
+		((TargetParameter*)c)->saveValueOnly = false;
 	}
 
 	if (data.getDynamicObject()->hasProperty("shaderCache")) shaderOfflineData = data.getDynamicObject()->getProperty("shaderCache");

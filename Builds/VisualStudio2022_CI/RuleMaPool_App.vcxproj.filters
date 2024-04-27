@@ -1177,6 +1177,9 @@
     <ClCompile Include="..\..\Source\Media\medias\sequence\ui\MediaLayerTimeline.cpp">
       <Filter>RuleMaPool\Source\Media\medias\sequence\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\sequence\ClipTransition.cpp">
+      <Filter>RuleMaPool\Source\Media\medias\sequence</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\sequence\MediaClip.cpp">
       <Filter>RuleMaPool\Source\Media\medias\sequence</Filter>
     </ClCompile>
@@ -4805,6 +4808,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaLayerTimeline.h">
       <Filter>RuleMaPool\Source\Media\medias\sequence\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\sequence\ClipTransition.h">
+      <Filter>RuleMaPool\Source\Media\medias\sequence</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\sequence\MediaClip.h">
       <Filter>RuleMaPool\Source\Media\medias\sequence</Filter>

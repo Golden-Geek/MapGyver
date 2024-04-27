@@ -36,7 +36,7 @@ public:
 
 	void setMedia(Media* m);
 
-	void setTime(double time, bool seekMode);
+	virtual void setTime(double time, bool seekMode);
 	void setIsPlaying(bool playing);
 
 	void onContainerParameterChangedInternal(Parameter* p) override;

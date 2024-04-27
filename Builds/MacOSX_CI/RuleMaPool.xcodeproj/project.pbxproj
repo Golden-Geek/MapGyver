@@ -154,6 +154,7 @@
 		61C4E8B7450CABFFEB98B500 /* NDIDeviceParameter.cpp */ /* NDIDeviceParameter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NDIDeviceParameter.cpp; path = ../../Source/Common/NDI/NDIDeviceParameter.cpp; sourceTree = SOURCE_ROOT; };
 		644028F7EC5232567FD138AD /* vlc.hpp */ /* vlc.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = vlc.hpp; path = ../../Source/Media/medias/video/vlcpp/vlc.hpp; sourceTree = SOURCE_ROOT; };
 		646F1E0D929CAD95D6071976 /* PictureMedia.h */ /* PictureMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PictureMedia.h; path = ../../Source/Media/medias/picture/PictureMedia.h; sourceTree = SOURCE_ROOT; };
+		658D59919E4391940593BCF7 /* ClipTransition.cpp */ /* ClipTransition.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ClipTransition.cpp; path = ../../Source/Media/medias/sequence/ClipTransition.cpp; sourceTree = SOURCE_ROOT; };
 		66A47B068289318E7D2C36A1 /* ShaderMedia.cpp */ /* ShaderMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ShaderMedia.cpp; path = ../../Source/Media/medias/shader/ShaderMedia.cpp; sourceTree = SOURCE_ROOT; };
 		67511A7D33FFE58491EAE421 /* OnlineContentExplorer.cpp */ /* OnlineContentExplorer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OnlineContentExplorer.cpp; path = ../../Source/Common/ContentExplorer/OnlineContentExplorer.cpp; sourceTree = SOURCE_ROOT; };
 		6758ED784D188B4800323ADB /* juce_osc */ /* juce_osc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_osc; path = ../../JUCE/modules/juce_osc; sourceTree = SOURCE_ROOT; };
@@ -179,6 +180,7 @@
 		6F391643AAE4BB692CA8A120 /* Media.hpp */ /* Media.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Media.hpp; path = ../../Source/Media/medias/video/vlcpp/Media.hpp; sourceTree = SOURCE_ROOT; };
 		6F823315377F8F9F3C87958B /* RendererDiscoverer.hpp */ /* RendererDiscoverer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RendererDiscoverer.hpp; path = ../../Source/Media/medias/video/vlcpp/RendererDiscoverer.hpp; sourceTree = SOURCE_ROOT; };
 		70C459AD219BDC7880D0E5DF /* NDIDevice.h */ /* NDIDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIDevice.h; path = ../../Source/Common/NDI/NDIDevice.h; sourceTree = SOURCE_ROOT; };
+		71C68E983AF1136C51D77D28 /* ClipTransition.h */ /* ClipTransition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ClipTransition.h; path = ../../Source/Media/medias/sequence/ClipTransition.h; sourceTree = SOURCE_ROOT; };
 		72B993C2D698814B3C31FE2F /* include_juce_organicui2.cpp */ /* include_juce_organicui2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_organicui2.cpp; path = ../../JuceLibraryCode/include_juce_organicui2.cpp; sourceTree = SOURCE_ROOT; };
 		737D83C0B98E4DBFB4E8E72C /* icon.png */ /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../../Resources/icon.png; sourceTree = SOURCE_ROOT; };
 		73C1EC972E4F55EFD7C927EB /* Surface.cpp */ /* Surface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Surface.cpp; path = ../../Source/Screen/Surface/Surface.cpp; sourceTree = SOURCE_ROOT; };
@@ -801,6 +803,8 @@
 			isa = PBXGroup;
 			children = (
 				B0B85A72951ABC88AD76A5C1,
+				658D59919E4391940593BCF7,
+				71C68E983AF1136C51D77D28,
 				3094EE1A5D10D2E8EFCC61AD,
 				CF230CC491CA3EAB4300D842,
 				228941A64B9E89CA1E586205,

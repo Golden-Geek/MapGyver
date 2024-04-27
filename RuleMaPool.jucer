@@ -84,6 +84,10 @@
               <FILE id="pQeoYF" name="MediaLayerTimeline.h" compile="0" resource="0"
                     file="Source/Media/medias/sequence/ui/MediaLayerTimeline.h"/>
             </GROUP>
+            <FILE id="DBgPYt" name="ClipTransition.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/sequence/ClipTransition.cpp"/>
+            <FILE id="NGc2rO" name="ClipTransition.h" compile="0" resource="0"
+                  file="Source/Media/medias/sequence/ClipTransition.h"/>
             <FILE id="KqEYdJ" name="MediaClip.cpp" compile="0" resource="0" file="Source/Media/medias/sequence/MediaClip.cpp"/>
             <FILE id="xsGIQm" name="MediaClip.h" compile="0" resource="0" file="Source/Media/medias/sequence/MediaClip.h"/>
             <FILE id="pzOKBh" name="MediaClipManager.cpp" compile="0" resource="0"

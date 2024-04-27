@@ -190,6 +190,9 @@
     <ClCompile Include="..\..\Source\Media\medias\sequence\ui\MediaLayerTimeline.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\sequence\ClipTransition.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\sequence\MediaClip.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3543,6 +3546,7 @@
     <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaClipManagerUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaClipUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaLayerTimeline.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\sequence\ClipTransition.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sequence\MediaClip.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sequence\MediaClipManager.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sequence\MediaLayer.h"/>

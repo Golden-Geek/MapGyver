@@ -43,6 +43,7 @@
 #include "medias/node/NodeMedia.h"
 
 #include "medias/sequence/MediaClip.h"
+#include "medias/sequence/ClipTransition.h"
 #include "medias/sequence/MediaClipManager.h"
 #include "medias/sequence/MediaLayer.h"
 #include "medias/sequence/SequenceMedia.h"

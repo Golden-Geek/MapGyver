@@ -40,13 +40,26 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 	Array<LayerBlock*> blocks = blockManager.getBlocksAtTime(time, false);
 
 	Array<MediaClip*> clipsToProcess;
+
+	Array<ClipTransition*> transitions;
 	for (auto& b : blocks)
 	{
 		if (MediaClip* clip = dynamic_cast<MediaClip*>(b))
 		{
 			if (clip->media == nullptr) continue;
 			clipsToProcess.add(clip);
+
+			if (auto t = dynamic_cast<ClipTransition*>(clip))
+			{
+				transitions.add(t);
+			}
 		}
+	}
+
+	if (!transitions.isEmpty())
+	{
+		clipsToProcess.clear();
+		clipsToProcess.add(transitions.getLast());
 	}
 
 
@@ -66,11 +79,11 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 
 	glEnable(GL_BLEND);
 
+	glActiveTexture(GL_TEXTURE0);
 	int index = 0;
 	for (auto& clip : clipsToProcess)
 	{
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		glBindTexture(GL_TEXTURE_2D, clip->media->frameBuffer.getTextureID());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

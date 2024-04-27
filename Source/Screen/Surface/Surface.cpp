@@ -676,8 +676,8 @@ void Surface::draw(GLuint shaderID)
 	std::shared_ptr<OpenGLTexture> texMask = nullptr;
 
 	GLuint maskLocation = glGetUniformLocation(shaderID, "mask");
-	glUniform1i(maskLocation, 0);
-	glActiveTexture(GL_TEXTURE0);
+	glUniform1i(maskLocation, 12);
+	glActiveTexture(GL_TEXTURE12);
 
 	if (maskMedia != nullptr && !showTestPattern->boolValue())
 	{
@@ -696,8 +696,8 @@ void Surface::draw(GLuint shaderID)
 
 
 	GLuint textureLocation = glGetUniformLocation(shaderID, "tex");
-	glUniform1i(textureLocation, 1);
-	glActiveTexture(GL_TEXTURE1);
+	glUniform1i(textureLocation, 13);
+	glActiveTexture(GL_TEXTURE13);
 	glGetError();
 
 	if (media == nullptr) return;
@@ -777,14 +777,15 @@ void Surface::draw(GLuint shaderID)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//glDeleteBuffers(1, &vbo);
 
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE13);
+	glDisable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glActiveTexture(GL_TEXTURE12);
 	glDisable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glActiveTexture(GL_TEXTURE0);
-	glDisable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
 	glGetError();
 }
 
