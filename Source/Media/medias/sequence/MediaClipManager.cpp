@@ -103,16 +103,20 @@ void MediaClipManager::computeTransitionTimes()
 
 	for (auto& t : transitions)
 	{
-		if (t->inMedia != nullptr && t->outMedia != nullptr)
+		if (t->inClip != nullptr && t->outClip != nullptr)
 		{
-			float inTime = t->inMedia->getEndTime();
-			float outTime = t->outMedia->time->floatValue();
+			float inTime = t->inClip->getEndTime();
+			float outTime = t->outClip->time->floatValue();
 			float minTime = jmin(inTime, outTime);
 			float maxTime = jmax(inTime, outTime);
 
 			t->time->setValue(minTime);
 			t->setCoreLength(maxTime - minTime);
-			items.move(items.indexOf(t), items.indexOf(t->inMedia) + 1);
+			items.move(items.indexOf(t), items.indexOf(t->inClip) + 1);
+
+
+			t->inClip->dispatchTransitionChanged();
+			t->outClip->dispatchTransitionChanged();
 		}
 
 	}

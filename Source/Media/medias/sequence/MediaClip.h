@@ -12,6 +12,8 @@
 
 #define CLIP_MEDIA_ID 0
 
+class ClipTransition;
+
 class MediaClip :
 	public LayerBlock,
 	public MediaTarget
@@ -32,12 +34,19 @@ public:
 	FloatParameter* fadeOut;
 	Automation fadeCurve;
 	bool settingLengthFromMethod;
+	
+	ClipTransition* inTransition;
+	ClipTransition* outTransition;
 
-
-	void setMedia(Media* m);
+	virtual void setMedia(Media* m);
 
 	virtual void setTime(double time, bool seekMode);
 	void setIsPlaying(bool playing);
+
+	void setInTransition(ClipTransition* t);
+	void setOutTransition(ClipTransition* t);
+
+	void dispatchTransitionChanged();
 
 	void onContainerParameterChangedInternal(Parameter* p) override;
 	virtual void controllableStateChanged(Controllable* c) override;
@@ -65,7 +74,7 @@ public:
 	class  MediaClipEvent
 	{
 	public:
-		enum Type { FADES_CHANGED, REGENERATE_PREVIEW };
+		enum Type { FADES_CHANGED, REGENERATE_PREVIEW, TRANSITIONS_CHANGED };
 
 		MediaClipEvent(Type t, MediaClip* p, var v = var()) :
 			type(t), mediaClip(p), value(v) {}
@@ -107,6 +116,8 @@ public:
 	virtual ~OwnedMediaClip();
 
 	std::unique_ptr<Media> ownedMedia;
+
+	void setMedia(Media* m) override;
 
 	String getTypeString() const override { return media != nullptr ? media->getTypeString() : ""; }
 	static OwnedMediaClip* create(var params = var()) { return new OwnedMediaClip(params); }

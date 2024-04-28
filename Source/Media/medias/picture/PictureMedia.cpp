@@ -76,7 +76,7 @@ void PictureMedia::reloadImage()
 
 		if (target.existsAsFile() && target.hasFileExtension("jpg;jpeg;png"))
 		{
-			GenericScopedLock lock(imageLock);
+			//GenericScopedLock lock(imageLock);
 			Image img = ImageFileFormat::loadFrom(target);
 			initImage(img);
 			shouldRedraw = true;

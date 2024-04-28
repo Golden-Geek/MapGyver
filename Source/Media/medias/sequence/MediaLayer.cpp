@@ -96,14 +96,7 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 
 		glColor4f(1, 1, 1, fadeMultiplier);
 
-		if (clip->media->flipY)
-		{
-			Draw2DTexRectFlipped(0, 0, width, height);
-		}
-		else
-		{
-			Draw2DTexRect(0, 0, width, height);
-		}
+		Draw2DTexRect(0, 0, width, height);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 

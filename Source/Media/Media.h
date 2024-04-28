@@ -28,7 +28,6 @@ public:
 	OpenGLFrameBuffer frameBuffer;
 	bool alwaysRedraw;
 	bool shouldRedraw;
-	bool flipY;
 
 	Array<MediaTarget*> usedTargets;
 
@@ -86,7 +85,9 @@ public:
 	Image image;
 	std::shared_ptr<Image::BitmapData> bitmapData;
 	std::shared_ptr<Graphics> graphics;
+	juce::OpenGLFrameBuffer imageFBO;
 
+	virtual void preRenderGLInternal() override;
 	virtual void renderGLInternal();
 	virtual void initFrameBuffer() override;
 

@@ -359,14 +359,6 @@ void Surface::updateVertices()
 	float texMidX = blTex.x + (wTex / 2.0f);
 	float texMidY = blTex.y + (hTex / 2.0f);
 
-	if (med != nullptr && med->flipY) {
-		tlTex.y = 1 - tlTex.y;
-		trTex.y = 1 - trTex.y;
-		blTex.y = 1 - blTex.y;
-		brTex.y = 1 - brTex.y;
-		texMidY = 1 - texMidY;
-	}
-
 	FillType t = fillType->getValueDataAsEnum<FillType>();
 
 	if (t != STRETCH) {
@@ -440,14 +432,6 @@ void Surface::updateVertices()
 	Vector3D<float> blMask(0, 0, 1.0f);
 	Vector3D<float> brMask(1, 0, 1.0f);
 
-	Media* msk = mask->getTargetContainerAs<Media>();
-	if (msk != nullptr && msk->flipY) {
-		tlMask.y = 1 - tlMask.y;
-		trMask.y = 1 - trMask.y;
-		blMask.y = 1 - blMask.y;
-		brMask.y = 1 - brMask.y;
-	}
-
 	float dtl = center.getDistanceFrom(tl);
 	float dtr = center.getDistanceFrom(tr);
 	float dbr = center.getDistanceFrom(br);
@@ -511,10 +495,7 @@ void Surface::updateVertices()
 		float toX = 1 - cropRight->floatValue();
 		float fromY = cropBottom->floatValue();
 		float toY = 1 - cropTop->floatValue();
-		if (med != nullptr && med->flipY) {
-			fromY = 1 - fromY;
-			toY = 1 - toY;
-		}
+	
 
 		for (int i = 0; i < gridSize - 1; i++) {
 			for (int j = 0; j < gridSize - 1; j++) {
@@ -526,12 +507,8 @@ void Surface::updateVertices()
 				trMask = Vector3D<float>((i + 1) * ratio, 1 - (j * ratio), 1);
 				blMask = Vector3D<float>(i * ratio, 1 - ((j + 1) * ratio), 1);
 				brMask = Vector3D<float>((i + 1) * ratio, 1 - ((j + 1) * ratio), 1);
-				if (msk != nullptr && msk->flipY) {
-					tlMask.y = 1 - tlMask.y;
-					trMask.y = 1 - trMask.y;
-					blMask.y = 1 - blMask.y;
-					brMask.y = 1 - brMask.y;
-				}
+				
+
 				addToVertices(grid[i][j], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), tlTex, tlMask);
 				addToVertices(grid[i + 1][j], Point<float>(((i + 1) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), trTex, trMask);
 				addToVertices(grid[i][j + 1], Point<float>(((i) * 2 * ratio) - 1, -(((j + 1) * 2 * ratio) - 1)), blTex, blMask);

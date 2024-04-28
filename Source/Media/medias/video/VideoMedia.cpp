@@ -199,8 +199,8 @@ void* VideoMedia::lock(void** pixels)
 
 void VideoMedia::unlock(void* oldBuffer, void* const* pixels)
 {
-	shouldRedraw = true;
 	imageLock.exit();
+	shouldRedraw = true;
 	FPSTick();
 }
 
@@ -219,8 +219,8 @@ unsigned VideoMedia::setup_video(char* chroma, unsigned* width, unsigned* height
 	imageHeight = *height;
 	imagePitches = *pitches;
 	imageLines = *lines;
-
-	GenericScopedLock lock(imageLock);
+	
+	//GenericScopedLock lock(imageLock);
 
 	initImage(imageWidth, imageHeight);
 

@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "MediaClip.h"
 
 MediaClip::MediaClip(const String& name, var params) :
 	LayerBlock(name),
@@ -17,6 +18,8 @@ MediaClip::MediaClip(const String& name, var params) :
 	isPlaying(false),
 	fadeCurve("Fade Curve"),
 	settingLengthFromMethod(false),
+	inTransition(nullptr),
+	outTransition(nullptr),
 	mediaClipNotifier(5)
 {
 	saveAndLoadRecursiveData = true;
@@ -70,6 +73,24 @@ void MediaClip::setTime(double t, bool seekMode)
 	if (!enabled->boolValue() || !isActive->boolValue()) return;
 	relativeTime = jlimit(0., (double)getTotalLength(), t - time->doubleValue());
 	if (media != nullptr) media->setCustomTime(relativeTime, seekMode);
+}
+
+void MediaClip::setInTransition(ClipTransition* t)
+{
+	inTransition = t;
+	dispatchTransitionChanged();
+
+}
+
+void MediaClip::setOutTransition(ClipTransition* t)
+{
+	outTransition = t;
+	dispatchTransitionChanged();
+}
+
+void MediaClip::dispatchTransitionChanged()
+{
+	mediaClipNotifier.addMessage(new MediaClipEvent(MediaClipEvent::TRANSITIONS_CHANGED, this));
 }
 
 void MediaClip::onContainerParameterChangedInternal(Parameter* p)
@@ -154,12 +175,11 @@ void MediaClip::setCoreLength(float value, bool stretch, bool stickToCoreEnd)
 
 float MediaClip::getFadeMultiplier()
 {
-
 	//double relTimeTotal = absoluteTime - time->floatValue();
 
 	float result = 1;
-	if (fadeIn->floatValue() > 0) result *= fadeCurve.getValueAtPosition(jmin<double>(relativeTime / fadeIn->floatValue(), 1.f));
-	if (fadeOut->floatValue() > 0) result *= fadeCurve.getValueAtPosition(jmin<double>((getTotalLength() - relativeTime) / fadeOut->floatValue(), 1.f));
+	if (fadeIn->floatValue() > 0 && inTransition == nullptr) result *= fadeCurve.getValueAtPosition(jmin<double>(relativeTime / fadeIn->floatValue(), 1.f));
+	if (fadeOut->floatValue() > 0 && outTransition == nullptr) result *= fadeCurve.getValueAtPosition(jmin<double>((getTotalLength() - relativeTime) / fadeOut->floatValue(), 1.f));
 	return result;
 }
 
@@ -193,19 +213,35 @@ OwnedMediaClip::OwnedMediaClip(var params) :
 	MediaClip(params.getProperty("mediaType", "[notype]").toString(), params),
 	ownedMedia(nullptr)
 {
-	ownedMedia.reset(MediaManager::getInstance()->factory.create(params.getProperty("mediaType", "").toString()));
-	addChildControllableContainer(ownedMedia.get());
-	setMedia(ownedMedia.get());
+	Media* m = MediaManager::getInstance()->factory.create(params.getProperty("mediaType", "").toString());
+	setMedia(m);
 }
 
 OwnedMediaClip::OwnedMediaClip(Media* m) :
-	MediaClip(m->getTypeString()),
-	ownedMedia(m)
+	MediaClip(m->getTypeString())
 {
-	addChildControllableContainer(ownedMedia.get());
-	setMedia(ownedMedia.get());
+	setMedia(m);
 }
 
 OwnedMediaClip::~OwnedMediaClip()
 {
+}
+
+void OwnedMediaClip::setMedia(Media* m)
+{
+	if (m == media) return;
+
+	if (ownedMedia != nullptr)
+	{
+		removeChildControllableContainer(ownedMedia.get());
+		ownedMedia.reset();
+	}
+
+	MediaClip::setMedia(m);
+
+	if (media != nullptr)
+	{
+		ownedMedia.reset(media);
+		addChildControllableContainer(ownedMedia.get());
+	}
 }

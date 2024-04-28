@@ -37,6 +37,10 @@ public:
 
     std::unique_ptr<Component> automationUI;
 
+    Path clipPath;
+    int usableLeft;
+    int usableRight;
+
     void setTargetAutomation(ParameterAutomation* a);
 
     void paint(Graphics& g) override;
@@ -44,9 +48,13 @@ public:
 
     void resizedBlockInternal() override;
 
+    void generatePath();
+
     void mouseDown(const MouseEvent& e) override;
     void mouseDrag(const MouseEvent& e) override;
     void mouseUp(const MouseEvent& e) override;
+
+    bool hitTest(int x, int y) override;
 
     bool isInterestedInDragSource(const SourceDetails& source) override;
     void itemDropped(const SourceDetails& source) override;

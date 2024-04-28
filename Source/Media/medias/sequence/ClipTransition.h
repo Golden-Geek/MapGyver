@@ -16,8 +16,8 @@ public:
 	ClipTransition(var params = var());
 	~ClipTransition();
 
-	MediaClip* inMedia;
-	MediaClip* outMedia;
+	MediaClip* inClip;
+	MediaClip* outClip;
 
 	ShaderMedia shaderMedia;
 
@@ -27,6 +27,9 @@ public:
 
 	void setInOutMedia(MediaClip* in, MediaClip* out);
 	virtual void setTime(double time, bool seekMode) override;
+
+	void setInClip(MediaClip* in);
+	void setOutClip(MediaClip* out);
 
 	void onControllableFeedbackUpdateInternal(ControllableContainer*cc, Controllable* c) override;
 

@@ -14,7 +14,9 @@
 ClipTransition::ClipTransition(var params) :
 	MediaClip(getTypeString(), params),
 	mediaInParam(nullptr),
-	mediaOutParam(nullptr)
+	mediaOutParam(nullptr),
+	inClip(nullptr),
+	outClip(nullptr)
 {
 	progressParam = shaderMedia.mediaParams.addFloatParameter("progression", "progression", 0, 0, 1);
 	progressParam->isRemovableByUser = false;
@@ -33,15 +35,14 @@ ClipTransition::ClipTransition(var params) :
 
 ClipTransition::~ClipTransition()
 {
+	setInClip(false);
+	setOutClip(false);
 }
 
 void ClipTransition::setInOutMedia(MediaClip* in, MediaClip* out)
 {
-	inMedia = in;
-	outMedia = out;
-
-	mediaInParam->setValueFromTarget(inMedia->media);
-	mediaOutParam->setValueFromTarget(outMedia->media);
+	mediaInParam->setValueFromTarget(inClip->media);
+	mediaOutParam->setValueFromTarget(outClip->media);
 }
 
 void ClipTransition::setTime(double t, bool seekMode)
@@ -50,11 +51,25 @@ void ClipTransition::setTime(double t, bool seekMode)
 	progressParam->setValue(fadeCurve.getValueAtPosition((t - time->floatValue()) / getTotalLength()));
 }
 
+void ClipTransition::setInClip(MediaClip* in)
+{
+	if (inClip != nullptr) inClip->setOutTransition(nullptr);
+	inClip = in;
+	if(inClip != nullptr) inClip->setOutTransition(this);
+}
+
+void ClipTransition::setOutClip(MediaClip* out)
+{
+	if (outClip != nullptr) outClip->setInTransition(nullptr);
+	outClip = out;
+	if (outClip != nullptr) outClip->setInTransition(this);
+}
+
 void ClipTransition::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
 	MediaClip::onControllableFeedbackUpdateInternal(cc, c);
-	if (c == mediaInParam) inMedia = ControllableUtil::findParentAs<MediaClip>(mediaInParam->targetContainer.get());
-	else if (c == mediaOutParam) outMedia = ControllableUtil::findParentAs<MediaClip>(mediaOutParam->targetContainer.get());
+	if (c == mediaInParam) setInClip(ControllableUtil::findParentAs<MediaClip>(mediaInParam->targetContainer.get()));
+	else if (c == mediaOutParam) setOutClip(ControllableUtil::findParentAs<MediaClip>(mediaOutParam->targetContainer.get()));
 }
 
 void ClipTransition::loadJSONDataItemInternal(var data)

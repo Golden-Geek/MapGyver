@@ -19,7 +19,6 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	mediaParams("Media Parameters"),
 	alwaysRedraw(false),
 	shouldRedraw(false),
-	flipY(false),
 	timeAtLastRender(0),
 	lastFPSTick(0),
 	lastFPSIndex(0),
@@ -152,7 +151,7 @@ void Media::initFrameBuffer()
 {
 	Point<int> size = getMediaSize();
 	if (size.isOrigin()) return;
-
+	if (frameBuffer.isValid()) frameBuffer.release();
 	frameBuffer.initialise(GlContextHolder::getInstance()->context, size.x, size.y);
 	shouldRedraw = true;
 }
@@ -185,7 +184,7 @@ void Media::FPSTick()
 	// Calcul des FPS
 	MessageManager::callAsync([this, max, fps]()
 		{
-			if(isClearing) return;
+			if (isClearing) return;
 			if (Engine::mainEngine->isClearing) return;
 
 			if ((float)currentFPS->maximumValue < max) {
@@ -202,29 +201,35 @@ void Media::FPSTick()
 ImageMedia::ImageMedia(const String& name, var params) :
 	Media(name, params)
 {
-	flipY = true;
 }
 
 ImageMedia::~ImageMedia()
 {
 }
 
-void ImageMedia::renderGLInternal()
+void ImageMedia::preRenderGLInternal()
 {
 	GenericScopedLock lock(imageLock);
-
-	glBindTexture(GL_TEXTURE_2D, frameBuffer.getTextureID());
-
+	imageFBO.makeCurrentRenderingTarget();
+	glBindTexture(GL_TEXTURE_2D, imageFBO.getTextureID());
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.getWidth(), image.getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, bitmapData->data);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	imageFBO.releaseAsRenderingTarget();
+}
+
+void ImageMedia::renderGLInternal()
+{
+	Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
+	glBindTexture(GL_TEXTURE_2D, imageFBO.getTextureID());
+	Draw2DTexRectFlipped(0, 0, imageFBO.getWidth(), imageFBO.getHeight());
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void ImageMedia::initFrameBuffer()
 {
 	GenericScopedLock lock(imageLock);
-	if (frameBuffer.isValid()) frameBuffer.release();
-	frameBuffer.initialise(GlContextHolder::getInstance()->context, image);
-	shouldRedraw = true;
+	Media::initFrameBuffer();
+	imageFBO.initialise(GlContextHolder::getInstance()->context, frameBuffer.getWidth(), frameBuffer.getHeight());
 }
 
 void ImageMedia::initImage(int width, int height)
@@ -234,7 +239,10 @@ void ImageMedia::initImage(int width, int height)
 
 void ImageMedia::initImage(const Image& newImage)
 {
+	GenericScopedLock lock(imageLock);
+	
 	shouldRedraw = true;
+
 	if (!newImage.isValid())
 	{
 		image = Image();
@@ -246,9 +254,12 @@ void ImageMedia::initImage(const Image& newImage)
 		graphics = std::make_shared<Graphics>(image);
 		bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
 	}
-	else if (graphics != nullptr) {
-		graphics->drawImageTransformed(newImage, AffineTransform::translation(0, 0));
+	
+	if (graphics != nullptr) {
+		graphics->drawImage(image, Rectangle<float>(0, 0, image.getWidth(), image.getHeight()));
+		//graphics->drawImageTransformed(newImage, AffineTransform::verticalFlip(newImage.getHeight()));
 	}
+
 }
 
 Point<int> ImageMedia::getMediaSize()
