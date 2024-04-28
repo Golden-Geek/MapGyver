@@ -10,6 +10,17 @@
 
 #pragma once
 
+
+class CompositionLayerFactory :
+    public Factory<CompositionLayer>
+{
+public:
+    juce_DeclareSingleton(CompositionLayerFactory, true);
+    CompositionLayerFactory();
+    ~CompositionLayerFactory() {}
+
+};
+
 class CompositionLayerManager :
     public BaseManager<CompositionLayer>
 {

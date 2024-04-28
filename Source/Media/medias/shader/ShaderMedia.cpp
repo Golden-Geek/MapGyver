@@ -395,7 +395,7 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	else
 	{
 		shader.reset();
-	}
+	} 
 
 	shaderOfflineData = fragmentShaderToLoad;
 	fragmentShaderToLoad = "";

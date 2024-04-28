@@ -9,24 +9,17 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "CompositionLayer.h"
 
 #define COMPOSITION_TARGET_MEDIA_ID 0
 
-
-CompositionLayer::CompositionLayer(var params) :
-	BaseItem(params.getProperty("name", "CompositionLayer")),
-	objectType(params.getProperty("type", "CompositionLayer").toString()),
-	objectData(params)
+CompositionLayer::CompositionLayer(const String& name, var params) :
+	BaseItem(name)
 {
 	saveAndLoadRecursiveData = true;
 	canBeDisabled = true;
 
 	itemDataType = "CompositionLayer";
-
-
-	media = addTargetParameter("Media", "Media", MediaManager::getInstance());
-	media->maxDefaultSearchLevel = 0;
-	media->targetType = TargetParameter::CONTAINER;
 
 	position = addPoint2DParameter("Position", "In pixels");
 	size = addPoint2DParameter("Size", "In pixels");
@@ -91,31 +84,13 @@ CompositionLayer::~CompositionLayer()
 
 void CompositionLayer::onContainerParameterChangedInternal(Parameter* p)
 {
-	if (p == media)
-	{
-		if (Media* m = media->getTargetContainerAs<Media>()) 
-		{
-			registerUseMedia(COMPOSITION_TARGET_MEDIA_ID, m);
-			if (size->x == 0 && size->y == 0) {
-				var newSize;
-				Point mediaSize = m->getMediaSize();
-				newSize.append(mediaSize.x);
-				newSize.append(mediaSize.y);
-				size->setValue(newSize);
-			}
-		}
-		else 
-		{
-			unregisterUseMedia(COMPOSITION_TARGET_MEDIA_ID);
-		}
-	}
-	else if (p == blendFunction) {
+	if (p == blendFunction) {
 		blendPreset preset = blendFunction->getValueDataAsEnum<blendPreset>();
 		if (preset == CUSTOM) {
 			blendFunctionSourceFactor->setControllableFeedbackOnly(false);
 			blendFunctionDestinationFactor->setControllableFeedbackOnly(false);
 		}
-		else 
+		else
 		{
 			blendFunctionSourceFactor->setControllableFeedbackOnly(true);
 			blendFunctionDestinationFactor->setControllableFeedbackOnly(true);
@@ -187,9 +162,86 @@ void CompositionLayer::onContainerParameterChangedInternal(Parameter* p)
 	}
 }
 
+void CompositionLayer::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
+{
+	if (media != nullptr && c == media->width || c == media->height)
+	{
+		size->setPoint(media->getMediaSize().toFloat());
+	}
+}
+
+void CompositionLayer::setMedia(Media* m)
+{
+	if (media == m) return;
+
+	if (media != nullptr)
+	{
+		unregisterUseMedia(COMPOSITION_TARGET_MEDIA_ID);
+	}
+
+	media = m;
+
+
+	if (media != nullptr)
+	{
+		registerUseMedia(COMPOSITION_TARGET_MEDIA_ID, m);
+		size->setPoint(media->getMediaSize().toFloat());
+	}
+}
+
 bool CompositionLayer::isUsingMedia(Media* m)
 {
 	if (!enabled->boolValue()) return false;
 	return MediaTarget::isUsingMedia(m);
 }
 
+ReferenceCompositionLayer::ReferenceCompositionLayer(var params) :
+	CompositionLayer(getTypeString(), params)
+{
+	targetMedia = addTargetParameter("Media", "Media", MediaManager::getInstance());
+	targetMedia->maxDefaultSearchLevel = 0;
+	targetMedia->targetType = TargetParameter::CONTAINER;
+}
+
+ReferenceCompositionLayer::~ReferenceCompositionLayer()
+{
+}
+
+void ReferenceCompositionLayer::onContainerParameterChangedInternal(Parameter* p)
+{
+	CompositionLayer::onContainerParameterChangedInternal(p);
+	if (p == targetMedia)
+	{
+		setMedia(targetMedia->getTargetContainerAs<Media>());
+	}
+}
+
+
+
+OwnedCompositionLayer::OwnedCompositionLayer(var params) :
+	CompositionLayer(getTypeString(), params),
+	ownedMedia(nullptr)
+{
+	Media* m = MediaManager::getInstance()->factory.create(params.getProperty("mediaType", "").toString());
+	setMedia(m);
+}
+
+OwnedCompositionLayer::~OwnedCompositionLayer()
+{
+}
+
+void OwnedCompositionLayer::setMedia(Media* m)
+{
+	if (ownedMedia != nullptr)
+	{
+		removeChildControllableContainer(ownedMedia.get());
+	}
+
+	CompositionLayer::setMedia(m);
+	ownedMedia.reset(m);
+
+	if (ownedMedia != nullptr)
+	{
+		addChildControllableContainer(ownedMedia.get());
+	}
+}
