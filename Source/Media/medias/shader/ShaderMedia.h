@@ -105,5 +105,9 @@ public:
 	ShaderCheckTimer() { startTimer(500); }
 	~ShaderCheckTimer() {}
 
+	Array<ShaderMedia*, CriticalSection> shaders;
+	void registerShader(ShaderMedia* shader);
+	void unregisterShader(ShaderMedia* shader);
+
 	void timerCallback() override;
 };

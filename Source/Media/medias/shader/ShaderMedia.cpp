@@ -62,13 +62,15 @@ ShaderMedia::ShaderMedia(var params) :
 		};
 	addChildControllableContainer(&sourceMedias);
 
-
+	ShaderCheckTimer::getInstance()->registerShader(this);
 
 	alwaysRedraw = true;
 }
 
 ShaderMedia::~ShaderMedia()
 {
+	if(ShaderCheckTimer::getInstanceWithoutCreating()) ShaderCheckTimer::getInstance()->unregisterShader(this);
+
 	stopThread(1000);
 }
 
@@ -508,11 +510,21 @@ void ShaderMedia::loadJSONDataItemInternal(var data)
 }
 
 
+void ShaderCheckTimer::registerShader(ShaderMedia* shader)
+{
+	shaders.addIfNotAlreadyThere(shader);
+}
+
+void ShaderCheckTimer::unregisterShader(ShaderMedia* shader)
+{
+	shaders.removeAllInstancesOf(shader);
+}
+
 //Timer
 void ShaderCheckTimer::timerCallback()
 {
 
-	for (ShaderMedia* s : MediaManager::getInstance()->getItemsWithType<ShaderMedia>())
+	for (ShaderMedia* s : shaders)
 	{
 		s->checkForHotReload();
 	}

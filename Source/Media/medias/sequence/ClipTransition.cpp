@@ -19,6 +19,7 @@ ClipTransition::ClipTransition(var params) :
 	progressParam = shaderMedia.mediaParams.addFloatParameter("progression", "progression", 0, 0, 1);
 	progressParam->isRemovableByUser = false;
 	progressParam->setControllableFeedbackOnly(true);
+	shaderMedia.backgroundColor->setDefaultValue(Colours::transparentBlack, true);
 
 	addChildControllableContainer(&shaderMedia);
 	setMedia(&shaderMedia);
@@ -46,14 +47,14 @@ void ClipTransition::setInOutMedia(MediaClip* in, MediaClip* out)
 void ClipTransition::setTime(double t, bool seekMode)
 {
 	MediaClip::setTime(t, seekMode);
-	progressParam->setValue((t - time->floatValue())  / getTotalLength());
+	progressParam->setValue(fadeCurve.getValueAtPosition((t - time->floatValue()) / getTotalLength()));
 }
 
 void ClipTransition::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
 	MediaClip::onControllableFeedbackUpdateInternal(cc, c);
-	if(c == mediaInParam) inMedia = ControllableUtil::findParentAs<MediaClip>(mediaInParam->targetContainer.get());
-	else if(c == mediaOutParam) outMedia = ControllableUtil::findParentAs<MediaClip>(mediaOutParam->targetContainer.get());
+	if (c == mediaInParam) inMedia = ControllableUtil::findParentAs<MediaClip>(mediaInParam->targetContainer.get());
+	else if (c == mediaOutParam) outMedia = ControllableUtil::findParentAs<MediaClip>(mediaOutParam->targetContainer.get());
 }
 
 void ClipTransition::loadJSONDataItemInternal(var data)

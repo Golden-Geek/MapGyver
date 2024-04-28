@@ -12,7 +12,8 @@
 #include "MediaClipManager.h"
 
 MediaClipManager::MediaClipManager(MediaLayer* layer) :
-	LayerBlockManager(layer, "Blocks")
+	LayerBlockManager(layer, "Blocks"),
+	mediaLayer(layer)
 {
 	managerFactory = MediaClipFactory::getInstance();
 }
@@ -86,6 +87,8 @@ void MediaClipManager::onControllableFeedbackUpdate(ControllableContainer* cc, C
 			computeFadesForBlock(b, true);
 		}
 	}
+
+	LayerBlockManager::onControllableFeedbackUpdate(cc, c);
 }
 
 
