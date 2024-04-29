@@ -10,7 +10,7 @@
 #include "RMPEngine.h"
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
-
+#include "Node/NodeIncludes.h"
 
 juce_ImplementSingleton(RMPSettings);
 
@@ -86,6 +86,7 @@ RMPEngine::~RMPEngine()
 	RMPSettings::deleteInstance();
 	MediaClipFactory::deleteInstance();
 	CompositionLayerFactory::deleteInstance();
+	NodeFactory::deleteInstance();
 
     if(VLCInstance != nullptr) libvlc_release(VLCInstance);
 	VLCInstance = nullptr;
