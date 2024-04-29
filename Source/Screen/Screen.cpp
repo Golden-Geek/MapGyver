@@ -32,7 +32,7 @@ Screen::Screen(var params) :
 
 	snapDistance = addFloatParameter("Snap distance", "Distance in pixels to snap to another point", .05f, 0, .2f);
 
-	if (!Engine::mainEngine->isLoadingFile) surfaces.addItem();
+	if (!Engine::mainEngine->isLoadingFile) surfaces.addItem(nullptr, var(), false);
 
 	addChildControllableContainer(&surfaces);
 

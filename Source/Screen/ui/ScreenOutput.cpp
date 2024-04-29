@@ -126,15 +126,11 @@ void ScreenOutput::renderOpenGL()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glBegin(GL_QUADS);
-	glColor3f(1, 1, 1);
-	glTexCoord2f(0, 0); glVertex2f(0, 0);
-	glTexCoord2f(0, 1); glVertex2f(0, getHeight());
-	glTexCoord2f(1, 1); glVertex2f(getWidth(), getHeight());
-	glTexCoord2f(1, 0); glVertex2f(getWidth(), 0);
-	glEnd();
+	Draw2DTexRect(0, 0, getWidth(), getHeight());
 
 	glDisable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 }
 
 void ScreenOutput::openGLContextClosing()
@@ -218,11 +214,11 @@ void ScreenOutputWatcher::newMessage(const ScreenManager::ManagerEvent& e)
 
 
 	case ScreenManager::ManagerEvent::ITEM_REMOVED:
-		updateOutput(e.getItem());
+		updateOutput(e.getItem(), true);
 		break;
 
 	case ScreenManager::ManagerEvent::ITEMS_REMOVED:
-		for (auto& s : e.getItems()) updateOutput(s);
+		for (auto& s : e.getItems()) updateOutput(s, true);
 		break;
 	}
 }
