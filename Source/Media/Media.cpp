@@ -221,6 +221,7 @@ ImageMedia::~ImageMedia()
 
 void ImageMedia::preRenderGLInternal()
 {
+	GenericScopedLock lock(imageLock);
 	imageFBO.makeCurrentAndClear();
 	glBindTexture(GL_TEXTURE_2D, imageFBO.getTextureID());
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.getWidth(), image.getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, bitmapData->data);
