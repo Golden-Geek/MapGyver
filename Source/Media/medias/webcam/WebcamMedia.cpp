@@ -51,39 +51,10 @@ void WebcamMedia::updateDevice()
 			NLOG(niceName, "Now listening to Webcam Device : " << WebcamDevice->name);
 		}
 	}
-
-}
-
-void WebcamMedia::initImage(const Image& newImage)
-{
-	shouldRedraw = true;
-	if (!newImage.isValid())
-	{
-		image = Image();
-		return;
-	}
-
-	if (newImage.getWidth() != image.getWidth() || newImage.getHeight() != image.getHeight()) {
-		image = newImage.createCopy();
-		graphics = std::make_shared<Graphics>(image);
-		bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
-	}
-	else {
-		Image::BitmapData b(newImage, Image::BitmapData::readOnly);
-		std::memcpy(bitmapData->data, b.data, b.size);
-	}
-}
-
-void WebcamMedia::renderGLInternal()
-{
-	GenericScopedLock lock(imageLock);
-	glBindTexture(GL_TEXTURE_2D, frameBuffer.getTextureID());
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, bitmapData->width, bitmapData->height, GL_BGR, GL_UNSIGNED_BYTE, bitmapData->data);
-	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void WebcamMedia::WebcamImageReceived(const Image& camImage) {
-	initImage(const_cast<Image&>(camImage));
+	initImage(camImage);
 	shouldRedraw = true;
 	FPSTick();
 
