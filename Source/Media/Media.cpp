@@ -19,6 +19,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	mediaParams("Media Parameters"),
 	alwaysRedraw(false),
 	shouldRedraw(false),
+	autoClearFrameBufferOnRender(true),
 	timeAtLastRender(0),
 	lastFPSTick(0),
 	lastFPSIndex(0),
@@ -87,9 +88,15 @@ void Media::renderOpenGL()
 	{
 		preRenderGLInternal(); //allow for pre-rendering operations even if not being used or disabled
 
-		frameBuffer.makeCurrentAndClear();
-		Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
-		glColor4f(1, 1, 1, 1);
+		if (autoClearFrameBufferOnRender)
+		{
+			frameBuffer.makeCurrentAndClear();
+			Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
+			glColor4f(1, 1, 1, 1);
+		}else
+		{
+			frameBuffer.makeCurrentRenderingTarget();
+		}
 
 		renderGLInternal();
 

@@ -28,6 +28,8 @@ ShaderMedia::ShaderMedia(var params) :
 	useMouse4D(false),
 	sourceMedias("Source Medias")
 {
+	autoClearFrameBufferOnRender = false;
+
 	shaderType = addEnumParameter("Shader Type", "Type Shader to load");
 	shaderType->addOption("Shader GLSL File", ShaderGLSLFile)->addOption("ShaderToy File", ShaderToyFile)->addOption("ShaderToy Online", ShaderToyURL);
 
@@ -220,6 +222,8 @@ void ShaderMedia::renderGLInternal()
 		glActiveTexture(GL_TEXTURE0 + texIndex + offset);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+
+	glActiveTexture(GL_TEXTURE0);
 
 	currentFrame++;
 }

@@ -28,6 +28,7 @@ public:
 	OpenGLFrameBuffer frameBuffer;
 	bool alwaysRedraw;
 	bool shouldRedraw;
+	bool autoClearFrameBufferOnRender;
 
 	Array<MediaTarget*> usedTargets;
 
