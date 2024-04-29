@@ -845,6 +845,6 @@ bool Surface::isPointInsideCircumcircle(juce::Point<float> point, juce::Point<fl
 
 	Point<float> center = Point<float>(Ux, Uy);
 
-	// Comparaison des distances au carré
+	// Comparaison des distances au carrï¿½
 	return center.getDistanceFrom(point) < center.getDistanceFrom(vertex1);
 }

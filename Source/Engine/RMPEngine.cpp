@@ -85,6 +85,8 @@ RMPEngine::~RMPEngine()
 	WebcamManager::deleteInstance();
 	RMPSettings::deleteInstance();
 	MediaClipFactory::deleteInstance();
+	CompositionLayerFactory::deleteInstance();
+
     if(VLCInstance != nullptr) libvlc_release(VLCInstance);
 	VLCInstance = nullptr;
 }

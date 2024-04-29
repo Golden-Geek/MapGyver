@@ -66,6 +66,6 @@ public:
 
 	std::unique_ptr<Media> ownedMedia;
 
-	DECLARE_TYPE("Owned Layer");
+	String getTypeString() const override { return ownedMedia != nullptr ? ownedMedia->getTypeString() : ""; }
 	static OwnedCompositionLayer* create(var params) { return new OwnedCompositionLayer(params); }
 };

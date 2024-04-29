@@ -79,7 +79,6 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 
 	glEnable(GL_BLEND);
 
-	glActiveTexture(GL_TEXTURE0);
 	int index = 0;
 	for (auto& clip : clipsToProcess)
 	{

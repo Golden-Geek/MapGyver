@@ -46,6 +46,8 @@ void CompositionMedia::renderGLInternal()
 		CompositionLayer* l = layers.items[i];
 		if (Media* m = dynamic_cast<Media*>(l->media))
 		{
+			if(!m->enabled->boolValue()) continue;
+
 			GLenum sFactor = GL_SRC_ALPHA;
 			GLenum dFactor = GL_ONE_MINUS_SRC_ALPHA;
 

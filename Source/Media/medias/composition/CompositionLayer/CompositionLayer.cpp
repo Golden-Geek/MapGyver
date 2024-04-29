@@ -14,7 +14,8 @@
 #define COMPOSITION_TARGET_MEDIA_ID 0
 
 CompositionLayer::CompositionLayer(const String& name, var params) :
-	BaseItem(name)
+	BaseItem(name),
+	media(nullptr)
 {
 	saveAndLoadRecursiveData = true;
 	canBeDisabled = true;
@@ -23,6 +24,7 @@ CompositionLayer::CompositionLayer(const String& name, var params) :
 
 	position = addPoint2DParameter("Position", "In pixels");
 	size = addPoint2DParameter("Size", "In pixels");
+	size->setDefaultPoint(1920, 1080);
 	alpha = addFloatParameter("Alpha", "", 1, 0, 1);
 	rotation = addFloatParameter("Rotation", "", 0, 0, 360);
 
@@ -164,9 +166,9 @@ void CompositionLayer::onContainerParameterChangedInternal(Parameter* p)
 
 void CompositionLayer::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
-	if (media != nullptr && c == media->width || c == media->height)
+	if (media != nullptr && (c == media->width || c == media->height))
 	{
-		size->setPoint(media->getMediaSize().toFloat());
+		//size->setPoint(media->getMediaSize().toFloat());
 	}
 }
 
@@ -185,7 +187,7 @@ void CompositionLayer::setMedia(Media* m)
 	if (media != nullptr)
 	{
 		registerUseMedia(COMPOSITION_TARGET_MEDIA_ID, m);
-		size->setPoint(media->getMediaSize().toFloat());
+		//size->setPoint(media->getMediaSize().toFloat());
 	}
 }
 
@@ -216,10 +218,8 @@ void ReferenceCompositionLayer::onContainerParameterChangedInternal(Parameter* p
 	}
 }
 
-
-
 OwnedCompositionLayer::OwnedCompositionLayer(var params) :
-	CompositionLayer(getTypeString(), params),
+	CompositionLayer(params.getProperty("mediaType", "").toString(), params),
 	ownedMedia(nullptr)
 {
 	Media* m = MediaManager::getInstance()->factory.create(params.getProperty("mediaType", "").toString());

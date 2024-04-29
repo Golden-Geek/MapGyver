@@ -94,7 +94,6 @@ void PictureMedia::reloadImage()
 
 void PictureMedia::run()
 {
-	GenericScopedLock lock(imageLock);
 	std::unique_ptr<InputStream> is = URL(url->stringValue()).createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress));
 
 	if (is == nullptr)
