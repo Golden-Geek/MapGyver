@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-    OpenGLManager.cpp
-    Created: 20 Nov 2023 3:10:36pm
-    Author:  rosta
+	OpenGLManager.cpp
+	Created: 20 Nov 2023 3:10:36pm
+	Author:  rosta
 
   ==============================================================================
 */
@@ -26,7 +26,7 @@ GlContextHolder::~GlContextHolder()
 void GlContextHolder::setup(juce::Component* topLevelComponent)
 {
 	parent = topLevelComponent;
-	if(OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(parent)) registerOpenGlRenderer(r);
+	if (OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(parent)) registerOpenGlRenderer(r);
 
 	context.setSwapInterval(0);
 	context.setRenderer(this);
@@ -54,7 +54,7 @@ void GlContextHolder::detach()
 //==============================================================================
 // Clients MUST call unregisterOpenGlRenderer manually in their destructors!!
 
-void GlContextHolder::registerOpenGlRenderer(juce::OpenGLRenderer* child)
+void GlContextHolder::registerOpenGlRenderer(juce::OpenGLRenderer* child, int priority)
 {
 	jassert(juce::MessageManager::getInstance()->isThisTheMessageThread());
 
@@ -65,8 +65,9 @@ void GlContextHolder::registerOpenGlRenderer(juce::OpenGLRenderer* child)
 			juce::Component* c = dynamic_cast<juce::Component*> (child);
 			Client::State state = Client::State::running;
 			if (c != nullptr) state = (parent == c || parent->isParentOf(c)) ? Client::State::running : Client::State::suspended;
-			clients.add(new Client(child, state));
-			if(c != nullptr) c->addComponentListener(this);
+			clients.add(new Client(child, state, priority));
+			std::sort(clients.begin(), clients.end(), [](const Client* a, const Client* b) { return a->glPriority < b->glPriority; });
+			if (c != nullptr) c->addComponentListener(this);
 		}
 	}
 	else
@@ -87,7 +88,7 @@ void GlContextHolder::unregisterOpenGlRenderer(juce::OpenGLRenderer* child)
 			client->nextState = Client::State::suspended;
 		}
 
-		if(client->c!= nullptr) client->c->removeComponentListener(this);
+		if (client->c != nullptr) client->c->removeComponentListener(this);
 		context.executeOnGLThread([this](juce::OpenGLContext&)
 			{
 				checkComponents(false, false);

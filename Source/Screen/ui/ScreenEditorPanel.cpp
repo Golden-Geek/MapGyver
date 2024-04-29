@@ -28,7 +28,7 @@ ScreenEditorView::ScreenEditorView(Screen* screen) :
 	zoomAtMouseDown(1)
 {
 	selectionContourColor = NORMAL_COLOR;
-	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
+	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 3);
 	setWantsKeyboardFocus(true); // Permet au composant de recevoir le focus clavier.
 	addKeyListener(this);
 }

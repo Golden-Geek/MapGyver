@@ -31,7 +31,7 @@ public:
 
 	//==============================================================================
 	// Clients MUST call unregisterOpenGlRenderer manually in their destructors!!
-	void registerOpenGlRenderer(juce::OpenGLRenderer* child);
+	void registerOpenGlRenderer(juce::OpenGLRenderer* child, int priority = 0);
 
 	void unregisterOpenGlRenderer(juce::OpenGLRenderer* child);
 
@@ -70,13 +70,15 @@ private:
 			running
 		};
 
-		Client(juce::OpenGLRenderer* r, State nextStateToUse = State::suspended)
-			: r(r), c(dynamic_cast<Component*>(r)), currentState(State::suspended), nextState(nextStateToUse) {}
+		Client(juce::OpenGLRenderer* r, State nextStateToUse = State::suspended, int priority = 0)
+			: r(r), c(dynamic_cast<Component*>(r)), currentState(State::suspended), nextState(nextStateToUse), glPriority(priority) {}
+
 
 
 		juce::OpenGLRenderer* r = nullptr;
 		juce::Component* c = nullptr;
 		State currentState = State::suspended, nextState = State::suspended;
+		int glPriority;
 	};
 
 

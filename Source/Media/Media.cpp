@@ -36,7 +36,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	currentFPS->isSavable = false;
 	currentFPS->enabled = false;
 
-	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
+	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 1);
 	saveAndLoadRecursiveData = true;
 
 	itemDataType = "Media";
@@ -69,7 +69,6 @@ void Media::renderOpenGL()
 	if (size.isOrigin()) return;
 	if (frameBuffer.getWidth() != size.x || frameBuffer.getHeight() != size.y) initFrameBuffer();
 
-	preRenderGLInternal(); //allow for pre-rendering operations even if not being used or disabled
 
 	if (!enabled->boolValue()) return;
 	if (!isBeingUsed()) return;
@@ -86,8 +85,14 @@ void Media::renderOpenGL()
 
 	if (shouldRedraw || alwaysRedraw)
 	{
-		frameBuffer.makeCurrentRenderingTarget();
+		preRenderGLInternal(); //allow for pre-rendering operations even if not being used or disabled
+
+		frameBuffer.makeCurrentAndClear();
+		Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
+		glColor4f(1, 1, 1, 1);
+
 		renderGLInternal();
+
 		frameBuffer.releaseAsRenderingTarget();
 		shouldRedraw = false;
 
@@ -209,17 +214,15 @@ ImageMedia::~ImageMedia()
 
 void ImageMedia::preRenderGLInternal()
 {
-	GenericScopedLock lock(imageLock);
-	imageFBO.makeCurrentRenderingTarget();
+	imageFBO.makeCurrentAndClear();
 	glBindTexture(GL_TEXTURE_2D, imageFBO.getTextureID());
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.getWidth(), image.getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, bitmapData->data);
-	glBindTexture(GL_TEXTURE_2D, 0);
 	imageFBO.releaseAsRenderingTarget();
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void ImageMedia::renderGLInternal()
 {
-	Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
 	glBindTexture(GL_TEXTURE_2D, imageFBO.getTextureID());
 	Draw2DTexRectFlipped(0, 0, imageFBO.getWidth(), imageFBO.getHeight());
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -229,7 +232,9 @@ void ImageMedia::initFrameBuffer()
 {
 	GenericScopedLock lock(imageLock);
 	Media::initFrameBuffer();
+	if (imageFBO.isValid()) imageFBO.release();
 	imageFBO.initialise(GlContextHolder::getInstance()->context, frameBuffer.getWidth(), frameBuffer.getHeight());
+
 }
 
 void ImageMedia::initImage(int width, int height)
@@ -240,7 +245,7 @@ void ImageMedia::initImage(int width, int height)
 void ImageMedia::initImage(const Image& newImage)
 {
 	GenericScopedLock lock(imageLock);
-	
+
 	shouldRedraw = true;
 
 	if (!newImage.isValid())
@@ -254,10 +259,9 @@ void ImageMedia::initImage(const Image& newImage)
 		graphics = std::make_shared<Graphics>(image);
 		bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
 	}
-	
+
 	if (graphics != nullptr) {
 		graphics->drawImage(image, Rectangle<float>(0, 0, image.getWidth(), image.getHeight()));
-		//graphics->drawImageTransformed(newImage, AffineTransform::verticalFlip(newImage.getHeight()));
 	}
 
 }

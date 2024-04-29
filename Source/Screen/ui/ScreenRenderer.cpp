@@ -19,7 +19,7 @@ ScreenRenderer::ScreenRenderer(Screen* screen) :
 	screen(screen),
 	timeAtLastRender(0)
 {
-	GlContextHolder::getInstance()->registerOpenGlRenderer(this);
+	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 2);
 }
 
 ScreenRenderer::~ScreenRenderer()
