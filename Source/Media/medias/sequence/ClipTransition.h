@@ -22,16 +22,21 @@ public:
 	ShaderMedia shaderMedia;
 
 	FloatParameter* progressParam;
+	TargetParameter* clipInParam;
+	TargetParameter* clipOutParam;
 	TargetParameter* mediaInParam;
 	TargetParameter* mediaOutParam;
 
-	void setInOutMedia(MediaClip* in, MediaClip* out);
+	void setInOutClips(MediaClip* in, MediaClip* out);
 	virtual void setTime(double time, bool seekMode) override;
 
 	void setInClip(MediaClip* in);
 	void setOutClip(MediaClip* out);
 
-	void onControllableFeedbackUpdateInternal(ControllableContainer*cc, Controllable* c) override;
+	void computeTimes(MediaClip* origin);
+
+	void onContainerParameterChangedInternal(Parameter* p) override;
+	void onExternalParameterValueChanged(Parameter* p) override;
 
 	void loadJSONDataItemInternal(var data) override;
 

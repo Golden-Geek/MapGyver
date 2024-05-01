@@ -77,6 +77,7 @@ void MediaClip::setTime(double t, bool seekMode)
 
 void MediaClip::setInTransition(ClipTransition* t)
 {
+	if (isClearing) return;
 	inTransition = t;
 	dispatchTransitionChanged();
 
@@ -84,6 +85,7 @@ void MediaClip::setInTransition(ClipTransition* t)
 
 void MediaClip::setOutTransition(ClipTransition* t)
 {
+	if (isClearing) return;
 	outTransition = t;
 	dispatchTransitionChanged();
 }

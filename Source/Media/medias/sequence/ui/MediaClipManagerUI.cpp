@@ -97,7 +97,33 @@ void MediaClipManagerUI::showMenuAndAddItem(bool fromAddButton, Point<int> mouse
 {
 	mediaTimeline->mediaLayer->blockManager.managerFactory->showCreateMenu([this, mouseDownPos](LayerBlock* b)
 		{
-			manager->addBlockAt(b, timeline->getTimeForX(mouseDownPos.x));
+			float time = timeline->getTimeForX(mouseDownPos.x);
+			if (ClipTransition* t = dynamic_cast<ClipTransition*>(b))
+			{
+				if (mediaTimeline->mediaLayer->blockManager.items.size() > 0)
+				{
+					MediaClip* inMedia = dynamic_cast<MediaClip*>(manager->getBlockAtTime(time,true));
+					MediaClip* outMedia = dynamic_cast<MediaClip*>(manager->getNextBlockAtTime(time));
+					if (inMedia == nullptr || outMedia == nullptr || inMedia == outMedia)
+					{
+						NLOGWARNING(manager->layer->niceName, "Cannot add transition at this time, no in or out media found");
+						delete b;
+						return;
+					}
+					else
+					{
+						manager->addBlockAt(b, time);
+					}
+				}
+				else
+				{
+					NLOGWARNING(manager->layer->niceName, "Cannot add transition at this time, no in or out media found");
+				}
+			}
+			else
+			{
+				manager->addBlockAt(b, time);
+			}
 		}
 	);
 }

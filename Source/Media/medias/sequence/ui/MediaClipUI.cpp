@@ -88,7 +88,7 @@ void MediaClipUI::paint(Graphics& g)
 
 	g.setColour(bgColor);
 	g.fillPath(clipPath);
-	
+
 	if (mediaClip->isActive->boolValue())
 	{
 		if (auto t = dynamic_cast<ClipTransition*>(mediaClip))
@@ -161,14 +161,14 @@ void MediaClipUI::generatePath()
 	usableLeft = 0;
 	usableRight = getWidth();
 
-	
+
 	if (ClipTransition* t = dynamic_cast<ClipTransition*>(mediaClip))
 	{
 		clipPath.clear();
 		clipPath.addRoundedRectangle(getLocalBounds().toFloat().reduced(0, margin + 2), 2);
 		return;
 	}
-	
+
 
 	bool inTransitionOverlap = mediaClip->inTransition != nullptr && mediaClip->inTransition->getEndTime() > mediaClip->time->floatValue();
 	bool outTransitionOverlap = mediaClip->outTransition != nullptr && mediaClip->outTransition->getEndTime() > mediaClip->time->floatValue();
@@ -180,7 +180,7 @@ void MediaClipUI::generatePath()
 
 	LayerBlockManagerUI* mui = dynamic_cast<LayerBlockManagerUI*>(getParentComponent());
 
-	
+
 
 	if ((!inTransitionOverlap && !outTransitionOverlap) || mui == nullptr)
 	{
@@ -230,53 +230,6 @@ void MediaClipUI::mouseDown(const MouseEvent& e)
 
 	if (e.eventComponent == &fadeInHandle) fadeValueAtMouseDown = mediaClip->fadeIn->floatValue();
 	else if (e.eventComponent == &fadeOutHandle) fadeValueAtMouseDown = mediaClip->fadeOut->floatValue();
-
-	if (e.mods.isRightButtonDown() && (e.eventComponent == this || e.eventComponent == automationUI.get()))
-	{
-		PopupMenu p;
-		p.addItem(1, "Clear automation editor");
-
-		PopupMenu ap;
-
-		Array<WeakReference<Parameter>> params = mediaClip->media->mediaParams.getAllParameters(true);
-
-		int index = 2;
-		for (auto& pa : params)
-		{
-			if (pa->canBeAutomated) ap.addItem(index, pa->niceName, true, pa->controlMode == Parameter::ControlMode::AUTOMATION);
-			index++;
-		}
-
-		p.addSubMenu("Edit...", ap);
-
-		p.showMenuAsync(PopupMenu::Options(), [this, params](int result)
-			{
-				if (result > 0)
-				{
-					if (result == 1) setTargetAutomation(nullptr);
-					else
-					{
-						WeakReference<Parameter> pa = params[result - 2];
-						if (pa->controlMode != Parameter::ControlMode::AUTOMATION)
-						{
-							pa->setControlMode(Parameter::ControlMode::AUTOMATION);
-							pa->automation->setManualMode(true);
-							Automation* a = dynamic_cast<Automation*>(pa->automation->automationContainer);
-							if (a != nullptr)
-							{
-								a->clear();
-								AutomationKey* k = a->addItem(0, 0);
-								k->setEasing(Easing::BEZIER);
-								a->addKey(a->length->floatValue(), 1);
-							}
-						}
-
-						if (!pa.wasObjectDeleted()) setTargetAutomation(pa->automation.get());
-					}
-				}
-			}
-		);
-	}
 }
 
 void MediaClipUI::mouseDrag(const MouseEvent& e)
@@ -314,6 +267,63 @@ void MediaClipUI::mouseUp(const MouseEvent& e)
 		mediaClip->fadeOut->setUndoableValue(fadeValueAtMouseDown, mediaClip->fadeOut->floatValue());
 		resized();
 	}
+}
+
+void MediaClipUI::addContextMenuItems(PopupMenu& m)
+{
+	m.addItem("Clear automation editor", automationUI == nullptr, false, [&] { setTargetAutomation(nullptr); });
+
+	if (mediaClip->media != nullptr)
+	{
+		PopupMenu ap;
+		Array<WeakReference<Parameter>> params = mediaClip->media->mediaParams.getAllParameters(true);
+
+		int index = 2;
+		for (auto& pa : params)
+		{
+			if (pa->canBeAutomated) ap.addItem(pa->niceName, true, pa->controlMode == Parameter::ControlMode::AUTOMATION, [&, pa]
+				{
+					if (pa->controlMode != Parameter::ControlMode::AUTOMATION)
+					{
+						pa->setControlMode(Parameter::ControlMode::AUTOMATION);
+						pa->automation->setManualMode(true);
+						Automation* a = dynamic_cast<Automation*>(pa->automation->automationContainer);
+						if (a != nullptr)
+						{
+							a->clear();
+							AutomationKey* k = a->addItem(0, 0);
+							k->setEasing(Easing::BEZIER);
+							a->addKey(a->length->floatValue(), 1);
+						}
+					}
+
+					if (!pa.wasObjectDeleted()) setTargetAutomation(pa->automation.get());
+				});
+			index++;
+		}
+	}
+
+	Array<MediaClip*> clips = InspectableSelectionManager::mainSelectionManager->getInspectablesAs<MediaClip>();
+	clips.removeIf([this](MediaClip* c) { return dynamic_cast<ClipTransition*>(c) != nullptr; });
+
+	clips.addIfNotAlreadyThere(mediaClip);
+
+	bool canAddTransition = clips.size() == 2;
+	MediaClip* inClip = nullptr;
+	MediaClip* outClip = nullptr;
+
+	if (canAddTransition)
+	{
+		inClip = clips[0]->time->floatValue() < clips[1]->time->floatValue() ? clips[0] : clips[1];
+		outClip = inClip == clips[0] ? clips[1] : clips[0];
+	}
+
+	m.addSeparator();
+	m.addItem("Create transition", canAddTransition, false, [&, inClip, outClip]() {
+		ClipTransition* t = new ClipTransition();
+		t->setInOutClips(inClip, outClip);
+		((MediaClipManager*)item->parentContainer.get())->addBlockAt(t, inClip->getEndTime());
+		});
 }
 
 bool MediaClipUI::hitTest(int x, int y)

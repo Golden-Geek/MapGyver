@@ -26,23 +26,31 @@ ClipTransition::ClipTransition(var params) :
 	addChildControllableContainer(&shaderMedia);
 	setMedia(&shaderMedia);
 
-	mediaInParam = shaderMedia.sourceMedias.addTargetParameter("Media In", "Media In", MediaManager::getInstance());
+	clipInParam = addTargetParameter("Clip In", "Clip In");
+	clipInParam->targetType = TargetParameter::CONTAINER;
+
+	clipOutParam = addTargetParameter("Clip Out", "Clip Out");
+	clipOutParam->targetType = TargetParameter::CONTAINER;
+
+	mediaInParam = shaderMedia.sourceMedias.addTargetParameter("Media In", "Media In");
 	mediaInParam->targetType = TargetParameter::CONTAINER;
 
-	mediaOutParam = shaderMedia.sourceMedias.addTargetParameter("Media Out", "Media Out", MediaManager::getInstance());
+	mediaOutParam = shaderMedia.sourceMedias.addTargetParameter("Media Out", "Media Out");
 	mediaOutParam->targetType = TargetParameter::CONTAINER;
 }
 
 ClipTransition::~ClipTransition()
 {
-	setInClip(false);
-	setOutClip(false);
+	setInClip(nullptr);
+	setOutClip(nullptr);
 }
 
-void ClipTransition::setInOutMedia(MediaClip* in, MediaClip* out)
+void ClipTransition::setInOutClips(MediaClip* in, MediaClip* out)
 {
-	mediaInParam->setValueFromTarget(inClip->media);
-	mediaOutParam->setValueFromTarget(outClip->media);
+	clipInParam->setValueFromTarget(in);
+	clipOutParam->setValueFromTarget(out);
+
+	computeTimes(nullptr);
 }
 
 void ClipTransition::setTime(double t, bool seekMode)
@@ -53,23 +61,100 @@ void ClipTransition::setTime(double t, bool seekMode)
 
 void ClipTransition::setInClip(MediaClip* in)
 {
-	if (inClip != nullptr) inClip->setOutTransition(nullptr);
+	if (in == inClip) return;
+
+	if (inClip != nullptr)
+	{
+		if (!inClip->isClearing)
+		{
+			inClip->setOutTransition(nullptr);
+			inClip->time->removeParameterListener(this);
+			inClip->coreLength->removeParameterListener(this);
+			inClip->loopLength->removeParameterListener(this);
+			if (auto r = dynamic_cast<ReferenceMediaClip*>(inClip)) r->mediaTarget->removeParameterListener(this);
+			mediaInParam->setValueFromTarget((ControllableContainer*)nullptr);
+		}
+
+	}
 	inClip = in;
-	if(inClip != nullptr) inClip->setOutTransition(this);
+	if (inClip != nullptr)
+	{
+		inClip->setOutTransition(this);
+		inClip->time->addParameterListener(this);
+		inClip->coreLength->addParameterListener(this);
+		inClip->loopLength->addParameterListener(this);
+		if (auto r = dynamic_cast<ReferenceMediaClip*>(inClip)) r->mediaTarget->addParameterListener(this);
+		mediaInParam->setValueFromTarget(inClip->media);
+	}
 }
 
 void ClipTransition::setOutClip(MediaClip* out)
 {
-	if (outClip != nullptr) outClip->setInTransition(nullptr);
+	if (out == outClip) return;
+
+	if (outClip != nullptr)
+	{
+		if (!outClip->isClearing)
+		{
+
+			outClip->setInTransition(nullptr);
+			outClip->time->removeParameterListener(this);
+			outClip->coreLength->removeParameterListener(this);
+			outClip->loopLength->removeParameterListener(this);
+			if (auto r = dynamic_cast<ReferenceMediaClip*>(outClip)) r->mediaTarget->removeParameterListener(this);
+			mediaOutParam->setValueFromTarget((ControllableContainer*)nullptr);
+		}
+	}
 	outClip = out;
-	if (outClip != nullptr) outClip->setInTransition(this);
+	if (outClip != nullptr)
+	{
+		outClip->setInTransition(this);
+		outClip->time->addParameterListener(this);
+		outClip->coreLength->addParameterListener(this);
+		outClip->loopLength->addParameterListener(this);
+		if (auto r = dynamic_cast<ReferenceMediaClip*>(outClip)) r->mediaTarget->addParameterListener(this);
+		mediaOutParam->setValueFromTarget(outClip->media);
+	}
 }
 
-void ClipTransition::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
+void ClipTransition::computeTimes(MediaClip* origin)
 {
-	MediaClip::onControllableFeedbackUpdateInternal(cc, c);
-	if (c == mediaInParam) setInClip(ControllableUtil::findParentAs<MediaClip>(mediaInParam->targetContainer.get()));
-	else if (c == mediaOutParam) setOutClip(ControllableUtil::findParentAs<MediaClip>(mediaOutParam->targetContainer.get()));
+	if (inClip != nullptr && outClip != nullptr)
+	{
+		float inTime = inClip->getEndTime();
+		float outTime = outClip->time->floatValue();
+		float minTime = jmin(inTime, outTime);
+		float maxTime = jmax(inTime, outTime);
+
+		time->setValue(minTime);
+		setCoreLength(maxTime - minTime);
+
+		if (origin != inClip) inClip->dispatchTransitionChanged();
+		if (origin != outClip) outClip->dispatchTransitionChanged();
+	}
+}
+
+void ClipTransition::onContainerParameterChangedInternal(Parameter* p)
+{
+	MediaClip::onContainerParameterChangedInternal(p);
+	if (p == clipInParam) setInClip(clipInParam->getTargetContainerAs<MediaClip>());
+	else if (p == clipOutParam) setOutClip(clipOutParam->getTargetContainerAs<MediaClip>());
+}
+
+
+void ClipTransition::onExternalParameterValueChanged(Parameter* p)
+{
+	MediaClip::onExternalParameterValueChanged(p);
+	if (p->parentContainer == inClip)
+	{
+		if (auto r = dynamic_cast<ReferenceMediaClip*>(inClip)) mediaInParam->setValueFromTarget(r->media);
+		computeTimes(inClip);
+	}
+	else if (p->parentContainer == outClip)
+	{
+		if (auto r = dynamic_cast<ReferenceMediaClip*>(outClip)) mediaOutParam->setValueFromTarget(r->media);
+		computeTimes(outClip);
+	}
 }
 
 void ClipTransition::loadJSONDataItemInternal(var data)

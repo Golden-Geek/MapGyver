@@ -54,6 +54,8 @@ public:
     void mouseDrag(const MouseEvent& e) override;
     void mouseUp(const MouseEvent& e) override;
 
+    void addContextMenuItems(PopupMenu &m) override;
+
     bool hitTest(int x, int y) override;
 
     bool isInterestedInDragSource(const SourceDetails& source) override;

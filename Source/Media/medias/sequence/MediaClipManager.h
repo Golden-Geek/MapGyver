@@ -43,6 +43,7 @@ public:
 	void onControllableFeedbackUpdate(ControllableContainer* cc, Controllable* c) override;
 
 	void mediaClipFadesChanged(MediaClip* block) override;
-	void computeTransitionTimes();
 	void computeFadesForBlock(MediaClip* block, bool propagate);
+
+	static int compareTimeAndType(LayerBlock* a, LayerBlock* b);
 };
