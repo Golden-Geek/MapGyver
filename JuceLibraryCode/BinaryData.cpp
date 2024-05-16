@@ -162,7 +162,7 @@ static const unsigned char temp_binary_data_2[] =
 "const int N = 8;\r\n"
 "float sdPolygon( in vec2 p, in vec2[N] v ) \r\n"
 "{\r\n"
-"    const int num = v.length();\r\n"
+"    int num = v.length();\r\n"
 "    float d = dot(p-v[0],p-v[0]);\r\n"
 "    float s = 1.0;\r\n"
 "    for( int i=0, j=num-1; i<num; j=i, i++ )\r\n"
@@ -2514,7 +2514,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
     {
         case 0x67012481:  numBytes = 2452; return default_rmplayout;
         case 0x0ffdf71e:  numBytes = 1226; return fragmentShaderMainSurface_glsl;
-        case 0x0ff5b690:  numBytes = 9170; return fragmentShaderTestGrid_glsl;
+        case 0x0ff5b690:  numBytes = 9164; return fragmentShaderTestGrid_glsl;
         case 0xd4093963:  numBytes = 52976; return icon_png;
         case 0x7536b908:  numBytes = 85942; return testPattern_png;
         case 0xaecbe392:  numBytes = 381; return VertexShaderMainSurface_glsl;

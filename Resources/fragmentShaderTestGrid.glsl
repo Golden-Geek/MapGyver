@@ -12,7 +12,7 @@ vec3 hsv2rgb(vec3 c) {
 const int N = 8;
 float sdPolygon( in vec2 p, in vec2[N] v ) 
 {
-    const int num = v.length();
+    int num = v.length();
     float d = dot(p-v[0],p-v[0]);
     float s = 1.0;
     for( int i=0, j=num-1; i<num; j=i, i++ )
