@@ -14,14 +14,20 @@ Screen::Screen(var params) :
 	BaseItem(params.getProperty("name", "Screen")),
 	objectType(params.getProperty("type", "Screen").toString()),
 	objectData(params),
-	sharedTextureSender(nullptr)
+	sharedTextureSender(nullptr),
+	positionCC("Positionning")
 {
 	saveAndLoadRecursiveData = true;
 
 	itemDataType = "Screen";
 
-	screenWidth = addIntParameter("Screen width", "Screen width in pixels", 1920, 0, 10000);
-	screenHeight = addIntParameter("Screen height", "Screen height in pixels", 1080, 0, 10000);
+	screenX = positionCC.addIntParameter("Screen X", "Screen X position", 0, 0);
+	screenY = positionCC.addIntParameter("Screen Y", "Screen Y position", 0, 0);
+	screenWidth = positionCC.addIntParameter("Screen width", "Screen width in pixels", 1920, 0, 10000);
+	screenHeight = positionCC.addIntParameter("Screen height", "Screen height in pixels", 1080, 0, 10000);
+	positionCC.editorIsCollapsed = true;
+	positionCC.enabled->setValue(false);
+	addChildControllableContainer(&positionCC);
 
 	outputType = addEnumParameter("Output type", "Output type");
 	outputType->addOption("Display", DISPLAY)->addOption("Shared Texture", SHARED_TEXTURE)->addOption("NDI", NDI);
@@ -47,8 +53,8 @@ Screen::~Screen()
 void Screen::clearItem()
 {
 	BaseItem::clearItem();
-	
-	if(SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->removeSender(sharedTextureSender);
+
+	if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->removeSender(sharedTextureSender);
 	sharedTextureSender = nullptr;
 
 	//enabled->setValue(false);
@@ -157,7 +163,7 @@ Surface* Screen::getSurfaceAt(Point<float> pos)
 {
 	for (auto& s : surfaces.items)
 	{
-		if (!s->enabled->boolValue()) continue;
+		if (!s->enabled->boolValue() || s->isUILocked->boolValue()) continue;
 		if (s->isPointInside(pos)) return s;
 	}
 	return nullptr;

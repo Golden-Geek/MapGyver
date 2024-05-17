@@ -22,6 +22,9 @@ public:
     String objectType;
     var objectData;
     
+    EnablingControllableContainer positionCC;
+    IntParameter* screenX;
+    IntParameter* screenY;
     IntParameter* screenWidth;
     IntParameter* screenHeight;
 

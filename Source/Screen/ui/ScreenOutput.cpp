@@ -75,8 +75,19 @@ void ScreenOutput::update()
 		}
 
 		Rectangle<int> a = d.totalArea;
-		a.setWidth(a.getWidth());
-		a.setHeight(a.getHeight() - 1); // -1 to stop my screen to flicker ><
+		if (screen->positionCC.enabled->boolValue())
+		{
+			a.setX(a.getX() + screen->screenX->intValue());
+			a.setY(a.getY() + screen->screenY->intValue());
+			a.setWidth(screen->screenWidth->intValue());
+			a.setHeight(screen->screenHeight->intValue());
+		}
+		else
+		{
+			a.setWidth(a.getWidth());
+			a.setHeight(a.getHeight());
+		}
+
 		setBounds(a);
 		repaint();
 	}
@@ -251,9 +262,10 @@ void ScreenOutputWatcher::newMessage(const ContainerAsyncEvent& e)
 	{
 	case ContainerAsyncEvent::ControllableFeedbackUpdate:
 	{
-		if (Screen* s = dynamic_cast<Screen*>(e.targetControllable->parentContainer.get()))
+		if (Screen* s = ControllableUtil::findParentAs<Screen>(e.targetControllable, 2))
 		{
-			if (e.targetControllable == s->enabled || e.targetControllable == s->outputType || e.targetControllable == s->screenID)
+			if (e.targetControllable == s->enabled || e.targetControllable == s->outputType || e.targetControllable == s->screenID ||
+				e.targetControllable->parentContainer == &s->positionCC)
 			{
 				updateOutput(s);
 			}
