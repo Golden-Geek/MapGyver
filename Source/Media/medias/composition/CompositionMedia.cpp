@@ -44,6 +44,8 @@ void CompositionMedia::renderGLInternal()
 	for (int i = layers.items.size() - 1; i >= 0; i--)
 	{
 		CompositionLayer* l = layers.items[i];
+		if(!l->enabled->boolValue()) continue;
+
 		if (Media* m = dynamic_cast<Media*>(l->media))
 		{
 			if (!m->enabled->boolValue()) continue;
