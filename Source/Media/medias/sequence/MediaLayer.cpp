@@ -83,11 +83,21 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 	Colour c = backgroundColor->getColor();
 
 	if (bm == Multiply) glClearColor(1, 1, 1, 1);
-	else glClearColor(c.getFloatRed(), c.getFloatGreen(), c.getFloatBlue(), c.getFloatAlpha());
+	else
+	{
+		if (!positionningCC.enabled->boolValue()) glClearColor(c.getFloatRed(), c.getFloatGreen(), c.getFloatBlue(), c.getFloatAlpha());
+	}
+
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	glEnable(GL_BLEND);
+
+	if (positionningCC.enabled->boolValue())
+	{
+		glClearColor(0, 0, 0, 0);
+		glColor4f(c.getFloatRed(), c.getFloatGreen(), c.getFloatBlue(), c.getFloatAlpha());
+		Draw2DRect(xParam->intValue(), yParam->intValue(), widthParam->intValue(), heightParam->intValue());
+	}
 
 	int index = 0;
 	for (auto& clip : clipsToProcess)
@@ -97,17 +107,15 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-
-
 		//draw full quad
 
 		double fadeMultiplier = clip->getFadeMultiplier();
-
 		glColor4f(1, 1, 1, fadeMultiplier);
+
 
 		if (positionningCC.enabled->boolValue())
 		{
-			Draw2DRect(xParam->intValue(), yParam->intValue(), widthParam->intValue(), heightParam->intValue());
+			Draw2DTexRect(xParam->intValue(), yParam->intValue(), widthParam->intValue(), heightParam->intValue());
 		}
 		else
 		{
