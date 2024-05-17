@@ -13,7 +13,6 @@ NDIDevice::NDIDevice(NDIlib_source_t& info, Type t) :
 	name(info.p_ndi_name),
 	type(t)
 {
-	DBG("here");
 }
 
 
