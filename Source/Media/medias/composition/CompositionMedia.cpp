@@ -41,12 +41,12 @@ void CompositionMedia::renderGLInternal()
 	glOrtho(0, frameBuffer.getWidth(), frameBuffer.getHeight(), 0, 0, 1);
 	glEnable(GL_BLEND);
 
-	for (int i = 0; i < layers.items.size(); i++)
+	for (int i = layers.items.size() - 1; i >= 0; i--)
 	{
 		CompositionLayer* l = layers.items[i];
 		if (Media* m = dynamic_cast<Media*>(l->media))
 		{
-			if(!m->enabled->boolValue()) continue;
+			if (!m->enabled->boolValue()) continue;
 
 			GLenum sFactor = GL_SRC_ALPHA;
 			GLenum dFactor = GL_ONE_MINUS_SRC_ALPHA;

@@ -50,15 +50,13 @@ void ScreenRenderer::renderOpenGL()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
 	if (shader != nullptr)
 	{
-
-		for (auto& s : screen->surfaces.items)
+		for (int i = screen->surfaces.items.size(); i >= 0; i--)
 		{
 			shader->use();
 			GLuint shaderProgram = shader->getProgramID();
-			s->draw(shaderProgram);
+			screen->surfaces.items[i]->draw(shaderProgram);
 		}
 
 		glUseProgram(0);
