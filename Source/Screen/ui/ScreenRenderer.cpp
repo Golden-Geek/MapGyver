@@ -52,7 +52,7 @@ void ScreenRenderer::renderOpenGL()
 
 	if (shader != nullptr)
 	{
-		for (int i = screen->surfaces.items.size(); i >= 0; i--)
+		for (int i = screen->surfaces.items.size() - 1; i >= 0; i--)
 		{
 			shader->use();
 			GLuint shaderProgram = shader->getProgramID();
