@@ -55,6 +55,7 @@ public:
 	void mouseDrag(const MouseEvent& e) override;
 	void mouseUp(const MouseEvent& e) override;
 	void mouseExit(const MouseEvent& e) override;
+	void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
 
 	Point<float> getRelativeMousePos();

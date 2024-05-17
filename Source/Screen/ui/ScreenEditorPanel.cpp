@@ -341,6 +341,13 @@ void ScreenEditorView::mouseExit(const MouseEvent& e)
 	repaint();
 }
 
+void ScreenEditorView::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
+{
+	Point<float> screenPos = getRelativeMousePos();
+	zoom += wheel.deltaY * zoomSensitivity / 10;
+	moveScreenPointTo(screenPos, getMouseXYRelative());
+}
+
 
 Point<float> ScreenEditorView::getRelativeMousePos()
 {
