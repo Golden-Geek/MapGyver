@@ -12,7 +12,8 @@
 
 MediaLayer::MediaLayer(Sequence* s, var params) :
 	SequenceLayer(s, "Media"),
-	blockManager(this)
+	blockManager(this),
+	positionningCC("Positionning")
 {
 	saveAndLoadRecursiveData = true;
 
@@ -20,6 +21,13 @@ MediaLayer::MediaLayer(Sequence* s, var params) :
 
 	blendMode = addEnumParameter("Blend Mode", "Blend Mode for this layer");
 	blendMode->addOption("Add", Add)->addOption("Alpha", Alpha)->addOption("Multiply", Multiply);
+
+	xParam = positionningCC.addIntParameter("X", "X Position", 0);
+	yParam = positionningCC.addIntParameter("Y", "Y Position", 0);
+	widthParam = positionningCC.addIntParameter("Width", "Width", 100);
+	heightParam = positionningCC.addIntParameter("Height", "Height", 100);
+	positionningCC.enabled->setValue(false);
+	addChildControllableContainer(&positionningCC);
 
 	addChildControllableContainer(&blockManager);
 }
@@ -32,6 +40,8 @@ void MediaLayer::initFrameBuffer(int width, int height)
 {
 	if (frameBuffer.isValid()) frameBuffer.release();
 	frameBuffer.initialise(GlContextHolder::getInstance()->context, width, height);
+	widthParam->setDefaultValue(width, !widthParam->isOverriden);
+	heightParam->setDefaultValue(height, !heightParam->isOverriden);
 }
 
 bool MediaLayer::renderFrameBuffer(int width, int height)
@@ -95,7 +105,14 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 
 		glColor4f(1, 1, 1, fadeMultiplier);
 
-		Draw2DTexRect(0, 0, width, height);
+		if (positionningCC.enabled->boolValue())
+		{
+			Draw2DRect(xParam->intValue(), yParam->intValue(), widthParam->intValue(), heightParam->intValue());
+		}
+		else
+		{
+			Draw2DTexRect(0, 0, width, height);
+		}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 

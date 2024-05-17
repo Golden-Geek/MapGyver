@@ -24,6 +24,12 @@ public:
 	enum BlendMode { Alpha, Add, Multiply };
 	EnumParameter* blendMode;
 
+	EnablingControllableContainer positionningCC;
+	IntParameter* xParam;
+	IntParameter* yParam;
+	IntParameter* widthParam;
+	IntParameter* heightParam;
+
 	OpenGLFrameBuffer frameBuffer;
 
 	void initFrameBuffer(int width, int height);
