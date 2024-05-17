@@ -18,7 +18,7 @@ void main()
     if (tex2D.x>1 || tex2D.x<0 ||tex2D.y>1 || tex2D.y<0) 
     { outColor = vec4(0,0,0,0); }
    	vec4 maskColor = textureProj(mask, Maskcoord);
-   	float alpha = 1.0f;
+   	float alpha = outColor.a;
    	if (SurfacePosition[1] > 1-borderSoft[0])    {alpha *= map(SurfacePosition[1],1.0f,1-borderSoft[0],0.0f,1.0f);} // top
    	if (SurfacePosition[0] > 1.0f-borderSoft[1]) {alpha *= map(SurfacePosition[0], 1.0f, 1 - borderSoft[1], 0.0f, 1.0f); } // right
    	if (SurfacePosition[1] < borderSoft[2])      {alpha *= map(SurfacePosition[1],0.0f,borderSoft[2],0.0f,1.0f);} // bottom
