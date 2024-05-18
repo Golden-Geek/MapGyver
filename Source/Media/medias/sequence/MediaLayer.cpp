@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "MediaLayer.h"
 
 MediaLayer::MediaLayer(Sequence* s, var params) :
 	SequenceLayer(s, "Media"),
@@ -19,8 +20,54 @@ MediaLayer::MediaLayer(Sequence* s, var params) :
 
 	backgroundColor = addColorParameter("Background Color", "Background Color for this layer", Colours::transparentBlack);
 
-	blendMode = addEnumParameter("Blend Mode", "Blend Mode for this layer");
-	blendMode->addOption("Add", Add)->addOption("Alpha", Alpha)->addOption("Multiply", Multiply);
+	blendFunction = addEnumParameter("Blend function", "");
+	blendFunction
+		->addOption("Standard Transparency", STANDARD)
+		->addOption("Addition", ADDITION)
+		->addOption("Multiplication", MULTIPLICATION)
+		->addOption("Screen", SCREEN)
+		->addOption("Darken", DARKEN)
+		->addOption("Premultiplied Alpha", PREMULTALPHA)
+		->addOption("Lighten", LIGHTEN)
+		->addOption("Inversion", INVERT)
+		->addOption("Color Addition", COLORADD)
+		->addOption("Color Screen", COLORSCREEN)
+		->addOption("Blur Effect", BLUR)
+		->addOption("Inverse Color", INVERTCOLOR)
+		->addOption("Subtraction", SUBSTRACT)
+		->addOption("Color Difference", COLORDIFF)
+		->addOption("Inverse Multiplication", INVERTMULT)
+		->addOption("Custom", CUSTOM);
+
+	blendFunctionSourceFactor = addEnumParameter("Blend source factor", "");
+	blendFunctionSourceFactor->addOption("GL_ZERO", (int)GL_ZERO)
+		->addOption("GL_ONE", (int)GL_ONE)
+		->addOption("GL_SRC_ALPHA", (int)GL_SRC_ALPHA)
+		->addOption("GL_ONE_MINUS_SRC_ALPHA", (int)GL_ONE_MINUS_SRC_ALPHA)
+		->addOption("GL_DST_ALPHA", (int)GL_DST_ALPHA)
+		->addOption("GL_ONE_MINUS_DST_ALPHA", (int)GL_ONE_MINUS_DST_ALPHA)
+		->addOption("GL_SRC_COLOR", (int)GL_SRC_COLOR)
+		->addOption("GL_ONE_MINUS_SRC_COLOR", (int)GL_ONE_MINUS_SRC_COLOR)
+		->addOption("GL_DST_COLOR", (int)GL_DST_COLOR)
+		->addOption("GL_ONE_MINUS_DST_COLOR", (int)GL_ONE_MINUS_DST_COLOR);
+
+	blendFunctionDestinationFactor = addEnumParameter("Blend destination factor", "");
+	blendFunctionDestinationFactor->addOption("GL_ZERO", (int)GL_ZERO)
+		->addOption("GL_ONE", (int)GL_ONE)
+		->addOption("GL_SRC_ALPHA", (int)GL_SRC_ALPHA)
+		->addOption("GL_ONE_MINUS_SRC_ALPHA", (int)GL_ONE_MINUS_SRC_ALPHA)
+		->addOption("GL_DST_ALPHA", (int)GL_DST_ALPHA)
+		->addOption("GL_ONE_MINUS_DST_ALPHA", (int)GL_ONE_MINUS_DST_ALPHA)
+		->addOption("GL_SRC_COLOR", (int)GL_SRC_COLOR)
+		->addOption("GL_ONE_MINUS_SRC_COLOR", (int)GL_ONE_MINUS_SRC_COLOR)
+		->addOption("GL_DST_COLOR", (int)GL_DST_COLOR)
+		->addOption("GL_ONE_MINUS_DST_COLOR", (int)GL_ONE_MINUS_DST_COLOR);
+
+	blendFunctionSourceFactor->setDefaultValue("GL_SRC_ALPHA");
+	blendFunctionDestinationFactor->setDefaultValue("GL_ONE_MINUS_SRC_ALPHA");
+	blendFunctionSourceFactor->setControllableFeedbackOnly(true);
+	blendFunctionDestinationFactor->setControllableFeedbackOnly(true);
+
 
 	xParam = positionningCC.addIntParameter("X", "X Position", 0);
 	yParam = positionningCC.addIntParameter("Y", "Y Position", 0);
@@ -79,14 +126,9 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 
 	frameBuffer.makeCurrentRenderingTarget();
 
-	BlendMode bm = blendMode->getValueDataAsEnum<BlendMode>();
 	Colour c = backgroundColor->getColor();
 
-	if (bm == Multiply) glClearColor(1, 1, 1, 1);
-	else
-	{
-		if (!positionningCC.enabled->boolValue()) glClearColor(c.getFloatRed(), c.getFloatGreen(), c.getFloatBlue(), c.getFloatAlpha());
-	}
+	if (!positionningCC.enabled->boolValue()) glClearColor(c.getFloatRed(), c.getFloatGreen(), c.getFloatBlue(), c.getFloatAlpha());
 
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -134,23 +176,23 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 
 void MediaLayer::renderGL(int depth)
 {
+	glBlendFunc((GLenum)(int)blendFunctionSourceFactor->getValueData(), (GLenum)(int)blendFunctionDestinationFactor->getValueData());
+	//BlendMode bm = blendMode->getValueDataAsEnum<BlendMode>();
 
-	BlendMode bm = blendMode->getValueDataAsEnum<BlendMode>();
+	//switch (bm)
+	//{
+	//case Alpha:
+	//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//	break;
 
-	switch (bm)
-	{
-	case Alpha:
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		break;
+	//case Add:
+	//	glBlendFunc(GL_ONE, GL_ONE);
+	//	break;
 
-	case Add:
-		glBlendFunc(GL_ONE, GL_ONE);
-		break;
-
-	case Multiply:
-		glBlendFunc(GL_DST_COLOR, GL_ZERO);
-		break;
-	}
+	//case Multiply:
+	//	glBlendFunc(GL_DST_COLOR, GL_ZERO);
+	//	break;
+	//}
 
 	glBindTexture(GL_TEXTURE_2D, frameBuffer.getTextureID());
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -185,6 +227,88 @@ void MediaLayer::sequencePlayStateChanged(Sequence* s)
 		if (MediaClip* clip = dynamic_cast<MediaClip*>(b))
 		{
 			clip->setIsPlaying(s->isPlaying->boolValue());
+		}
+	}
+}
+
+void MediaLayer::onContainerParameterChangedInternal(Parameter* p)
+{
+	SequenceLayer::onContainerParameterChangedInternal(p);
+
+	if (p == blendFunction) {
+		BlendPreset preset = blendFunction->getValueDataAsEnum<BlendPreset>();
+		if (preset == CUSTOM) {
+			blendFunctionSourceFactor->setControllableFeedbackOnly(false);
+			blendFunctionDestinationFactor->setControllableFeedbackOnly(false);
+		}
+		else
+		{
+			blendFunctionSourceFactor->setControllableFeedbackOnly(true);
+			blendFunctionDestinationFactor->setControllableFeedbackOnly(true);
+			switch (preset)
+			{
+			case STANDARD:
+				blendFunctionSourceFactor->setValueWithData((int)GL_SRC_ALPHA);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_ALPHA);
+				break;
+			case ADDITION:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case MULTIPLICATION:
+				blendFunctionSourceFactor->setValueWithData((int)GL_DST_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ZERO);
+				break;
+			case SCREEN:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				break;
+			case DARKEN:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_ALPHA);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case PREMULTALPHA:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_ALPHA);
+				break;
+			case LIGHTEN:
+				blendFunctionSourceFactor->setValueWithData((int)GL_SRC_ALPHA);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case INVERT:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				break;
+			case COLORADD:
+				blendFunctionSourceFactor->setValueWithData((int)GL_SRC_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_DST_COLOR);
+				break;
+			case COLORSCREEN:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case BLUR:
+				blendFunctionSourceFactor->setValueWithData((int)GL_SRC_ALPHA);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case INVERTCOLOR:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case SUBSTRACT:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ZERO);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				break;
+			case COLORDIFF:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_SRC_COLOR);
+				break;
+			case INVERTMULT:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_SRC_COLOR);
+				break;
+
+			}
 		}
 	}
 }

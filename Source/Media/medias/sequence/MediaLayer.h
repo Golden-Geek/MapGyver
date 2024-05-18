@@ -21,8 +21,14 @@ public:
 
 	ColorParameter* backgroundColor;
 
-	enum BlendMode { Alpha, Add, Multiply };
-	EnumParameter* blendMode;
+	enum BlendPreset {
+		STANDARD, ADDITION, MULTIPLICATION, SCREEN, DARKEN, PREMULTALPHA, LIGHTEN, INVERT, COLORADD, COLORSCREEN, BLUR, INVERTCOLOR, SUBSTRACT, COLORDIFF, INVERTMULT, CUSTOM
+	};
+	
+	EnumParameter* blendFunction;
+	EnumParameter* blendFunctionSourceFactor;
+	EnumParameter* blendFunctionDestinationFactor;
+
 
 	EnablingControllableContainer positionningCC;
 	IntParameter* xParam;
@@ -38,6 +44,9 @@ public:
 
 	void sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool evaluateSkippedData) override;
 	void sequencePlayStateChanged(Sequence* s) override;
+
+	virtual void onContainerParameterChangedInternal(Parameter* p);
+
 
 	SequenceLayerTimeline* getTimelineUI() override;
 
