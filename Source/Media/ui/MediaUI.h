@@ -11,12 +11,20 @@
 #pragma once
 
 class MediaUI :
-    public BaseItemUI<Media>
+    public BaseItemUI<Media>,
+    public Media::AsyncListener
 {
 public:
     MediaUI(Media* item);
     virtual ~MediaUI();
 
-    void mouseDoubleClick(const MouseEvent& e) override;
+    Image icon;
+    Rectangle<int> iconBounds;
+
+    void paint(Graphics& g) override;
+    void resizedHeader(Rectangle<int> &r) override;
+
+    void updateUI();
+    void newMessage(const Media::MediaEvent& e) override;
 };
 

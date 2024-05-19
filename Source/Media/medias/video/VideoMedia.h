@@ -64,6 +64,8 @@ public:
 
 	void afterLoadJSONDataInternal() override;
 
+	void prepareFirstFrame();
+
 	void play();
 	void stop();
 	void pause();

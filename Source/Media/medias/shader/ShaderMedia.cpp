@@ -9,11 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "ShaderMedia.h"
-
-juce_ImplementSingleton(ShaderCheckTimer);
-
-//implement all functions from .h
 
 ShaderMedia::ShaderMedia(var params) :
 	Media(getTypeString(), params, true),
@@ -34,6 +29,8 @@ ShaderMedia::ShaderMedia(var params) :
 	shaderType->addOption("Shader GLSL File", ShaderGLSLFile)->addOption("ShaderToy File", ShaderToyFile)->addOption("ShaderToy Online", ShaderToyURL);
 
 	shaderFile = addFileParameter("Fragment Shader", "Fragment Shader");
+	shaderFile->setAutoReload(true);
+
 	shaderToyID = addStringParameter("ShaderToy ID", "ID of the shader toy. It's the last part of the URL when viewing it on the website", "tsXBzS", false);
 	shaderToyKey = addStringParameter("ShaderToy Key", "Key of the shader toy. It's the last part of the URL when viewing it on the website", "Bd8jRr", false);
 	keepOfflineCache = addBoolParameter("Keep Offline Cache", "Keep the offline cache of the shader, to reload if file is missing or if no internet for online shaders", true);
@@ -64,15 +61,12 @@ ShaderMedia::ShaderMedia(var params) :
 		};
 	addChildControllableContainer(&sourceMedias);
 
-	ShaderCheckTimer::getInstance()->registerShader(this);
 
 	alwaysRedraw = true;
 }
 
 ShaderMedia::~ShaderMedia()
 {
-	if(ShaderCheckTimer::getInstanceWithoutCreating()) ShaderCheckTimer::getInstance()->unregisterShader(this);
-
 	stopThread(1000);
 }
 
@@ -405,20 +399,6 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 
 }
 
-void ShaderMedia::checkForHotReload()
-{
-	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
-	bool isFile = st == ShaderGLSLFile || st == ShaderToyFile || st == ShaderISFFile;
-	if (!isFile) return;
-
-	File f = shaderFile->getFile();
-	if (!f.existsAsFile()) return;
-	if (f.getLastModificationTime() != lastModificationTime)
-	{
-		if (!isLoadingShader) shouldReloadShader = true;
-	}
-}
-
 void ShaderMedia::run()
 {
 	String id = shaderToyID->stringValue();
@@ -509,25 +489,4 @@ void ShaderMedia::loadJSONDataItemInternal(var data)
 	}
 
 	if (data.getDynamicObject()->hasProperty("shaderCache")) shaderOfflineData = data.getDynamicObject()->getProperty("shaderCache");
-}
-
-
-void ShaderCheckTimer::registerShader(ShaderMedia* shader)
-{
-	shaders.addIfNotAlreadyThere(shader);
-}
-
-void ShaderCheckTimer::unregisterShader(ShaderMedia* shader)
-{
-	shaders.removeAllInstancesOf(shader);
-}
-
-//Timer
-void ShaderCheckTimer::timerCallback()
-{
-
-	for (ShaderMedia* s : shaders)
-	{
-		s->checkForHotReload();
-	}
 }

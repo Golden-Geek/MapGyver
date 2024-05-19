@@ -7,6 +7,19 @@
               displaySplashScreen="1">
   <MAINGROUP id="HVgNxl" name="RuleMaPool">
     <GROUP id="{F38B7255-1DCA-93A3-BDC5-0B94B29FDCE3}" name="Resources">
+      <GROUP id="{714BA6B0-CDE8-2433-11E9-E60FA7C30A64}" name="media">
+        <FILE id="KECrPT" name="composition.png" compile="0" resource="1" file="Resources/media/composition.png"/>
+        <FILE id="hy3WxJ" name="ndi.png" compile="0" resource="1" file="Resources/media/ndi.png"/>
+        <FILE id="XaeL6p" name="node.png" compile="0" resource="1" file="Resources/media/node.png"/>
+        <FILE id="bfc5ka" name="picture.png" compile="0" resource="1" file="Resources/media/picture.png"/>
+        <FILE id="IMxknv" name="sequence.png" compile="0" resource="1" file="Resources/media/sequence.png"/>
+        <FILE id="N8oEwO" name="shader.png" compile="0" resource="1" file="Resources/media/shader.png"/>
+        <FILE id="q5lnAO" name="sharedTexture.png" compile="0" resource="1"
+              file="Resources/media/sharedTexture.png"/>
+        <FILE id="TjLrHq" name="solidColor.png" compile="0" resource="1" file="Resources/media/solidColor.png"/>
+        <FILE id="UGCeS2" name="video.png" compile="0" resource="1" file="Resources/media/video.png"/>
+        <FILE id="IVmIP8" name="webcam.png" compile="0" resource="1" file="Resources/media/webcam.png"/>
+      </GROUP>
       <GROUP id="{2197F95F-2563-5673-95CA-08F7626CAAB1}" name="osx">
         <FILE id="RBLLda" name="libndi.dylib" compile="0" resource="0" file="External/NDI/lib/osx/libndi.dylib"
               xcodeResource="1"/>

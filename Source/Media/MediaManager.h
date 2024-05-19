@@ -10,8 +10,12 @@
 
 #pragma once
 
+class SequenceMedia;
+
 class MediaManager :
-    public BaseManager<Media>
+    public BaseManager<Media>,
+    public InspectableSelectionManager::Listener,
+    public Inspectable::InspectableListener
 {
 public:
     juce_DeclareSingleton(MediaManager, true);
@@ -20,12 +24,16 @@ public:
     ~MediaManager();
 
     Factory<Media> factory;
+    SequenceMedia* editingSequenceMedia;
 
     void addItemInternal(Media* o, var data) override;
-    void removeItemInternal(Media* o) override;
 
-    void onContainerParameterChanged(Parameter* p) override;
+    void setEditingSequenceMedia(SequenceMedia* sm);
 
-    // static int sort(Media* A, Media* B) {return (int)A->id->getValue() - (int)B->id->getValue();};
+    void inspectablesSelectionChanged() override;
+    void inspectableDestroyed(Inspectable* i) override;
+
+    var getJSONData() override;
+    void loadJSONDataManagerInternal(var data) override;
 
 };

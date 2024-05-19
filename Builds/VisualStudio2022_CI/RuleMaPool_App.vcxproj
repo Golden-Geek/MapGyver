@@ -5770,6 +5770,16 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Resources\media\composition.png"/>
+    <None Include="..\..\Resources\media\ndi.png"/>
+    <None Include="..\..\Resources\media\node.png"/>
+    <None Include="..\..\Resources\media\picture.png"/>
+    <None Include="..\..\Resources\media\sequence.png"/>
+    <None Include="..\..\Resources\media\shader.png"/>
+    <None Include="..\..\Resources\media\sharedTexture.png"/>
+    <None Include="..\..\Resources\media\solidColor.png"/>
+    <None Include="..\..\Resources\media\video.png"/>
+    <None Include="..\..\Resources\media\webcam.png"/>
     <None Include="..\..\Resources\default.rmplayout"/>
     <None Include="..\..\Resources\fragmentShaderMainSurface.glsl"/>
     <None Include="..\..\Resources\fragmentShaderTestGrid.glsl"/>

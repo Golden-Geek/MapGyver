@@ -17,10 +17,11 @@ RMPSequence::RMPSequence()
 
 }
 
-//void RMPSequence::renderGL(int width, int height)
-//{
-//
-//}
+String RMPSequence::getPanelName() const
+{
+	if (Media* m = dynamic_cast<Media*>(parentContainer.get())) return m->niceName;
+	return niceName;
+}
 
 
 SequenceMedia::SequenceMedia(var params)

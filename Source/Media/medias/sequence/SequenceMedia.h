@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-    SequenceMedia.h
-    Created: 21 Dec 2023 10:39:37am
-    Author:  bkupe
+	SequenceMedia.h
+	Created: 21 Dec 2023 10:39:37am
+	Author:  bkupe
 
   ==============================================================================
 */
@@ -16,7 +16,7 @@ class RMPSequence :
 public:
 	RMPSequence();
 
-	void renderGL(int width, int height);
+	String getPanelName() const override;
 };
 
 class SequenceMedia :
@@ -30,7 +30,6 @@ public:
 	RMPSequence sequence;
 
 	void renderGLInternal() override;
-
 	void sequenceCurrentTimeChanged(Sequence* sequence, float time, bool evaluateSkippedData) override;
 
 	DECLARE_TYPE("Sequence")

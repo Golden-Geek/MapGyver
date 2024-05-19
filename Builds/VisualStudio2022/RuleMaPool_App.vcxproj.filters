@@ -2,6 +2,9 @@
 
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="RuleMaPool\Resources\media">
+      <UniqueIdentifier>{FE3EC68F-A48A-38F1-B217-BDCA8EEBDDB1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="RuleMaPool\Resources">
       <UniqueIdentifier>{4496D527-D320-A0E5-FC0D-E5F4E921B68D}</UniqueIdentifier>
     </Filter>
@@ -11675,6 +11678,36 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Resources\media\composition.png">
+      <Filter>RuleMaPool\Resources\media</Filter>
+    </None>
+    <None Include="..\..\Resources\media\ndi.png">
+      <Filter>RuleMaPool\Resources\media</Filter>
+    </None>
+    <None Include="..\..\Resources\media\node.png">
+      <Filter>RuleMaPool\Resources\media</Filter>
+    </None>
+    <None Include="..\..\Resources\media\picture.png">
+      <Filter>RuleMaPool\Resources\media</Filter>
+    </None>
+    <None Include="..\..\Resources\media\sequence.png">
+      <Filter>RuleMaPool\Resources\media</Filter>
+    </None>
+    <None Include="..\..\Resources\media\shader.png">
+      <Filter>RuleMaPool\Resources\media</Filter>
+    </None>
+    <None Include="..\..\Resources\media\sharedTexture.png">
+      <Filter>RuleMaPool\Resources\media</Filter>
+    </None>
+    <None Include="..\..\Resources\media\solidColor.png">
+      <Filter>RuleMaPool\Resources\media</Filter>
+    </None>
+    <None Include="..\..\Resources\media\video.png">
+      <Filter>RuleMaPool\Resources\media</Filter>
+    </None>
+    <None Include="..\..\Resources\media\webcam.png">
+      <Filter>RuleMaPool\Resources\media</Filter>
+    </None>
     <None Include="..\..\Resources\default.rmplayout">
       <Filter>RuleMaPool\Resources</Filter>
     </None>

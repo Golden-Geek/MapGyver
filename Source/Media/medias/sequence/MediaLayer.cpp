@@ -235,7 +235,16 @@ void MediaLayer::onContainerParameterChangedInternal(Parameter* p)
 {
 	SequenceLayer::onContainerParameterChangedInternal(p);
 
-	if (p == blendFunction) {
+	if (p == widthParam || p == heightParam)
+	{
+		Array<OwnedMediaClip*> clips = blockManager.getItemsWithType<OwnedMediaClip>();
+		for (auto& c : clips)
+		{
+			if (p == widthParam) c->media->width->setValue(widthParam->intValue());
+			else c->media->height->setValue(heightParam->intValue());
+		}
+	}
+	else if (p == blendFunction) {
 		BlendPreset preset = blendFunction->getValueDataAsEnum<BlendPreset>();
 		if (preset == CUSTOM) {
 			blendFunctionSourceFactor->setControllableFeedbackOnly(false);

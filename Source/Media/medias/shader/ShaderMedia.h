@@ -86,7 +86,6 @@ public:
 	void reloadShader();
 	void loadFragmentShader(const String& fragmentShader);
 
-	void checkForHotReload();
 
 	void run() override;
 
@@ -97,17 +96,3 @@ public:
 
 };
 
-class ShaderCheckTimer :
-	public Timer
-{
-public:
-	juce_DeclareSingleton(ShaderCheckTimer, true);
-	ShaderCheckTimer() { startTimer(500); }
-	~ShaderCheckTimer() {}
-
-	Array<ShaderMedia*, CriticalSection> shaders;
-	void registerShader(ShaderMedia* shader);
-	void unregisterShader(ShaderMedia* shader);
-
-	void timerCallback() override;
-};

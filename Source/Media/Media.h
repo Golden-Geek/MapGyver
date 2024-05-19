@@ -42,6 +42,8 @@ public:
 	bool customFPSTick;
 	void FPSTick();
 
+	bool isEditing;
+
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 	void newOpenGLContextCreated() override;
@@ -71,7 +73,11 @@ public:
 
 	bool isBeingUsed();
 
+	void setIsEditing(bool editing);
+
 	virtual Point<int> getMediaSize();
+
+	DECLARE_ASYNC_EVENT(Media, Media, media, { EDITING_CHANGED })
 };
 
 

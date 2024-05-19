@@ -18,6 +18,8 @@ VideoMedia::VideoMedia(var params) :
 	source->addOption("File", Source_File)->addOption("URL", Source_URL);
 
 	filePath = addFileParameter("File path", "File path", "");
+	filePath->setAutoReload(true);
+
 	url = addStringParameter("URL", "URL", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", false);
 
 	loop = addBoolParameter("Loop", "Loop video", false);

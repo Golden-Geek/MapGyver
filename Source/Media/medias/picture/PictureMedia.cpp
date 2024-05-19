@@ -18,6 +18,8 @@ PictureMedia::PictureMedia(var params) :
 	source->addOption("File", Source_File)->addOption("URL", Source_URL);
 
 	filePath = addFileParameter("File path", "File path", "");
+	filePath->setAutoReload(true);
+
 	url = addStringParameter("URL", "URL", "https://i.pinimg.com/564x/9a/92/62/9a926291240989c77bc77d9d2d3fcec6.jpg", false);
 	convertToLocal = addTrigger("Convert to local", "If online picture, downloads it aside the project file and points to it");
 }

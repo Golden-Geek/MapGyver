@@ -10,6 +10,7 @@
 
 #include "Media/MediaIncludes.h"
 #include "Engine/RMPEngine.h"
+#include "Media.h"
 
 Media::Media(const String& name, var params, bool hasCustomSize) :
 	BaseItem(name),
@@ -23,8 +24,12 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	timeAtLastRender(0),
 	lastFPSTick(0),
 	lastFPSIndex(0),
-	customFPSTick(false)
+	customFPSTick(false),
+	isEditing(false),
+	mediaNotifier(5)
 {
+	setHasCustomColor(true);
+
 	addChildControllableContainer(&mediaParams);
 
 	if (hasCustomSize)
@@ -93,7 +98,8 @@ void Media::renderOpenGL()
 			frameBuffer.makeCurrentAndClear();
 			Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
 			glColor4f(1, 1, 1, 1);
-		}else
+		}
+		else
 		{
 			frameBuffer.makeCurrentRenderingTarget();
 		}
@@ -151,6 +157,13 @@ bool Media::isBeingUsed()
 	if (usedTargets.size() == 0) return false;
 	for (auto& u : usedTargets) if (u->isUsingMedia(this)) return true;
 	return false;
+}
+
+void Media::setIsEditing(bool editing)
+{
+	if (isEditing == editing) return;
+	isEditing = editing;
+	if(!isClearing)	mediaNotifier.addMessage(new MediaEvent(MediaEvent::EDITING_CHANGED, this));
 }
 
 void Media::openGLContextClosing()
@@ -268,7 +281,7 @@ void ImageMedia::initImage(const Image& newImage)
 		graphics = std::make_shared<Graphics>(image);
 		bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
 	}
-	
+
 	if (graphics != nullptr && newImage.isValid())
 		graphics->drawImage(newImage, Rectangle<float>(0, 0, image.getWidth(), image.getHeight()));
 }
