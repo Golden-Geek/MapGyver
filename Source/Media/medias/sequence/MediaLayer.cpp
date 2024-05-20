@@ -322,6 +322,11 @@ void MediaLayer::onContainerParameterChangedInternal(Parameter* p)
 	}
 }
 
+void MediaLayer::getSnapTimes(Array<float>* arrayToFill)
+{
+	blockManager.getSnapTimes(arrayToFill);
+}
+
 
 SequenceLayerTimeline* MediaLayer::getTimelineUI()
 {

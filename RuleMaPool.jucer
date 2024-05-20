@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/vlc/include&#10;../../External/NDI/include&#10;../../External/servus/include"
               defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" companyWebsite="https://benjamin.kuperberg.fr/rulemapool"
               companyName="GoldenGeek" bundleIdentifier="com.goldengeek.rulemapool"
-              displaySplashScreen="1">
+              displaySplashScreen="1" version="1.0.0">
   <MAINGROUP id="HVgNxl" name="RuleMaPool">
     <GROUP id="{F38B7255-1DCA-93A3-BDC5-0B94B29FDCE3}" name="Resources">
       <GROUP id="{714BA6B0-CDE8-2433-11E9-E60FA7C30A64}" name="media">

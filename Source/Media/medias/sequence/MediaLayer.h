@@ -47,6 +47,7 @@ public:
 
 	virtual void onContainerParameterChangedInternal(Parameter* p);
 
+	void getSnapTimes(Array<float>* arrayToFill) override;
 
 	SequenceLayerTimeline* getTimelineUI() override;
 
