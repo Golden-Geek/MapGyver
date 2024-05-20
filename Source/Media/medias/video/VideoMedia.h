@@ -11,7 +11,8 @@
 #pragma once
 
 class VideoMedia :
-	public ImageMedia
+	public ImageMedia,
+	public Thread
 {
 public:
 	VideoMedia(var params = var());
@@ -51,12 +52,18 @@ public:
 	double videoTotalTime = 0;
 
 	bool vlcDataIsValid = false;
-
+	
+	bool isPrerolling = false;
 	bool vlcSeekedLast = false;
 
 	double lastTapTempo;
 	Trigger* tapTempoBtn;
 	IntParameter* beatPerCycle;
+
+	double frameRate = 0;
+	double timeAtLastEvent = 0;
+	double frameAtLastEvent = 0;
+
 
 	void clearItem() override;
 	void onContainerParameterChanged(Parameter* p) override;
@@ -64,12 +71,15 @@ public:
 
 	void afterLoadJSONDataInternal() override;
 
+	void setup();
 	void prepareFirstFrame();
 
 	void play();
 	void stop();
 	void pause();
 	void restart();
+
+	void run();
 
 	void* lock(void** pixels);
 	static void* lock(void* self, void** pixels) { return static_cast<VideoMedia*>(self)->lock(pixels); };
@@ -93,6 +103,31 @@ public:
 	void vlcSeek();
 	static void vlcSeek(const struct libvlc_event_t* p_event, void* p_data) {
 		static_cast<VideoMedia*>(p_data)->vlcSeek();
+	}
+
+	void vlcTimeChanged();
+	static void vlcTimeChanged(const struct libvlc_event_t* p_event, void* p_data) {
+		static_cast<VideoMedia*>(p_data)->vlcTimeChanged();
+	}
+
+	void vlcEndReached();
+	static void vlcEndReached(const struct libvlc_event_t* p_event, void* p_data) {
+		static_cast<VideoMedia*>(p_data)->vlcEndReached();
+	}
+
+	void vlcPlaying();
+	static void vlcPlaying(const struct libvlc_event_t* p_event, void* p_data) {
+		static_cast<VideoMedia*>(p_data)->vlcPlaying();
+	}
+
+	void vlcStopped();
+	static void vlcStopped(const struct libvlc_event_t* p_event, void* p_data) {
+		static_cast<VideoMedia*>(p_data)->vlcStopped();
+	}
+
+	void vlcPaused();
+	static void vlcPaused(const struct libvlc_event_t* p_event, void* p_data) {
+		static_cast<VideoMedia*>(p_data)->vlcPaused();
 	}
 	//virtual MediaUI* createUI() {return new VideoMedia(); };
 
