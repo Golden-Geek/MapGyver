@@ -36,6 +36,7 @@ public:
 	String nextVolumeController = "";
 	FloatParameter* speedRate;
 	FloatParameter* seek;
+	BoolParameter* usePreroll;
 
 	libvlc_instance_t* VLCInstance = nullptr;
 	libvlc_media_player_t* VLCMediaPlayer = nullptr;

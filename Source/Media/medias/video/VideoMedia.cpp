@@ -41,6 +41,8 @@ VideoMedia::VideoMedia(var params) :
 	beatPerCycle = addIntParameter("Beat by cycles", "Number of tap tempo beats by cycle", 1, 1);
 	tapTempoBtn = addTrigger("Tap tempo", "");
 
+	usePreroll = addBoolParameter("Use Preroll", "If checked, the video will be prerolled before playing", false);
+
 	RMPEngine* e = dynamic_cast<RMPEngine*>(Engine::mainEngine);
 	VLCInstance = e->VLCInstance;
 	frameUpdated = false;
@@ -205,7 +207,7 @@ void VideoMedia::setup()
 
 	libvlc_media_release(VLCMedia); VLCMedia = nullptr;
 	if (playAtLoad->boolValue()) restart();
-	else prepareFirstFrame();
+	else if(usePreroll->boolValue()) prepareFirstFrame();
 }
 
 void VideoMedia::prepareFirstFrame()
@@ -359,7 +361,7 @@ void VideoMedia::vlcEndReached()
 	{
 		restart();
 	}
-	else prepareFirstFrame();
+	else if(usePreroll->boolValue()) prepareFirstFrame();
 }
 
 void VideoMedia::vlcPlaying()
