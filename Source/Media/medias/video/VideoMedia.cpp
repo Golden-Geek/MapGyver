@@ -140,9 +140,17 @@ void VideoMedia::setup()
 {
 	stop();
 
+	File f = filePath->getFile();
+	if (!f.existsAsFile())
+	{
+		NLOGWARNING(niceName, "File not found : " << f.getFullPathName());
+		return;
+	}
+
 	VLCMediaList = libvlc_media_list_new(VLCInstance);
 
 	VideoSource s = source->getValueDataAsEnum<VideoSource>();
+
 
 	if (s == Source_File) VLCMedia = libvlc_media_new_path(VLCInstance, filePath->getFile().getFullPathName().toRawUTF8());
 	else VLCMedia = libvlc_media_new_location(VLCInstance, url->stringValue().toRawUTF8());
@@ -417,5 +425,6 @@ void VideoMedia::handleStop()
 
 void VideoMedia::handleStart()
 {
+	isPrerolling = false;
 	play();
 }

@@ -209,8 +209,8 @@ void Media::FPSTick()
 	// Calcul des FPS
 	MessageManager::callAsync([this, max, fps]()
 		{
+			if(Engine::mainEngine == nullptr || Engine::mainEngine->isClearing) return;
 			if (isClearing) return;
-			if (Engine::mainEngine->isClearing) return;
 
 			if ((float)currentFPS->maximumValue < max) {
 				currentFPS->maximumValue = max;
