@@ -29,6 +29,7 @@ public:
 
 	RMPSequence sequence;
 
+
 	void renderGLInternal() override;
 	void sequenceCurrentTimeChanged(Sequence* sequence, float time, bool evaluateSkippedData) override;
 

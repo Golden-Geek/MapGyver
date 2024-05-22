@@ -51,7 +51,8 @@ void SequenceMedia::renderGLInternal()
 	for (int i = mediaLayers.size() - 1; i >= 0; i--) //reverse so first in list is the last one processed
 	{
 		if (!mediaLayers[i]->enabled->boolValue()) continue;
-
+		
+		GenericScopedLock<SpinLock> lock(mediaLayers[i]->renderLock);
 		bool hasContent = mediaLayers[i]->renderFrameBuffer(width->intValue(), height->intValue()); //generate framebuffers
 
 		if (!hasContent) continue;

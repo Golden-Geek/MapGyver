@@ -19,7 +19,7 @@ public:
 	MediaClip* inClip;
 	MediaClip* outClip;
 
-	ShaderMedia shaderMedia;
+	std::unique_ptr<ShaderMedia> shaderMedia;
 
 	FloatParameter* progressParam;
 	TargetParameter* clipInParam;

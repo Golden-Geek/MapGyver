@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "ClipTransition.h"
 
 ClipTransition::ClipTransition(var params) :
 	MediaClip(getTypeString(), params),
@@ -18,13 +17,18 @@ ClipTransition::ClipTransition(var params) :
 	inClip(nullptr),
 	outClip(nullptr)
 {
-	progressParam = shaderMedia.mediaParams.addFloatParameter("progression", "progression", 0, 0, 1);
+	var sParams(new DynamicObject());
+	//sParams.getDynamicObject()->setProperty("manualRender", true);
+	shaderMedia.reset(new ShaderMedia(sParams));
+
+	progressParam = shaderMedia->mediaParams.addFloatParameter("progression", "progression", 0, 0, 1);
 	progressParam->isRemovableByUser = false;
 	progressParam->setControllableFeedbackOnly(true);
-	shaderMedia.backgroundColor->setDefaultValue(Colours::transparentBlack, true);
 
-	addChildControllableContainer(&shaderMedia);
-	setMedia(&shaderMedia);
+	shaderMedia->backgroundColor->setDefaultValue(Colours::transparentBlack, true);
+
+	addChildControllableContainer(shaderMedia.get());
+	setMedia(shaderMedia.get());
 
 	clipInParam = addTargetParameter("Clip In", "Clip In");
 	clipInParam->targetType = TargetParameter::CONTAINER;
@@ -32,10 +36,10 @@ ClipTransition::ClipTransition(var params) :
 	clipOutParam = addTargetParameter("Clip Out", "Clip Out");
 	clipOutParam->targetType = TargetParameter::CONTAINER;
 
-	mediaInParam = shaderMedia.sourceMedias.addTargetParameter("Media In", "Media In");
+	mediaInParam = shaderMedia->sourceMedias.addTargetParameter("Media In", "Media In");
 	mediaInParam->targetType = TargetParameter::CONTAINER;
 
-	mediaOutParam = shaderMedia.sourceMedias.addTargetParameter("Media Out", "Media Out");
+	mediaOutParam = shaderMedia->sourceMedias.addTargetParameter("Media Out", "Media Out");
 	mediaOutParam->targetType = TargetParameter::CONTAINER;
 }
 
@@ -44,6 +48,7 @@ ClipTransition::~ClipTransition()
 	setInClip(nullptr);
 	setOutClip(nullptr);
 }
+
 
 void ClipTransition::setInOutClips(MediaClip* in, MediaClip* out)
 {

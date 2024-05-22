@@ -32,6 +32,7 @@ public:
 
 	Array<MediaTarget*> usedTargets;
 
+	bool manualRender;
 	double timeAtLastRender;
 	double customTime;
 
@@ -43,11 +44,13 @@ public:
 	void FPSTick();
 
 	bool isEditing;
+	bool willBeUsed;
 
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
+	void renderOpenGLMedia(bool force = false);
 	void openGLContextClosing() override;
 
 	virtual void initFrameBuffer();

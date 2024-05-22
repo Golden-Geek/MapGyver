@@ -42,7 +42,8 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	currentFPS->isSavable = false;
 	currentFPS->enabled = false;
 
-	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 1);
+	manualRender = params.getProperty("manualRender", false);
+	if(!manualRender) GlContextHolder::getInstance()->registerOpenGlRenderer(this, 1);
 	saveAndLoadRecursiveData = true;
 
 	itemDataType = "Media";
@@ -50,7 +51,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 
 Media::~Media()
 {
-	if (GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+	if (!manualRender && GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
 }
 
 
@@ -69,6 +70,13 @@ void Media::newOpenGLContextCreated()
 
 void Media::renderOpenGL()
 {
+	renderOpenGLMedia();
+}
+
+void Media::renderOpenGLMedia(bool force)
+{
+	//if(dynamic_cast<SequenceMedia*>(this) == nullptr) NLOG(niceName, "-- Render GL Media");
+
 	if (isClearing) return;
 
 	Point<int> size = getMediaSize();
@@ -77,11 +85,11 @@ void Media::renderOpenGL()
 
 
 	if (!enabled->boolValue()) return;
-	if (!isBeingUsed()) return;
+	if (!isBeingUsed() && !force) return;
 
 	const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
 	double t = GlContextHolder::getInstance()->timeAtRender;
-	if (t < timeAtLastRender + frameTime) return;
+	if (t < timeAtLastRender + frameTime && !force) return;
 
 	//log delta
 	//LOG("Delta: " << t - timeAtLastRender);
@@ -89,8 +97,13 @@ void Media::renderOpenGL()
 
 	if (!frameBuffer.isValid()) return;
 
-	if (shouldRedraw || alwaysRedraw)
+	if (shouldRedraw || alwaysRedraw || force)
 	{
+		if (dynamic_cast<SequenceMedia*>(this) == nullptr)
+		{
+			//NLOG(niceName, "Prerender GL Media");
+		}
+
 		preRenderGLInternal(); //allow for pre-rendering operations even if not being used or disabled
 
 		if (autoClearFrameBufferOnRender)
@@ -105,6 +118,8 @@ void Media::renderOpenGL()
 		}
 
 		renderGLInternal();
+		//if (dynamic_cast<SequenceMedia*>(this) == nullptr) NLOG(niceName, "Render GL Internal");
+
 
 		frameBuffer.releaseAsRenderingTarget();
 		shouldRedraw = false;
@@ -112,6 +127,7 @@ void Media::renderOpenGL()
 		if (!customFPSTick) FPSTick();
 	}
 }
+
 
 OpenGLFrameBuffer* Media::getFrameBuffer()
 {
@@ -163,7 +179,7 @@ void Media::setIsEditing(bool editing)
 {
 	if (isEditing == editing) return;
 	isEditing = editing;
-	if(!isClearing)	mediaNotifier.addMessage(new MediaEvent(MediaEvent::EDITING_CHANGED, this));
+	if (!isClearing)	mediaNotifier.addMessage(new MediaEvent(MediaEvent::EDITING_CHANGED, this));
 }
 
 void Media::openGLContextClosing()
@@ -209,7 +225,7 @@ void Media::FPSTick()
 	// Calcul des FPS
 	MessageManager::callAsync([this, max, fps]()
 		{
-			if(Engine::mainEngine == nullptr || Engine::mainEngine->isClearing) return;
+			if (Engine::mainEngine == nullptr || Engine::mainEngine->isClearing) return;
 			if (isClearing) return;
 
 			if ((float)currentFPS->maximumValue < max) {

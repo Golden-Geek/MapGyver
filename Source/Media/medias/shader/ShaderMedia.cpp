@@ -121,6 +121,7 @@ void ShaderMedia::preRenderGLInternal()
 
 void ShaderMedia::renderGLInternal()
 {
+	//LOG("Render GL");
 	double t = customTime >= 0 ? customTime : Time::getMillisecondCounter() / 1000.0;
 	if (customTime >= 0) firstFrameTime = 0;
 	else if (firstFrameTime == 0) firstFrameTime = t;
@@ -128,7 +129,7 @@ void ShaderMedia::renderGLInternal()
 	float delta = t - lastFrameTime;
 
 	float frameTime = 1.0f / fps->floatValue();
-	if (customTime < 0 && t < lastFrameTime + frameTime) return;
+	//if (customTime < 0 && t < lastFrameTime + frameTime) return;
 
 	lastFrameTime = t;
 

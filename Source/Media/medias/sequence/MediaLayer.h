@@ -38,6 +38,8 @@ public:
 
 	OpenGLFrameBuffer frameBuffer;
 
+	SpinLock renderLock;
+
 	void initFrameBuffer(int width, int height);
 	bool renderFrameBuffer(int width, int height);
 	void renderGL(int depth);

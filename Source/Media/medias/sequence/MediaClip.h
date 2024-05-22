@@ -26,6 +26,7 @@ public:
 
 	double relativeTime;
 	bool isPlaying;
+	bool justActivated;
 
 	Media* media;
 	WeakReference<Inspectable> mediaRef;

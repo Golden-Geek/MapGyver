@@ -20,6 +20,7 @@ MediaClip::MediaClip(const String& name, var params) :
 	settingLengthFromMethod(false),
 	inTransition(nullptr),
 	outTransition(nullptr),
+	justActivated(false),
 	mediaClipNotifier(5)
 {
 	saveAndLoadRecursiveData = true;
@@ -107,6 +108,7 @@ void MediaClip::onContainerParameterChangedInternal(Parameter* p)
 		{
 			if (active)
 			{
+				justActivated = true;
 				media->handleEnter(relativeTime);
 				if (isPlaying) media->handleStart();
 			}
@@ -215,7 +217,9 @@ OwnedMediaClip::OwnedMediaClip(var params) :
 	MediaClip(params.getProperty("mediaType", "[notype]").toString(), params),
 	ownedMedia(nullptr)
 {
-	Media* m = MediaManager::getInstance()->factory.create(params.getProperty("mediaType", "").toString());
+	var extraParams(new DynamicObject());
+	//extraParams.getDynamicObject()->setProperty("manualRender", true);
+	Media* m = MediaManager::getInstance()->factory.createWithExtraParams(params.getProperty("mediaType", "").toString(), extraParams);
 	setMedia(m);
 }
 

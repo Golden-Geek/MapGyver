@@ -124,6 +124,20 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 
 	if (frameBuffer.getWidth() != width || frameBuffer.getHeight() != height) initFrameBuffer(width, height);
 
+
+	for (auto& clip : clipsToProcess)
+	{
+		if (clip->justActivated)
+		{
+			//LOG("just activated, render openGl");
+			//clip->media->renderOpenGLMedia(true); //force render one frame on activation
+			clip->justActivated = false;
+		}
+
+		//LOG("Render GL layer");
+		//clip->media->renderOpenGLMedia(true);
+	}
+
 	frameBuffer.makeCurrentRenderingTarget();
 
 	Colour c = backgroundColor->getColor();
@@ -144,6 +158,9 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 	int index = 0;
 	for (auto& clip : clipsToProcess)
 	{
+
+		//clip->media->renderOpenGLMedia(true);
+
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glBindTexture(GL_TEXTURE_2D, clip->media->frameBuffer.getTextureID());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -206,7 +223,8 @@ void MediaLayer::renderGL(int depth)
 
 void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool evaluateSkippedData)
 {
-	Array<LayerBlock*> activeBlocks = blockManager.getBlocksAtTime(s->currentTime->floatValue());
+	float nextFrameTime = s->currentTime->floatValue() + .01f;
+	Array<LayerBlock*> activeBlocks = blockManager.getBlocksAtTime(s->currentTime->floatValue());// getBlocksInRange(s->currentTime->floatValue(), s->currentTime->floatValue() + .01f, false);
 
 	double t = s->currentTime->doubleValue();
 
@@ -214,8 +232,15 @@ void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool ev
 	{
 		if (MediaClip* clip = dynamic_cast<MediaClip*>(b))
 		{
-			clip->isActive->setValue(activeBlocks.contains(clip));
-			clip->setTime(t, s->isSeeking);
+			clip->setTime(t, !s->isPlaying->boolValue());
+
+			bool isActive = activeBlocks.contains(clip);
+			if (isActive != clip->isActive->boolValue())
+			{
+				//LOG("Set active " << (int)isActive);
+				GenericScopedLock lock(renderLock);
+				clip->isActive->setValue(isActive);
+			}
 		}
 	}
 }
