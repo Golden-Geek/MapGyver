@@ -112,7 +112,7 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 	{
 		if (!vlcSeekedLast && videoTotalTime > 0)
 		{
-			libvlc_media_player_set_position(VLCMediaPlayer, seek->doubleValue() / videoTotalTime);
+ 			libvlc_media_player_set_position(VLCMediaPlayer, seek->doubleValue() / videoTotalTime);
 		}
 		vlcSeekedLast = false;
 	}
@@ -218,6 +218,7 @@ void VideoMedia::prepareFirstFrame()
 
 void VideoMedia::play()
 {
+	//LOG("play");
 	if (VLCMediaPlayer != nullptr) {
 		libvlc_media_list_player_play(VLCMediaListPlayer);
 	}
@@ -225,17 +226,26 @@ void VideoMedia::play()
 
 void VideoMedia::stop()
 {
-	//if (VLCMediaPlayer != nullptr) {
-	//	libvlc_media_list_player_stop(VLCMediaListPlayer);
-	//}
-
-	pause();
-	seek->setValue(0);
+	//LOG("stop");
+	if (usePreroll->boolValue())
+	{
+		pause();
+		seek->setValue(0);
+	}
+	else
+	{
+		bool isPlaying = VLCMediaPlayer != nullptr && libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+		if (isPlaying) {
+			libvlc_media_list_player_stop(VLCMediaListPlayer);
+		}
+	}
+	
 }
 
 void VideoMedia::pause()
 {
 	if (VLCMediaPlayer == nullptr) return;
+	//LOG("pause");
 	stopThread(100);
 	if (libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing) libvlc_media_list_player_pause(VLCMediaListPlayer);
 
@@ -293,7 +303,7 @@ void VideoMedia::unlock(void* oldBuffer, void* const* pixels)
 	imageLock.exit();
 	shouldRedraw = true;
 
-	if (isPrerolling) {
+	if (isPrerolling && usePreroll->boolValue()) {
 		pause();
 		isPrerolling = false;
 	}
@@ -362,6 +372,10 @@ void VideoMedia::vlcEndReached()
 		restart();
 	}
 	else if(usePreroll->boolValue()) prepareFirstFrame();
+	else
+	{
+		stop();
+	}
 }
 
 void VideoMedia::vlcPlaying()
@@ -401,32 +415,66 @@ void VideoMedia::tapTempo()
 
 void VideoMedia::handleEnter(double time)
 {
+	if (VLCMediaPlayer == nullptr)
+	{
+		play();
+		stop();
+	}
+	bool isPlaying = VLCMediaPlayer != nullptr && libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+	//LOG("Handle enter " << (int)isPlaying);
 
 	float tPos = jlimit(0., 1., time / videoTotalTime);
-	if (VLCMediaPlayer != nullptr && videoTotalTime > 0) libvlc_media_player_set_position(VLCMediaPlayer, tPos);
+	//stop();
+	//prepareFirstFrame();
+	if (VLCMediaPlayer != nullptr && videoTotalTime > 0)
+	{
+		seek->setNormalizedValue(tPos);
+		//libvlc_media_player_set_position(VLCMediaPlayer, tPos);
+	}
 }
 
 void VideoMedia::handleExit()
 {
+	bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+	//LOG("Handle exit " << (int)isPlaying);
 	stop();
 }
 
 void VideoMedia::handleSeek(double time)
 {
+	
+
 	float tPos = time / videoTotalTime;
 	if (loop->boolValue()) tPos = fmod(tPos, 1);
 	else tPos = jlimit(0.f, 1.f, tPos);
 
-	if (VLCMediaPlayer != nullptr && videoTotalTime > 0) libvlc_media_player_set_position(VLCMediaPlayer, tPos);
+	if (VLCMediaPlayer != nullptr && videoTotalTime > 0)
+	{
+		bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+		//LOG("Handle seek " << (int)isPlaying);
+		
+		//if(!isPlaying) play();
+		pause();
+		
+		seek->setNormalizedValue(tPos);
+		if (isPlaying) libvlc_media_player_play(VLCMediaPlayer);
+
+		
+	}
 }
 
 void VideoMedia::handleStop()
 {
+	bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+	//LOG("Handle stop " << (int)isPlaying);
 	pause();
 }
 
 void VideoMedia::handleStart()
 {
+	bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+	//LOG("Handle start " << (int)isPlaying);
+
 	isPrerolling = false;
 	play();
 }

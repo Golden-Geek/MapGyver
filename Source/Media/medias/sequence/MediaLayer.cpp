@@ -69,6 +69,56 @@ MediaLayer::MediaLayer(Sequence* s, var params) :
 	blendFunctionDestinationFactor->setControllableFeedbackOnly(true);
 
 
+	transitionBlendFunction = addEnumParameter("Blend function", "");
+	transitionBlendFunction
+		->addOption("Standard Transparency", STANDARD)
+		->addOption("Addition", ADDITION)
+		->addOption("Multiplication", MULTIPLICATION)
+		->addOption("Screen", SCREEN)
+		->addOption("Darken", DARKEN)
+		->addOption("Premultiplied Alpha", PREMULTALPHA)
+		->addOption("Lighten", LIGHTEN)
+		->addOption("Inversion", INVERT)
+		->addOption("Color Addition", COLORADD)
+		->addOption("Color Screen", COLORSCREEN)
+		->addOption("Blur Effect", BLUR)
+		->addOption("Inverse Color", INVERTCOLOR)
+		->addOption("Subtraction", SUBSTRACT)
+		->addOption("Color Difference", COLORDIFF)
+		->addOption("Inverse Multiplication", INVERTMULT)
+		->addOption("Custom", CUSTOM);
+
+	transitionBlendFunctionSourceFactor = addEnumParameter("Blend source factor", "");
+	transitionBlendFunctionSourceFactor->addOption("GL_ZERO", (int)GL_ZERO)
+		->addOption("GL_ONE", (int)GL_ONE)
+		->addOption("GL_SRC_ALPHA", (int)GL_SRC_ALPHA)
+		->addOption("GL_ONE_MINUS_SRC_ALPHA", (int)GL_ONE_MINUS_SRC_ALPHA)
+		->addOption("GL_DST_ALPHA", (int)GL_DST_ALPHA)
+		->addOption("GL_ONE_MINUS_DST_ALPHA", (int)GL_ONE_MINUS_DST_ALPHA)
+		->addOption("GL_SRC_COLOR", (int)GL_SRC_COLOR)
+		->addOption("GL_ONE_MINUS_SRC_COLOR", (int)GL_ONE_MINUS_SRC_COLOR)
+		->addOption("GL_DST_COLOR", (int)GL_DST_COLOR)
+		->addOption("GL_ONE_MINUS_DST_COLOR", (int)GL_ONE_MINUS_DST_COLOR);
+
+	transitionBlendFunctionDestinationFactor = addEnumParameter("Blend destination factor", "");
+	transitionBlendFunctionDestinationFactor->addOption("GL_ZERO", (int)GL_ZERO)
+		->addOption("GL_ONE", (int)GL_ONE)
+		->addOption("GL_SRC_ALPHA", (int)GL_SRC_ALPHA)
+		->addOption("GL_ONE_MINUS_SRC_ALPHA", (int)GL_ONE_MINUS_SRC_ALPHA)
+		->addOption("GL_DST_ALPHA", (int)GL_DST_ALPHA)
+		->addOption("GL_ONE_MINUS_DST_ALPHA", (int)GL_ONE_MINUS_DST_ALPHA)
+		->addOption("GL_SRC_COLOR", (int)GL_SRC_COLOR)
+		->addOption("GL_ONE_MINUS_SRC_COLOR", (int)GL_ONE_MINUS_SRC_COLOR)
+		->addOption("GL_DST_COLOR", (int)GL_DST_COLOR)
+		->addOption("GL_ONE_MINUS_DST_COLOR", (int)GL_ONE_MINUS_DST_COLOR);
+	
+	transitionBlendFunction->setDefaultValue("Lighten");
+	//transitionBlendFunctionSourceFactor->setDefaultValue("GL_SRC_ALPHA");
+	//transitionBlendFunctionDestinationFactor->setDefaultValue("GL_ONE_MINUS_SRC_ALPHA");
+	transitionBlendFunctionSourceFactor->setControllableFeedbackOnly(true);
+	transitionBlendFunctionDestinationFactor->setControllableFeedbackOnly(true);
+
+
 	xParam = positionningCC.addIntParameter("X", "X Position", 0);
 	yParam = positionningCC.addIntParameter("Y", "Y Position", 0);
 	widthParam = positionningCC.addIntParameter("Width", "Width", 100);
@@ -161,7 +211,7 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 
 		//clip->media->renderOpenGLMedia(true);
 
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc((GLenum)(int)transitionBlendFunctionSourceFactor->getValueData(), (GLenum)(int)transitionBlendFunctionDestinationFactor->getValueData());
 		glBindTexture(GL_TEXTURE_2D, clip->media->frameBuffer.getTextureID());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -223,16 +273,16 @@ void MediaLayer::renderGL(int depth)
 
 void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool evaluateSkippedData)
 {
-	float nextFrameTime = s->currentTime->floatValue() + .01f;
-	Array<LayerBlock*> activeBlocks = blockManager.getBlocksAtTime(s->currentTime->floatValue());// getBlocksInRange(s->currentTime->floatValue(), s->currentTime->floatValue() + .01f, false);
-
 	double t = s->currentTime->doubleValue();
+	double nextFrameTime = t + .1f;// (1.0f / jmax(sequence->fps->intValue() - 1, 1));
+	Array<LayerBlock*> activeBlocks = blockManager.getBlocksInRange(t, nextFrameTime);// getBlocksInRange(s->currentTime->floatValue(), s->currentTime->floatValue() + .01f, false);
+
 
 	for (auto& b : blockManager.items)
 	{
 		if (MediaClip* clip = dynamic_cast<MediaClip*>(b))
 		{
-			clip->setTime(t, !s->isPlaying->boolValue());
+			clip->setTime(t, s->isSeeking || !s->isPlaying->boolValue());
 
 			bool isActive = activeBlocks.contains(clip);
 			if (isActive != clip->isActive->boolValue())
@@ -240,6 +290,15 @@ void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool ev
 				//LOG("Set active " << (int)isActive);
 				GenericScopedLock lock(renderLock);
 				clip->isActive->setValue(isActive);
+				if (isActive && s->isPlaying->boolValue())
+				{
+					if (VideoMedia* vm = dynamic_cast<VideoMedia*>(clip->media))
+					{
+						{
+							vm->play();
+						}
+					}
+				}
 			}
 		}
 	}
@@ -340,6 +399,81 @@ void MediaLayer::onContainerParameterChangedInternal(Parameter* p)
 			case INVERTMULT:
 				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
 				blendFunctionDestinationFactor->setValueWithData((int)GL_SRC_COLOR);
+				break;
+
+			}
+		}
+	}else if (p == transitionBlendFunction) {
+		BlendPreset preset = transitionBlendFunction->getValueDataAsEnum<BlendPreset>();
+		if (preset == CUSTOM) {
+			transitionBlendFunctionSourceFactor->setControllableFeedbackOnly(false);
+			transitionBlendFunctionDestinationFactor->setControllableFeedbackOnly(false);
+		}
+		else
+		{
+			transitionBlendFunctionSourceFactor->setControllableFeedbackOnly(true);
+			transitionBlendFunctionDestinationFactor->setControllableFeedbackOnly(true);
+			switch (preset)
+			{
+			case STANDARD:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_SRC_ALPHA);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_ALPHA);
+				break;
+			case ADDITION:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_ONE);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case MULTIPLICATION:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_DST_COLOR);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ZERO);
+				break;
+			case SCREEN:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_ONE);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				break;
+			case DARKEN:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_ALPHA);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case PREMULTALPHA:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_ONE);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_ALPHA);
+				break;
+			case LIGHTEN:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_SRC_ALPHA);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case INVERT:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_COLOR);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				break;
+			case COLORADD:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_SRC_COLOR);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_DST_COLOR);
+				break;
+			case COLORSCREEN:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_COLOR);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case BLUR:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_SRC_ALPHA);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case INVERTCOLOR:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case SUBSTRACT:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_ZERO);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				break;
+			case COLORDIFF:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_COLOR);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_SRC_COLOR);
+				break;
+			case INVERTMULT:
+				transitionBlendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				transitionBlendFunctionDestinationFactor->setValueWithData((int)GL_SRC_COLOR);
 				break;
 
 			}

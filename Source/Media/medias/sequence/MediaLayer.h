@@ -29,6 +29,10 @@ public:
 	EnumParameter* blendFunctionSourceFactor;
 	EnumParameter* blendFunctionDestinationFactor;
 
+	EnumParameter* transitionBlendFunction;
+	EnumParameter* transitionBlendFunctionSourceFactor;
+	EnumParameter* transitionBlendFunctionDestinationFactor;
+
 
 	EnablingControllableContainer positionningCC;
 	IntParameter* xParam;
