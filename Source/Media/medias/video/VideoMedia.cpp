@@ -435,7 +435,8 @@ void VideoMedia::handleEnter(double time)
 
 void VideoMedia::handleExit()
 {
-	bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+	if (VLCMediaPlayer == nullptr) return;
+	//bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
 	//LOG("Handle exit " << (int)isPlaying);
 	stop();
 }
@@ -465,14 +466,14 @@ void VideoMedia::handleSeek(double time)
 
 void VideoMedia::handleStop()
 {
-	bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+	//bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
 	//LOG("Handle stop " << (int)isPlaying);
 	pause();
 }
 
 void VideoMedia::handleStart()
 {
-	bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+	//bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
 	//LOG("Handle start " << (int)isPlaying);
 
 	isPrerolling = false;
