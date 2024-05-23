@@ -70,6 +70,57 @@ Surface::Surface(var params) :
 	mask = adjustmentsCC.addTargetParameter("Mask", "Apply a mask to this surface", MediaManager::getInstance());
 	invertMask = adjustmentsCC.addBoolParameter("Invert mask", "Invert mask", false);
 
+	blendFunction = adjustmentsCC.addEnumParameter("Blend function", "");
+	blendFunction
+		->addOption("Standard Transparency", STANDARD)
+		->addOption("Addition", ADDITION)
+		->addOption("Multiplication", MULTIPLICATION)
+		->addOption("Screen", SCREEN)
+		->addOption("Darken", DARKEN)
+		->addOption("Premultiplied Alpha", PREMULTALPHA)
+		->addOption("Lighten", LIGHTEN)
+		->addOption("Inversion", INVERT)
+		->addOption("Color Addition", COLORADD)
+		->addOption("Color Screen", COLORSCREEN)
+		->addOption("Blur Effect", BLUR)
+		->addOption("Inverse Color", INVERTCOLOR)
+		->addOption("Subtraction", SUBSTRACT)
+		->addOption("Color Difference", COLORDIFF)
+		->addOption("Inverse Multiplication", INVERTMULT)
+		->addOption("Custom", CUSTOM);
+
+	blendFunctionSourceFactor = adjustmentsCC.addEnumParameter("Blend source factor", "");
+	blendFunctionSourceFactor->addOption("GL_ZERO", (int)GL_ZERO)
+		->addOption("GL_ONE", (int)GL_ONE)
+		->addOption("GL_SRC_ALPHA", (int)GL_SRC_ALPHA)
+		->addOption("GL_ONE_MINUS_SRC_ALPHA", (int)GL_ONE_MINUS_SRC_ALPHA)
+		->addOption("GL_DST_ALPHA", (int)GL_DST_ALPHA)
+		->addOption("GL_ONE_MINUS_DST_ALPHA", (int)GL_ONE_MINUS_DST_ALPHA)
+		->addOption("GL_SRC_COLOR", (int)GL_SRC_COLOR)
+		->addOption("GL_ONE_MINUS_SRC_COLOR", (int)GL_ONE_MINUS_SRC_COLOR)
+		->addOption("GL_DST_COLOR", (int)GL_DST_COLOR)
+		->addOption("GL_ONE_MINUS_DST_COLOR", (int)GL_ONE_MINUS_DST_COLOR);
+
+	blendFunctionDestinationFactor = adjustmentsCC.addEnumParameter("Blend destination factor", "");
+	blendFunctionDestinationFactor->addOption("GL_ZERO", (int)GL_ZERO)
+		->addOption("GL_ONE", (int)GL_ONE)
+		->addOption("GL_SRC_ALPHA", (int)GL_SRC_ALPHA)
+		->addOption("GL_ONE_MINUS_SRC_ALPHA", (int)GL_ONE_MINUS_SRC_ALPHA)
+		->addOption("GL_DST_ALPHA", (int)GL_DST_ALPHA)
+		->addOption("GL_ONE_MINUS_DST_ALPHA", (int)GL_ONE_MINUS_DST_ALPHA)
+		->addOption("GL_SRC_COLOR", (int)GL_SRC_COLOR)
+		->addOption("GL_ONE_MINUS_SRC_COLOR", (int)GL_ONE_MINUS_SRC_COLOR)
+		->addOption("GL_DST_COLOR", (int)GL_DST_COLOR)
+		->addOption("GL_ONE_MINUS_DST_COLOR", (int)GL_ONE_MINUS_DST_COLOR);
+
+	blendFunctionSourceFactor->setDefaultValue("GL_SRC_ALPHA");
+	blendFunctionDestinationFactor->setDefaultValue("GL_ONE_MINUS_SRC_ALPHA");
+	blendFunctionSourceFactor->setControllableFeedbackOnly(true);
+	blendFunctionDestinationFactor->setControllableFeedbackOnly(true);
+
+	tint = adjustmentsCC.addColorParameter("Tint", "", Colour::fromFloatRGBA(1, 1, 1, 1));
+	boost = adjustmentsCC.addFloatParameter("Boost", "", 1, 1, 5);
+
 	fillType = formatCC.addEnumParameter("Fill Type ", "");
 	fillType->addOption("Stretch", STRETCH)->addOption("Fit", FIT)->addOption("Fill", FILL);
 	ratioList = formatCC.addEnumParameter("Ratio", "");
@@ -220,6 +271,82 @@ void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Co
 		}
 
 		patternMedia.reset(sm);
+	}
+	else if (c == blendFunction) {
+		BlendPreset preset = blendFunction->getValueDataAsEnum<BlendPreset>();
+		if (preset == CUSTOM) {
+			blendFunctionSourceFactor->setControllableFeedbackOnly(false);
+			blendFunctionDestinationFactor->setControllableFeedbackOnly(false);
+		}
+		else
+		{
+			blendFunctionSourceFactor->setControllableFeedbackOnly(true);
+			blendFunctionDestinationFactor->setControllableFeedbackOnly(true);
+			switch (preset)
+			{
+			case STANDARD:
+				blendFunctionSourceFactor->setValueWithData((int)GL_SRC_ALPHA);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_ALPHA);
+				break;
+			case ADDITION:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case MULTIPLICATION:
+				blendFunctionSourceFactor->setValueWithData((int)GL_DST_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ZERO);
+				break;
+			case SCREEN:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				break;
+			case DARKEN:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_ALPHA);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case PREMULTALPHA:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_ALPHA);
+				break;
+			case LIGHTEN:
+				blendFunctionSourceFactor->setValueWithData((int)GL_SRC_ALPHA);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case INVERT:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				break;
+			case COLORADD:
+				blendFunctionSourceFactor->setValueWithData((int)GL_SRC_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_DST_COLOR);
+				break;
+			case COLORSCREEN:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case BLUR:
+				blendFunctionSourceFactor->setValueWithData((int)GL_SRC_ALPHA);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case INVERTCOLOR:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE);
+				break;
+			case SUBSTRACT:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ZERO);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				break;
+			case COLORDIFF:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_DST_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_SRC_COLOR);
+				break;
+			case INVERTMULT:
+				blendFunctionSourceFactor->setValueWithData((int)GL_ONE_MINUS_SRC_COLOR);
+				blendFunctionDestinationFactor->setValueWithData((int)GL_SRC_COLOR);
+				break;
+
+			}
+		}
 	}
 
 	shouldUpdateVertices = true;
@@ -495,7 +622,7 @@ void Surface::updateVertices()
 		float toX = 1 - cropRight->floatValue();
 		float fromY = cropBottom->floatValue();
 		float toY = 1 - cropTop->floatValue();
-	
+
 
 		for (int i = 0; i < gridSize - 1; i++) {
 			for (int j = 0; j < gridSize - 1; j++) {
@@ -507,7 +634,7 @@ void Surface::updateVertices()
 				trMask = Vector3D<float>((i + 1) * ratio, 1 - (j * ratio), 1);
 				blMask = Vector3D<float>(i * ratio, 1 - ((j + 1) * ratio), 1);
 				brMask = Vector3D<float>((i + 1) * ratio, 1 - ((j + 1) * ratio), 1);
-				
+
 
 				addToVertices(grid[i][j], Point<float>(((i) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), tlTex, tlMask);
 				addToVertices(grid[i + 1][j], Point<float>(((i + 1) * 2 * ratio) - 1, -(((j) * 2 * ratio) - 1)), trTex, trMask);
@@ -681,6 +808,8 @@ void Surface::draw(GLuint shaderID)
 
 	glBindTexture(GL_TEXTURE_2D, media->getTextureID());
 
+	Colour tintColor = tint->getColor();
+
 
 	// vertices start
 	if (shouldUpdateVertices) {
@@ -711,6 +840,8 @@ void Surface::draw(GLuint shaderID)
 		ratioLocation = glGetUniformLocation(shaderID, "ratio");
 		glUniform1f(ratioLocation, ratio->floatValue());
 
+		tintLocation = glGetUniformLocation(shaderID, "tint");
+
 		glGenBuffers(1, &ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
@@ -724,6 +855,9 @@ void Surface::draw(GLuint shaderID)
 	glUniform4f(borderSoftLocation, softEdgeTop->floatValue(), softEdgeRight->floatValue(), softEdgeBottom->floatValue(), softEdgeLeft->floatValue());
 	glUniform1i(invertMaskLocation, invertMask->boolValue() ? 1 : 0);
 	glUniform1i(ratioLocation, ratio->floatValue());
+
+	float boostValue = boost->floatValue();
+	glUniform4f(tintLocation, tintColor.getFloatRed() * boostValue, tintColor.getFloatGreen() * boostValue, tintColor.getFloatBlue() * boostValue, tintColor.getFloatAlpha());
 
 	glEnableVertexAttribArray(posAttrib);
 	glGetError();
@@ -744,6 +878,8 @@ void Surface::draw(GLuint shaderID)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.getRawDataPointer(), GL_STATIC_DRAW);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, verticesElements.size() * sizeof(GLuint), verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
 	verticesLock.exit();
+
+	glBlendFunc((GLenum)(int)blendFunctionSourceFactor->getValueData(), (GLenum)(int)blendFunctionDestinationFactor->getValueData());
 
 	//glDrawElements(GL_LINES, verticesElements.size(), GL_UNSIGNED_INT, 0);
 	glDrawElements(GL_TRIANGLES, verticesElements.size(), GL_UNSIGNED_INT, 0);

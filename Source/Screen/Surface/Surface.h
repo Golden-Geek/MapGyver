@@ -50,6 +50,16 @@ public:
 	BaseManager<Pin> pinsCC;
 
 	ControllableContainer adjustmentsCC;
+	EnumParameter* blendFunction;
+	enum BlendPreset {
+		STANDARD, ADDITION, MULTIPLICATION, SCREEN, DARKEN, PREMULTALPHA, LIGHTEN, INVERT, COLORADD, COLORSCREEN, BLUR, INVERTCOLOR, SUBSTRACT, COLORDIFF, INVERTMULT, CUSTOM
+	};
+	EnumParameter* blendFunctionSourceFactor;
+	EnumParameter* blendFunctionDestinationFactor;
+
+	ColorParameter* tint;
+	FloatParameter* boost;
+
 	BoolParameter* showTestPattern;
 	TargetParameter* mask;
 	BoolParameter* invertMask;
@@ -84,6 +94,7 @@ public:
 	GLuint borderSoftLocation;
 	GLuint invertMaskLocation;
 	GLuint ratioLocation;
+	GLuint tintLocation;
 	GLuint ebo;
 
 

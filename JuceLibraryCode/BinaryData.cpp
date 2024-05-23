@@ -334,10 +334,12 @@ static const unsigned char temp_binary_data_11[] =
 "in vec3 Maskcoord;\r\n"
 "in vec2 SurfacePosition;\r\n"
 "out vec4 outColor;\r\n"
+"\r\n"
 "uniform sampler2D tex;\r\n"
 "uniform sampler2D mask;\r\n"
 "uniform vec4 borderSoft;\r\n"
 "uniform int invertMask;\r\n"
+"uniform vec4 tint = vec4(1.0,1.0,1.0,1.0);\r\n"
 "\r\n"
 "float map(float value, float min1, float max1, float min2, float max2) {\r\n"
 "\treturn min2 + ((max2-min2)*(value-min1)/(max1-min1)); \r\n"
@@ -358,6 +360,7 @@ static const unsigned char temp_binary_data_11[] =
 "\tfloat maskValue = invertMask == 0 ? maskColor[1] : 1-maskColor[1];\r\n"
 "   \talpha *= maskValue; \r\n"
 "   \toutColor[3] = alpha;\r\n"
+"    outColor *= tint;\r\n"
 "};\r\n";
 
 const char* fragmentShaderMainSurface_glsl = (const char*) temp_binary_data_11;
@@ -2739,7 +2742,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x4f784065:  numBytes = 656; return video_png;
         case 0xf2126fe5:  numBytes = 1196; return webcam_png;
         case 0x67012481:  numBytes = 2452; return default_rmplayout;
-        case 0x0ffdf71e:  numBytes = 1232; return fragmentShaderMainSurface_glsl;
+        case 0x0ffdf71e:  numBytes = 1301; return fragmentShaderMainSurface_glsl;
         case 0x0ff5b690:  numBytes = 9164; return fragmentShaderTestGrid_glsl;
         case 0xd4093963:  numBytes = 52976; return icon_png;
         case 0x7536b908:  numBytes = 85942; return testPattern_png;

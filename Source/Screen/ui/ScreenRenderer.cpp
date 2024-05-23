@@ -54,6 +54,7 @@ void ScreenRenderer::renderOpenGL()
 	{
 		for (int i = screen->surfaces.items.size() - 1; i >= 0; i--)
 		{
+			
 			shader->use();
 			GLuint shaderProgram = shader->getProgramID();
 			screen->surfaces.items[i]->draw(shaderProgram);

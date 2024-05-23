@@ -2,10 +2,12 @@ in vec3 Texcoord;
 in vec3 Maskcoord;
 in vec2 SurfacePosition;
 out vec4 outColor;
+
 uniform sampler2D tex;
 uniform sampler2D mask;
 uniform vec4 borderSoft;
 uniform int invertMask;
+uniform vec4 tint = vec4(1.0,1.0,1.0,1.0);
 
 float map(float value, float min1, float max1, float min2, float max2) {
 	return min2 + ((max2-min2)*(value-min1)/(max1-min1)); 
@@ -26,4 +28,5 @@ void main()
 	float maskValue = invertMask == 0 ? maskColor[1] : 1-maskColor[1];
    	alpha *= maskValue; 
    	outColor[3] = alpha;
+    outColor *= tint;
 };
