@@ -112,7 +112,7 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 	{
 		if (!vlcSeekedLast && videoTotalTime > 0)
 		{
- 			libvlc_media_player_set_position(VLCMediaPlayer, seek->doubleValue() / videoTotalTime);
+			libvlc_media_player_set_position(VLCMediaPlayer, seek->doubleValue() / videoTotalTime);
 		}
 		vlcSeekedLast = false;
 	}
@@ -207,7 +207,7 @@ void VideoMedia::setup()
 
 	libvlc_media_release(VLCMedia); VLCMedia = nullptr;
 	if (playAtLoad->boolValue()) restart();
-	else if(usePreroll->boolValue()) prepareFirstFrame();
+	else if (usePreroll->boolValue()) prepareFirstFrame();
 }
 
 void VideoMedia::prepareFirstFrame()
@@ -226,6 +226,7 @@ void VideoMedia::play()
 
 void VideoMedia::stop()
 {
+	if (isStopping) return;
 	//LOG("stop");
 	if (usePreroll->boolValue())
 	{
@@ -236,10 +237,20 @@ void VideoMedia::stop()
 	{
 		bool isPlaying = VLCMediaPlayer != nullptr && libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
 		if (isPlaying) {
-			libvlc_media_list_player_stop(VLCMediaListPlayer);
+			//LOG("Stop here");
+			GenericScopedLock lock(imageLock);
+			//LOG("After Lock");
+			//isStopping = true;
+			// 
+			// TODO : find a way to stop the player without crashing
+			//libvlc_media_list_player_stop(VLCMediaListPlayer);
+			// 
+			//isStopping = false;
+			//LOG("After stop");
 		}
 	}
-	
+
+
 }
 
 void VideoMedia::pause()
@@ -289,17 +300,20 @@ void VideoMedia::run()
 
 void* VideoMedia::lock(void** pixels)
 {
+
+	//LOG("Lock start, isPlaying " << libvlc_media_player_get_state(VLCMediaPlayer) << " <> " << libvlc_Playing << ", stopping ? " << (int)isStopping);
+	//if (isStopping) return 0;
 	imageLock.enter();
 	//pixels[0] = vlcData;
 	pixels[0] = bitmapData->getLinePointer(0);
-
-
+	//LOG("Lock end");
 
 	return 0;
 }
 
 void VideoMedia::unlock(void* oldBuffer, void* const* pixels)
 {
+	//LOG("Unlock start");
 	imageLock.exit();
 	shouldRedraw = true;
 
@@ -307,6 +321,8 @@ void VideoMedia::unlock(void* oldBuffer, void* const* pixels)
 		pause();
 		isPrerolling = false;
 	}
+
+	//LOG("Unlock end");
 
 	FPSTick();
 }
@@ -371,7 +387,7 @@ void VideoMedia::vlcEndReached()
 	{
 		restart();
 	}
-	else if(usePreroll->boolValue()) prepareFirstFrame();
+	else if (usePreroll->boolValue()) prepareFirstFrame();
 	else
 	{
 		stop();
@@ -380,19 +396,19 @@ void VideoMedia::vlcEndReached()
 
 void VideoMedia::vlcPlaying()
 {
-	//LOG("start play");
+	//LOG("vlc start play");
 	if (loop->boolValue()) startThread();
 }
 
 void VideoMedia::vlcStopped()
 {
-	//LOG("stop play");
+	//LOG("vlc stop play");
 	stopThread(1000);
 }
 
 void VideoMedia::vlcPaused()
 {
-	//LOG("pause play");
+	//LOG("vlc pause play");
 	stopThread(1000);
 }
 
@@ -415,11 +431,9 @@ void VideoMedia::tapTempo()
 
 void VideoMedia::handleEnter(double time)
 {
-	if (VLCMediaPlayer == nullptr)
-	{
-		play();
-		stop();
-	}
+	if (VLCMediaPlayer == nullptr) return;
+	
+	
 	bool isPlaying = VLCMediaPlayer != nullptr && libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
 	//LOG("Handle enter " << (int)isPlaying);
 
@@ -436,14 +450,14 @@ void VideoMedia::handleEnter(double time)
 void VideoMedia::handleExit()
 {
 	if (VLCMediaPlayer == nullptr) return;
-	//bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+	bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
 	//LOG("Handle exit " << (int)isPlaying);
 	stop();
 }
 
 void VideoMedia::handleSeek(double time)
 {
-	
+
 
 	float tPos = time / videoTotalTime;
 	if (loop->boolValue()) tPos = fmod(tPos, 1);
@@ -453,27 +467,29 @@ void VideoMedia::handleSeek(double time)
 	{
 		bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
 		//LOG("Handle seek " << (int)isPlaying);
-		
+
 		//if(!isPlaying) play();
 		pause();
-		
+
 		seek->setNormalizedValue(tPos);
 		if (isPlaying) libvlc_media_player_play(VLCMediaPlayer);
 
-		
+
 	}
 }
 
 void VideoMedia::handleStop()
 {
-	//bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+	if (VLCMediaPlayer == nullptr) return;
+	bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
 	//LOG("Handle stop " << (int)isPlaying);
 	pause();
 }
 
 void VideoMedia::handleStart()
 {
-	//bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
+	if (VLCMediaPlayer == nullptr) return;
+	bool isPlaying = libvlc_media_player_get_state(VLCMediaPlayer) == libvlc_Playing;
 	//LOG("Handle start " << (int)isPlaying);
 
 	isPrerolling = false;

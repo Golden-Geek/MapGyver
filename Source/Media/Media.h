@@ -91,7 +91,7 @@ public:
 	ImageMedia(const String& name = "CPUMedia", var params = var());
 	virtual ~ImageMedia();
 
-	SpinLock imageLock;
+	CriticalSection imageLock;
 	Image image;
 	std::shared_ptr<Image::BitmapData> bitmapData;
 	std::shared_ptr<Graphics> graphics;

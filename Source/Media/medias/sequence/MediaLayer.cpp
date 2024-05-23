@@ -288,7 +288,7 @@ void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool ev
 			if (isActive != clip->isActive->boolValue())
 			{
 				//LOG("Set active " << (int)isActive);
-				GenericScopedLock lock(renderLock);
+				//GenericScopedLock lock(renderLock);
 				clip->isActive->setValue(isActive);
 				if (isActive && s->isPlaying->boolValue())
 				{

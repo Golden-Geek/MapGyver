@@ -56,6 +56,7 @@ public:
 	
 	bool isPrerolling = false;
 	bool vlcSeekedLast = false;
+	bool isStopping = false;
 
 	double lastTapTempo;
 	Trigger* tapTempoBtn;
