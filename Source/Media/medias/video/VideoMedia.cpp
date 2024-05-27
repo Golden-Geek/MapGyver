@@ -209,6 +209,7 @@ void VideoMedia::load()
 void VideoMedia::play() {
 	if (vlcPlayer == nullptr) return;
 	PlayerState st = state->getValueDataAsEnum<PlayerState>();
+
 	if (st == IDLE || st == PAUSED)
 	{
 		vlcPlayer->play();
@@ -254,10 +255,17 @@ void VideoMedia::seek(double time)
 	if (st == PLAYING || st == PAUSED)
 	{
 		double targetTime = time;
+		bool isEnd = false;
 		if (loop->boolValue()) targetTime = fmod(targetTime, length->doubleValue());
+		double maxTime = length->doubleValue() - 1.0 / frameRate;
+		targetTime = jlimit(0., maxTime, targetTime);
+		if (targetTime >= maxTime) isEnd = true;
+
 		isSeeking = true;
 		vlcPlayer->setTime(targetTime * 1000, true);
 		isSeeking = false;
+
+		if (!isEnd && st == PLAYING && vlcPlayer->state() != libvlc_Playing) vlcPlayer->play();
 	}
 }
 
@@ -269,7 +277,11 @@ void VideoMedia::handleEnter(double time, bool doPlay)
 	if (vlcPlayer == nullptr) return;
 
 	seek(time);
-	if (doPlay) play();
+
+	bool isEnd = false;
+	if (position->doubleValue() >= length->doubleValue() - 1.0 / frameRate) isEnd = true;
+
+	if (doPlay && !isEnd) play();
 }
 
 void VideoMedia::handleExit()

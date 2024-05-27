@@ -41,22 +41,6 @@ public:
 	ControllableContainer audioCC;
 	FloatParameter* volume;
 
-	//BoolParameter* playAtLoad;
-	//BoolParameter* loop;
-	//Trigger* startBtn;
-	//Trigger* stopBtn;
-	//Trigger* restartBtn;
-	//Trigger* pauseBtn;
-	//FloatParameter* mediaVolume;
-	//String currentVolumeController = "";
-	//String nextVolumeController = "";
-	//FloatParameter* speedRate;
-	//FloatParameter* seek;
-	//BoolParameter* usePreroll;
-
-
-
-
 	VLC::Instance* vlcInstance;
 	std::unique_ptr<VLC::MediaPlayer> vlcPlayer;
 	std::unique_ptr<VLC::Media> vlcMedia;
@@ -76,17 +60,8 @@ public:
 	//Trigger* tapTempoBtn;
 	//IntParameter* beatPerCycle;
 
-
-	//double frameRate = 0;
-	//double timeAtLastEvent = 0;
-	//double frameAtLastEvent = 0;
-
-	//void clearItem() override;
 	void onContainerParameterChanged(Parameter* p) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
-
-
-	//void triggerTriggered(Trigger* t);
 
 	void load();
 	void play();
@@ -102,12 +77,6 @@ public:
 	virtual void handleStart() override;
 	
 	void afterLoadJSONDataInternal() override;
-
-	//void unload();
-
-
-
-	//void run();
 
 	//void tapTempo();
 
