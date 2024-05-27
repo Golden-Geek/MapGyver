@@ -2,7 +2,6 @@
  * vlc_services_discovery.h : Services Discover functions
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: e4dfcd3985a6eea1d4b5c540e72219b67d733901 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -40,12 +39,17 @@ extern "C" {
  * @{
  */
 
+struct services_discovery_callbacks
+{
+    void (*item_added)(struct services_discovery_t *sd, input_item_t *parent,
+                       input_item_t *item);
+    void (*item_removed)(struct services_discovery_t *sd, input_item_t *item);
+};
+
 struct services_discovery_owner_t
 {
+    const struct services_discovery_callbacks *cbs;
     void *sys; /**< Private data for the owner callbacks */
-    void (*item_added)(struct services_discovery_t *sd, input_item_t *parent,
-                       input_item_t *item, const char *category);
-    void (*item_removed)(struct services_discovery_t *sd, input_item_t *item);
 };
 
 /**
@@ -53,7 +57,7 @@ struct services_discovery_owner_t
  */
 struct services_discovery_t
 {
-    VLC_COMMON_MEMBERS
+    struct vlc_object_t obj;
     module_t *          p_module;             /**< Loaded module */
 
     char *psz_name;                           /**< Main name of the SD */
@@ -66,7 +70,7 @@ struct services_discovery_t
      */
     int ( *pf_control ) ( services_discovery_t *, int, va_list );
 
-    services_discovery_sys_t *p_sys;          /**< Custom private data */
+    void *p_sys;                              /**< Custom private data */
 
     struct services_discovery_owner_t owner; /**< Owner callbacks */
 };
@@ -122,7 +126,7 @@ typedef struct
  * @param p_sd: the Service Discovery
  * @param i_control: the command to issue
  * @param args: the argument list
- * @return VLC_SUCCESS in case of success, the error code overwise
+ * @return VLC_SUCCESS in case of success, the error code otherwise
  */
 static inline int vlc_sd_control( services_discovery_t *p_sd, int i_control, va_list args )
 {
@@ -144,6 +148,8 @@ VLC_API char ** vlc_sd_GetNames( vlc_object_t *, char ***, int ** ) VLC_USED;
 VLC_API services_discovery_t *vlc_sd_Create(vlc_object_t *parent,
     const char *chain, const struct services_discovery_owner_t *owner)
 VLC_USED;
+#define vlc_sd_Create( obj, a, b ) \
+        vlc_sd_Create( VLC_OBJECT( obj ), a, b )
 
 VLC_API void vlc_sd_Destroy( services_discovery_t * );
 
@@ -157,7 +163,7 @@ VLC_API void vlc_sd_Destroy( services_discovery_t * );
 static inline void services_discovery_AddItem(services_discovery_t *sd,
                                               input_item_t *item)
 {
-    sd->owner.item_added(sd, NULL, item, NULL);
+    sd->owner.cbs->item_added(sd, NULL, item);
 }
 
 /**
@@ -174,28 +180,15 @@ static inline void services_discovery_AddItem(services_discovery_t *sd,
  * to alter the item later. However, if the caller will never remove nor alter
  * the item, it can drop its reference(s) immediately.
  *
- * @param sd services discoverer / services discovery module instance
+ * @param sd the service discovery instance exposing the item
+ * @param parent the parent to attach the item to
  * @param item input item to add
  */
 static inline void services_discovery_AddSubItem(services_discovery_t *sd,
                                                  input_item_t *parent,
                                                  input_item_t *item)
 {
-    sd->owner.item_added(sd, parent, item, NULL);
-}
-
-/**
- * Added service backward compatibility callback.
- *
- * @param category Optional name of a group that the item belongs in
- *                 (for backward compatibility with legacy modules)
- */
-VLC_DEPRECATED
-static inline void services_discovery_AddItemCat(services_discovery_t *sd,
-                                                 input_item_t *item,
-                                                 const char *category)
-{
-    sd->owner.item_added(sd, NULL, item, category);
+    sd->owner.cbs->item_added(sd, parent, item);
 }
 
 /**
@@ -207,7 +200,7 @@ static inline void services_discovery_AddItemCat(services_discovery_t *sd,
 static inline void services_discovery_RemoveItem(services_discovery_t *sd,
                                                  input_item_t *item)
 {
-    sd->owner.item_removed(sd, item);
+    sd->owner.cbs->item_removed(sd, item);
 }
 
 /* SD probing */
@@ -217,7 +210,7 @@ VLC_API int vlc_sd_probe_Add(vlc_probe_t *, const char *, const char *, int cate
 #define VLC_SD_PROBE_SUBMODULE \
     add_submodule() \
         set_capability( "services probe", 100 ) \
-        set_callbacks( vlc_sd_probe_Open, NULL )
+        set_callback( vlc_sd_probe_Open )
 
 #define VLC_SD_PROBE_HELPER(name, longname, cat) \
 static int vlc_sd_probe_Open (vlc_object_t *obj) \

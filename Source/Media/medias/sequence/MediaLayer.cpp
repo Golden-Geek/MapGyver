@@ -295,7 +295,7 @@ void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool ev
 					if (VideoMedia* vm = dynamic_cast<VideoMedia*>(clip->media))
 					{
 						{
-							vm->play();
+							//vm->play();
 						}
 					}
 				}

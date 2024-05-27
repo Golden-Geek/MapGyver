@@ -2,7 +2,6 @@
  * vlc_actions.h: handle vlc actions
  *****************************************************************************
  * Copyright (C) 2003-2016 VLC authors and VideoLAN
- * $Id: 404c1662a82ef3f3ffc983a81fa73b90f5773eef $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -23,6 +22,8 @@
 
 #ifndef VLC_ACTIONS_H
 #define VLC_ACTIONS_H 1
+
+# include <vlc_mouse.h>
 
 /* Called from src/libvlc.c */
 int
@@ -50,69 +51,72 @@ libvlc_InternalActionsClean(libvlc_int_t *p_libvlc);
 #define KEY_ENTER                  0x0D
 #define KEY_ESC                    0x1B
 /* End of Unicode range:     0x0010FFFF */
-#define KEY_LEFT             0x00210000
-#define KEY_RIGHT            0x00220000
-#define KEY_UP               0x00230000
-#define KEY_DOWN             0x00240000
-#define KEY_F1               0x00270000
-#define KEY_F2               0x00280000
-#define KEY_F3               0x00290000
-#define KEY_F4               0x002A0000
-#define KEY_F5               0x002B0000
-#define KEY_F6               0x002C0000
-#define KEY_F7               0x002D0000
-#define KEY_F8               0x002E0000
-#define KEY_F9               0x002F0000
-#define KEY_F10              0x00300000
-#define KEY_F11              0x00310000
-#define KEY_F12              0x00320000
-#define KEY_HOME             0x00330000
-#define KEY_END              0x00340000
-#define KEY_INSERT           0x00350000
-#define KEY_DELETE           0x00360000
-#define KEY_MENU             0x00370000
-#define KEY_PAGEUP           0x00390000
-#define KEY_PAGEDOWN         0x003A0000
-#define KEY_PRINT            0x003B0000
-#define KEY_PAUSE            0x003D0000
-
-#define KEY_BROWSER_BACK     0x003F0000
-#define KEY_BROWSER_FORWARD  0x00400000
-#define KEY_BROWSER_REFRESH  0x00410000
-#define KEY_BROWSER_STOP     0x00420000
-#define KEY_BROWSER_SEARCH   0x00430000
-#define KEY_BROWSER_FAVORITES 0x00440000
-#define KEY_BROWSER_HOME     0x00450000
-#define KEY_VOLUME_MUTE      0x00460000
-#define KEY_VOLUME_DOWN      0x00470000
-#define KEY_VOLUME_UP        0x00480000
-#define KEY_MEDIA_NEXT_TRACK 0x00490000
-#define KEY_MEDIA_PREV_TRACK 0x004A0000
-#define KEY_MEDIA_STOP       0x004B0000
-#define KEY_MEDIA_PLAY_PAUSE 0x004C0000
-#define KEY_MEDIA_RECORD     0x004D0000
-#define KEY_MEDIA_REWIND     0x004E0000
-#define KEY_MEDIA_FORWARD    0x004F0000
-#define KEY_MEDIA_REPEAT     0x00500000
-#define KEY_MEDIA_SHUFFLE    0x00510000
-#define KEY_MEDIA_SUBTITLE   0x00520000
-#define KEY_MEDIA_AUDIO      0x00530000
-#define KEY_MEDIA_ANGLE      0x00540000
-#define KEY_MEDIA_TIME       0x00550000
-#define KEY_MEDIA_FRAME_PREV 0x00560000
-#define KEY_MEDIA_FRAME_NEXT 0x00570000
-#define KEY_MEDIA_SELECT     0x00580000
-#define KEY_MEDIA_VIEW       0x00590000
-#define KEY_MEDIA_MENU       0x005A0000
-#define KEY_ZOOM_IN          0x00600000
-#define KEY_ZOOM_OUT         0x00610000
-#define KEY_BRIGHTNESS_UP    0x00620000
-#define KEY_BRIGHTNESS_DOWN  0x00630000
+#define KEY_LEFT              0x00200000
+#define KEY_RIGHT             0x00210000
+#define KEY_UP                0x00220000
+#define KEY_DOWN              0x00230000
+#define KEY_F(n)             (0x00230000 + ((n) << 16))
+#define KEY_F1                KEY_F(1)
+#define KEY_F2                KEY_F(2)
+#define KEY_F3                KEY_F(3)
+#define KEY_F4                KEY_F(4)
+#define KEY_F5                KEY_F(5)
+#define KEY_F6                KEY_F(6)
+#define KEY_F7                KEY_F(7)
+#define KEY_F8                KEY_F(8)
+#define KEY_F9                KEY_F(9)
+#define KEY_F10               KEY_F(10)
+#define KEY_F11               KEY_F(11)
+#define KEY_F12               KEY_F(12)
+/*      KEY_F35               0x00460000 */
+#define KEY_HOME              0x00470000
+#define KEY_END               0x00480000
+#define KEY_INSERT            0x00490000
+#define KEY_DELETE            0x004A0000
+#define KEY_MENU              0x004B0000
+#define KEY_PAGEUP            0x004C0000
+#define KEY_PAGEDOWN          0x004D0000
+#define KEY_PRINT             0x004E0000
+#define KEY_PAUSE             0x004F0000
+#define KEY_BROWSER_BACK      0x00500000
+#define KEY_BROWSER_FORWARD   0x00510000
+#define KEY_BROWSER_REFRESH   0x00520000
+#define KEY_BROWSER_STOP      0x00530000
+#define KEY_BROWSER_SEARCH    0x00540000
+#define KEY_BROWSER_FAVORITES 0x00550000
+#define KEY_BROWSER_HOME      0x00560000
+#define KEY_VOLUME_MUTE       0x00570000
+#define KEY_VOLUME_DOWN       0x00580000
+#define KEY_VOLUME_UP         0x00590000
+#define KEY_MEDIA_NEXT_TRACK  0x005A0000
+#define KEY_MEDIA_PREV_TRACK  0x005B0000
+#define KEY_MEDIA_STOP        0x005C0000
+#define KEY_MEDIA_PLAY_PAUSE  0x005D0000
+#define KEY_MEDIA_RECORD      0x005E0000
+#define KEY_MEDIA_REWIND      0x005F0000
+#define KEY_MEDIA_FORWARD     0x00600000
+#define KEY_MEDIA_REPEAT      0x00610000
+#define KEY_MEDIA_SHUFFLE     0x00620000
+#define KEY_MEDIA_SUBTITLE    0x00630000
+#define KEY_MEDIA_AUDIO       0x00640000
+#define KEY_MEDIA_ANGLE       0x00650000
+#define KEY_MEDIA_TIME        0x00660000
+#define KEY_MEDIA_FRAME_PREV  0x00670000
+#define KEY_MEDIA_FRAME_NEXT  0x00680000
+#define KEY_MEDIA_SELECT      0x00690000
+#define KEY_MEDIA_VIEW        0x006A0000
+#define KEY_MEDIA_MENU        0x006B0000
+#define KEY_ZOOM_IN           0x006C0000
+#define KEY_ZOOM_OUT          0x006D0000
+#define KEY_BRIGHTNESS_UP     0x006E0000
+#define KEY_BRIGHTNESS_DOWN   0x006F0000
 
 #define KEY_MOUSEWHEELUP     0x00F00000
 #define KEY_MOUSEWHEELDOWN   0x00F10000
 #define KEY_MOUSEWHEELLEFT   0x00F20000
 #define KEY_MOUSEWHEELRIGHT  0x00F30000
+#define KEY_MOUSEWHEEL_FROM_BUTTON(button) \
+    (KEY_MOUSEWHEELUP | ((button - MOUSE_BUTTON_WHEEL_UP) << 16))
 
 VLC_API char *vlc_keycode2str(uint_fast32_t i_key, bool locale) VLC_USED;
 VLC_API uint_fast32_t vlc_str2keycode(const char *str) VLC_USED;
@@ -120,34 +124,19 @@ VLC_API uint_fast32_t vlc_str2keycode(const char *str) VLC_USED;
 typedef enum vlc_action_id {
     ACTIONID_NONE = 0,
     ACTIONID_QUIT,
-    ACTIONID_PLAY_PAUSE,
-    ACTIONID_PLAY,
-    ACTIONID_PAUSE,
-    ACTIONID_STOP,
+    /* intf actions */
+    ACTIONID_INTF_TOGGLE_FSC,
+    ACTIONID_INTF_HIDE,
+    ACTIONID_INTF_BOSS,
+    ACTIONID_INTF_POPUP_MENU,
+    /* playlist interaction */
+    ACTIONID_PLAY_CLEAR,
     ACTIONID_PREV,
     ACTIONID_NEXT,
-    ACTIONID_SLOWER,
-    ACTIONID_FASTER,
-    ACTIONID_TOGGLE_FULLSCREEN,
-    ACTIONID_VOL_UP,
-    ACTIONID_VOL_DOWN,
-    ACTIONID_NAV_ACTIVATE,
-    ACTIONID_NAV_UP,
-    ACTIONID_NAV_DOWN,
-    ACTIONID_NAV_LEFT,
-    ACTIONID_NAV_RIGHT,
-    ACTIONID_JUMP_BACKWARD_EXTRASHORT,
-    ACTIONID_JUMP_FORWARD_EXTRASHORT,
-    ACTIONID_JUMP_BACKWARD_SHORT,
-    ACTIONID_JUMP_FORWARD_SHORT,
-    ACTIONID_JUMP_BACKWARD_MEDIUM,
-    ACTIONID_JUMP_FORWARD_MEDIUM,
-    ACTIONID_JUMP_BACKWARD_LONG,
-    ACTIONID_JUMP_FORWARD_LONG,
-    ACTIONID_FRAME_NEXT,
-    ACTIONID_POSITION,
-    ACTIONID_VOL_MUTE,
-/* let ACTIONID_SET_BOOMARK* and ACTIONID_PLAY_BOOKMARK* be contiguous */
+    /* playback */
+    ACTIONID_LOOP,
+    ACTIONID_RANDOM,
+    /* playlist bookmarks */
     ACTIONID_SET_BOOKMARK1,
     ACTIONID_SET_BOOKMARK2,
     ACTIONID_SET_BOOKMARK3,
@@ -168,43 +157,87 @@ typedef enum vlc_action_id {
     ACTIONID_PLAY_BOOKMARK8,
     ACTIONID_PLAY_BOOKMARK9,
     ACTIONID_PLAY_BOOKMARK10,
-    /* end of contiguous zone */
-    ACTIONID_PLAY_CLEAR,
-    ACTIONID_SUBDELAY_UP,
-    ACTIONID_SUBDELAY_DOWN,
-    ACTIONID_SUBSYNC_MARKAUDIO,
-    ACTIONID_SUBSYNC_MARKSUB,
-    ACTIONID_SUBSYNC_APPLY,
-    ACTIONID_SUBSYNC_RESET,
-    ACTIONID_SUBPOS_UP,
-    ACTIONID_SUBPOS_DOWN,
-    ACTIONID_AUDIO_TRACK,
-    ACTIONID_SUBTITLE_REVERSE_TRACK,
-    ACTIONID_SUBTITLE_TRACK,
-    ACTIONID_SUBTITLE_TOGGLE,
-    ACTIONID_SUBTITLE_TEXT_SCALE_NORMAL,
-    ACTIONID_SUBTITLE_TEXT_SCALE_UP,
-    ACTIONID_SUBTITLE_TEXT_SCALE_DOWN,
-    ACTIONID_INTF_TOGGLE_FSC,
-    ACTIONID_INTF_HIDE,
-    ACTIONID_INTF_BOSS,
-    /* chapter and title navigation */
+    /* player state */
+    ACTIONID_PLAY_PAUSE,
+    ACTIONID_PLAY,
+    ACTIONID_PAUSE,
+    ACTIONID_STOP,
+    ACTIONID_FRAME_NEXT,
+    /* input seeking */
+    ACTIONID_JUMP_BACKWARD_EXTRASHORT,
+    ACTIONID_JUMP_FORWARD_EXTRASHORT,
+    ACTIONID_JUMP_BACKWARD_SHORT,
+    ACTIONID_JUMP_FORWARD_SHORT,
+    ACTIONID_JUMP_BACKWARD_MEDIUM,
+    ACTIONID_JUMP_FORWARD_MEDIUM,
+    ACTIONID_JUMP_BACKWARD_LONG,
+    ACTIONID_JUMP_FORWARD_LONG,
+    ACTIONID_POSITION,
+    /* program SID, chapter and title navigation */
+    ACTIONID_PROGRAM_SID_PREV,
+    ACTIONID_PROGRAM_SID_NEXT,
     ACTIONID_TITLE_PREV,
     ACTIONID_TITLE_NEXT,
     ACTIONID_CHAPTER_PREV,
     ACTIONID_CHAPTER_NEXT,
-    /* end of chapter and title navigation */
-    ACTIONID_AUDIODELAY_UP,
-    ACTIONID_AUDIODELAY_DOWN,
-    ACTIONID_SNAPSHOT,
-    ACTIONID_RECORD,
     ACTIONID_DISC_MENU,
+    /* audio / subtitle track */
+    ACTIONID_AUDIO_TRACK,
+    ACTIONID_SUBTITLE_REVERSE_TRACK,
+    ACTIONID_SUBTITLE_TRACK,
+    /* audio / subtitle delay */
+    ACTIONID_AUDIODELAY_DOWN,
+    ACTIONID_AUDIODELAY_UP,
+    ACTIONID_SUBDELAY_DOWN,
+    ACTIONID_SUBDELAY_UP,
+    /* subtitle toggle */
+    ACTIONID_SUBTITLE_TOGGLE,
+    /* dual subtitle control */
+    ACTIONID_SUBTITLE_CONTROL_SECONDARY,
+    /* subtitle sync */
+    ACTIONID_SUBSYNC_MARKAUDIO,
+    ACTIONID_SUBSYNC_MARKSUB,
+    ACTIONID_SUBSYNC_APPLY,
+    ACTIONID_SUBSYNC_RESET,
+    /* subtitle display */
+    ACTIONID_SUBPOS_DOWN,
+    ACTIONID_SUBPOS_UP,
+    ACTIONID_SUBTITLE_TEXT_SCALE_NORMAL,
+    ACTIONID_SUBTITLE_TEXT_SCALE_DOWN,
+    ACTIONID_SUBTITLE_TEXT_SCALE_UP,
+    /* input rate */
+    ACTIONID_RATE_NORMAL,
+    ACTIONID_RATE_SLOWER,
+    ACTIONID_RATE_FASTER,
+    ACTIONID_RATE_SLOWER_FINE,
+    ACTIONID_RATE_FASTER_FINE,
+    /* input navigation */
+    ACTIONID_NAV_ACTIVATE,
+    ACTIONID_NAV_UP,
+    ACTIONID_NAV_DOWN,
+    ACTIONID_NAV_LEFT,
+    ACTIONID_NAV_RIGHT,
+    /* input recording */
+    ACTIONID_RECORD,
+    /* viewpoint */
+    ACTIONID_VIEWPOINT_FOV_IN,
+    ACTIONID_VIEWPOINT_FOV_OUT,
+    ACTIONID_VIEWPOINT_ROLL_CLOCK,
+    ACTIONID_VIEWPOINT_ROLL_ANTICLOCK,
+    /* aout actions */
+    ACTIONID_VOL_DOWN,
+    ACTIONID_VOL_UP,
+    ACTIONID_VOL_MUTE,
+    ACTIONID_AUDIODEVICE_CYCLE,
+    /* all vouts actions */
+    ACTIONID_TOGGLE_FULLSCREEN,
+    ACTIONID_LEAVE_FULLSCREEN,
+    ACTIONID_SNAPSHOT,
+    ACTIONID_WALLPAPER,
+    /* vout aspect ratio */
     ACTIONID_ASPECT_RATIO,
+    /* vout cropping */
     ACTIONID_CROP,
-    ACTIONID_DEINTERLACE,
-    ACTIONID_DEINTERLACE_MODE,
-    ACTIONID_ZOOM,
-    ACTIONID_UNZOOM,
     ACTIONID_CROP_TOP,
     ACTIONID_UNCROP_TOP,
     ACTIONID_CROP_LEFT,
@@ -213,38 +246,22 @@ typedef enum vlc_action_id {
     ACTIONID_UNCROP_BOTTOM,
     ACTIONID_CROP_RIGHT,
     ACTIONID_UNCROP_RIGHT,
-    ACTIONID_RANDOM,
-    ACTIONID_LOOP,
-    ACTIONID_WALLPAPER,
-    ACTIONID_LEAVE_FULLSCREEN,
-    /* Zoom */
+    /* vout deinterlacing */
+    ACTIONID_DEINTERLACE,
+    ACTIONID_DEINTERLACE_MODE,
+    /* vout scaling / zooming */
+    ACTIONID_TOGGLE_AUTOSCALE,
+    ACTIONID_SCALE_UP,
+    ACTIONID_SCALE_DOWN,
+    ACTIONID_ZOOM,
+    ACTIONID_UNZOOM,
     ACTIONID_ZOOM_QUARTER,
     ACTIONID_ZOOM_HALF,
     ACTIONID_ZOOM_ORIGINAL,
     ACTIONID_ZOOM_DOUBLE,
-    /* Cycle Through Audio Devices */
-    ACTIONID_AUDIODEVICE_CYCLE,
-    /* scaling */
-    ACTIONID_TOGGLE_AUTOSCALE,
-    ACTIONID_SCALE_UP,
-    ACTIONID_SCALE_DOWN,
-    /* */
-    ACTIONID_RATE_NORMAL,
-    ACTIONID_RATE_SLOWER_FINE,
-    ACTIONID_RATE_FASTER_FINE,
-    /* Cycle Through Program Service IDs */
-    ACTIONID_PROGRAM_SID_NEXT,
-    ACTIONID_PROGRAM_SID_PREV,
-    ACTIONID_INTF_POPUP_MENU,
-    /* Viewpoint */
-    ACTIONID_VIEWPOINT_FOV_IN,
-    ACTIONID_VIEWPOINT_FOV_OUT,
-    ACTIONID_VIEWPOINT_ROLL_CLOCK,
-    ACTIONID_VIEWPOINT_ROLL_ANTICLOCK,
     /* Combo Actions */
-    ACTIONID_COMBO_VOL_FOV_UP,
     ACTIONID_COMBO_VOL_FOV_DOWN,
-
+    ACTIONID_COMBO_VOL_FOV_UP,
 } vlc_action_id_t;
 
 /**

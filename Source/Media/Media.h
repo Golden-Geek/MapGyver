@@ -68,7 +68,7 @@ public:
 
 	//for sequence or other meta-media systems
 	void setCustomTime(double time, bool seekMode = false);
-	virtual void handleEnter(double time);
+	virtual void handleEnter(double time, bool play = false);
 	virtual void handleExit();
 	virtual void handleSeek(double time) {}
 	virtual void handleStop() {}

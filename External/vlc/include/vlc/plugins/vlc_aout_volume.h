@@ -2,7 +2,6 @@
  * vlc_aout_volume.h: audio volume module
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: df85b8fd14e00454e88c08061e3059fa67927dab $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -44,7 +43,7 @@ typedef struct audio_volume audio_volume_t;
  */
 struct audio_volume
 {
-    VLC_COMMON_MEMBERS
+    struct vlc_object_t obj;
 
     vlc_fourcc_t format; /**< Audio samples format */
     void (*amplify)(audio_volume_t *, block_t *, float); /**< Amplifier */

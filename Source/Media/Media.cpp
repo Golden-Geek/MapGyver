@@ -158,9 +158,9 @@ void Media::setCustomTime(double time, bool seekMode)
 }
 
 
-void Media::handleEnter(double time)
+void Media::handleEnter(double time, bool play)
 {
-	setCustomTime(time, true);
+	setCustomTime(time, !play);
 }
 
 void Media::handleExit()

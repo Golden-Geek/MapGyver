@@ -25,7 +25,7 @@
 #define LIBVLC_CXX_COMMON_H
 
 #ifdef _MSC_VER
-//using ssize_t = long int;
+using ssize_t = long int;
 #endif
 
 #include <vlc/vlc.h>

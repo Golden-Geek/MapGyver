@@ -2,7 +2,6 @@
  * vlc_text_style.h: text_style_t definition and helpers.
  *****************************************************************************
  * Copyright (C) 1999-2010 VLC authors and VideoLAN
- * $Id: c24d76adcfedf63514255bb31483acb9325df1b1 $
  *
  * Authors: Derk-Jan Hartman <hartman _AT_ videolan _DOT_ org>
  *          basOS G <noxelia 4t gmail , com>
@@ -48,26 +47,23 @@ typedef struct
     /* Font style */
     float      f_font_relsize;    /**< The font size in video height % */
     int        i_font_size;       /**< The font size in pixels */
-    int        i_font_color;      /**< The color of the text 0xRRGGBB
-                                       (native endianness) */
+    uint32_t   i_font_color;      /**< The color of the text in XRGB */
     uint8_t    i_font_alpha;      /**< The transparency of the text.*/
     int        i_spacing;         /**< The spaceing between glyphs in pixels */
 
     /* Outline */
-    int        i_outline_color;   /**< The color of the outline 0xRRGGBB */
+    uint32_t   i_outline_color;   /**< The color of the outline in XRGB */
     uint8_t    i_outline_alpha;   /**< The transparency of the outline */
     int        i_outline_width;   /**< The width of the outline in pixels */
 
     /* Shadow */
-    int        i_shadow_color;    /**< The color of the shadow 0xRRGGBB */
+    uint32_t   i_shadow_color;    /**< The color of the shadow in XRGB */
     uint8_t    i_shadow_alpha;    /**< The transparency of the shadow. */
     int        i_shadow_width;    /**< The width of the shadow in pixels */
 
-    /* Background (and karaoke) */
-    int        i_background_color;/**< The color of the background 0xRRGGBB */
+    /* Background */
+    uint32_t   i_background_color;/**< The color of the background in XRGB */
     uint8_t    i_background_alpha;/**< The transparency of the background */
-    int        i_karaoke_background_color;/**< Background color for karaoke 0xRRGGBB */
-    uint8_t    i_karaoke_background_alpha;/**< The transparency of the karaoke bg */
 
     /* Line breaking */
     enum
@@ -93,9 +89,7 @@ typedef struct
 #define STYLE_HAS_SHADOW_ALPHA          (1 << 6)
 #define STYLE_HAS_BACKGROUND_COLOR      (1 << 7)
 #define STYLE_HAS_BACKGROUND_ALPHA      (1 << 8)
-#define STYLE_HAS_K_BACKGROUND_COLOR    (1 << 9)
-#define STYLE_HAS_K_BACKGROUND_ALPHA    (1 << 10)
-#define STYLE_HAS_WRAP_INFO             (1 << 11)
+#define STYLE_HAS_WRAP_INFO             (1 << 9)
 
 /* Style flags for \ref text_style_t */
 #define STYLE_BOLD              (1 << 0)
@@ -116,6 +110,19 @@ typedef struct
 
 
 typedef struct text_segment_t text_segment_t;
+typedef struct text_segment_ruby_t text_segment_ruby_t;
+
+/**
+ * Text segment ruby for subtitles
+ * Each ruby has an anchor to the segment char.
+ */
+struct text_segment_ruby_t
+{
+    char *psz_base;
+    char *psz_rt;
+    text_segment_ruby_t *p_next;
+};
+
 /**
  * Text segment for subtitles
  *
@@ -132,6 +139,7 @@ struct text_segment_t {
     char *psz_text;                   /**< text string of the segment */
     text_style_t *style;              /**< style applied to this segment */
     text_segment_t *p_next;           /**< next segment */
+    text_segment_ruby_t *p_ruby;      /**< ruby descriptions */
 };
 
 /**
@@ -142,7 +150,11 @@ VLC_API text_style_t * text_style_New( void );
 /**
  * Create a text style
  *
- * Set feature flags as argument if you want to set style defaults
+ * Give STYLE_NO_DEFAULTS as the argument if you want only the zero-filled
+ * object. Give STYLE_FULLY_SET (or anything other than STYLE_NO_DEFAULTS)
+ * if you want an object with sensible defaults. (The value is not stored,
+ * the only effect is to determine whether to return a zero-filled or
+ * sensible-defaults-filled object).
  */
 VLC_API text_style_t * text_style_Create( int );
 
@@ -172,7 +184,7 @@ VLC_API void text_style_Delete( text_style_t * );
  * This function will create a new text segment.
  *
  * You should use text_segment_ChainDelete to destroy it, to clean all
- * the linked segments, or text_segment_Delete to free a specic one
+ * the linked segments, or text_segment_Delete to free a specific one
  *
  * This duplicates the string passed as argument
  */
@@ -182,7 +194,7 @@ VLC_API text_segment_t *text_segment_New( const char * );
  * This function will create a new text segment and duplicates the style passed as argument
  *
  * You should use text_segment_ChainDelete to destroy it, to clean all
- * the linked segments, or text_segment_Delete to free a specic one
+ * the linked segments, or text_segment_Delete to free a specific one
  *
  * This doesn't initialize the text.
  */
@@ -210,187 +222,31 @@ VLC_API void text_segment_ChainDelete( text_segment_t * );
  */
 VLC_API text_segment_t * text_segment_Copy( text_segment_t * );
 
-static const struct {
-    const char *psz_name;
-    uint32_t   i_value;
-} p_html_colors[] = {
-    /* Official html colors */
-    { "Aqua",    0x00FFFF },
-    { "Black",   0x000000 },
-    { "Blue",    0x0000FF },
-    { "Fuchsia", 0xFF00FF },
-    { "Gray",    0x808080 },
-    { "Green",   0x008000 },
-    { "Lime",    0x00FF00 },
-    { "Maroon",  0x800000 },
-    { "Navy",    0x000080 },
-    { "Olive",   0x808000 },
-    { "Purple",  0x800080 },
-    { "Red",     0xFF0000 },
-    { "Silver",  0xC0C0C0 },
-    { "Teal",    0x008080 },
-    { "White",   0xFFFFFF },
-    { "Yellow",  0xFFFF00 },
+/**
+ * This function will create a ruby section for a text_segment
+ *
+ */
+VLC_API text_segment_ruby_t *text_segment_ruby_New( const char *psz_base,
+                                                    const char *psz_rt );
 
-    /* Common ones */
-    { "AliceBlue", 0xF0F8FF },
-    { "AntiqueWhite", 0xFAEBD7 },
-    { "Aqua", 0x00FFFF },
-    { "Aquamarine", 0x7FFFD4 },
-    { "Azure", 0xF0FFFF },
-    { "Beige", 0xF5F5DC },
-    { "Bisque", 0xFFE4C4 },
-    { "Black", 0x000000 },
-    { "BlanchedAlmond", 0xFFEBCD },
-    { "Blue", 0x0000FF },
-    { "BlueViolet", 0x8A2BE2 },
-    { "Brown", 0xA52A2A },
-    { "BurlyWood", 0xDEB887 },
-    { "CadetBlue", 0x5F9EA0 },
-    { "Chartreuse", 0x7FFF00 },
-    { "Chocolate", 0xD2691E },
-    { "Coral", 0xFF7F50 },
-    { "CornflowerBlue", 0x6495ED },
-    { "Cornsilk", 0xFFF8DC },
-    { "Crimson", 0xDC143C },
-    { "Cyan", 0x00FFFF },
-    { "DarkBlue", 0x00008B },
-    { "DarkCyan", 0x008B8B },
-    { "DarkGoldenRod", 0xB8860B },
-    { "DarkGray", 0xA9A9A9 },
-    { "DarkGrey", 0xA9A9A9 },
-    { "DarkGreen", 0x006400 },
-    { "DarkKhaki", 0xBDB76B },
-    { "DarkMagenta", 0x8B008B },
-    { "DarkOliveGreen", 0x556B2F },
-    { "Darkorange", 0xFF8C00 },
-    { "DarkOrchid", 0x9932CC },
-    { "DarkRed", 0x8B0000 },
-    { "DarkSalmon", 0xE9967A },
-    { "DarkSeaGreen", 0x8FBC8F },
-    { "DarkSlateBlue", 0x483D8B },
-    { "DarkSlateGray", 0x2F4F4F },
-    { "DarkSlateGrey", 0x2F4F4F },
-    { "DarkTurquoise", 0x00CED1 },
-    { "DarkViolet", 0x9400D3 },
-    { "DeepPink", 0xFF1493 },
-    { "DeepSkyBlue", 0x00BFFF },
-    { "DimGray", 0x696969 },
-    { "DimGrey", 0x696969 },
-    { "DodgerBlue", 0x1E90FF },
-    { "FireBrick", 0xB22222 },
-    { "FloralWhite", 0xFFFAF0 },
-    { "ForestGreen", 0x228B22 },
-    { "Fuchsia", 0xFF00FF },
-    { "Gainsboro", 0xDCDCDC },
-    { "GhostWhite", 0xF8F8FF },
-    { "Gold", 0xFFD700 },
-    { "GoldenRod", 0xDAA520 },
-    { "Gray", 0x808080 },
-    { "Grey", 0x808080 },
-    { "Green", 0x008000 },
-    { "GreenYellow", 0xADFF2F },
-    { "HoneyDew", 0xF0FFF0 },
-    { "HotPink", 0xFF69B4 },
-    { "IndianRed", 0xCD5C5C },
-    { "Indigo", 0x4B0082 },
-    { "Ivory", 0xFFFFF0 },
-    { "Khaki", 0xF0E68C },
-    { "Lavender", 0xE6E6FA },
-    { "LavenderBlush", 0xFFF0F5 },
-    { "LawnGreen", 0x7CFC00 },
-    { "LemonChiffon", 0xFFFACD },
-    { "LightBlue", 0xADD8E6 },
-    { "LightCoral", 0xF08080 },
-    { "LightCyan", 0xE0FFFF },
-    { "LightGoldenRodYellow", 0xFAFAD2 },
-    { "LightGray", 0xD3D3D3 },
-    { "LightGrey", 0xD3D3D3 },
-    { "LightGreen", 0x90EE90 },
-    { "LightPink", 0xFFB6C1 },
-    { "LightSalmon", 0xFFA07A },
-    { "LightSeaGreen", 0x20B2AA },
-    { "LightSkyBlue", 0x87CEFA },
-    { "LightSlateGray", 0x778899 },
-    { "LightSlateGrey", 0x778899 },
-    { "LightSteelBlue", 0xB0C4DE },
-    { "LightYellow", 0xFFFFE0 },
-    { "Lime", 0x00FF00 },
-    { "LimeGreen", 0x32CD32 },
-    { "Linen", 0xFAF0E6 },
-    { "Magenta", 0xFF00FF },
-    { "Maroon", 0x800000 },
-    { "MediumAquaMarine", 0x66CDAA },
-    { "MediumBlue", 0x0000CD },
-    { "MediumOrchid", 0xBA55D3 },
-    { "MediumPurple", 0x9370D8 },
-    { "MediumSeaGreen", 0x3CB371 },
-    { "MediumSlateBlue", 0x7B68EE },
-    { "MediumSpringGreen", 0x00FA9A },
-    { "MediumTurquoise", 0x48D1CC },
-    { "MediumVioletRed", 0xC71585 },
-    { "MidnightBlue", 0x191970 },
-    { "MintCream", 0xF5FFFA },
-    { "MistyRose", 0xFFE4E1 },
-    { "Moccasin", 0xFFE4B5 },
-    { "NavajoWhite", 0xFFDEAD },
-    { "Navy", 0x000080 },
-    { "OldLace", 0xFDF5E6 },
-    { "Olive", 0x808000 },
-    { "OliveDrab", 0x6B8E23 },
-    { "Orange", 0xFFA500 },
-    { "OrangeRed", 0xFF4500 },
-    { "Orchid", 0xDA70D6 },
-    { "PaleGoldenRod", 0xEEE8AA },
-    { "PaleGreen", 0x98FB98 },
-    { "PaleTurquoise", 0xAFEEEE },
-    { "PaleVioletRed", 0xD87093 },
-    { "PapayaWhip", 0xFFEFD5 },
-    { "PeachPuff", 0xFFDAB9 },
-    { "Peru", 0xCD853F },
-    { "Pink", 0xFFC0CB },
-    { "Plum", 0xDDA0DD },
-    { "PowderBlue", 0xB0E0E6 },
-    { "Purple", 0x800080 },
-    { "RebeccaPurple", 0x663399 },
-    { "Red", 0xFF0000 },
-    { "RosyBrown", 0xBC8F8F },
-    { "RoyalBlue", 0x4169E1 },
-    { "SaddleBrown", 0x8B4513 },
-    { "Salmon", 0xFA8072 },
-    { "SandyBrown", 0xF4A460 },
-    { "SeaGreen", 0x2E8B57 },
-    { "SeaShell", 0xFFF5EE },
-    { "Sienna", 0xA0522D },
-    { "Silver", 0xC0C0C0 },
-    { "SkyBlue", 0x87CEEB },
-    { "SlateBlue", 0x6A5ACD },
-    { "SlateGray", 0x708090 },
-    { "SlateGrey", 0x708090 },
-    { "Snow", 0xFFFAFA },
-    { "SpringGreen", 0x00FF7F },
-    { "SteelBlue", 0x4682B4 },
-    { "Tan", 0xD2B48C },
-    { "Teal", 0x008080 },
-    { "Thistle", 0xD8BFD8 },
-    { "Tomato", 0xFF6347 },
-    { "Turquoise", 0x40E0D0 },
-    { "Violet", 0xEE82EE },
-    { "Wheat", 0xF5DEB3 },
-    { "White", 0xFFFFFF },
-    { "WhiteSmoke", 0xF5F5F5 },
-    { "Yellow", 0xFFFF00 },
-    { "YellowGreen", 0x9ACD32 },
+/**
+ * Deletes a ruby sections chain
+ */
+VLC_API void text_segment_ruby_ChainDelete( text_segment_ruby_t *p_ruby );
 
-    { NULL, 0 }
-};
+/**
+ * This function creates a text segment from a ruby section,
+ * and creates fallback string.
+ */
+VLC_API text_segment_t *text_segment_FromRuby( text_segment_ruby_t *p_ruby );
 
 /**
  * Returns an integer representation of an HTML color.
  *
  * @param psz_value An HTML color, which can be either:
  *  - A standard HTML color (red, cyan, ...) as defined in p_html_colors
- *  - An hexadecimal color, of the form [#][AA]RRGGBB
+ *  - An hexadecimal color, of the form [#]RRGGBB[AA]
+ *  - A decimal-based color, of the form rgb(RRR,GGG,BBB) or rgba(RRR,GGG,BBB,AAA)
  * @param ok If non-null, true will be stored in this pointer to signal
  *           a successful conversion
  */
@@ -401,4 +257,3 @@ VLC_API unsigned int vlc_html_color( const char *psz_value, bool* ok );
 #endif
 
 #endif /* VLC_TEXT_STYLE_H */
-

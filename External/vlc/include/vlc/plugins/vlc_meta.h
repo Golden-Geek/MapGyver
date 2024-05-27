@@ -2,7 +2,6 @@
  * vlc_meta.h: Stream meta-data
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: d390d0bc4df47994d296c5720d1869c458b16cb5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -77,7 +76,15 @@ VLC_API void vlc_meta_Delete( vlc_meta_t *m );
 VLC_API void vlc_meta_Set( vlc_meta_t *p_meta, vlc_meta_type_t meta_type, const char *psz_val );
 VLC_API const char * vlc_meta_Get( const vlc_meta_t *p_meta, vlc_meta_type_t meta_type );
 
-VLC_API void vlc_meta_AddExtra( vlc_meta_t *m, const char *psz_name, const char *psz_value );
+/**
+ * set the meta extra
+ *
+ * \param m vlc_meta_t
+ * \param psz_name meta extra name (nonnullable)
+ * \param psz_value meta extra value (nullable)
+ *  Removed from meta extra if set to NULL
+ */
+VLC_API void vlc_meta_SetExtra( vlc_meta_t *m, const char *psz_name, const char *psz_value );
 VLC_API const char * vlc_meta_GetExtra( const vlc_meta_t *m, const char *psz_name );
 VLC_API unsigned vlc_meta_GetExtraCount( const vlc_meta_t *m );
 
@@ -92,6 +99,8 @@ VLC_API void vlc_meta_Merge( vlc_meta_t *dst, const vlc_meta_t *src );
 VLC_API int vlc_meta_GetStatus( vlc_meta_t *m );
 VLC_API void vlc_meta_SetStatus( vlc_meta_t *m, int status );
 
+VLC_API const char *vlc_meta_TypeToString(vlc_meta_type_t meta_type);
+
 /**
  * Returns a localizes string describing the meta
  */
@@ -99,7 +108,7 @@ VLC_API const char * vlc_meta_TypeToLocalizedString( vlc_meta_type_t meta_type )
 
 typedef struct meta_export_t
 {
-    VLC_COMMON_MEMBERS
+    struct vlc_object_t obj;
     input_item_t *p_item;
     const char *psz_file;
 } meta_export_t;

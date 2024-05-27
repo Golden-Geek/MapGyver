@@ -48,7 +48,7 @@ extern "C" {
  **/
 
 typedef struct stream_extractor_t {
-    VLC_COMMON_MEMBERS
+    struct vlc_object_t obj;
 
     /**
      * \name Callbacks for entity extraction
@@ -64,6 +64,8 @@ typedef struct stream_extractor_t {
     int      (*pf_control)(struct stream_extractor_t*, int request, va_list args);
     /** @} */
 
+    char ** volumes;
+    size_t volumes_count;
     char const* identifier; /**< the name of the entity to be extracted */
     stream_t* source; /**< the source stream to be consumed */
     void* p_sys;      /**< private opaque handle to be used by the module */
@@ -71,7 +73,7 @@ typedef struct stream_extractor_t {
 } stream_extractor_t;
 
 typedef struct stream_directory_t {
-    VLC_COMMON_MEMBERS
+    struct vlc_object_t obj;
 
     /**
      * \name Callbacks for stream directories
@@ -84,6 +86,8 @@ typedef struct stream_directory_t {
     int (*pf_readdir)(struct stream_directory_t*, input_item_node_t* );
     /** @} */
 
+    char ** volumes;
+    size_t volumes_count;
     stream_t* source; /**< the source stream to be consumed */
     void* p_sys; /**< private opaque handle to be used by the module */
 
@@ -119,15 +123,18 @@ VLC_USED;
  * this function will only be invoked within `pf_readdir` in order to
  * get the virtual path of the listed items.
  *
- * \warning the returned value is to be freed by the caller
+ * \warning The returned value is to be freed by the caller
  *
  * \param extractor the stream_directory_t for which the entity belongs
  * \param subentry the name of the entity in question
+ * \param volumes media additional volumes MRLs
+ * \param volumes_count number of additional volumes
  *
  * \return a pointer to the resulting MRL on success, NULL on failure
  **/
-VLC_API char* vlc_stream_extractor_CreateMRL( stream_directory_t*,
-                                              char const* subentry );
+VLC_API char* vlc_stream_extractor_CreateMRL( stream_directory_t *extractor,
+                                              char const* subentry,
+                                              char const **volumes, size_t volumes_count );
 
 /**
  * \name Attach a stream-extractor to the passed stream
@@ -143,6 +150,8 @@ VLC_API char* vlc_stream_extractor_CreateMRL( stream_directory_t*,
  * \param identifier (if present) NULL or a c-style string referring to the
  *                   desired entity
  * \param module_name NULL or an explicit stream-extractor module name
+ * \param volumes media additional volumes MRLs
+ * \param volumes_count number of additional volumes
  *
  * \return VLC_SUCCESS if a stream-extractor was successfully
  *         attached, an error-code on failure.
@@ -151,11 +160,13 @@ VLC_API char* vlc_stream_extractor_CreateMRL( stream_directory_t*,
  **/
 
 VLC_API int vlc_stream_extractor_Attach( stream_t** source,
-                                         char const* identifier,
-                                         char const* module_name );
+                                        char const* identifier,
+                                        char const* module_name,
+                                        const char **volumes, size_t volumes_count );
 
 VLC_API int vlc_stream_directory_Attach( stream_t** source,
-                                         char const* module_name );
+                                        char const* module_name,
+                                        const char **volumes, size_t volumes_count );
 /**
  * @}
  */

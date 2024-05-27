@@ -3,7 +3,6 @@
  *****************************************************************************
  * Copyright (C) 2002-2005 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 010454a01c09730b342d9603d2dc1770361057d2 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -49,16 +48,17 @@
 #   ifndef IPV6_V6ONLY
 #       define IPV6_V6ONLY 27
 #   endif
+#   if !defined(SHUT_RDWR)
+#       define SHUT_RDWR (SD_BOTH)
+#       define SHUT_WR   (SD_SEND)
+#       define SHUT_RD   (SD_RECEIVE)
+#   endif
 #else
 #   include <sys/socket.h>
 #   include <netinet/in.h>
 #   include <netdb.h>
 #   define net_errno errno
 #   define net_Close(fd) ((void)vlc_close(fd))
-#endif
-
-#ifndef MSG_NOSIGNAL
-# define MSG_NOSIGNAL 0
 #endif
 
 /**
@@ -89,6 +89,7 @@ VLC_API int vlc_socket(int pf, int type, int proto, bool nonblock) VLC_USED;
  * @param pf protocol family
  * @param type socket type
  * @param proto network protocol
+ * @param fds the output array storing the file descriptor pair
  * @param nonblock true to create non-blocking sockets
  * @retval 0 on success
  * @retval -1 on failure
@@ -114,6 +115,60 @@ struct sockaddr;
 VLC_API int vlc_accept(int lfd, struct sockaddr *addr, socklen_t *alen,
                        bool nonblock) VLC_USED;
 
+/**
+ * Sends data.
+ *
+ * Like @c send(), this function sends raw data to the peer of a
+ * connection-mode socket, or to the predefined peer of a connection-less
+ * socket.
+ * Unlike @c send(), this function never triggers a signal; if the peer hung
+ * up, it returns an error.
+ *
+ * @param fd socket to send data through
+ * @param buf start address of data
+ * @param buflen byte size of data
+ * @param flags socket send flags (see @c send() documentation)
+ * @return number of bytes actually sent, or -1 on error (@c errno is set)
+ */
+VLC_API ssize_t vlc_send(int fd, const void *buf, size_t buflen, int flags);
+
+/**
+ * Sends data to a peer.
+ *
+ * This function operates like @c sendto() with the exception that it never
+ * triggers a signal.
+ *
+ * This function mainly exists for the sakes of completeness and consistency:
+ * - To send data on a connection-mode socket, using \ref vlc_send() is
+ *   simpler.
+ * - To send data on a connection-less socket, @c sendto() and/or @c send() can
+ *   be used directly.
+ *
+ * @param fd socket to send data through
+ * @param buf start address of data
+ * @param buflen byte size of data
+ * @param flags socket send flags (see @c send() documentation)
+ * @param dst destination address (ignored for connection-mode sockets)
+ * @param dstlen byte size of destination address
+ * @return number of bytes actually sent, or -1 on error (@c errno is set)
+ */
+VLC_API ssize_t vlc_sendto(int fd, const void *buf, size_t buflen, int flags,
+                           const struct sockaddr *dst, socklen_t dstlen);
+
+/**
+ * Sends a socket message.
+ *
+ * Like @c sendmsg(), this function sends a message through a socket.
+ * Unlike @c sendmsg(), this function never triggers a signal; if the peer hung
+ * up, it returns an error.
+ *
+ * @param fd socket to send data through
+ * @param msg message to send (see @c sendmsg() documentation)
+ * @param flags socket send flags (see @c sendmsg() documentation)
+ * @return number of bytes actually sent, or -1 on error (@c errno is set)
+ */
+VLC_API ssize_t vlc_sendmsg(int fd, const struct msghdr *msg, int flags);
+
 # ifdef __cplusplus
 extern "C" {
 # endif
@@ -124,64 +179,100 @@ int net_Socket (vlc_object_t *obj, int family, int socktype, int proto);
 VLC_API int net_Connect(vlc_object_t *p_this, const char *psz_host, int i_port, int socktype, int protocol);
 #define net_Connect(a, b, c, d, e) net_Connect(VLC_OBJECT(a), b, c, d, e)
 
-VLC_API int * net_Listen(vlc_object_t *p_this, const char *psz_host, int i_port, int socktype, int protocol);
+VLC_API int * net_Listen(vlc_object_t *p_this, const char *psz_host, unsigned i_port, int socktype, int protocol);
 
 #define net_ListenTCP(a, b, c) net_Listen(VLC_OBJECT(a), b, c, \
                                           SOCK_STREAM, IPPROTO_TCP)
 
-static inline int net_ConnectTCP (vlc_object_t *obj, const char *host, int port)
-{
-    return net_Connect (obj, host, port, SOCK_STREAM, IPPROTO_TCP);
-}
+VLC_API int net_ConnectTCP (vlc_object_t *obj, const char *host, int port);
 #define net_ConnectTCP(a, b, c) net_ConnectTCP(VLC_OBJECT(a), b, c)
 
-VLC_API int net_AcceptSingle(vlc_object_t *obj, int lfd);
-
-VLC_API int net_Accept( vlc_object_t *, int * );
+/**
+ * Accepts an new connection on a set of listening sockets.
+ *
+ * If there are no pending connections, this function will wait.
+ *
+ * @note If the thread needs to handle events other than incoming connections,
+ * you need to use poll() and net_AcceptSingle() instead.
+ *
+ * @deprecated This function exists for backward compatibility.
+ * Use vlc_accept() or vlc_accept_i11e() in new code.
+ *
+ * @param obj VLC object for logging and object kill signal
+ * @param fds listening socket set
+ * @return -1 on error (may be transient error due to network issues),
+ * a new socket descriptor on success.
+ */
+VLC_API int net_Accept(vlc_object_t *obj, int *fds);
 #define net_Accept(a, b) \
         net_Accept(VLC_OBJECT(a), b)
 
-VLC_API int net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port, int hlim, int proto );
+VLC_API int net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, unsigned i_port, int hlim, int proto );
 #define net_ConnectDgram(a, b, c, d, e ) \
         net_ConnectDgram(VLC_OBJECT(a), b, c, d, e)
 
-static inline int net_ConnectUDP (vlc_object_t *obj, const char *host, int port, int hlim)
+static inline int net_ConnectUDP (vlc_object_t *obj, const char *host, unsigned port, int hlim)
 {
     return net_ConnectDgram (obj, host, port, hlim, IPPROTO_UDP);
 }
 
-VLC_API int net_OpenDgram( vlc_object_t *p_this, const char *psz_bind, int i_bind, const char *psz_server, int i_server, int proto );
+VLC_API int net_OpenDgram( vlc_object_t *p_this, const char *psz_bind, unsigned i_bind, const char *psz_server, unsigned i_server, int proto );
 #define net_OpenDgram( a, b, c, d, e, g ) \
         net_OpenDgram(VLC_OBJECT(a), b, c, d, e, g)
 
-static inline int net_ListenUDP1 (vlc_object_t *obj, const char *host, int port)
+static inline int net_ListenUDP1 (vlc_object_t *obj, const char *host, unsigned port)
 {
     return net_OpenDgram (obj, host, port, NULL, 0, IPPROTO_UDP);
 }
 
 VLC_API void net_ListenClose( int *fd );
 
-int net_Subscribe (vlc_object_t *obj, int fd, const struct sockaddr *addr,
-                   socklen_t addrlen);
-
 VLC_API int net_SetCSCov( int fd, int sendcov, int recvcov );
 
+/**
+ * Reads data from a socket.
+ *
+ * This blocks until all requested data is received
+ * or the end of the stream is reached.
+ *
+ * This function is a cancellation point.
+ * @return -1 on error, or the number of bytes of read.
+ */
 VLC_API ssize_t net_Read( vlc_object_t *p_this, int fd, void *p_data, size_t i_data );
 #define net_Read(a,b,c,d) net_Read(VLC_OBJECT(a),b,c,d)
+
+/**
+ * Writes data to a socket.
+ *
+ * This blocks until all data is written or an error occurs.
+ *
+ * This function is a cancellation point.
+ *
+ * @return the total number of bytes written, or -1 if an error occurs
+ * before any data is written.
+ */
 VLC_API ssize_t net_Write( vlc_object_t *p_this, int fd, const void *p_data, size_t i_data );
 #define net_Write(a,b,c,d) net_Write(VLC_OBJECT(a),b,c,d)
-VLC_API char * net_Gets( vlc_object_t *p_this, int fd );
-#define net_Gets(a,b) net_Gets(VLC_OBJECT(a),b)
-
-
-VLC_API ssize_t net_Printf( vlc_object_t *p_this, int fd, const char *psz_fmt, ... ) VLC_FORMAT( 3, 4 );
-#define net_Printf(o,fd,...) net_Printf(VLC_OBJECT(o),fd, __VA_ARGS__)
-VLC_API ssize_t net_vaPrintf( vlc_object_t *p_this, int fd, const char *psz_fmt, va_list args );
-#define net_vaPrintf(a,b,c,d) net_vaPrintf(VLC_OBJECT(a),b,c,d)
 
 VLC_API int vlc_close(int);
 
 /** @} */
+
+#ifdef _WIN32
+static inline int vlc_getsockopt(int s, int level, int name,
+                                 void *val, socklen_t *len)
+{
+    return getsockopt(s, level, name, (char *)val, len);
+}
+#define getsockopt vlc_getsockopt
+
+static inline int vlc_setsockopt(int s, int level, int name,
+                                 const void *val, socklen_t len)
+{
+    return setsockopt(s, level, name, (const char *)val, len);
+}
+#define setsockopt vlc_setsockopt
+#endif
 
 /* Portable network names/addresses resolution layer */
 
@@ -195,15 +286,28 @@ VLC_API int vlc_close(int);
 #endif
 
 #ifdef _WIN32
-# if !defined(WINAPI_FAMILY) || WINAPI_FAMILY != WINAPI_FAMILY_APP
+# if defined(UNICODE)
 #  undef gai_strerror
 #  define gai_strerror gai_strerrorA
 # endif
 #endif
 
 VLC_API int vlc_getnameinfo( const struct sockaddr *, int, char *, int, int *, int );
-VLC_API int vlc_getaddrinfo (const char *, unsigned,
-                             const struct addrinfo *, struct addrinfo **);
+
+/**
+ * Resolves a host name to a list of socket addresses (like getaddrinfo()).
+ *
+ * @param node host name to resolve (encoded as UTF-8), or NULL
+ * @param i_port port number for the socket addresses
+ * @param p_hints parameters (see getaddrinfo() manual page)
+ * @param res pointer set to the resulting chained list.
+ * @return 0 on success, a getaddrinfo() error otherwise.
+ * On failure, *res is undefined. On success, it must be freed with
+ * freeaddrinfo().
+ */
+VLC_API int vlc_getaddrinfo (const char *node, unsigned i_port,
+                             const struct addrinfo *p_hints,
+                             struct addrinfo **res);
 VLC_API int vlc_getaddrinfo_i11e(const char *, unsigned,
                                  const struct addrinfo *, struct addrinfo **);
 
@@ -259,35 +363,11 @@ static inline int net_GetPeerAddress( int fd, char *address, int *port )
         ? VLC_EGENERIC : 0;
 }
 
-static inline uint16_t net_GetPort (const struct sockaddr *addr)
-{
-    switch (addr->sa_family)
-    {
-#ifdef AF_INET6
-        case AF_INET6:
-            return ((const struct sockaddr_in6 *)addr)->sin6_port;
-#endif
-        case AF_INET:
-            return ((const struct sockaddr_in *)addr)->sin_port;
-    }
-    return 0;
-}
-
-static inline void net_SetPort (struct sockaddr *addr, uint16_t port)
-{
-    switch (addr->sa_family)
-    {
-#ifdef AF_INET6
-        case AF_INET6:
-            ((struct sockaddr_in6 *)addr)->sin6_port = port;
-        break;
-#endif
-        case AF_INET:
-            ((struct sockaddr_in *)addr)->sin_port = port;
-        break;
-    }
-}
-
+/**
+ * Determines the network proxy server to use (if any).
+ * @param url absolute URL for which to get the proxy server
+ * @return proxy URL, NULL if no proxy or error
+ */
 VLC_API char *vlc_getProxyUrl(const char *);
 
 # ifdef __cplusplus

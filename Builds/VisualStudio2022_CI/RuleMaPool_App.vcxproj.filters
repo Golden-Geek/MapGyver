@@ -53,9 +53,6 @@
     <Filter Include="RuleMaPool\Source\Media\medias\sharedtexture">
       <UniqueIdentifier>{DDF1B8DA-701E-739E-F091-E3A18539D364}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RuleMaPool\Source\Media\medias\video\vlcpp">
-      <UniqueIdentifier>{F359C679-A73F-A070-87D2-5E5AB3D4D159}</UniqueIdentifier>
-    </Filter>
     <Filter Include="RuleMaPool\Source\Media\medias\video">
       <UniqueIdentifier>{6B32756D-B47C-2C83-E94C-B0314124CBC3}</UniqueIdentifier>
     </Filter>
@@ -4853,54 +4850,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.h">
       <Filter>RuleMaPool\Source\Media\medias\sharedtexture</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\common.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Dialog.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Equalizer.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\EventManager.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Instance.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Internal.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Media.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\MediaDiscoverer.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\MediaLibrary.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\MediaList.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\MediaListPlayer.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\MediaPlayer.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\Picture.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\RendererDiscoverer.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\structures.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\video\vlcpp\vlc.hpp">
-      <Filter>RuleMaPool\Source\Media\medias\video\vlcpp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoMedia.h">
       <Filter>RuleMaPool\Source\Media\medias\video</Filter>

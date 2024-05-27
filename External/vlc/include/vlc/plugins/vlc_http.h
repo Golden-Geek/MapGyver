@@ -2,7 +2,6 @@
  * vlc_http.h: Shared code for HTTP clients
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: a48ea794963ad476fc059eb3ffcf787186b78b47 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -79,6 +78,8 @@ VLC_API void vlc_http_cookies_destroy( vlc_http_cookie_jar_t * p_jar );
  *
  * @param jar cookie jar object
  * @param cookie header field value of Set-Cookie
+ * @param host the hostname to store the cookie for
+ * @param path the name of the cookie to store
  * @return true, if the cookie was added, false otherwise
  */
 VLC_API bool vlc_http_cookies_store( vlc_http_cookie_jar_t *jar,
@@ -87,8 +88,10 @@ VLC_API bool vlc_http_cookies_store( vlc_http_cookie_jar_t *jar,
 /**
  * Returns a cookie value that match the given URL.
  *
- * @param p_jar a cookie jar
- * @param p_url the URL for which the cookies are returned
+ * @param jar a cookie jar
+ * @param secure whether a secure connection will be used or not
+ * @param host the hostname for which the cookie was stored
+ * @param path the cookie name to fetch
  * @return A string consisting of semicolon-separated cookie NAME=VALUE pairs.
  */
 VLC_API char *vlc_http_cookies_fetch( vlc_http_cookie_jar_t *jar, bool secure,

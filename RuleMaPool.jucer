@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="DMftGm" name="RuleMaPool" projectType="guiapp" useAppConfig="1"
-              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/vlc/include&#10;../../External/NDI/include&#10;../../External/servus/include"
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/vlc/include4&#10;../../EXternal/vlc/vlcpp&#10;../../External/NDI/include&#10;../../External/servus/include&#10;"
               defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" companyWebsite="https://benjamin.kuperberg.fr/rulemapool"
               companyName="GoldenGeek" bundleIdentifier="com.goldengeek.rulemapool"
               displaySplashScreen="1" version="1.0.0">
@@ -158,29 +158,6 @@
                   file="Source/Media/medias/sharedtexture/SharedTextureMedia.h"/>
           </GROUP>
           <GROUP id="{789B912B-C9EF-806B-BBB4-78AE0DD44723}" name="video">
-            <GROUP id="{9D414D54-55FD-3F32-B9A7-89C67E1127A7}" name="vlcpp">
-              <FILE id="WQyaU2" name="common.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/common.hpp"/>
-              <FILE id="Dwhrri" name="Dialog.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Dialog.hpp"/>
-              <FILE id="yKWcW1" name="Equalizer.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Equalizer.hpp"/>
-              <FILE id="TpDs3i" name="EventManager.hpp" compile="0" resource="0"
-                    file="Source/Media/medias/video/vlcpp/EventManager.hpp"/>
-              <FILE id="wuezPZ" name="Instance.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Instance.hpp"/>
-              <FILE id="N9aTjF" name="Internal.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Internal.hpp"/>
-              <FILE id="TJzQjd" name="Media.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Media.hpp"/>
-              <FILE id="STki3X" name="MediaDiscoverer.hpp" compile="0" resource="0"
-                    file="Source/Media/medias/video/vlcpp/MediaDiscoverer.hpp"/>
-              <FILE id="BzOtc5" name="MediaLibrary.hpp" compile="0" resource="0"
-                    file="Source/Media/medias/video/vlcpp/MediaLibrary.hpp"/>
-              <FILE id="JuQxnw" name="MediaList.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/MediaList.hpp"/>
-              <FILE id="CNF6ax" name="MediaListPlayer.hpp" compile="0" resource="0"
-                    file="Source/Media/medias/video/vlcpp/MediaListPlayer.hpp"/>
-              <FILE id="paLijP" name="MediaPlayer.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/MediaPlayer.hpp"/>
-              <FILE id="So2tTO" name="Picture.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/Picture.hpp"/>
-              <FILE id="ugm3ig" name="RendererDiscoverer.hpp" compile="0" resource="0"
-                    file="Source/Media/medias/video/vlcpp/RendererDiscoverer.hpp"/>
-              <FILE id="ewqOtR" name="structures.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/structures.hpp"/>
-              <FILE id="z5YQqQ" name="vlc.hpp" compile="0" resource="0" file="Source/Media/medias/video/vlcpp/vlc.hpp"/>
-            </GROUP>
             <FILE id="J1IVz4" name="VideoMedia.cpp" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.cpp"/>
             <FILE id="HIszRg" name="VideoMedia.h" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.h"/>
           </GROUP>
@@ -384,10 +361,10 @@
             extraCompilerFlags="/bigobj">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;"
+                       libraryPath="../../External/vlc/lib&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;"
                        binaryPath="Binaries/Debug"/>
         <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;"
+                       libraryPath="../../External/vlc/lib&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;"
                        binaryPath="Binaries/Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -416,7 +393,7 @@
             bigIcon="AKcEsb" extraCompilerFlags="/bigobj" externalLibraries="libvlc.lib&#10;libvlccore.lib&#10;Servus.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;"
+                       libraryPath="../../External/vlc/lib&#10;../../External/NDI/lib/x86&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;"
                        binaryPath="Binaries/CI"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -450,7 +427,7 @@
                        libraryPath="../../External/servus/lib/osx/release&#10;../../External/vlc/lib/osx&#10;../../External/NDI/lib/osx"
                        macOSDeploymentTarget="10.10" osxCompatibility="10.10 SDK"/>
         <CONFIGURATION isDebug="0" name="ReleaseSilicon" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/servus/lib/silicon/release&#10;../../External/vlc/lib/osx&#10;../../External/NDI/lib/osx"
+                       libraryPath="../../External/servus/lib/silicon/release&#10;../../External/vlc/lib&#10;../../External/NDI/lib/osx"
                        macOSDeploymentTarget="10.10" osxCompatibility="10.10 SDK"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

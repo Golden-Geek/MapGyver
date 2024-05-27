@@ -26,199 +26,116 @@
  * Atomic operations do not require locking, but they are not very powerful.
  */
 
-/* Clang older versions support atomics but lacks the stdatomic.h header */
-#if defined(__clang__)
-# if !defined(__has_include) || !__has_include(<stdatomic.h>)
-#  define __STDC_NO_ATOMICS__ 1
-# endif
+# include <assert.h>
+#ifndef __cplusplus
+# include <stdatomic.h>
+#else
+# include <atomic>
+using std::atomic_uintptr_t;
+using std::memory_order_relaxed;
+using std::memory_order_acq_rel;
 #endif
+# include <vlc_common.h>
+# include <vlc_tick.h>
 
-# ifndef __cplusplus
-#  if !defined (__STDC_NO_ATOMICS__)
-/*** Native C11 atomics ***/
-#   include <stdatomic.h>
+#include <time.h> /* vlc_atomic_timedwait_daytime */
 
-#  else
-/*** Intel/GCC atomics ***/
-
-#  define ATOMIC_FLAG_INIT false
-
-#  define ATOMIC_VAR_INIT(value) (value)
-
-#  define atomic_init(obj, value) \
-    do { *(obj) = (value); } while(0)
-
-#  define kill_dependency(y) \
-    ((void)0)
-
-#  define atomic_thread_fence(order) \
-    __sync_synchronize()
-
-#  define atomic_signal_fence(order) \
-    ((void)0)
-
-#  define atomic_is_lock_free(obj) \
-    false
-
-typedef          bool      atomic_flag;
-typedef          bool      atomic_bool;
-typedef          char      atomic_char;
-typedef   signed char      atomic_schar;
-typedef unsigned char      atomic_uchar;
-typedef          short     atomic_short;
-typedef unsigned short     atomic_ushort;
-typedef          int       atomic_int;
-typedef unsigned int       atomic_uint;
-typedef          long      atomic_long;
-typedef unsigned long      atomic_ulong;
-typedef          long long atomic_llong;
-typedef unsigned long long atomic_ullong;
-//typedef          char16_t  atomic_char16_t;
-//typedef          char32_t  atomic_char32_t;
-typedef          wchar_t   atomic_wchar_t;
-typedef       int_least8_t atomic_int_least8_t;
-typedef      uint_least8_t atomic_uint_least8_t;
-typedef      int_least16_t atomic_int_least16_t;
-typedef     uint_least16_t atomic_uint_least16_t;
-typedef      int_least32_t atomic_int_least32_t;
-typedef     uint_least32_t atomic_uint_least32_t;
-typedef      int_least64_t atomic_int_least64_t;
-typedef     uint_least64_t atomic_uint_least64_t;
-typedef       int_fast8_t atomic_int_fast8_t;
-typedef      uint_fast8_t atomic_uint_fast8_t;
-typedef      int_fast16_t atomic_int_fast16_t;
-typedef     uint_fast16_t atomic_uint_fast16_t;
-typedef      int_fast32_t atomic_int_fast32_t;
-typedef     uint_fast32_t atomic_uint_fast32_t;
-typedef      int_fast64_t atomic_int_fast64_t;
-typedef     uint_fast64_t atomic_uint_fast64_t;
-typedef          intptr_t atomic_intptr_t;
-typedef         uintptr_t atomic_uintptr_t;
-typedef            size_t atomic_size_t;
-typedef         ptrdiff_t atomic_ptrdiff_t;
-typedef          intmax_t atomic_intmax_t;
-typedef         uintmax_t atomic_uintmax_t;
-
-#  define atomic_store(object,desired) \
-    do { \
-        *(object) = (desired); \
-        __sync_synchronize(); \
-    } while (0)
-
-#  define atomic_store_explicit(object,desired,order) \
-    atomic_store(object,desired)
-
-#  define atomic_load(object) \
-    (__sync_synchronize(), *(object))
-
-#  define atomic_load_explicit(object,order) \
-    atomic_load(object)
-
-#  define atomic_exchange(object,desired) \
-({  \
-    typeof (object) _obj = (object); \
-    typeof (*object) _old; \
-    do \
-        _old = atomic_load(_obj); \
-    while (!__sync_bool_compare_and_swap(_obj, _old, (desired))); \
-    _old; \
-})
-
-#  define atomic_exchange_explicit(object,desired,order) \
-    atomic_exchange(object,desired)
-
-#  define atomic_compare_exchange(object,expected,desired) \
-({  \
-    typeof (object) _exp = (expected); \
-    typeof (*object) _old = *_exp; \
-    *_exp = __sync_val_compare_and_swap((object), _old, (desired)); \
-    *_exp == _old; \
-})
-
-#  define atomic_compare_exchange_strong(object,expected,desired) \
-    atomic_compare_exchange(object, expected, desired)
-
-#  define atomic_compare_exchange_strong_explicit(object,expected,desired,order,order_different) \
-    atomic_compare_exchange_strong(object, expected, desired)
-
-#  define atomic_compare_exchange_weak(object,expected,desired) \
-    atomic_compare_exchange(object, expected, desired)
-
-#  define atomic_compare_exchange_weak_explicit(object,expected,desired,order_equal,order_different) \
-    atomic_compare_exchange_weak(object, expected, desired)
-
-#  define atomic_fetch_add(object,operand) \
-    __sync_fetch_and_add(object, operand)
-
-#  define atomic_fetch_add_explicit(object,operand,order) \
-    atomic_fetch_add(object,operand)
-
-#  define atomic_fetch_sub(object,operand) \
-    __sync_fetch_and_sub(object, operand)
-
-#  define atomic_fetch_sub_explicit(object,operand,order) \
-    atomic_fetch_sub(object,operand)
-
-#  define atomic_fetch_or(object,operand) \
-    __sync_fetch_and_or(object, operand)
-
-#  define atomic_fetch_or_explicit(object,operand,order) \
-    atomic_fetch_or(object,operand)
-
-#  define atomic_fetch_xor(object,operand) \
-    __sync_fetch_and_sub(object, operand)
-
-#  define atomic_fetch_xor_explicit(object,operand,order) \
-    atomic_fetch_sub(object,operand)
-
-#  define atomic_fetch_and(object,operand) \
-    __sync_fetch_and_and(object, operand)
-
-#  define atomic_fetch_and_explicit(object,operand,order) \
-    atomic_fetch_and(object,operand)
-
-#  define atomic_flag_test_and_set(object) \
-    atomic_exchange(object, true)
-
-#  define atomic_flag_test_and_set_explicit(object,order) \
-    atomic_flag_test_and_set(object)
-
-#  define atomic_flag_clear(object) \
-    atomic_store(object, false)
-
-#  define atomic_flag_clear_explicit(object,order) \
-    atomic_flag_clear(object)
-
-# endif /* !C11 */
-
-typedef atomic_uint_least32_t vlc_atomic_float;
-
-static inline void vlc_atomic_init_float(vlc_atomic_float *var, float f)
-{
-    union { float f; uint32_t i; } u;
-    u.f = f;
-    atomic_init(var, u.i);
+#define VLC_STATIC_RC { \
+    .refs = (uintptr_t) 1 \
 }
 
-/** Helper to retrieve a single precision from an atom. */
-static inline float vlc_atomic_load_float(vlc_atomic_float *atom)
+typedef struct vlc_atomic_rc_t {
+    atomic_uintptr_t refs;
+} vlc_atomic_rc_t;
+
+/** Init the RC to 1 */
+static inline void vlc_atomic_rc_init(vlc_atomic_rc_t *rc)
 {
-    union { float f; uint32_t i; } u;
-    u.i = atomic_load(atom);
-    return u.f;
+    atomic_init(&rc->refs, (uintptr_t)1);
 }
 
-/** Helper to store a single precision into an atom. */
-static inline void vlc_atomic_store_float(vlc_atomic_float *atom, float f)
+/** Increment the RC */
+static inline void vlc_atomic_rc_inc(vlc_atomic_rc_t *rc)
 {
-    union { float f; uint32_t i; } u;
-    u.f = f;
-    atomic_store(atom, u.i);
+    uintptr_t prev = atomic_fetch_add_explicit(&rc->refs, (uintptr_t)1,
+                                               memory_order_relaxed);
+    vlc_assert(prev);
+    VLC_UNUSED(prev);
 }
 
-# else /* C++ */
-/*** Native C++11 atomics ***/
-#   include <atomic>
-# endif /* C++ */
+/** Decrement the RC and return true if it reaches 0 */
+static inline bool vlc_atomic_rc_dec(vlc_atomic_rc_t *rc)
+{
+    uintptr_t prev = atomic_fetch_sub_explicit(&rc->refs, (uintptr_t)1,
+                                               memory_order_acq_rel);
+    vlc_assert(prev);
+    return prev == 1;
+}
+
+/** Returns the current reference count.
+ *  This is not safe to use for logic and must only be used for debugging or
+ *  assertion purposes */
+static inline uintptr_t vlc_atomic_rc_get(const vlc_atomic_rc_t* rc)
+{
+    return atomic_load_explicit(&rc->refs, memory_order_relaxed);
+}
+
+/**
+ * Waits on an address.
+ *
+ * Puts the calling thread to sleep if a specific unsigned 32-bits value is
+ * stored at a specified address. The thread will sleep until it is woken up by
+ * a call to vlc_atomic_notify_one() or vlc_atomic_notify_all() in another
+ * thread, or spuriously.
+ *
+ * If the value does not match, do nothing and return immediately.
+ *
+ * \param addr address to check for
+ * \param val value to match at the address
+ */
+VLC_API void vlc_atomic_wait(void *addr, unsigned val);
+
+/**
+ * Waits on an address with a time-out.
+ *
+ * This function operates as vlc_atomic_wait() but provides an additional
+ * time-out. If the deadline is reached, the thread resumes and the function
+ * returns.
+ *
+ * \param addr address to check for
+ * \param val value to match at the address
+ * \param deadline deadline to wait until
+ *
+ * \retval 0 the function was woken up before the time-out
+ * \retval ETIMEDOUT the deadline was reached
+ */
+VLC_API
+int vlc_atomic_timedwait(void *addr, unsigned val, vlc_tick_t deadline);
+
+int vlc_atomic_timedwait_daytime(void *addr, unsigned val, time_t deadline);
+
+/**
+ * Wakes up one thread on an address.
+ *
+ * Wakes up (at least) one of the thread sleeping on the specified address.
+ * The address must be equal to the first parameter given by at least one
+ * thread sleeping within the vlc_atomic_wait() or vlc_atomic_timedwait()
+ * functions. If no threads are found, this function does nothing.
+ *
+ * \param addr address identifying which threads may be woken up
+ */
+VLC_API void vlc_atomic_notify_one(void *addr);
+
+/**
+ * Wakes up all thread on an address.
+ *
+ * Wakes up all threads sleeping on the specified address (if any).
+ * Any thread sleeping within a call to vlc_atomic_wait() or
+ * vlc_atomic_timedwait() with the specified address as first call parameter
+ * will be woken up.
+ *
+ * \param addr address identifying which threads to wake up
+ */
+VLC_API void vlc_atomic_notify_all(void *addr);
 
 #endif

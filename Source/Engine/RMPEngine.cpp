@@ -32,8 +32,8 @@ RMPEngine::RMPEngine() :
 	GlobalSettings::getInstance()->altScaleFactor->setDefaultValue(0.05);
 
 	const char* argv[1] = { "-vvv" };
-	VLCInstance = libvlc_new(1, argv);
-	jassert(VLCInstance != nullptr);
+	vlcInstance.reset(new VLC::Instance(1, argv));
+	jassert(vlcInstance != nullptr);
 
 	addChildControllableContainer(MediaManager::getInstance());
 	addChildControllableContainer(ScreenManager::getInstance());
@@ -54,31 +54,6 @@ RMPEngine::~RMPEngine()
 
 	isClearing = true;
 
-#if JUCE_WINDOWS
-	//WindowsHooker::deleteInstance();
-#endif
-
-	// ZeroconfManager::deleteInstance();
-	// CommunityModuleManager::deleteInstance();
-	// ModuleRouterManager::deleteInstance();
-
-	// ChataigneSequenceManager::deleteInstance();
-	// StateManager::deleteInstance();
-	// ModuleManager::deleteInstance();
-
-	// MIDIManager::deleteInstance();
-	// DMXManager::deleteInstance();
-	// SerialManager::deleteInstance();
-	// WiimoteManager::deleteInstance();
-
-	// InputSystemManager::deleteInstance();
-	// StreamDeckManager::deleteInstance();
-
-	// ChataigneAssetManager::deleteInstance();
-
-	// CVGroupManager::deleteInstance();
-
-	// Guider::deleteInstance();
 	MediaManager::deleteInstance();
 	ScreenManager::deleteInstance();
 	NDIManager::deleteInstance();
@@ -87,20 +62,12 @@ RMPEngine::~RMPEngine()
 	MediaClipFactory::deleteInstance();
 	CompositionLayerFactory::deleteInstance();
 	NodeFactory::deleteInstance();
-
-    if(VLCInstance != nullptr) libvlc_release(VLCInstance);
-	VLCInstance = nullptr;
 }
 
 
 void RMPEngine::clearInternal()
 {
 	//clear
-	// StateManager::getInstance()->clear();
-	// ChataigneSequenceManager::getInstance()->clear();
-
-	// ModuleRouterManager::getInstance()->clear();
-	// ModuleManager::getInstance()->clear();
 	ScreenManager::getInstance()->clear();
 	MediaManager::getInstance()->clear();
 }
@@ -108,9 +75,6 @@ void RMPEngine::clearInternal()
 var RMPEngine::getJSONData()
 {
 	var data = Engine::getJSONData();
-
-	//var mData = ModuleManager::getInstance()->getJSONData();
-	//if (!mData.isVoid() && mData.getDynamicObject()->getProperties().size() > 0) data.getDynamicObject()->setProperty(ModuleManager::getInstance()->shortName, mData);
 
 	var MediaData = MediaManager::getInstance()->getJSONData();
 	if (!MediaData.isVoid() && MediaData.getDynamicObject()->getProperties().size() > 0) data.getDynamicObject()->setProperty(MediaManager::getInstance()->shortName, MediaData);
@@ -124,7 +88,6 @@ var RMPEngine::getJSONData()
 
 void RMPEngine::loadJSONDataInternalEngine(var data, ProgressTask* loadingTask)
 {
-	//ProgressTask* moduleTask = loadingTask->addTask("Modules");
 	ProgressTask* ScreenTask = loadingTask->addTask("Screens");
 	ProgressTask* MediaTask = loadingTask->addTask("Medias");
 

@@ -40,8 +40,8 @@
 
 /* All timestamp below or equal to this define are invalid/unset
  * XXX the numerical value is 0 because of historical reason and will change.*/
-#define VLC_TS_INVALID INT64_C(0)
-#define VLC_TS_0 INT64_C(1)
+#define VLC_TICK_INVALID INT64_C(0)
+#define VLC_TICK_0 INT64_C(1)
 
 #define CLOCK_FREQ INT64_C(1000000)
 
@@ -50,14 +50,14 @@
  *****************************************************************************/
 
 /* Base delay in micro second for interface sleeps */
-#define INTF_IDLE_SLEEP                 (CLOCK_FREQ/20)
+#define INTF_IDLE_SLEEP                 VLC_TICK_FROM_MS(50)
 
 /*****************************************************************************
  * Input thread configuration
  *****************************************************************************/
 
 /* Used in ErrorThread */
-#define INPUT_IDLE_SLEEP                (CLOCK_FREQ/10)
+#define INPUT_IDLE_SLEEP                VLC_TICK_FROM_MS(100)
 
 /*
  * General limitations
@@ -65,15 +65,7 @@
 
 /* Duration between the time we receive the data packet, and the time we will
  * mark it to be presented */
-#define DEFAULT_PTS_DELAY               (3*CLOCK_FREQ/10)
-
-/*****************************************************************************
- * SPU configuration
- *****************************************************************************/
-
-/* Buffer must avoid arriving more than SPU_MAX_PREPARE_TIME in advanced to
- * the SPU */
-#define SPU_MAX_PREPARE_TIME            (CLOCK_FREQ/2)
+#define DEFAULT_PTS_DELAY               VLC_TICK_FROM_MS(300)
 
 /*****************************************************************************
  * Video configuration
@@ -101,14 +93,7 @@
  * It should be approximately the time needed to perform a complete picture
  * loop. Since it only happens when the video heap is full, it does not need
  * to be too low, even if it blocks the decoder. */
-#define VOUT_OUTMEM_SLEEP               (CLOCK_FREQ/50)
+#define VOUT_OUTMEM_SLEEP               VLC_TICK_FROM_MS(20)
 
 /* The default video output window title */
 #define VOUT_TITLE                      "VLC"
-
-/*****************************************************************************
- * Messages and console interfaces configuration
- *****************************************************************************/
-
-/* Maximal depth of the object tree output by vlc_dumpstructure */
-#define MAX_DUMPSTRUCTURE_DEPTH         100

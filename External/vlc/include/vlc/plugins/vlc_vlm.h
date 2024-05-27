@@ -2,7 +2,6 @@
  * vlc_vlm.h: VLM core structures
  *****************************************************************************
  * Copyright (C) 2000, 2001 VLC authors and VideoLAN
- * $Id: 88d4437cc1028468c0cadeaea32fa645769e2ee6 $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -26,9 +25,11 @@
 #define VLC_VLM_H 1
 
 #include <vlc_input.h>
+#include <vlc_arrays.h>
 
 /**
  * \defgroup server VLM
+ * \ingroup interface
  * VLC stream manager
  *
  * VLM is the server core in vlc that allows streaming of multiple media streams
@@ -55,15 +56,10 @@ typedef struct
 
     char *psz_output;   /*< */
 
-    bool b_vod;         /*< vlm_media_t is of type VOD */
     struct
     {
         bool b_loop;    /*< this vlc_media_t broadcast item should loop */
     } broadcast;        /*< Broadcast specific information */
-    struct
-    {
-        char *psz_mux;  /*< name of muxer to use */
-    } vod;              /*< VOD specific information */
 
 } vlm_media_t;
 
@@ -76,7 +72,7 @@ typedef struct
     int64_t     i_length;   /*< vlm media instance vlm media item length */
     double      d_position; /*< vlm media instance position in stream */
     bool        b_paused;   /*< vlm media instance is paused */
-    int         i_rate;     // normal is INPUT_RATE_DEFAULT
+    float       f_rate;     // normal is 1.0f
 } vlm_media_instance_t;
 
 #if 0
@@ -104,13 +100,23 @@ enum vlm_event_type_e
     VLM_EVENT_MEDIA_INSTANCE_STATE,
 };
 
+typedef enum vlm_state_e
+{
+    VLM_INIT_S = 0,
+    VLM_OPENING_S,
+    VLM_PLAYING_S,
+    VLM_PAUSE_S,
+    VLM_END_S,
+    VLM_ERROR_S,
+} vlm_state_e;
+
 typedef struct
 {
     int            i_type;            /* a vlm_event_type_e value */
     int64_t        id;                /* Media ID */
     const char    *psz_name;          /* Media name */
     const char    *psz_instance_name; /* Instance name or NULL */
-    input_state_e  input_state;       /* Input instance event type */
+    vlm_state_e    input_state;       /* Input instance event type */
 } vlm_event_t;
 
 /** VLM control query */
@@ -126,22 +132,20 @@ enum vlm_query_e
     VLM_ADD_MEDIA,                      /* arg1=vlm_media_t* arg2=int64_t *p_id         res=can fail */
     /* Delete an existing media */
     VLM_DEL_MEDIA,                      /* arg1=int64_t id */
-    /* Change properties of an existing media (all fields but id and b_vod) */
+    /* Change properties of an existing media (all fields but id) */
     VLM_CHANGE_MEDIA,                   /* arg1=vlm_media_t*                            res=can fail */
     /* Get 1 media by it's ID */
     VLM_GET_MEDIA,                      /* arg1=int64_t id arg2=vlm_media_t **  */
     /* Get media ID from its name */
     VLM_GET_MEDIA_ID,                   /* arg1=const char *psz_name arg2=int64_t*  */
 
-    /* Media instance control XXX VOD control are for internal use only */
+    /* Media instance control */
     /* Get all media instances */
     VLM_GET_MEDIA_INSTANCES,            /* arg1=int64_t id arg2=vlm_media_instance_t *** arg3=int *pi_instance */
     /* Delete all media instances */
     VLM_CLEAR_MEDIA_INSTANCES,          /* arg1=int64_t id */
     /* Control broadcast instance */
     VLM_START_MEDIA_BROADCAST_INSTANCE, /* arg1=int64_t id, arg2=const char *psz_instance_name, int i_input_index  res=can fail */
-    /* Control VOD instance */
-    VLM_START_MEDIA_VOD_INSTANCE,       /* arg1=int64_t id, arg2=const char *psz_instance_name, int i_input_index char *psz_vod_output res=can fail */
     /* Stop an instance */
     VLM_STOP_MEDIA_INSTANCE,            /* arg1=int64_t id, arg2=const char *psz_instance_name      res=can fail */
     /* Pause an instance */
@@ -183,8 +187,7 @@ struct vlm_message_t
 extern "C" {
 #endif
 
-VLC_API vlm_t * vlm_New( vlc_object_t * );
-#define vlm_New( a ) vlm_New( VLC_OBJECT(a) )
+VLC_API vlm_t * vlm_New( libvlc_int_t *, const char *path );
 VLC_API void vlm_Delete( vlm_t * );
 VLC_API int vlm_ExecuteCommand( vlm_t *, const char *, vlm_message_t ** );
 VLC_API int vlm_Control( vlm_t *p_vlm, int i_query, ... );
@@ -208,9 +211,7 @@ static inline void vlm_media_Init( vlm_media_t *p_media )
     TAB_INIT( p_media->i_input, p_media->ppsz_input );
     TAB_INIT( p_media->i_option, p_media->ppsz_option );
     p_media->psz_output = NULL;
-    p_media->b_vod = false;
 
-    p_media->vod.psz_mux = NULL;
     p_media->broadcast.b_loop = false;
 }
 
@@ -242,16 +243,7 @@ vlm_media_Copy( vlm_media_t *p_dst, const vlm_media_t *p_src )
     if( p_src->psz_output )
         p_dst->psz_output = strdup( p_src->psz_output );
 
-    p_dst->b_vod = p_src->b_vod;
-    if( p_src->b_vod )
-    {
-        if( p_src->vod.psz_mux )
-            p_dst->vod.psz_mux = strdup( p_src->vod.psz_mux );
-    }
-    else
-    {
-        p_dst->broadcast.b_loop = p_src->broadcast.b_loop;
-    }
+    p_dst->broadcast.b_loop = p_src->broadcast.b_loop;
 }
 
 /**
@@ -273,8 +265,6 @@ static inline void vlm_media_Clean( vlm_media_t *p_media )
     TAB_CLEAN(p_media->i_option, p_media->ppsz_option );
 
     free( p_media->psz_output );
-    if( p_media->b_vod )
-        free( p_media->vod.psz_mux );
 }
 
 /**
@@ -325,7 +315,7 @@ static inline void vlm_media_instance_Init( vlm_media_instance_t *p_instance )
     p_instance->i_length = 0;
     p_instance->d_position = 0.0;
     p_instance->b_paused = false;
-    p_instance->i_rate = INPUT_RATE_DEFAULT;
+    p_instance->f_rate = 1.0f;
 }
 
 /**

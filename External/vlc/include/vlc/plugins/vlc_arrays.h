@@ -2,7 +2,6 @@
  * vlc_arrays.h : Arrays and data structures handling
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 39b69952ffce040330da239f52778c3e82024bc4 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -25,6 +24,8 @@
 #ifndef VLC_ARRAYS_H_
 #define VLC_ARRAYS_H_
 
+#include <vlc_common.h>
+
 /**
  * \file
  * This file defines functions, structures and macros for handling arrays in vlc
@@ -35,6 +36,21 @@ static inline void *realloc_down( void *ptr, size_t size )
 {
     void *ret = realloc( ptr, size );
     return ret ? ret : ptr;
+}
+
+/**
+ * This wrapper around realloc() will free the input pointer when
+ * realloc() returns NULL. The use case ptr = realloc(ptr, newsize) will
+ * cause a memory leak when ptr pointed to a heap allocation before,
+ * leaving the buffer allocated but unreferenced. vlc_realloc() is a
+ * drop-in replacement for that use case (and only that use case).
+ */
+static inline void *realloc_or_free( void *p, size_t sz )
+{
+    void *n = realloc(p,sz);
+    if( !n )
+        free(p);
+    return n;
 }
 
 #define TAB_INIT( count, tab )                  \
@@ -148,7 +164,7 @@ static inline void *realloc_down( void *ptr, size_t size )
 /* Internal functions */
 #define _ARRAY_ALLOC(array, newsize) {                                      \
     (array).i_alloc = newsize;                                              \
-    (array).p_elems = realloc( (array).p_elems, (array).i_alloc *           \
+    (array).p_elems = vlc_reallocarray( (array).p_elems, (array).i_alloc,   \
                                sizeof(*(array).p_elems) );                  \
     if( !(array).p_elems ) abort();                                         \
 }
@@ -159,8 +175,6 @@ static inline void *realloc_down( void *ptr, size_t size )
     else if( (array).i_alloc == (array).i_size )                            \
         _ARRAY_ALLOC(array, (int)((array).i_alloc * 1.5) )                    \
 }
-
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 /* API */
 #define DECL_ARRAY(type) struct {                                           \
@@ -195,9 +209,9 @@ static inline void *realloc_down( void *ptr, size_t size )
 #define ARRAY_INSERT(array,elem,pos)                                        \
   do {                                                                      \
     _ARRAY_GROW1(array);                                                    \
-    if( (array).i_size - pos ) {                                            \
-        memmove( (array).p_elems + pos + 1, (array).p_elems + pos,          \
-                 ((array).i_size-pos) * sizeof(*(array).p_elems) );         \
+    if( (array).i_size - (pos) ) {                                          \
+        memmove( (array).p_elems + (pos) + 1, (array).p_elems + (pos),      \
+                 ((array).i_size-(pos)) * sizeof(*(array).p_elems) );       \
     }                                                                       \
     (array).p_elems[pos] = elem;                                            \
     (array).i_size++;                                                       \
@@ -209,12 +223,15 @@ static inline void *realloc_down( void *ptr, size_t size )
     }                                                                       \
 }
 
+#define ARRAY_FIND(array, p, idx)                                           \
+  TAB_FIND((array).i_size, (array).p_elems, p, idx)
+
 #define ARRAY_REMOVE(array,pos)                                             \
   do {                                                                      \
     if( (array).i_size - (pos) - 1 )                                        \
     {                                                                       \
-        memmove( (array).p_elems + pos, (array).p_elems + pos + 1,          \
-                 ( (array).i_size - pos - 1 ) *sizeof(*(array).p_elems) );  \
+        memmove( (array).p_elems + (pos), (array).p_elems + (pos) + 1,      \
+                 ( (array).i_size - (pos) - 1 ) *sizeof(*(array).p_elems) );\
     }                                                                       \
     (array).i_size--;                                                       \
     _ARRAY_SHRINK(array);                                                   \
@@ -225,13 +242,13 @@ static inline void *realloc_down( void *ptr, size_t size )
 #define ARRAY_BSEARCH(array, elem, zetype, key, answer) \
     BSEARCH( (array).p_elems, (array).i_size, elem, zetype, key, answer)
 
-#define FOREACH_ARRAY( item, array ) { \
-    int fe_idx; \
-    for( fe_idx = 0 ; fe_idx < (array).i_size ; fe_idx++ ) \
-    { \
-        item = (array).p_elems[fe_idx];
-
-#define FOREACH_END() } }
+/* append ##item to index variable name to avoid variable shadowing warnings for
+ * nested loops */
+#define ARRAY_FOREACH(item, array) \
+    for (int array_index_##item = 0; \
+         array_index_##item < (array).i_size && \
+            ((item) = (array).p_elems[array_index_##item], 1); \
+         ++array_index_##item)
 
 
 /************************************************************************
@@ -256,7 +273,7 @@ static inline void vlc_array_clear( vlc_array_t * p_array )
 }
 
 /* Read */
-static inline size_t vlc_array_count( vlc_array_t * p_array )
+static inline size_t vlc_array_count( const vlc_array_t * p_array )
 {
     return p_array->i_count;
 }

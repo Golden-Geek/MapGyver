@@ -1,10 +1,7 @@
 /*****************************************************************************
- * vlc_main.h: access to all program variables
- * Declaration and extern access to LibVLC instance object.
+ * vlc_clock.h: clock API
  *****************************************************************************
- * Copyright (C) 1999, 2000, 2001, 2002, 2008 VLC authors and VideoLAN
- *
- * Authors: Vincent Seguin <seguin@via.ecp.fr>
+ * Copyright (C) 2023 VLC authors and VideoLAN
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -21,18 +18,23 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifndef VLC_CLOCK_H
+#define VLC_CLOCK_H 1
+
 /**
- * \file
- * This file defines libvlc_int_t internal libvlc instance
+ * The VLC clock API.
+ *
+ * The publicly exposed clock API is for now very restraint. For now, only a
+ * subset of the clock is exposed and simplified for stream output modules.
+ *
+ * The actual clock implementation is mostly private for now as no other use
+ * case is found.
  */
 
-/*****************************************************************************
- * libvlc_internal_instance_t
- *****************************************************************************
- * This structure is a LibVLC instance, for use by libvlc core and plugins
- *****************************************************************************/
-struct libvlc_int_t
-{
-    VLC_COMMON_MEMBERS
-};
+/**
+ * Opaques VLC Clock types.
+ */
+typedef struct vlc_clock_main_t vlc_clock_main_t;
+typedef struct vlc_clock_t vlc_clock_t;
 
+#endif

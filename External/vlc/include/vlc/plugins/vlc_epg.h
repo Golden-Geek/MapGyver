@@ -2,7 +2,6 @@
  * vlc_epg.h: Electronic Program Guide
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: f7b9044e7c0aa1af4a44066d73f2ead943fc6a46 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -33,12 +32,12 @@ typedef struct
 {
     int64_t  i_start;    /* Interpreted as a value return by time() */
     uint32_t i_duration; /* Duration of the event in second */
-    uint16_t i_id;       /* Unique event id withing the event set */
+    uint16_t i_id;       /* Unique event id within the event set */
 
     char    *psz_name;
     char    *psz_short_description;
     char    *psz_description;
-    struct               /* Description items in tranmission order */
+    struct               /* Description items in transmission order */
     {
         char *psz_key;
         char *psz_value;

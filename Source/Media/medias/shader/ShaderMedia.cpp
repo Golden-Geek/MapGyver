@@ -128,7 +128,7 @@ void ShaderMedia::renderGLInternal()
 	t = t - firstFrameTime;
 	float delta = t - lastFrameTime;
 
-	float frameTime = 1.0f / fps->floatValue();
+	//float frameTime = 1.0f / fps->floatValue();
 	//if (customTime < 0 && t < lastFrameTime + frameTime) return;
 
 	lastFrameTime = t;

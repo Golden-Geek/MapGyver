@@ -109,8 +109,7 @@ void MediaClip::onContainerParameterChangedInternal(Parameter* p)
 			if (active)
 			{
 				justActivated = true;
-				media->handleEnter(relativeTime);
-				if (isPlaying) media->handleStart();
+				media->handleEnter(relativeTime, isPlaying);
 			}
 			else media->handleExit();
 		}

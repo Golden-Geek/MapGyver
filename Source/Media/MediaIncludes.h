@@ -30,7 +30,7 @@
 
 #include "medias/color/ColorMedia.h"
 
-#include "medias/video/vlcpp/vlc.hpp"
+#include "vlcpp/vlc.hpp"
 #include "medias/video/VideoMedia.h"
 
 #include "medias/Webcam/WebcamDevice.h"

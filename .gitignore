@@ -18,3 +18,7 @@ External/.DS_Store
 External/vlc/.DS_Store
 
 Release/
+
+External/vlc/lib/pkgconfig/
+
+External/vlc/lib/osx/.DS_Store

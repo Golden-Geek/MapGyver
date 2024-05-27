@@ -2,7 +2,6 @@
  * vlc_url.h: URL related macros
  *****************************************************************************
  * Copyright (C) 2002-2006 VLC authors and VideoLAN
- * $Id: b76cea9893c5c94731202694e49cdeff5d758cb6 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont
@@ -26,9 +25,9 @@
 # define VLC_URL_H
 
 /**
- * \file
- * This file defines functions for manipulating URL in vlc
- *
+ * \file vlc_url.h
+ * \ingroup url
+ * \defgroup url Uniform Resource Locator (URL)
  * \ingroup strings
  * @{
  */
@@ -68,7 +67,7 @@ VLC_API char *vlc_uri2path(const char *url) VLC_MALLOC;
  * \warning <b>This function does NOT decode entire URIs.</b>
  * URI can only be decoded (and encoded) one component at a time
  * (e.g. the host name, one directory, the file name).
- * Complete URIs are always "encoded" (or they are syntaxically invalid).
+ * Complete URIs are always "encoded" (or they are syntactically invalid).
  * See IETF RFC3986, especially §2.4 for details.
  *
  * \note URI encoding is <b>different</b> from Javascript escaping. Especially,
@@ -151,6 +150,7 @@ struct vlc_url_t
     unsigned i_port;
     char *psz_path;
     char *psz_option;
+    char *psz_fragment;
 
     char *psz_buffer; /* to be freed */
     char *psz_pathbuffer; /* to be freed */

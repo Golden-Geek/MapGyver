@@ -2,7 +2,6 @@
  * vlc_input_item.h: Core input item
  *****************************************************************************
  * Copyright (C) 1999-2009 VLC authors and VideoLAN
- * $Id: f22c3d9330af98a15992ef08e362424313774d6f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -32,7 +31,10 @@
 
 #include <vlc_meta.h>
 #include <vlc_epg.h>
-#include <vlc_events.h>
+#include <vlc_list.h>
+#include <vlc_vector.h>
+#include <vlc_threads.h>
+#include <vlc_es.h>
 
 #include <string.h>
 
@@ -43,66 +45,27 @@ struct info_t
 {
     char *psz_name;            /**< Name of this info */
     char *psz_value;           /**< Value of the info */
+    struct vlc_list node;
 };
+
+#define info_foreach(info, cat) vlc_list_foreach(info, cat, node)
 
 struct info_category_t
 {
     char   *psz_name;      /**< Name of this category */
-    int    i_infos;        /**< Number of infos in the category */
-    struct info_t **pp_infos;     /**< Pointer to an array of infos */
+    struct vlc_list infos; /**< Infos in the category */
+    struct vlc_list node;  /**< node, to put this category in a list */
 };
 
 /**
- * Describes an input and is used to spawn input_thread_t objects.
+ * Returns true if the category is hidden
+ *
+ * Infos from hidden categories should not be displayed directly by UI modules.
  */
-struct input_item_t
+static inline bool info_category_IsHidden(info_category_t *cat)
 {
-    char       *psz_name;            /**< text describing this item */
-    char       *psz_uri;             /**< mrl of this item */
-
-    int        i_options;            /**< Number of input options */
-    char       **ppsz_options;       /**< Array of input options */
-    uint8_t    *optflagv;            /**< Some flags of input options */
-    unsigned   optflagc;
-    input_item_opaque_t *opaques;    /**< List of opaque pointer values */
-
-    mtime_t    i_duration;           /**< Duration in microseconds */
-
-
-    int        i_categories;         /**< Number of info categories */
-    info_category_t **pp_categories; /**< Pointer to the first info category */
-
-    int         i_es;                /**< Number of es format descriptions */
-    es_format_t **es;                /**< Es formats */
-
-    input_stats_t *p_stats;          /**< Statistics */
-
-    vlc_meta_t *p_meta;
-
-    int         i_epg;               /**< Number of EPG entries */
-    vlc_epg_t   **pp_epg;            /**< EPG entries */
-    int64_t     i_epg_time;          /** EPG timedate as epoch time */
-    const vlc_epg_t *p_epg_table;    /** running/selected program cur/next EPG table */
-
-    int         i_slaves;            /**< Number of slaves */
-    input_item_slave_t **pp_slaves;  /**< Slave entries that will be loaded by
-                                          the input_thread */
-
-    vlc_event_manager_t event_manager;
-
-    vlc_mutex_t lock;                 /**< Lock for the item */
-
-    uint8_t     i_type;              /**< Type (file, disc, ... see input_item_type_e) */
-    bool        b_net;               /**< Net: always true for TYPE_STREAM, it
-                                          depends for others types */
-    bool        b_error_when_reading;/**< Error When Reading */
-
-    int         i_preparse_depth;    /**< How many level of sub items can be preparsed:
-                                          -1: recursive, 0: none, >0: n levels */
-
-    bool        b_preparse_interact; /**< Force interaction with the user when
-                                          preparsing.*/
-};
+    return cat->psz_name[0] == '.';
+}
 
 enum input_item_type_e
 {
@@ -119,6 +82,71 @@ enum input_item_type_e
     ITEM_TYPE_NUMBER
 };
 
+struct input_item_es
+{
+    es_format_t es;
+    char *id;
+    bool id_stable;
+};
+typedef struct VLC_VECTOR(struct input_item_es) input_item_es_vector;
+
+/**
+ * Describes an input and is used to spawn input_thread_t objects.
+ */
+struct input_item_t
+{
+    char       *psz_name;            /**< text describing this item */
+    char       *psz_uri;             /**< mrl of this item */
+
+    int        i_options;            /**< Number of input options */
+    char       **ppsz_options;       /**< Array of input options */
+    uint8_t    *optflagv;            /**< Some flags of input options */
+    unsigned   optflagc;
+    input_item_opaque_t *opaques;    /**< List of opaque pointer values */
+
+    vlc_tick_t i_duration;           /**< Duration in vlc ticks */
+
+
+    struct vlc_list categories;      /**< List of categories */
+
+    input_item_es_vector es_vec;     /**< ES formats */
+
+    input_stats_t *p_stats;          /**< Statistics */
+
+    vlc_meta_t *p_meta;
+
+    int         i_epg;               /**< Number of EPG entries */
+    vlc_epg_t   **pp_epg;            /**< EPG entries */
+    int64_t     i_epg_time;          /** EPG timedate as epoch time */
+    const vlc_epg_t *p_epg_table;    /** running/selected program cur/next EPG table */
+
+    int         i_slaves;            /**< Number of slaves */
+    input_item_slave_t **pp_slaves;  /**< Slave entries that will be loaded by
+                                          the input_thread */
+
+    vlc_mutex_t lock;                 /**< Lock for the item */
+
+    enum input_item_type_e i_type;   /**< Type (file, disc, ... see input_item_type_e) */
+    bool        b_net;               /**< Net: always true for TYPE_STREAM, it
+                                          depends for others types */
+
+    int         i_preparse_depth;    /**< How many level of sub items can be preparsed:
+                                          -1: recursive, 0: none, >0: n levels */
+
+    bool        b_preparse_interact; /**< Force interaction with the user when
+                                          preparsing.*/
+
+    void        *libvlc_owner;       /**< LibVLC private data, can only be set
+                                          before events are registered. */
+};
+
+#define INPUT_ITEM_URI_NOP "vlc://nop" /* dummy URI for node/directory items */
+
+/* placeholder duration for items with no known duration at time of creation
+ * it may remain the duration for items like a node/directory */
+#define INPUT_DURATION_UNSET      VLC_TICK_INVALID
+#define INPUT_DURATION_INDEFINITE (-1) /* item with a known indefinite duration (live/continuous source) */
+
 enum input_item_net_type
 {
     ITEM_NET_UNKNOWN,
@@ -129,7 +157,7 @@ enum input_item_net_type
 enum slave_type
 {
     SLAVE_TYPE_SPU,
-    SLAVE_TYPE_AUDIO,
+    SLAVE_TYPE_GENERIC, /* audio, video or subtitle not matched in SLAVE_SPU_EXTENSIONS */
 };
 
 enum slave_priority
@@ -161,7 +189,7 @@ enum slave_priority
     "psb", "rt", "sami", "sbv", \
     "scc", "smi", "srt", \
     "ssa",  "stl", "sub", \
-    "ttml", "tt", "usf", \
+    "tt", "ttml", "usf", \
     "vtt", "webvtt"
 
 #define SLAVE_AUDIO_EXTENSIONS \
@@ -207,8 +235,8 @@ VLC_API void input_item_node_AppendNode( input_item_node_t *p_parent, input_item
 /**
  * Remove a node from its parent.
  */
-void input_item_node_RemoveNode( input_item_node_t *parent,
-                                 input_item_node_t *child );
+VLC_API void input_item_node_RemoveNode( input_item_node_t *parent,
+                                         input_item_node_t *child );
 
 /**
  * Delete a node created with input_item_node_Create() and all its children.
@@ -243,6 +271,12 @@ VLC_API int input_item_AddOpaque(input_item_t *, const char *, void *);
 
 void input_item_ApplyOptions(vlc_object_t *, input_item_t *);
 
+/**
+ * This function checks whether the input item is of a type that can be played.
+ * It does this by checking the extension of the input item.
+ */
+VLC_API bool input_item_Playable(const char *);
+
 VLC_API bool input_item_slave_GetType(const char *, enum slave_type *);
 
 VLC_API input_item_slave_t *input_item_slave_New(const char *, enum slave_type,
@@ -256,19 +290,22 @@ VLC_API input_item_slave_t *input_item_slave_New(const char *, enum slave_type,
 VLC_API int input_item_AddSlave(input_item_t *, input_item_slave_t *);
 
 /* */
-VLC_API bool input_item_HasErrorWhenReading( input_item_t * );
 VLC_API void input_item_SetMeta( input_item_t *, vlc_meta_type_t meta_type, const char *psz_val );
 VLC_API bool input_item_MetaMatch( input_item_t *p_i, vlc_meta_type_t meta_type, const char *psz );
 VLC_API char * input_item_GetMeta( input_item_t *p_i, vlc_meta_type_t meta_type ) VLC_USED;
+VLC_API const char *input_item_GetMetaLocked(input_item_t *, vlc_meta_type_t meta_type);
 VLC_API char * input_item_GetName( input_item_t * p_i ) VLC_USED;
 VLC_API char * input_item_GetTitleFbName( input_item_t * p_i ) VLC_USED;
 VLC_API char * input_item_GetURI( input_item_t * p_i ) VLC_USED;
 VLC_API char * input_item_GetNowPlayingFb( input_item_t *p_item ) VLC_USED;
 VLC_API void input_item_SetURI( input_item_t * p_i, const char *psz_uri );
-VLC_API mtime_t input_item_GetDuration( input_item_t * p_i );
-VLC_API void input_item_SetDuration( input_item_t * p_i, mtime_t i_duration );
+VLC_API vlc_tick_t input_item_GetDuration( input_item_t * p_i );
+VLC_API void input_item_SetDuration( input_item_t * p_i, vlc_tick_t i_duration );
 VLC_API bool input_item_IsPreparsed( input_item_t *p_i );
 VLC_API bool input_item_IsArtFetched( input_item_t *p_i );
+VLC_API char * input_item_GetMetaExtra( input_item_t *p_i, const char *psz_name ) VLC_USED;
+VLC_API unsigned input_item_GetMetaExtraNames( input_item_t *p_i, char ***pppsz_names ) VLC_USED;
+VLC_API void input_item_SetMetaExtra( input_item_t *p_i, const char *psz_name, const char *psz_value );
 
 #define INPUT_META( name ) \
 static inline \
@@ -308,6 +345,7 @@ INPUT_META(Episode)
 INPUT_META(ShowName)
 INPUT_META(Actors)
 INPUT_META(DiscNumber)
+INPUT_META(DiscTotal)
 
 #define input_item_SetTrackNum input_item_SetTrackNumber
 #define input_item_GetTrackNum input_item_GetTrackNumber
@@ -315,10 +353,14 @@ INPUT_META(DiscNumber)
 #define input_item_GetArtURL   input_item_GetArtworkURL
 
 VLC_API char * input_item_GetInfo( input_item_t *p_i, const char *psz_cat,const char *psz_name ) VLC_USED;
+VLC_API char * input_item_GetInfoLocked( input_item_t *p_i, const char *psz_cat,const char *psz_name );
 VLC_API int input_item_AddInfo( input_item_t *p_i, const char *psz_cat, const char *psz_name, const char *psz_format, ... ) VLC_FORMAT( 4, 5 );
 VLC_API int input_item_DelInfo( input_item_t *p_i, const char *psz_cat, const char *psz_name );
 VLC_API void input_item_ReplaceInfos( input_item_t *, info_category_t * );
 VLC_API void input_item_MergeInfos( input_item_t *, info_category_t * );
+
+#define input_item_AddStat(item, type, value) \
+    input_item_AddInfo(item, ".stat", type, "%" PRIu64, (uint64_t) value)
 
 /**
  * This function creates a new input_item_t with the provided information.
@@ -327,14 +369,14 @@ VLC_API void input_item_MergeInfos( input_item_t *, info_category_t * );
  */
 VLC_API input_item_t * input_item_NewExt( const char *psz_uri,
                                           const char *psz_name,
-                                          mtime_t i_duration, int i_type,
+                                          vlc_tick_t i_duration, enum input_item_type_e i_type,
                                           enum input_item_net_type i_net ) VLC_USED;
 
 #define input_item_New( psz_uri, psz_name ) \
-    input_item_NewExt( psz_uri, psz_name, -1, ITEM_TYPE_UNKNOWN, ITEM_NET_UNKNOWN )
+    input_item_NewExt( psz_uri, psz_name, INPUT_DURATION_UNSET, ITEM_TYPE_UNKNOWN, ITEM_NET_UNKNOWN )
 
 #define input_item_NewCard( psz_uri, psz_name ) \
-    input_item_NewExt( psz_uri, psz_name, -1, ITEM_TYPE_CARD, ITEM_LOCAL )
+    input_item_NewExt( psz_uri, psz_name, INPUT_DURATION_INDEFINITE, ITEM_TYPE_CARD, ITEM_LOCAL )
 
 #define input_item_NewDisc( psz_uri, psz_name, i_duration ) \
     input_item_NewExt( psz_uri, psz_name, i_duration, ITEM_TYPE_DISC, ITEM_LOCAL )
@@ -343,7 +385,7 @@ VLC_API input_item_t * input_item_NewExt( const char *psz_uri,
     input_item_NewExt( psz_uri, psz_name, i_duration, ITEM_TYPE_STREAM, ITEM_NET )
 
 #define input_item_NewDirectory( psz_uri, psz_name, i_net ) \
-    input_item_NewExt( psz_uri, psz_name, -1, ITEM_TYPE_DIRECTORY, i_net )
+    input_item_NewExt( psz_uri, psz_name, INPUT_DURATION_UNSET, ITEM_TYPE_DIRECTORY, i_net )
 
 #define input_item_NewFile( psz_uri, psz_name, i_duration, i_net ) \
     input_item_NewExt( psz_uri, psz_name, i_duration, ITEM_TYPE_FILE, i_net )
@@ -359,16 +401,124 @@ VLC_API input_item_t *input_item_Hold(input_item_t *);
 /** Releases an input item, i.e. decrements its reference counter. */
 VLC_API void input_item_Release(input_item_t *);
 
+/**
+ * Record prefix string.
+ * TODO make it configurable.
+ */
+#define INPUT_RECORD_PREFIX "vlc-record-%Y-%m-%d-%Hh%Mm%Ss-$ N-$ p"
+
+/**
+ * This function creates a sane filename path.
+ */
+VLC_API char * input_item_CreateFilename( input_item_t *,
+                                          const char *psz_path, const char *psz_prefix,
+                                          const char *psz_extension ) VLC_USED;
+
+/**
+ * input item parser opaque structure
+ */
+typedef struct input_item_parser_id_t input_item_parser_id_t;
+
+/**
+ * input item parser callbacks
+ */
+typedef struct input_item_parser_cbs_t
+{
+    /**
+     * Event received when the parser ends
+     *
+     * @note This callback is mandatory.
+     *
+     * @param item the parsed item
+     * @param status VLC_SUCCESS in case of success, an error otherwise
+     * @param userdata user data set by input_item_Parse()
+     */
+    void (*on_ended)(input_item_t *item, int status, void *userdata);
+
+    /**
+     * Event received when a new subtree is added
+     *
+     * @note This callback is optional.
+     *
+     * @param item the parsed item
+     * @param subtree sub items of the current item
+     * @param userdata user data set by input_item_Parse()
+     */
+    void (*on_subtree_added)(input_item_t *item, input_item_node_t *subtree, void *userdata);
+
+    /**
+     * Event received when new attachments are added
+     *
+     * @note This callback is optional. It can be called several times for one
+     * parse request. The array contains only new elements after a second call.
+     *
+     * @param item the parsed item
+     * @param array valid array containing new elements, should only be used
+     * within the callback. One and all elements can be held and stored on a
+     * new variable or new array.
+     * @param count number of elements in the array
+     * @param userdata user data set by input_item_Parse()
+     */
+    void (*on_attachments_added)(input_item_t *item,
+                                 input_attachment_t *const *array,
+                                 size_t count, void *userdata);
+} input_item_parser_cbs_t;
+
+/**
+ * Parse an item asynchronously
+ *
+ * @note The parsing is done asynchronously. The user can call
+ * input_item_parser_id_Interrupt() before receiving the on_ended() event in
+ * order to interrupt it.
+ *
+ * @param item the item to parse
+ * @param parent the parent obj
+ * @param cbs callbacks to be notified of the end of the parsing
+ * @param userdata opaque data used by parser callbacks
+ *
+ * @return a parser instance or NULL in case of error, the parser needs to be
+ * released with input_item_parser_id_Release()
+ */
+VLC_API input_item_parser_id_t *
+input_item_Parse(input_item_t *item, vlc_object_t *parent,
+                 const input_item_parser_cbs_t *cbs, void *userdata) VLC_USED;
+
+/**
+ * Interrupts & cancels the parsing
+ *
+ * @note The parser still needs to be released with input_item_parser_id_Release
+ * afterward.
+ * @note Calling this function will cause the on_ended callback to be invoked.
+ *
+ * @param parser the parser to interrupt
+ */
+VLC_API void
+input_item_parser_id_Interrupt(input_item_parser_id_t *parser);
+
+/**
+ * Release (and interrupt if needed) a parser
+ *
+ * @param parser the parser returned by input_item_Parse
+ */
+VLC_API void
+input_item_parser_id_Release(input_item_parser_id_t *parser);
+
 typedef enum input_item_meta_request_option_t
 {
     META_REQUEST_OPTION_NONE          = 0x00,
     META_REQUEST_OPTION_SCOPE_LOCAL   = 0x01,
     META_REQUEST_OPTION_SCOPE_NETWORK = 0x02,
-    META_REQUEST_OPTION_SCOPE_ANY     = 0x03,
-    META_REQUEST_OPTION_DO_INTERACT   = 0x04
+    META_REQUEST_OPTION_SCOPE_ANY     =
+        META_REQUEST_OPTION_SCOPE_LOCAL|META_REQUEST_OPTION_SCOPE_NETWORK,
+    META_REQUEST_OPTION_SCOPE_FORCED  = 0x04,
+    META_REQUEST_OPTION_FETCH_LOCAL   = 0x08,
+    META_REQUEST_OPTION_FETCH_NETWORK = 0x10,
+    META_REQUEST_OPTION_FETCH_ANY     =
+        META_REQUEST_OPTION_FETCH_LOCAL|META_REQUEST_OPTION_FETCH_NETWORK,
+    META_REQUEST_OPTION_DO_INTERACT   = 0x20,
 } input_item_meta_request_option_t;
 
-/* status of the vlc_InputItemPreparseEnded event */
+/* status of the on_preparse_ended() callback */
 enum input_item_preparse_status
 {
     ITEM_PREPARSE_SKIPPED,
@@ -377,11 +527,20 @@ enum input_item_preparse_status
     ITEM_PREPARSE_DONE
 };
 
+struct vlc_metadata_cbs {
+    void (*on_preparse_ended)(input_item_t *, enum input_item_preparse_status status, void *userdata);
+    void (*on_art_fetch_ended)(input_item_t *, bool fetched, void *userdata);
+    void (*on_subtree_added)(input_item_t *, input_item_node_t *subtree, void *userdata);
+    void (*on_attachments_added)(input_item_t *item,
+                                 input_attachment_t *const *array,
+                                 size_t count, void *userdata);
+};
+
 VLC_API int libvlc_MetadataRequest( libvlc_int_t *, input_item_t *,
                                     input_item_meta_request_option_t,
+                                    const struct vlc_metadata_cbs *cbs,
+                                    void *cbs_userdata,
                                     int, void * );
-VLC_API int libvlc_ArtRequest(libvlc_int_t *, input_item_t *,
-                              input_item_meta_request_option_t );
 VLC_API void libvlc_MetadataCancel( libvlc_int_t *, void * );
 
 /******************
@@ -389,38 +548,30 @@ VLC_API void libvlc_MetadataCancel( libvlc_int_t *, void * );
  ******************/
 struct input_stats_t
 {
-    vlc_mutex_t         lock;
-
     /* Input */
-    int64_t i_read_packets;
-    int64_t i_read_bytes;
+    uint64_t i_read_packets;
+    uint64_t i_read_bytes;
     float f_input_bitrate;
-    float f_average_input_bitrate;
 
     /* Demux */
-    int64_t i_demux_read_packets;
-    int64_t i_demux_read_bytes;
+    uint64_t i_demux_read_packets;
+    uint64_t i_demux_read_bytes;
     float f_demux_bitrate;
-    float f_average_demux_bitrate;
-    int64_t i_demux_corrupted;
-    int64_t i_demux_discontinuity;
+    uint64_t i_demux_corrupted;
+    uint64_t i_demux_discontinuity;
 
     /* Decoders */
-    int64_t i_decoded_audio;
-    int64_t i_decoded_video;
+    uint64_t i_decoded_audio;
+    uint64_t i_decoded_video;
 
     /* Vout */
-    int64_t i_displayed_pictures;
-    int64_t i_lost_pictures;
-
-    /* Sout */
-    int64_t i_sent_packets;
-    int64_t i_sent_bytes;
-    float f_send_bitrate;
+    uint64_t i_displayed_pictures;
+    uint64_t i_late_pictures;
+    uint64_t i_lost_pictures;
 
     /* Aout */
-    int64_t i_played_abuffers;
-    int64_t i_lost_abuffers;
+    uint64_t i_played_abuffers;
+    uint64_t i_lost_abuffers;
 };
 
 /**
@@ -446,6 +597,7 @@ struct vlc_readdir_helper
  * Init a vlc_readdir_helper struct
  *
  * \param p_rdh need to be cleaned with vlc_readdir_helper_finish()
+ * \param p_obj the VLC object to use for logging
  * \param p_node node that will be used to add items
  */
 VLC_API void vlc_readdir_helper_init(struct vlc_readdir_helper *p_rdh,
@@ -456,6 +608,7 @@ VLC_API void vlc_readdir_helper_init(struct vlc_readdir_helper *p_rdh,
 /**
  * Finish adding items to the node
  *
+ * \param p_rdh a readdir helper initialized with ::vlc_readdir_helper_init
  * \param b_success if true, items of the node will be sorted.
  */
 VLC_API void vlc_readdir_helper_finish(struct vlc_readdir_helper *p_rdh, bool b_success);
@@ -463,7 +616,7 @@ VLC_API void vlc_readdir_helper_finish(struct vlc_readdir_helper *p_rdh, bool b_
 /**
  * Add a new input_item_t entry to the node of the vlc_readdir_helper struct.
  *
- * \param p_rdh previously inited vlc_readdir_helper struct
+ * \param p_rdh a readdir helper initialized with ::vlc_readdir_helper_init
  * \param psz_uri uri of the new item
  * \param psz_flatpath flattened path of the new item. If not NULL, this
  *        function will create an input item for each sub folders (separated
@@ -474,10 +627,14 @@ VLC_API void vlc_readdir_helper_finish(struct vlc_readdir_helper *p_rdh, bool b_
  *        be valid.
  * \param i_type see \ref input_item_type_e
  * \param i_net see \ref input_item_net_type
+ * \param[out] created_item if an input item is created. The item should not be
+ * released and is valid until vlc_readdir_helper_finish() is called.
+ * \returns status VLC_SUCCESS in case of success, an error otherwise. Parsing
+ * should be aborted in case of error.
  */
 VLC_API int vlc_readdir_helper_additem(struct vlc_readdir_helper *p_rdh,
                                        const char *psz_uri, const char *psz_flatpath,
                                        const char *psz_filename,
-                                       int i_type, int i_net);
+                                       int i_type, int i_net, input_item_t **created_item);
 
 #endif

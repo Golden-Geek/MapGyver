@@ -2,7 +2,6 @@
  * vlc_picture.h: picture definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2009 VLC authors and VideoLAN
- * $Id: 74f156fbbd6e6a4479754c0e79fbd5374a4a1e2e $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -26,12 +25,24 @@
 #ifndef VLC_PICTURE_H
 #define VLC_PICTURE_H 1
 
+#include <assert.h>
+#include <vlc_atomic.h>
+#include <vlc_es.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+struct vlc_ancillary;
+typedef uint32_t vlc_ancillary_id;
+
 /**
+ * \defgroup picture Generic picture API
+ * \ingroup output
+ * @{
  * \file
  * This file defines picture structures and functions in vlc
  */
-
-#include <vlc_es.h>
 
 /** Description of a planar graphic field */
 typedef struct plane_t
@@ -46,8 +57,8 @@ typedef struct plane_t
     int i_pixel_pitch;
 
     /* Variables used for pictures with margins */
-    int i_visible_lines;            /**< How many visible lines are there ? */
-    int i_visible_pitch;            /**< How many visible pixels are there ? */
+    int i_visible_lines;            /**< How many visible lines are there? */
+    int i_visible_pitch;            /**< How many bytes for visible pixels are there? */
 
 } plane_t;
 
@@ -60,7 +71,56 @@ typedef struct picture_context_t
 {
     void (*destroy)(struct picture_context_t *);
     struct picture_context_t *(*copy)(struct picture_context_t *);
+    struct vlc_video_context *vctx;
 } picture_context_t;
+
+typedef struct picture_buffer_t
+{
+    int fd;
+    void *base;
+    size_t size;
+    off_t offset;
+} picture_buffer_t;
+
+typedef struct vlc_decoder_device vlc_decoder_device;
+typedef struct vlc_video_context vlc_video_context;
+
+struct vlc_video_context_operations
+{
+    void (*destroy)(void *priv);
+};
+
+/** Decoder device type */
+enum vlc_video_context_type
+{
+    VLC_VIDEO_CONTEXT_VAAPI = 1, //!< private: vaapi_vctx* or empty
+    VLC_VIDEO_CONTEXT_VDPAU,     //!< private: chroma type (YUV) or empty (RGB)
+    VLC_VIDEO_CONTEXT_DXVA2,     //!< private: d3d9_video_context_t*
+    VLC_VIDEO_CONTEXT_D3D11VA,   //!< private: d3d11_video_context_t*
+    VLC_VIDEO_CONTEXT_AWINDOW,   //!< private: android_video_context_t*
+    VLC_VIDEO_CONTEXT_NVDEC,     //!< empty
+    VLC_VIDEO_CONTEXT_CVPX,      //!< private: cvpx_video_context*
+    VLC_VIDEO_CONTEXT_MMAL,      //!< empty
+    VLC_VIDEO_CONTEXT_GSTDECODE, //!< empty
+};
+
+VLC_API vlc_video_context * vlc_video_context_Create(vlc_decoder_device *,
+                                        enum vlc_video_context_type private_type,
+                                        size_t private_size,
+                                        const struct vlc_video_context_operations *);
+VLC_API void vlc_video_context_Release(vlc_video_context *);
+
+VLC_API enum vlc_video_context_type vlc_video_context_GetType(const vlc_video_context *);
+VLC_API void *vlc_video_context_GetPrivate(vlc_video_context *, enum vlc_video_context_type);
+VLC_API vlc_video_context *vlc_video_context_Hold(vlc_video_context *);
+
+/**
+ * Get the decoder device used by the device context.
+ *
+ * This will increment the refcount of the decoder device.
+ */
+VLC_API vlc_decoder_device *vlc_video_context_HoldDevice(vlc_video_context *);
+
 
 /**
  * Video picture
@@ -79,27 +139,169 @@ struct picture_t
      * These properties can be modified using the video output thread API,
      * but should never be written directly */
     /**@{*/
-    mtime_t         date;                                  /**< display date */
+    vlc_tick_t      date;                                  /**< display date */
     bool            b_force;
+    bool            b_still;
     /**@}*/
 
     /** \name Picture dynamic properties
      * Those properties can be changed by the decoder
      * @{
      */
-    bool            b_progressive;          /**< is it a progressive frame ? */
+    bool            b_progressive;          /**< is it a progressive frame? */
     bool            b_top_field_first;             /**< which field is first */
-    unsigned int    i_nb_fields;                  /**< # of displayed fields */
+    bool            b_multiview_left_eye; /**< left eye or right eye in multiview */
+    unsigned int    i_nb_fields;                  /**< number of displayed fields */
     picture_context_t *context;      /**< video format-specific data pointer */
     /**@}*/
 
     /** Private data - the video output plugin might want to put stuff here to
      * keep track of the picture */
-    picture_sys_t * p_sys;
+    void           *p_sys;
 
     /** Next picture in a FIFO a pictures */
     struct picture_t *p_next;
+
+    vlc_atomic_rc_t refs;
 };
+
+static inline vlc_video_context* picture_GetVideoContext(picture_t *pic)
+{
+    return pic->context ? pic->context->vctx : NULL;
+}
+
+/**
+ * Check whether a picture has other pictures linked
+ */
+static inline bool picture_HasChainedPics(const picture_t *pic)
+{
+    return pic->p_next != NULL;
+}
+
+/**
+ * picture chaining helpers
+ */
+
+typedef struct vlc_pic_chain {
+    picture_t *front;
+    picture_t *tail;
+} vlc_picture_chain_t;
+
+/**
+ * Initializes or reset a picture chain
+ *
+ * \warning do not call this if the chain still holds pictures, it will leak them.
+ */
+static inline void vlc_picture_chain_Init(vlc_picture_chain_t *chain)
+{
+    chain->front = NULL;
+    // chain->tail = NULL not needed
+}
+
+/**
+ * Check whether a picture chain holds pictures or not.
+ *
+ * \return true if it is empty.
+ */
+static inline bool vlc_picture_chain_IsEmpty(const vlc_picture_chain_t *chain)
+{
+    return chain->front == NULL;
+}
+
+/**
+ * Check whether a picture chain has more than one picture.
+ */
+static inline bool vlc_picture_chain_HasNext(const vlc_picture_chain_t *chain)
+{
+    return !vlc_picture_chain_IsEmpty(chain) && chain->front != chain->tail;
+}
+
+/**
+ * Pop the front of a picture chain.
+ *
+ * The next picture in the chain becomes the front of the picture chain.
+ *
+ * \return the front of the picture chain (the picture itself)
+ */
+static inline picture_t * vlc_picture_chain_PopFront(vlc_picture_chain_t *chain)
+{
+    picture_t *front = chain->front;
+    if (front)
+    {
+        chain->front = front->p_next;
+        // unlink the front picture from the rest of the chain
+        front->p_next = NULL;
+    }
+    return front;
+}
+
+/**
+ * Peek the front of a picture chain.
+ *
+ * The picture chain is unchanged.
+ *
+ * \return the front of the picture chain (the picture itself)
+ */
+static inline picture_t * vlc_picture_chain_PeekFront(vlc_picture_chain_t *chain)
+{
+    return chain->front;
+}
+
+/**
+ * Append a picture to a picture chain.
+ *
+ * \param chain the picture chain pointer
+ * \param pic the picture to append to the chain
+ */
+static inline void vlc_picture_chain_Append(vlc_picture_chain_t *chain,
+                                            picture_t *pic)
+{
+    if (chain->front == NULL)
+        chain->front = pic;
+    else
+        chain->tail->p_next = pic;
+    // make sure the picture doesn't have chained pics
+    vlc_assert( !picture_HasChainedPics( pic ) );
+    pic->p_next = NULL; // we're appending a picture, not a chain
+    chain->tail = pic;
+}
+
+/**
+ * Append a picture chain to a picture chain.
+ */
+static inline void vlc_picture_chain_AppendChain(picture_t *chain, picture_t *tail)
+{
+    chain->p_next = tail;
+}
+
+/**
+ * Copy the picture chain in another picture chain and clear the original
+ * picture chain.
+ *
+ * \param in picture chain to copy and clear
+ * \param out picture chain to copy into
+ */
+static inline void vlc_picture_chain_GetAndClear(vlc_picture_chain_t *in,
+                                                 vlc_picture_chain_t *out)
+{
+    *out = *in;
+    vlc_picture_chain_Init(in);
+}
+
+/**
+ * Reset a picture chain.
+ *
+ * \return the picture chain that was contained in the picture
+ */
+static inline vlc_picture_chain_t picture_GetAndResetChain(picture_t *pic)
+{
+    vlc_picture_chain_t chain = { pic->p_next, pic->p_next };
+    while ( chain.tail && chain.tail->p_next ) // find the proper tail
+        chain.tail = chain.tail->p_next;
+    pic->p_next = NULL;
+    return chain;
+}
+
 
 /**
  * This function will create a new picture.
@@ -122,7 +324,7 @@ VLC_API picture_t * picture_NewFromFormat( const video_format_t *p_fmt ) VLC_USE
  */
 typedef struct
 {
-    picture_sys_t *p_sys;
+    void *p_sys;
     void (*pf_destroy)(picture_t *);
 
     /* Plane resources
@@ -139,24 +341,40 @@ typedef struct
 
 /**
  * This function will create a new picture using the provided resource.
- *
- * If the resource is NULL then a plain picture_NewFromFormat is returned.
  */
 VLC_API picture_t * picture_NewFromResource( const video_format_t *, const picture_resource_t * ) VLC_USED;
 
 /**
- * This function will increase the picture reference count.
- * It will not have any effect on picture obtained from vout
+ * Destroys a picture without references.
  *
- * It returns the given picture for convenience.
+ * This function destroys a picture with zero references left.
+ * Never call this function directly. Use picture_Release() instead.
  */
-VLC_API picture_t *picture_Hold( picture_t *p_picture );
+VLC_API void picture_Destroy(picture_t *picture);
 
 /**
- * This function will release a picture.
- * It will not have any effect on picture obtained from vout
+ * Increments the picture reference count.
+ *
+ * \return picture
  */
-VLC_API void picture_Release( picture_t *p_picture );
+static inline picture_t *picture_Hold(picture_t *picture)
+{
+    vlc_atomic_rc_inc(&picture->refs);
+    return picture;
+}
+
+/**
+ * Decrements the picture reference count.
+ *
+ * If the reference count reaches zero, the picture is destroyed. If it was
+ * allocated from a pool, the underlying picture buffer will be returned to the
+ * pool. Otherwise, the picture buffer will be freed.
+ */
+static inline void picture_Release(picture_t *picture)
+{
+    if (vlc_atomic_rc_dec(&picture->refs))
+        picture_Destroy(picture);
+}
 
 /**
  * This function will copy all picture dynamic properties.
@@ -200,9 +418,50 @@ VLC_API void picture_Copy( picture_t *p_dst, const picture_t *p_src );
 VLC_API picture_t *picture_Clone(picture_t *pic);
 
 /**
+ * Attach an ancillary to the picture
+ *
+ * @warning the ancillary will be released only if the picture is created from
+ * picture_New(), and picture_Clone().
+ *
+ * @note Several ancillaries can be attached to a picture, but if two
+ * ancillaries are identified by the same ID, only the last one take
+ * precedence.
+ *
+ * @param pic the picture to attach an ancillary
+ * @param ancillary ancillary that will be held by the frame, can't be NULL
+ * @return VLC_SUCCESS in case of success, VLC_ENOMEM in case of alloc error
+ */
+VLC_API int
+picture_AttachAncillary(picture_t *pic, struct vlc_ancillary *ancillary);
+
+/**
+ * Allocate a new ancillary and attach it to a picture. Helper equivalent to
+ * malloc + vlc_ancillary_Create + picture_AttachAncillary. The returned memory
+ * is not initialized.
+ *
+ * @param pic picture to attach created ancillary to
+ * @param id id of the ancillary to create
+ * @param size allocation size in bytes
+ * @return The allocated pointer on success, NULL on out-of-memory
+ */
+VLC_API void *
+picture_AttachNewAncillary(picture_t *pic, vlc_ancillary_id id, size_t size);
+
+/**
+ * Return the ancillary identified by an ID
+ *
+ * @param pic the picture to get the ancillary from
+ * @param id id of ancillary to request
+ * @return the ancillary or NULL if the ancillary for that particular id is
+ * not present
+ */
+VLC_API struct vlc_ancillary *
+picture_GetAncillary(const picture_t *pic, vlc_ancillary_id id);
+
+/**
  * This function will export a picture to an encoded bitstream.
  *
- * pp_image will contain the encoded bitstream in psz_format format.
+ * pp_image will contain the encoded bitstream in i_codec codec.
  *
  * p_fmt can be NULL otherwise it will be set with the format used for the
  * picture before encoding.
@@ -212,10 +471,13 @@ VLC_API picture_t *picture_Clone(picture_t *pic);
  *  - if strictly lower than 0, the original dimension will be used.
  *  - if equal to 0, it will be deduced from the other dimension which must be
  *  different to 0.
- *  - if strictly higher than 0, it will override the dimension.
+ *  - if strictly higher than 0, it will either override the dimension if b_crop
+ *  is false, or crop the picture to the provided size if b_crop is true.
  * If at most one of them is > 0 then the picture aspect ratio will be kept.
  */
-VLC_API int picture_Export( vlc_object_t *p_obj, block_t **pp_image, video_format_t *p_fmt, picture_t *p_picture, vlc_fourcc_t i_format, int i_override_width, int i_override_height );
+VLC_API int picture_Export( vlc_object_t *p_obj, block_t **pp_image, video_format_t *p_fmt,
+                            picture_t *p_picture, vlc_fourcc_t i_codec, int i_override_width,
+                            int i_override_height, bool b_crop );
 
 /**
  * This function will setup all fields of a picture_t without allocating any
@@ -254,6 +516,24 @@ enum
 #define A_PIXELS     p[A_PLANE].p_pixels
 #define A_PITCH      p[A_PLANE].i_pitch
 
-/**@}*/
+/**
+ * Swap UV planes of a Tri Planars picture.
+ *
+ * It just swap the planes information without doing any copy.
+ */
+static inline void picture_SwapUV(picture_t *picture)
+{
+    vlc_assert(picture->i_planes == 3);
+
+    plane_t tmp_plane   = picture->p[U_PLANE];
+    picture->p[U_PLANE] = picture->p[V_PLANE];
+    picture->p[V_PLANE] = tmp_plane;
+}
+
+/** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* VLC_PICTURE_H */
