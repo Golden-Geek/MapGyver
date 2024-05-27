@@ -56,9 +56,9 @@ public:
 	bool updatingPosFromVLC;
 	bool isSeeking;
 
-	//double lastTapTempo;
-	//Trigger* tapTempoBtn;
-	//IntParameter* beatPerCycle;
+	double lastTapTempo;
+	Trigger* tapTempoTrigger;
+	IntParameter* beatPerCycle;
 
 	void onContainerParameterChanged(Parameter* p) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
@@ -70,6 +70,7 @@ public:
 	void pause();
 	void restart();
 	void seek(double time);
+	void tapTempo();
 
 	virtual void handleEnter(double time, bool play = false) override;
 	virtual void handleExit() override;
@@ -79,7 +80,7 @@ public:
 
 
 	double getMediaLength() override;
-	
+
 	void afterLoadJSONDataInternal() override;
 
 	//void tapTempo();
