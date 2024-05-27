@@ -63,6 +63,7 @@ public:
 	void onContainerParameterChanged(Parameter* p) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
+
 	void load();
 	void play();
 	void stop();
@@ -75,6 +76,9 @@ public:
 	virtual void handleSeek(double time) override;
 	virtual void handleStop() override;
 	virtual void handleStart() override;
+
+
+	double getMediaLength() override;
 	
 	void afterLoadJSONDataInternal() override;
 

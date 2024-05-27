@@ -79,6 +79,7 @@ public:
 	void setIsEditing(bool editing);
 
 	virtual Point<int> getMediaSize();
+	virtual double getMediaLength() { return -1; }
 
 	DECLARE_ASYNC_EVENT(Media, Media, media, { EDITING_CHANGED })
 };

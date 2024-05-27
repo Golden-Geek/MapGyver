@@ -306,6 +306,11 @@ void VideoMedia::handleStart()
 	play();
 }
 
+double VideoMedia::getMediaLength()
+{
+	return length->doubleValue();
+}
+
 void VideoMedia::afterLoadJSONDataInternal()
 {
 	Media::afterLoadJSONDataInternal();

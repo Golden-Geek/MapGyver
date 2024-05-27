@@ -100,6 +100,17 @@ void MediaClipUI::paint(Graphics& g)
 	}
 
 
+	if (mediaClip->media != nullptr)
+	{
+		double length = mediaClip->media->getMediaLength();
+		if (length > 0)
+		{
+			int w = getCoreWidth() * (length / mediaClip->coreLength->doubleValue());
+			g.setColour(BLUE_COLOR.withAlpha(.5f));
+			g.fillRoundedRectangle(getLocalBounds().withWidth(jmin(getCoreWidth(), w)).toFloat(), 2);
+		}
+	}
+
 	g.setColour(TEXT_COLOR);
 	g.setFont(g.getCurrentFont().withHeight(jlimit<float>(10, 16, getHeight() - 20)).boldened());
 	g.drawText(mediaClip->niceName, getCoreBounds().withLeft(usableLeft).withRight(usableRight).toFloat(), Justification::centred);
