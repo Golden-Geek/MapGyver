@@ -145,7 +145,7 @@ void VideoMedia::load()
 			initImage(imageWidth, imageHeight);
 
 			//vlcDataIsValid = true;
-			memcpy(chroma, "RV32", 4);
+			memcpy(chroma, "BGRA", 4);
 			(*pitches) = imageWidth * 4;
 			(*lines) = imageHeight;
 
