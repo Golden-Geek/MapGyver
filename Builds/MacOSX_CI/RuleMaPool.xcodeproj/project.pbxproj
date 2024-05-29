@@ -1243,7 +1243,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"../../External/servus/lib/osx/release\"",
-					"\"../../External/vlc/lib/osx\"",
+					"\"../../External/vlc/lib\"",
 					"\"../../External/NDI/lib/osx\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX/${CURRENT_ARCH}\"",

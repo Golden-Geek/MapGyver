@@ -424,7 +424,7 @@
                postbuildCommand="cd $TARGET_BUILD_DIR&#10;install_name_tool -add_rpath @executable_path/../Resources RuleMaPool.app/Contents/MacOS/RuleMaPool&#10;install_name_tool -add_rpath @executable_path/../Resources/plugins RuleMaPool.app/Contents/MacOS/RuleMaPool">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="0" name="Release" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/servus/lib/osx/release&#10;../../External/vlc/lib/osx&#10;../../External/NDI/lib/osx"
+                       libraryPath="../../External/servus/lib/osx/release&#10;../../External/vlc/lib&#10;../../External/NDI/lib/osx"
                        macOSDeploymentTarget="10.10" osxCompatibility="10.10 SDK"/>
         <CONFIGURATION isDebug="0" name="ReleaseSilicon" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
                        libraryPath="../../External/servus/lib/silicon/release&#10;../../External/vlc/lib&#10;../../External/NDI/lib/osx"
