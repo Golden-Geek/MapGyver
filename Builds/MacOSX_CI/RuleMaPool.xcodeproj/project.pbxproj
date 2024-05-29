@@ -1124,7 +1124,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"../../External/servus/lib/silicon/release\"",
-					"\"../../External/vlc/lib\"",
+					"\"../../External/vlc/lib/osx/silicon\"",
 					"\"../../External/NDI/lib/osx\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX/${CURRENT_ARCH}\"",
@@ -1243,7 +1243,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"../../External/servus/lib/osx/release\"",
-					"\"../../External/vlc/lib\"",
+					"\"../../External/vlc/lib/osx/intel\"",
 					"\"../../External/NDI/lib/osx\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX/${CURRENT_ARCH}\"",

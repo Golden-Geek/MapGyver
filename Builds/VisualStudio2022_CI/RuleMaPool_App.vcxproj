@@ -35,7 +35,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">RuleMaPool</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);../../External/vlc/lib;../../External/NDI/lib/x86;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -74,7 +74,7 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalLibraryDirectories>../../External/vlc/lib;../../External/NDI/lib/x86;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <AdditionalDependencies>libvlc.lib;libvlccore.lib;Servus.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -85,7 +85,7 @@
     </Bscmake>
     <Lib>
       <AdditionalDependencies>libvlc.lib;libvlccore.lib;Servus.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../External/vlc/lib;../../External/NDI/lib/x86;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
