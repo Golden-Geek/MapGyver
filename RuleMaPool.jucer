@@ -443,10 +443,10 @@
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="0" name="Release" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
                        libraryPath="../../External/servus/lib/osx/release&#10;../../External/vlc/lib/osx/intel&#10;../../External/NDI/lib/osx"
-                       macOSDeploymentTarget="10.10" osxCompatibility="10.10 SDK"/>
+                       macOSDeploymentTarget="10.11" osxCompatibility="10.11 SDK"/>
         <CONFIGURATION isDebug="0" name="ReleaseSilicon" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
                        libraryPath="../../External/servus/lib/silicon/release&#10;../../External/vlc/lib/osx/silicon&#10;../../External/NDI/lib/osx"
-                       macOSDeploymentTarget="10.10" osxCompatibility="10.10 SDK"/>
+                       macOSDeploymentTarget="10.11" osxCompatibility="10.11 SDK"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="JUCE/modules"/>
