@@ -9,7 +9,7 @@
 #include <windows.h>
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION  1,0,0,0
+FILEVERSION  1,0,0b1,0
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
@@ -17,9 +17,9 @@ BEGIN
     BEGIN
       VALUE "CompanyName",  "GoldenGeek\0"
       VALUE "FileDescription",  "RuleMaPool\0"
-      VALUE "FileVersion",  "1.0.0\0"
+      VALUE "FileVersion",  "1.0.0b1\0"
       VALUE "ProductName",  "RuleMaPool\0"
-      VALUE "ProductVersion",  "1.0.0\0"
+      VALUE "ProductVersion",  "1.0.0b1\0"
     END
   END
 
