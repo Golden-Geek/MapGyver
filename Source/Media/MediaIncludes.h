@@ -50,3 +50,8 @@
 #include "medias/sequence/ui/MediaClipUI.h"
 #include "medias/sequence/ui/MediaClipManagerUI.h"
 #include "medias/sequence/ui/MediaLayerTimeline.h"
+
+#include "ui/MediaPreviewPanel.h"
+#include "ui/MediaGridUI.h"
+#include "ui/MediaManagerGridUI.h"
+#include "ui/MediaEditor.h"

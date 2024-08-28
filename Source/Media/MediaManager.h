@@ -26,6 +26,8 @@ public:
     Factory<Media> factory;
     SequenceMedia* editingSequenceMedia;
 
+    IntParameter* gridThumbSize;
+
     void addItemInternal(Media* o, var data) override;
 
     void setEditingSequenceMedia(SequenceMedia* sm);

@@ -13,6 +13,8 @@
 
 juce_ImplementSingleton(GlContextHolder)
 
+using namespace juce::gl;
+
 GlContextHolder::GlContextHolder() :
 	timeAtRender(0)
 {
@@ -151,7 +153,7 @@ void GlContextHolder::checkComponents(bool isClosing, bool isDrawing)
 			if (comp != nullptr)
 			{
 				juce::Rectangle<int> r = (parent->getLocalArea(comp, comp->getLocalBounds()).toFloat() * displayScale).getSmallestIntegerContainer();
-				glViewport((GLint)r.getX(),
+					glViewport((GLint)r.getX(),
 					(GLint)parentBounds.getHeight() - (GLint)r.getBottom(),
 					(GLsizei)r.getWidth(), (GLsizei)r.getHeight());
 			}

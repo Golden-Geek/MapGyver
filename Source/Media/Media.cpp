@@ -12,6 +12,8 @@
 #include "Engine/RMPEngine.h"
 #include "Media.h"
 
+using namespace juce::gl;
+
 Media::Media(const String& name, var params, bool hasCustomSize) :
 	BaseItem(name),
 	width(nullptr),
@@ -32,6 +34,9 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 
 	addChildControllableContainer(&mediaParams);
 
+	isBeingUsed = addBoolParameter("isBeingUsed", "Is being used", false);
+	isBeingUsed->setControllableFeedbackOnly(true);
+
 	if (hasCustomSize)
 	{
 		width = addIntParameter("Width", "Width of the media", 1920, 1, 10000);
@@ -43,7 +48,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	currentFPS->enabled = false;
 
 	manualRender = params.getProperty("manualRender", false);
-	if(!manualRender) GlContextHolder::getInstance()->registerOpenGlRenderer(this, 1);
+	if (!manualRender) GlContextHolder::getInstance()->registerOpenGlRenderer(this, 1);
 	saveAndLoadRecursiveData = true;
 
 	itemDataType = "Media";
@@ -85,7 +90,7 @@ void Media::renderOpenGLMedia(bool force)
 
 
 	if (!enabled->boolValue()) return;
-	if (!isBeingUsed() && !force) return;
+	if (!isBeingUsed->boolValue() && !force) return;
 
 	const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
 	double t = GlContextHolder::getInstance()->timeAtRender;
@@ -142,11 +147,13 @@ GLint Media::getTextureID()
 void Media::registerTarget(MediaTarget* target)
 {
 	usedTargets.addIfNotAlreadyThere(target);
+	updateBeingUsed();
 }
 
 void Media::unregisterTarget(MediaTarget* target)
 {
 	usedTargets.removeAllInstancesOf(target);
+	updateBeingUsed();
 }
 
 //for sequence or other meta-media systems
@@ -168,11 +175,23 @@ void Media::handleExit()
 	setCustomTime(-1);
 }
 
-bool Media::isBeingUsed()
+void Media::updateBeingUsed()
 {
-	if (usedTargets.size() == 0) return false;
-	for (auto& u : usedTargets) if (u->isUsingMedia(this)) return true;
-	return false;
+	if (isClearing) return;
+
+	if (usedTargets.size() > 0)
+	{
+		for (auto& u : usedTargets)
+		{
+			if (u->isUsingMedia(this))
+			{
+				isBeingUsed->setValue(true);
+				return;
+			}
+		}
+	}
+
+	isBeingUsed->setValue(false);
 }
 
 void Media::setIsEditing(bool editing)

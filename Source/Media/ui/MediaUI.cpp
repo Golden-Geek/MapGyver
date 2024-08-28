@@ -36,6 +36,9 @@ void MediaUI::paint(Graphics& g)
 	{
 		g.drawImage(icon, iconBounds.toFloat());
 	}
+
+	g.setColour(item->isBeingUsed->boolValue() ? GREEN_COLOR : item->usedTargets.isEmpty() ? NORMAL_COLOR : BLUE_COLOR);
+	g.fillEllipse(infoBounds.toFloat());
 }
 
 void MediaUI::resizedHeader(Rectangle<int>& r)
@@ -45,14 +48,18 @@ void MediaUI::resizedHeader(Rectangle<int>& r)
 		iconBounds = r.removeFromLeft(r.getHeight()).reduced(2);
 	}
 
+
 	BaseItemUI::resizedHeader(r);
+
+	r.removeFromRight(2);
+	infoBounds = r.removeFromRight(r.getHeight()).reduced(2);
 }
 
 void MediaUI::updateUI()
 {
 	bgColor = item->itemColor != nullptr ? item->itemColor->getColor() : BG_COLOR.brighter(.1f);
 	if (item->isEditing) bgColor = BLUE_COLOR.darker();
-	else if (item->isBeingUsed()) bgColor = bgColor.brighter();
+	//else if (item->isBeingUsed->boolValue()) bgColor = bgColor.brighter();
 	repaint();
 }
 
@@ -63,5 +70,13 @@ void MediaUI::newMessage(const Media::MediaEvent& e)
 	case Media::MediaEvent::EDITING_CHANGED:
 		updateUI();
 		break;
+	}
+}
+
+void MediaUI::controllableFeedbackUpdateInternal(Controllable* c)
+{
+	if (c == item->isBeingUsed)
+	{
+		repaint();
 	}
 }

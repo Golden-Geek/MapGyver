@@ -26,6 +26,10 @@ SurfaceManager::~SurfaceManager()
 
 void SurfaceManager::addItemInternal(Surface* o, var data)
 {
+    if (!isCurrentlyLoadingData)
+    {
+        setItemIndex(o, 0);
+    }
 }
 
 void SurfaceManager::removeItemInternal(Surface* o)

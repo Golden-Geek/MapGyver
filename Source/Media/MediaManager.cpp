@@ -33,6 +33,7 @@ MediaManager::MediaManager() :
 	itemDataType = "Media";
 	selectItemWhenCreated = true;
 
+	gridThumbSize = addIntParameter("gridThumbSize", "Grid Thumb Size", 100, 50, 200);
 
 	InspectableSelectionManager::mainSelectionManager->addSelectionListener(this);
 }
@@ -65,10 +66,9 @@ void MediaManager::setEditingSequenceMedia(SequenceMedia* sm)
 	{
 		editingSequenceMedia->setIsEditing(true);
 		editingSequenceMedia->addInspectableListener(this);
-		if (TimeMachineView* v = ShapeShifterManager::getInstance()->getContentForType<TimeMachineView>())
-		{
-			v->setSequence(&sm->sequence);
-		}
+		TimeMachineView* v = ShapeShifterManager::getInstance()->getContentForType<TimeMachineView>();
+		if (v == nullptr) v = dynamic_cast<TimeMachineView*>(ShapeShifterManager::getInstance()->showContent("Sequence Editor"));
+		if (v != nullptr) v->setSequence(&sm->sequence);
 	}
 }
 

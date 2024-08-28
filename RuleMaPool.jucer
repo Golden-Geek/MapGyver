@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/vlc/include4&#10;../../EXternal/vlc/vlcpp&#10;../../External/NDI/include&#10;../../External/servus/include&#10;"
               defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" companyWebsite="https://benjamin.kuperberg.fr/rulemapool"
               companyName="GoldenGeek" bundleIdentifier="com.goldengeek.rulemapool"
-              displaySplashScreen="1" version="1.0.0b1">
+              displaySplashScreen="1" version="1.0.0b1" projectLineFeed="&#10;">
   <MAINGROUP id="HVgNxl" name="RuleMaPool">
     <GROUP id="{F38B7255-1DCA-93A3-BDC5-0B94B29FDCE3}" name="Resources">
       <GROUP id="{714BA6B0-CDE8-2433-11E9-E60FA7C30A64}" name="media">
@@ -23,10 +23,6 @@
       <GROUP id="{2197F95F-2563-5673-95CA-08F7626CAAB1}" name="osx">
         <FILE id="RBLLda" name="libndi.dylib" compile="0" resource="0" file="External/NDI/lib/osx/libndi.dylib"
               xcodeResource="1"/>
-        <FILE id="i1qdbi" name="libvlc.dylib" compile="0" resource="0" file="External/vlc/lib/osx/libvlc.dylib"
-              xcodeResource="1"/>
-        <FILE id="towmax" name="libvlccore.dylib" compile="0" resource="0"
-              file="External/vlc/lib/osx/libvlccore.dylib" xcodeResource="1"/>
       </GROUP>
       <FILE id="YIE66F" name="default.rmplayout" compile="0" resource="1"
             file="Resources/default.rmplayout"/>
@@ -122,6 +118,12 @@
             <FILE id="SgIxxG" name="ColorMedia.h" compile="0" resource="0" file="Source/Media/medias/color/ColorMedia.h"/>
           </GROUP>
           <GROUP id="{C1D8290A-0898-63EE-5F55-905BBAF572B5}" name="composition">
+            <GROUP id="{8C1366DC-398D-DB5A-CDA8-038BF01A935F}" name="ui">
+              <FILE id="E3UraQ" name="CompositionEditorPanel.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/composition/ui/CompositionEditorPanel.cpp"/>
+              <FILE id="tzUb41" name="CompositionEditorPanel.h" compile="0" resource="0"
+                    file="Source/Media/medias/composition/ui/CompositionEditorPanel.h"/>
+            </GROUP>
             <GROUP id="{6DFE3C41-BB95-5E6D-83E1-761C9503E865}" name="CompositionLayer">
               <FILE id="SQhbhW" name="CompositionLayer.cpp" compile="0" resource="0"
                     file="Source/Media/medias/composition/CompositionLayer/CompositionLayer.cpp"/>
@@ -187,10 +189,22 @@
           </GROUP>
         </GROUP>
         <GROUP id="{246EA82D-0CB9-1D91-B613-BEC53E0B6D70}" name="ui">
+          <FILE id="nf03WD" name="MediaEditor.cpp" compile="0" resource="0" file="Source/Media/ui/MediaEditor.cpp"/>
+          <FILE id="dQROr2" name="MediaEditor.h" compile="0" resource="0" file="Source/Media/ui/MediaEditor.h"/>
+          <FILE id="Gcnt6Z" name="MediaGridUI.cpp" compile="0" resource="0" file="Source/Media/ui/MediaGridUI.cpp"/>
+          <FILE id="SSYAzx" name="MediaGridUI.h" compile="0" resource="0" file="Source/Media/ui/MediaGridUI.h"/>
+          <FILE id="xCT11S" name="MediaManagerGridUI.cpp" compile="0" resource="0"
+                file="Source/Media/ui/MediaManagerGridUI.cpp" xcodeResource="0"/>
+          <FILE id="WtXlmN" name="MediaManagerGridUI.h" compile="0" resource="0"
+                file="Source/Media/ui/MediaManagerGridUI.h"/>
           <FILE id="PQNCME" name="MediaManagerUI.cpp" compile="0" resource="0"
                 file="Source/Media/ui/MediaManagerUI.cpp"/>
           <FILE id="i0ITQB" name="MediaManagerUI.h" compile="0" resource="0"
                 file="Source/Media/ui/MediaManagerUI.h"/>
+          <FILE id="U2PXOY" name="MediaPreviewPanel.cpp" compile="0" resource="0"
+                file="Source/Media/ui/MediaPreviewPanel.cpp"/>
+          <FILE id="jYmFXE" name="MediaPreviewPanel.h" compile="0" resource="0"
+                file="Source/Media/ui/MediaPreviewPanel.h"/>
           <FILE id="K1OWpR" name="MediaUI.cpp" compile="0" resource="0" file="Source/Media/ui/MediaUI.cpp"/>
           <FILE id="SpABRc" name="MediaUI.h" compile="0" resource="0" file="Source/Media/ui/MediaUI.h"/>
         </GROUP>
@@ -279,6 +293,10 @@
       <GROUP id="{7B97F172-AD12-D845-791F-697250E41BF4}" name="Screen">
         <GROUP id="{B1E6FD4B-534C-4F1B-7B6F-D363C0DFB5E1}" name="Surface">
           <GROUP id="{6622099E-00A8-BACB-9648-AF5B3A81F508}" name="ui">
+            <FILE id="k7NFL4" name="SurfaceEditorPanel.cpp" compile="0" resource="0"
+                  file="Source/Screen/Surface/ui/SurfaceEditorPanel.cpp"/>
+            <FILE id="eqpQMr" name="SurfaceEditorPanel.h" compile="0" resource="0"
+                  file="Source/Screen/Surface/ui/SurfaceEditorPanel.h"/>
             <FILE id="YzFRQf" name="SurfaceUI.cpp" compile="0" resource="0" file="Source/Screen/Surface/ui/SurfaceUI.cpp"/>
             <FILE id="x4H8IP" name="SurfaceUI.h" compile="0" resource="0" file="Source/Screen/Surface/ui/SurfaceUI.h"/>
           </GROUP>

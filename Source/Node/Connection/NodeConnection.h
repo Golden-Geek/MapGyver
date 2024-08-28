@@ -45,5 +45,5 @@ public:
 
 	static Colour getColorForType(NodeConnectionType t);
 
-	DECLARE_ASYNC_EVENT(NodeConnection, Connection, connection, ENUM_LIST(SOURCE_CHANGED, DEST_CHANGED))
+	DECLARE_ASYNC_EVENT(NodeConnection, Connection, connection, ENUM_LIST(SOURCE_CHANGED, DEST_CHANGED), EVENT_ITEM_CHECK);
 };

@@ -12,7 +12,7 @@ MainContentComponent::MainContentComponent()
 	// you add any child components.
 	// setSize (800, 600);
 
-	getCommandManager().registerAllCommandsForTarget(this);
+	//getCommandManager().registerAllCommandsForTarget(this);
 	ScreenOutputWatcher::getInstance(); // triggers the creation of the singleton
 }
 
@@ -33,11 +33,15 @@ void MainContentComponent::init()
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Screens", &ScreenManagerUI::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Screen Editor", &ScreenEditorPanel::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Medias", &MediaManagerUI::create));
+	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Medias Grid", &MediaManagerGridUI::create));
+	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Media Preview", &MediaPreviewPanel::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Online Explorer", &OnlineContentExplorer::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Node Editor", &NodeManagerViewPanel::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Sequence Editor", &TimeMachineView::create));
 
 	OrganicMainContentComponent::init();
+
+	TimeMachineView::getEditingSequenceCustomFunc = [this]() { return MediaManager::getInstance()->editingSequenceMedia != nullptr ? &MediaManager::getInstance()->editingSequenceMedia->sequence : nullptr; };
 
 	//getLookAndFeel().setColour(juce::TextButton::textColourOffId, Colour(127,127,127));
 	getLookAndFeel().setColour(juce::TextButton::buttonColourId, Colour(64, 64, 64));

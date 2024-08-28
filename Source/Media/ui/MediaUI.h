@@ -20,11 +20,13 @@ public:
 
     Image icon;
     Rectangle<int> iconBounds;
+    Rectangle<int> infoBounds;
 
     void paint(Graphics& g) override;
     void resizedHeader(Rectangle<int> &r) override;
 
     void updateUI();
     void newMessage(const Media::MediaEvent& e) override;
+    void controllableFeedbackUpdateInternal(Controllable* c) override;
 };
 

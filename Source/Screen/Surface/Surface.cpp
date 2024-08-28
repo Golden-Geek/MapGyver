@@ -61,10 +61,10 @@ Surface::Surface(var params) :
 	softEdgeBottom = adjustmentsCC.addFloatParameter("Soft Edge Bottom", "", 0, 0, 1);
 	softEdgeLeft = adjustmentsCC.addFloatParameter("Soft Edge Left", "", 0, 0, 1);
 
-	cropTop = adjustmentsCC.addFloatParameter("Crop Top", "", 0, 0, 1);
-	cropRight = adjustmentsCC.addFloatParameter("Crop Right", "", 0, 0, 1);
-	cropBottom = adjustmentsCC.addFloatParameter("Crop Bottom", "", 0, 0, 1);
-	cropLeft = adjustmentsCC.addFloatParameter("Crop Left", "", 0, 0, 1);
+	cropTop = adjustmentsCC.addFloatParameter("Source Top", "", 0, 0, 1);
+	cropRight = adjustmentsCC.addFloatParameter("Source Right", "", 0, 0, 1);
+	cropBottom = adjustmentsCC.addFloatParameter("Source Bottom", "", 0, 0, 1);
+	cropLeft = adjustmentsCC.addFloatParameter("Source Left", "", 0, 0, 1);
 
 	showTestPattern = adjustmentsCC.addBoolParameter("Show Test Pattern", "If checked this will not use the media but generate a TestPatterns", false);
 	mask = adjustmentsCC.addTargetParameter("Mask", "Apply a mask to this surface", MediaManager::getInstance());

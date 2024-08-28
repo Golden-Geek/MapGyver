@@ -20,7 +20,7 @@ BaseNodeViewUI::BaseNodeViewUI(Node* node) :
 	drawEmptyDragIcon = true;
 	showRemoveBT = false;
 
-	statsLabel.setFont(10);
+	statsLabel.setFont(FontOptions(10));
 	statsLabel.setColour(statsLabel.textColourId, NORMAL_COLOR.brighter());
 	statsLabel.setOpaque(false);
 	statsLabel.setJustificationType(Justification::centredRight);

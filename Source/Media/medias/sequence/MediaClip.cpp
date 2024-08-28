@@ -41,6 +41,7 @@ MediaClip::MediaClip(const String& name, var params) :
 
 MediaClip::~MediaClip()
 {
+	if(media != nullptr && !mediaRef.wasObjectDeleted()) unregisterUseMedia(CLIP_MEDIA_ID);
 }
 
 void MediaClip::clearItem()
@@ -110,8 +111,13 @@ void MediaClip::onContainerParameterChangedInternal(Parameter* p)
 			{
 				justActivated = true;
 				media->handleEnter(relativeTime, isPlaying);
+				media->updateBeingUsed();
 			}
-			else media->handleExit();
+			else
+			{
+				media->handleExit();
+				media->updateBeingUsed();
+			}
 		}
 	}
 

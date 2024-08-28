@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: benkuper/JUCE
-          ref: develop-local
+          ref: juce8_local
           path: JUCE
 
       - name: Set Variables
@@ -117,7 +117,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: benkuper/JUCE
-          ref: develop-local
+          ref: juce8_local
           path: JUCE
 
       - name: Set Suffix
@@ -182,7 +182,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: benkuper/JUCE
-          ref: develop-local
+          ref: juce8_local
           path: JUCE
 
       - name: Set Suffix
@@ -276,7 +276,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: benkuper/JUCE
-          ref: develop-local
+          ref: juce8_local
           path: JUCE
 
       - name: Set Suffix

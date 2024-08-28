@@ -28,10 +28,9 @@ NodeManagerViewUI::NodeManagerViewUI(NodeManager* manager) :
 
 	removeMouseListener(this);
 	addMouseListener(this, true);
-	setDisableDefaultMouseEvents(true);
 
 	ViewStatsTimer::getInstance()->addListener(this);
-	statsLabel.setFont(12);
+	statsLabel.setFont(FontOptions(12));
 	statsLabel.setColour(statsLabel.textColourId, NORMAL_COLOR.brighter(.6f));
 	statsLabel.setOpaque(false);
 	statsLabel.setJustificationType(Justification::centredRight);

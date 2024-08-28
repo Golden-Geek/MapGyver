@@ -49,7 +49,7 @@ OnlineContentExplorer::OnlineContentExplorer(const String& name) :
 	viewport.setViewedComponent(&itemsComp, false);
 	addAndMakeVisible(&viewport);
 
-	linksLabel.setFont(16);
+	linksLabel.setFont(FontOptions(16));
 	linksLabel.setColour(linksLabel.textColourId, Colours::lightblue);
 	linksLabel.setInterceptsMouseClicks(true, false);
 	linksLabel.setJustificationType(Justification::centred);

@@ -192,7 +192,7 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 				if (s != nullptr) {
 					Pin* p = s->pinsCC.addItem();
 					Point<float> pos = (e.mouseDownPosition.toFloat()) / Point<float>(frameBufferRect.getWidth(), frameBufferRect.getHeight());
-					pos.y = 1-pos.y;
+					pos.y = 1 - pos.y;
 					p->position->setPoint(Point<float>(pos));
 				}
 				return;
@@ -515,7 +515,17 @@ void ScreenEditorView::setCandidateDropSurface(Surface* s, Media* m)
 
 bool ScreenEditorView::keyPressed(const KeyPress& key, Component* originatingComponent)
 {
+	if (key.getTextCharacter() == 'f')
+	{
+		zoom = 1;
+		viewOffset = Point<float>();
+		repaint();
+		return true;
+	}
+
 	if (key.getKeyCode() != KeyPress::leftKey && key.getKeyCode() != KeyPress::rightKey && key.getKeyCode() != KeyPress::upKey && key.getKeyCode() != KeyPress::downKey) return false;
+
+
 	if (closestHandle != nullptr)
 	{
 		Array<Point2DParameter*> handles = { closestHandle };
@@ -539,7 +549,6 @@ bool ScreenEditorView::keyPressed(const KeyPress& key, Component* originatingCom
 			//	for (auto& h : overlapHandles) h->setPoint(tp);
 			//}
 		}
-
 	}
 	repaint();
 	return true;

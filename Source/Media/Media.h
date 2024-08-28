@@ -20,6 +20,8 @@ public:
 	Media(const String& name = "Media", var params = var(), bool hasCustomSize = false);
 	virtual ~Media();
 
+	BoolParameter* isBeingUsed;
+
 	IntParameter* width;
 	IntParameter* height;
 
@@ -74,14 +76,14 @@ public:
 	virtual void handleStop() {}
 	virtual void handleStart() {}
 
-	bool isBeingUsed();
 
 	void setIsEditing(bool editing);
+	void updateBeingUsed();
 
 	virtual Point<int> getMediaSize();
 	virtual double getMediaLength() { return -1; }
 
-	DECLARE_ASYNC_EVENT(Media, Media, media, { EDITING_CHANGED })
+	DECLARE_ASYNC_EVENT(Media, Media, media, ENUM_LIST(EDITING_CHANGED), EVENT_ITEM_CHECK);
 };
 
 

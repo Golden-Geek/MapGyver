@@ -22,3 +22,5 @@ Release/
 External/vlc/lib/pkgconfig/
 
 External/vlc/lib/osx/.DS_Store
+
+site/

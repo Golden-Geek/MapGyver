@@ -124,7 +124,7 @@ void RMPEngine::handleAsyncUpdate()
 
 String RMPEngine::getMinimumRequiredFileVersion()
 {
-	return "1.0.0";
+	return "1.0.0b1";
 }
 
 void RMPEngine::importSelection()
