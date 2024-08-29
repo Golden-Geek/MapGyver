@@ -97,7 +97,7 @@ void ShaderMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc
 		{
 			TargetParameter* p = dynamic_cast<TargetParameter*>(tp);
 			Media* m = p->getTargetContainerAs<Media>();
-			registerUseMedia(i, m);
+			if(m != nullptr) registerUseMedia(i, m);
 			i++;
 		}
 		unregisterUseMedia(i); //if there are less sources than before, force unregister

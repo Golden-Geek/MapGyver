@@ -26,6 +26,7 @@ public:
 
 	bool shouldUpdateVertices;
 
+
 	TargetParameter* media;
 
 	std::unique_ptr<Media> patternMedia;
@@ -48,6 +49,7 @@ public:
 	Point2DParameter* handleBezierRightBottom;
 
 	BaseManager<Pin> pinsCC;
+	OwnedArray<Pin> cornerPins; // 0: topLeft, 1: topRight, 2: bottomRight, 3: bottomLeft
 
 	ControllableContainer adjustmentsCC;
 	EnumParameter* blendFunction;

@@ -18,6 +18,7 @@ using namespace juce::gl;
 GlContextHolder::GlContextHolder() :
 	timeAtRender(0)
 {
+	setBackgroundColour(BG_COLOR.darker(.8f));
 }
 
 GlContextHolder::~GlContextHolder()

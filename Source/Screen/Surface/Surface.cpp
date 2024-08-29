@@ -168,6 +168,8 @@ Surface::Surface(var params) :
 	adjustmentsCC.editorIsCollapsed = true;
 	pinsCC.selectItemWhenCreated = false;
 
+	for (int i = 0; i < 4; i++) cornerPins.add(new Pin());
+
 	positionningCC.saveAndLoadRecursiveData = true;
 	positionningCC.addChildControllableContainer(&bezierCC);
 	addChildControllableContainer(&positionningCC);
@@ -179,6 +181,7 @@ Surface::Surface(var params) :
 	{
 		if (!MediaManager::getInstance()->items.isEmpty()) media->setValueFromTarget(MediaManager::getInstance()->items.getFirst());
 	}
+
 
 	updatePath();
 }
@@ -659,23 +662,16 @@ void Surface::updateVertices()
 
 		if (pins.size() > 0)
 		{
-			Pin ptl;
-			ptl.position->x = topLeft->x; ptl.position->y = topLeft->y;
-			ptl.mediaPos->x = tlTex.x; ptl.mediaPos->y = tlTex.y;
-			Pin ptr;
-			ptr.position->x = topRight->x; ptr.position->y = topRight->y;
-			ptr.mediaPos->x = trTex.x; ptr.mediaPos->y = trTex.y;
-			Pin pbl;
-			pbl.position->x = bottomLeft->x; pbl.position->y = bottomLeft->y;
-			pbl.mediaPos->x = blTex.x; pbl.mediaPos->y = blTex.y;
-			Pin pbr;
-			pbr.position->x = bottomRight->x; pbr.position->y = bottomRight->y;
-			pbr.mediaPos->x = brTex.x; pbr.mediaPos->y = brTex.y;
+			cornerPins[0]->position->x = topLeft->x; cornerPins[0]->position->y = topLeft->y;
+			cornerPins[0]->mediaPos->x = tlTex.x; cornerPins[0]->mediaPos->y = tlTex.y;
+			cornerPins[1]->position->x = topRight->x; cornerPins[1]->position->y = topRight->y;
+			cornerPins[1]->mediaPos->x = trTex.x; cornerPins[1]->mediaPos->y = trTex.y;
+			cornerPins[2]->position->x = bottomLeft->x; cornerPins[2]->position->y = bottomLeft->y;
+			cornerPins[2]->mediaPos->x = blTex.x; cornerPins[2]->mediaPos->y = blTex.y;
+			cornerPins[3]->position->x = bottomRight->x; cornerPins[3]->position->y = bottomRight->y;
+			cornerPins[3]->mediaPos->x = brTex.x; cornerPins[3]->mediaPos->y = brTex.y;
 
-			pins.add(&ptl);
-			pins.add(&ptr);
-			pins.add(&pbl);
-			pins.add(&pbr);
+			pins.addArray(cornerPins);
 
 			Array<int> verticeId;
 

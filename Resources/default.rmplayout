@@ -1,32 +1,32 @@
 {
   "mainLayout": {
     "type": 1,
-    "width": 1920,
-    "height": 989,
+    "width": 2048,
+    "height": 1189,
     "direction": 2,
     "shifters": [
       {
         "type": 1,
-        "width": 1920,
-        "height": 989,
+        "width": 2048,
+        "height": 1189,
         "direction": 1,
         "shifters": [
           {
             "type": 1,
-            "width": 1400,
-            "height": 989,
+            "width": 1507,
+            "height": 1189,
             "direction": 1,
             "shifters": [
               {
                 "type": 1,
-                "width": 366,
-                "height": 989,
+                "width": 346,
+                "height": 1189,
                 "direction": 2,
                 "shifters": [
                   {
                     "type": 0,
-                    "width": 366,
-                    "height": 156,
+                    "width": 346,
+                    "height": 267,
                     "currentContent": "Screens",
                     "tabs": [
                       {
@@ -36,25 +36,77 @@
                   },
                   {
                     "type": 0,
-                    "width": 366,
-                    "height": 826,
+                    "width": 346,
+                    "height": 916,
                     "currentContent": "Medias",
                     "tabs": [
                       {
                         "name": "Medias"
+                      },
+                      {
+                        "name": "Medias Grid"
                       }
                     ]
                   }
                 ]
               },
               {
-                "type": 0,
-                "width": 1028,
-                "height": 989,
-                "currentContent": "Screen Editor",
-                "tabs": [
+                "type": 1,
+                "width": 1155,
+                "height": 1189,
+                "direction": 2,
+                "shifters": [
                   {
-                    "name": "Screen Editor"
+                    "type": 0,
+                    "width": 1155,
+                    "height": 562,
+                    "currentContent": "Screen Editor",
+                    "tabs": [
+                      {
+                        "name": "Screen Editor"
+                      }
+                    ]
+                  },
+                  {
+                    "type": 0,
+                    "width": 1155,
+                    "height": 325,
+                    "currentContent": "Sequence Editor",
+                    "tabs": [
+                      {
+                        "name": "Sequence Editor"
+                      }
+                    ]
+                  },
+                  {
+                    "type": 1,
+                    "width": 1155,
+                    "height": 290,
+                    "direction": 1,
+                    "shifters": [
+                      {
+                        "type": 0,
+                        "width": 763,
+                        "height": 290,
+                        "currentContent": "Online Explorer",
+                        "tabs": [
+                          {
+                            "name": "Online Explorer"
+                          }
+                        ]
+                      },
+                      {
+                        "type": 0,
+                        "width": 386,
+                        "height": 290,
+                        "currentContent": "Media Preview",
+                        "tabs": [
+                          {
+                            "name": "Media Preview"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
@@ -62,14 +114,14 @@
           },
           {
             "type": 1,
-            "width": 514,
-            "height": 989,
+            "width": 535,
+            "height": 1189,
             "direction": 2,
             "shifters": [
               {
                 "type": 0,
-                "width": 514,
-                "height": 712,
+                "width": 535,
+                "height": 812,
                 "currentContent": "Inspector",
                 "tabs": [
                   {
@@ -79,8 +131,8 @@
               },
               {
                 "type": 0,
-                "width": 514,
-                "height": 270,
+                "width": 535,
+                "height": 370,
                 "currentContent": "Logger",
                 "tabs": [
                   {

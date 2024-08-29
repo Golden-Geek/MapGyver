@@ -18,6 +18,8 @@ MediaPreview::MediaPreview() :
 {
 
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 1);
+
+
 }
 
 MediaPreview::~MediaPreview()
@@ -50,7 +52,7 @@ void MediaPreview::paint(Graphics& g)
 	//g.setColour(TEXT_COLOR);
 	//g.drawText("No media", getLocalBounds(), Justification::centred);
 
-	if (media != nullptr)
+	if (!useMediaOnPreview && media != nullptr)
 	{
 		g.setColour(media->isBeingUsed->boolValue() ? GREEN_COLOR : media->usedTargets.isEmpty() ? NORMAL_COLOR : BLUE_COLOR);
 		g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 1);
@@ -149,6 +151,7 @@ void MediaPreviewPanel::newMessage(const InspectableSelectionManager::SelectionE
 		if (Media* m = e.selectionManager->getInspectableAs<Media>())
 		{
 			preview.setMedia(m);
+			setCustomName("Media Preview : " + m->niceName);
 		}
 	}
 }

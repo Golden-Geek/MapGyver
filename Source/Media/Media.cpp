@@ -60,6 +60,7 @@ Media::~Media()
 }
 
 
+
 void Media::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
 	if (cc == &mediaParams)
@@ -177,7 +178,7 @@ void Media::handleExit()
 
 void Media::updateBeingUsed()
 {
-	if (isClearing) return;
+	if (isClearing || Engine::mainEngine->isClearing) return;
 
 	if (usedTargets.size() > 0)
 	{
@@ -241,6 +242,7 @@ void Media::FPSTick()
 
 	int max = ceil(fps / 10.0) * 10;
 
+	if (isClearing) return;
 	// Calcul des FPS
 	MessageManager::callAsync([this, max, fps]()
 		{

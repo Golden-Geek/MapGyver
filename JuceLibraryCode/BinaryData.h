@@ -39,7 +39,7 @@ namespace BinaryData
     const int            webcam_pngSize = 1196;
 
     extern const char*   default_rmplayout;
-    const int            default_rmplayoutSize = 2452;
+    const int            default_rmplayoutSize = 4212;
 
     extern const char*   fragmentShaderMainSurface_glsl;
     const int            fragmentShaderMainSurface_glslSize = 1301;

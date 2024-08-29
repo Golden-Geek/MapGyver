@@ -47,7 +47,7 @@ public:
 
 	bool isEditing;
 	bool willBeUsed;
-
+	
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 	void newOpenGLContextCreated() override;

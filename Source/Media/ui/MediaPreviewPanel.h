@@ -21,7 +21,7 @@ public:
 
 	MediaPreview();
 	virtual ~MediaPreview();
-
+	
 	bool useMediaOnPreview;
 	Media* media;
 
@@ -33,6 +33,8 @@ public:
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
 	void inspectableDestroyed(Inspectable* i) override;
+
+	OpenGLContext context;
 
 };
 
