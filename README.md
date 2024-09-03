@@ -3,7 +3,7 @@
 Cross-platform lightweight video mapping software
 
 Features :
-- Spout texture sharing (source / output)
+- Spout / Syphon texture sharing (source / output)
 - NDI texture sharing (source / output)
 - 4-corner perspective warping + bezier warping
 - Video playback of almost any format through VLC lib
@@ -17,9 +17,9 @@ Features :
 
 ## Downloads
 
-- Windows : https://benjamin.kuperberg.fr/rulemapool/download/app/RuleMaPool-win-x64-bleedingedge.exe
-- MacOS Intel : https://benjamin.kuperberg.fr/rulemapool/download/app/RuleMaPool-osx-intel-bleedingedge.pkg
-- MacOS Silicon : https://benjamin.kuperberg.fr/rulemapool/download/app/RuleMaPool-osx-silicon-bleedingedge.pkg
+- Windows : https://benjamin.kuperberg.fr/spidermap/download/app/SpiderMap-win-x64-bleedingedge.exe
+- MacOS Intel : https://benjamin.kuperberg.fr/spidermap/download/app/SpiderMap-osx-intel-bleedingedge.pkg
+- MacOS Silicon : https://benjamin.kuperberg.fr/spidermap/download/app/SpiderMap-osx-silicon-bleedingedge.pkg
 - Linux x64 : Not ready yet (you can contribute by compiling and testing it yourself)
 - Raspberry 32 bit : Not ready yet (you can contribute by compiling and testing it yourself)
 - Raspberry 64 bit : Not ready yet (you can contribute by compiling and testing it yourself)
