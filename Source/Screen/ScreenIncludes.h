@@ -24,4 +24,6 @@
 #include "ui/ScreenRenderer.h"
 #include "ui/ScreenManagerUI.h"
 #include "Surface/ui/SurfaceUI.h"
+#include "Surface/ui/SurfaceEditorPanel.h"
+
 #include "ui/ScreenEditorPanel.h"

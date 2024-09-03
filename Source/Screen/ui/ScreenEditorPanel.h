@@ -21,7 +21,6 @@ public:
 	~ScreenEditorView();
 
 	Screen* screen;
-	OpenGLContext context;
 
 	Rectangle<int> frameBufferRect;
 	Point2DParameter* closestHandle;

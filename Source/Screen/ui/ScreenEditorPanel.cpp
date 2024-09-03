@@ -43,6 +43,21 @@ void ScreenEditorView::paint(Graphics& g)
 {
 	if (frameBufferRect.isEmpty()) return;
 
+	Point<int> topLeft = getPointOnScreen(Point<float>(0, 0));
+	Point<int> bottomRight = getPointOnScreen(Point<float>(1, 1));
+	Rectangle<int> r(topLeft, bottomRight);
+
+	Path p;
+	p.addRectangle(0, 0, getWidth(), getHeight());
+	p.setUsingNonZeroWinding(false);
+	p.addRectangle(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+
+	g.setColour(BG_COLOR.darker(.5f).withAlpha(.8f));
+	g.fillPath(p);
+
+	g.setColour(NORMAL_COLOR.withAlpha(.5f));
+	g.drawRect(r.toFloat(), 1);
+
 	if (zoomingMode) return;
 
 	Colour col = isMouseButtonDown() ? Colours::yellow : Colours::cyan;
@@ -135,6 +150,19 @@ void ScreenEditorView::paint(Graphics& g)
 			}
 		}
 	}
+
+	for (auto& s : screen->surfaces.items)
+	{
+		if (s->isSelected)
+		{
+			Path p = getSurfacePath(s);
+			g.setColour(HIGHLIGHT_COLOR);
+			g.strokePath(p, PathStrokeType(1.0f));
+			break;
+		}
+	}
+
+
 }
 
 Path ScreenEditorView::getSurfacePath(Surface* s)
@@ -175,6 +203,8 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 		return;
 	}
 
+	if (Surface* s = screen->getSurfaceAt(getRelativeMousePos())) s->selectThis();
+	
 	//surface manip mode
 	if (manipSurface != nullptr)
 	{
@@ -219,7 +249,11 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 
 void ScreenEditorView::mouseMove(const MouseEvent& e)
 {
-	if (zoomingMode || panningMode) return;
+	if (zoomingMode || panningMode)
+	{
+		repaint();
+		return;
+	}
 
 	if (e.mods.isAltDown())
 	{
@@ -245,12 +279,14 @@ void ScreenEditorView::mouseDrag(const MouseEvent& e)
 	{
 		zoom = zoomAtMouseDown + offsetRelative.y * zoomSensitivity;
 		moveScreenPointTo(focusPointAtMouseDown, focusScreenPoint);
+		repaint();
 		return;
 	}
 
 	if (panningMode)
 	{
 		viewOffset = offsetAtMouseDown - offsetRelative / zoom;
+		repaint();
 		return;
 	}
 
@@ -346,6 +382,7 @@ void ScreenEditorView::mouseWheelMove(const MouseEvent& e, const MouseWheelDetai
 	Point<float> screenPos = getRelativeMousePos();
 	zoom += wheel.deltaY * zoomSensitivity / 10;
 	moveScreenPointTo(screenPos, getMouseXYRelative());
+	repaint();
 }
 
 

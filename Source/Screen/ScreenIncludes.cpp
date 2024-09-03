@@ -22,5 +22,5 @@
 #include "Surface/Surface.cpp"
 #include "Surface/SurfaceManager.cpp"
 #include "Surface/ui/SurfaceUI.cpp"
-
+#include "Surface/ui/SurfaceEditorPanel.cpp"
 #include "ui/ScreenEditorPanel.cpp"

@@ -48,7 +48,7 @@ namespace BinaryData
     const int            fragmentShaderTestGrid_glslSize = 9164;
 
     extern const char*   icon_png;
-    const int            icon_pngSize = 52976;
+    const int            icon_pngSize = 205198;
 
     extern const char*   testPattern_png;
     const int            testPattern_pngSize = 85942;
