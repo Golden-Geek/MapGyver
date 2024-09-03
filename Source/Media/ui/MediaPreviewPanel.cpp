@@ -17,7 +17,7 @@ MediaPreview::MediaPreview() :
 	media(nullptr)
 {
 
-	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 1);
+	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 3);
 
 
 }

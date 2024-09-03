@@ -372,7 +372,7 @@
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" ORGANICUI_USE_SHAREDTEXTURE="1"
                ORGANICUI_USE_WEBSERVER="1" ORGANICUI_USE_SERVUS="1" JUCE_ALLOW_SPECIAL_CHARS_IN_ADDRESS="1"
                JUCE_ENABLE_BROADCAST_BY_DEFAULT="1" JUCE_EXCLUSIVE_BINDING_BY_DEFAULT="1"
-               JUCE_IP_AND_PORT_DETECTION="1" JUCE_USE_CAMERA="1"/>
+               JUCE_IP_AND_PORT_DETECTION="1" JUCE_USE_CAMERA="1" SHAREDTEXTURE_USE_CPU_IMAGE="0"/>
   <EXPORTFORMATS>
     <VS2022 targetFolder="Builds/VisualStudio2022" smallIcon="AKcEsb" bigIcon="AKcEsb"
             externalLibraries="libvlc.lib&#10;libvlccore.lib&#10;Servus.lib"
@@ -392,7 +392,7 @@
         <MODULEPATH id="juce_graphics"/>
         <MODULEPATH id="juce_gui_basics"/>
         <MODULEPATH id="juce_opengl"/>
-        <MODULEPATH id="juce_osc" path="D:\Softwares\JUCE\modules"/>
+        <MODULEPATH id="juce_osc"/>
         <MODULEPATH id="juce_video"/>
         <MODULEPATH id="juce_organicui" path="Modules"/>
         <MODULEPATH id="juce_cryptography"/>

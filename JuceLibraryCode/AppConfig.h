@@ -310,7 +310,7 @@
 // juce_sharedtexture flags:
 
 #ifndef    SHAREDTEXTURE_USE_CPU_IMAGE
- //#define SHAREDTEXTURE_USE_CPU_IMAGE 1
+ #define   SHAREDTEXTURE_USE_CPU_IMAGE 0
 #endif
 
 //==============================================================================
