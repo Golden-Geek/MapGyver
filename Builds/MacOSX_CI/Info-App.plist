@@ -13,11 +13,11 @@
     <key>CFBundleIconFile</key>
     <string>Icon.icns</string>
     <key>CFBundleIdentifier</key>
-    <string>com.goldengeek.rulemapool</string>
+    <string>com.goldengeek.spidermap</string>
     <key>CFBundleName</key>
-    <string>RuleMaPool</string>
+    <string>SpiderMap</string>
     <key>CFBundleDisplayName</key>
-    <string>RuleMaPool</string>
+    <string>SpiderMap</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleSignature</key>

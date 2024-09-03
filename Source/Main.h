@@ -11,11 +11,11 @@
 #pragma once
 
 //==============================================================================
-class RuleMaPoolApplication : public OrganicApplication
+class SpiderMapApplication : public OrganicApplication
 {
 public:
 	//==============================================================================
-	RuleMaPoolApplication();
+	SpiderMapApplication();
 
 
 	void initialiseInternal(const String& /*commandLine*/) override;
@@ -26,4 +26,4 @@ public:
 	void handleCrashed() override;
 };
 
-START_JUCE_APPLICATION(RuleMaPoolApplication)
+START_JUCE_APPLICATION(SpiderMapApplication)

@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="DMftGm" name="SpiderMap" projectType="guiapp" useAppConfig="1"
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/vlc/include4&#10;../../EXternal/vlc/vlcpp&#10;../../External/NDI/include&#10;../../External/servus/include&#10;"
+              defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" companyWebsite="https://benjamin.kuperberg.fr/spidermap"
+              companyName="GoldenGeek" bundleIdentifier="com.goldengeek.spidermap"
+              displaySplashScreen="1" version="1.0.0b1" projectLineFeed="&#10;">
+  <MAINGROUP id="HVgNxl" name="SpiderMap">
+    <GROUP id="{F38B7255-1DCA-93A3-BDC5-0B94B29FDCE3}" name="Resources">
+      <GROUP id="{714BA6B0-CDE8-2433-11E9-E60FA7C30A64}" name="media">
+        <FILE id="KECrPT" name="composition.png" compile="0" resource="1" file="Resources/media/composition.png"/>
+        <FILE id="hy3WxJ" name="ndi.png" compile="0" resource="1" file="Resources/media/ndi.png"/>
+        <FILE id="XaeL6p" name="node.png" compile="0" resource="1" file="Resources/media/node.png"/>
+        <FILE id="bfc5ka" name="picture.png" compile="0" resource="1" file="Resources/media/picture.png"/>
+        <FILE id="IMxknv" name="sequence.png" compile="0" resource="1" file="Resources/media/sequence.png"/>
+        <FILE id="N8oEwO" name="shader.png" compile="0" resource="1" file="Resources/media/shader.png"/>
+        <FILE id="q5lnAO" name="sharedTexture.png" compile="0" resource="1"
+              file="Resources/media/sharedTexture.png"/>
+        <FILE id="TjLrHq" name="solidColor.png" compile="0" resource="1" file="Resources/media/solidColor.png"/>
+        <FILE id="UGCeS2" name="video.png" compile="0" resource="1" file="Resources/media/video.png"/>
+        <FILE id="IVmIP8" name="webcam.png" compile="0" resource="1" file="Resources/media/webcam.png"/>
+      </GROUP>
+      <GROUP id="{2197F95F-2563-5673-95CA-08F7626CAAB1}" name="osx">
+        <FILE id="RBLLda" name="libndi.dylib" compile="0" resource="0" file="External/NDI/lib/osx/libndi.dylib"
+              xcodeResource="1"/>
+      </GROUP>
+      <FILE id="Khku9M" name="default.smlayout" compile="0" resource="1"
+            file="Resources/default.smlayout"/>
+      <FILE id="QjCryC" name="fragmentShaderMainSurface.glsl" compile="0"
+            resource="1" file="Resources/fragmentShaderMainSurface.glsl"/>
+      <FILE id="zaw2Hw" name="fragmentShaderTestGrid.glsl" compile="0" resource="1"
+            file="Resources/fragmentShaderTestGrid.glsl"/>
+      <FILE id="AKcEsb" name="icon.png" compile="0" resource="1" file="Resources/icon.png"/>
+      <FILE id="PvxFYN" name="testPattern.png" compile="0" resource="1" file="Resources/testPattern.png"/>
+      <FILE id="I4Y6fq" name="VertexShaderMainSurface.glsl" compile="0" resource="1"
+            file="Resources/VertexShaderMainSurface.glsl"/>
+    </GROUP>
+    <GROUP id="{1C2049A4-F05D-7C48-44EC-DD606A3617AC}" name="Source">
+      <GROUP id="{B19EA5C3-367A-80C3-EC20-D9B7AA16E911}" name="Common">
+        <GROUP id="{47B9C4FE-5711-16C4-42E1-B7DC7C568799}" name="ContentExplorer">
+          <FILE id="bB8Wvo" name="OnlineContentExplorer.cpp" compile="0" resource="0"
+                file="Source/Common/ContentExplorer/OnlineContentExplorer.cpp"/>
+          <FILE id="nhzpi5" name="OnlineContentExplorer.h" compile="0" resource="0"
+                file="Source/Common/ContentExplorer/OnlineContentExplorer.h"/>
+        </GROUP>
+        <GROUP id="{CB174BFA-16BF-AEDE-F181-939536A126AF}" name="NDI">
+          <GROUP id="{F036D58F-B5A4-4235-7B68-4C2E247299CF}" name="ui">
+            <FILE id="EDoTYi" name="NDIDeviceChooser.cpp" compile="0" resource="0"
+                  file="Source/Common/NDI/ui/NDIDeviceChooser.cpp"/>
+            <FILE id="mhR3iz" name="NDIDeviceChooser.h" compile="0" resource="0"
+                  file="Source/Common/NDI/ui/NDIDeviceChooser.h"/>
+            <FILE id="W1KQnL" name="NDIDeviceParameterUI.cpp" compile="0" resource="0"
+                  file="Source/Common/NDI/ui/NDIDeviceParameterUI.cpp"/>
+            <FILE id="VTvRYj" name="NDIDeviceParameterUI.h" compile="0" resource="0"
+                  file="Source/Common/NDI/ui/NDIDeviceParameterUI.h"/>
+          </GROUP>
+          <FILE id="I6B3mU" name="NDIDevice.cpp" compile="0" resource="0" file="Source/Common/NDI/NDIDevice.cpp"/>
+          <FILE id="y5jMth" name="NDIDevice.h" compile="0" resource="0" file="Source/Common/NDI/NDIDevice.h"/>
+          <FILE id="x9tUAL" name="NDIDeviceParameter.cpp" compile="0" resource="0"
+                file="Source/Common/NDI/NDIDeviceParameter.cpp"/>
+          <FILE id="rhpX8H" name="NDIDeviceParameter.h" compile="0" resource="0"
+                file="Source/Common/NDI/NDIDeviceParameter.h"/>
+          <FILE id="c6KvD0" name="NDIManager.cpp" compile="0" resource="0" file="Source/Common/NDI/NDIManager.cpp"/>
+          <FILE id="JDMkOS" name="NDIManager.h" compile="0" resource="0" file="Source/Common/NDI/NDIManager.h"/>
+        </GROUP>
+        <FILE id="YvbUlU" name="CommonIncludes.cpp" compile="1" resource="0"
+              file="Source/Common/CommonIncludes.cpp"/>
+        <FILE id="NqNVGJ" name="CommonIncludes.h" compile="0" resource="0"
+              file="Source/Common/CommonIncludes.h"/>
+        <FILE id="lfDzBU" name="GLHelpers.h" compile="0" resource="0" file="Source/Common/GLHelpers.h"/>
+        <FILE id="JIDsB2" name="MediaTarget.cpp" compile="0" resource="0" file="Source/Common/MediaTarget.cpp"/>
+        <FILE id="gxOSlQ" name="MediaTarget.h" compile="0" resource="0" file="Source/Common/MediaTarget.h"/>
+        <FILE id="JPNfCK" name="OpenGLManager.cpp" compile="0" resource="0"
+              file="Source/Common/OpenGLManager.cpp"/>
+        <FILE id="mHGAjV" name="OpenGLManager.h" compile="0" resource="0" file="Source/Common/OpenGLManager.h"/>
+      </GROUP>
+      <GROUP id="{C97F0BAC-D0A7-86DD-3A02-57F4CF14F7C3}" name="Engine">
+        <FILE id="SZB5Og" name="SMEngine.cpp" compile="1" resource="0" file="Source/Engine/SMEngine.cpp"/>
+        <FILE id="aVz8Zt" name="SMEngine.h" compile="0" resource="0" file="Source/Engine/SMEngine.h"/>
+      </GROUP>
+      <GROUP id="{924D741D-3B07-1454-A4CF-6C278ABC753A}" name="Media">
+        <GROUP id="{284332BF-9D8F-13AD-1288-491679B1B400}" name="medias">
+          <GROUP id="{74028E00-52A0-D56B-3373-0305324DB36B}" name="sequence">
+            <GROUP id="{075A33E0-67BA-6E57-7A86-FF46DD2CCC9B}" name="ui">
+              <FILE id="KB0rmV" name="MediaClipManagerUI.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/sequence/ui/MediaClipManagerUI.cpp"/>
+              <FILE id="utz6zj" name="MediaClipManagerUI.h" compile="0" resource="0"
+                    file="Source/Media/medias/sequence/ui/MediaClipManagerUI.h"/>
+              <FILE id="nXlieX" name="MediaClipUI.cpp" compile="0" resource="0" file="Source/Media/medias/sequence/ui/MediaClipUI.cpp"/>
+              <FILE id="votmV6" name="MediaClipUI.h" compile="0" resource="0" file="Source/Media/medias/sequence/ui/MediaClipUI.h"/>
+              <FILE id="x2lchv" name="MediaLayerTimeline.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/sequence/ui/MediaLayerTimeline.cpp"/>
+              <FILE id="pQeoYF" name="MediaLayerTimeline.h" compile="0" resource="0"
+                    file="Source/Media/medias/sequence/ui/MediaLayerTimeline.h"/>
+            </GROUP>
+            <FILE id="DBgPYt" name="ClipTransition.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/sequence/ClipTransition.cpp"/>
+            <FILE id="NGc2rO" name="ClipTransition.h" compile="0" resource="0"
+                  file="Source/Media/medias/sequence/ClipTransition.h"/>
+            <FILE id="KqEYdJ" name="MediaClip.cpp" compile="0" resource="0" file="Source/Media/medias/sequence/MediaClip.cpp"/>
+            <FILE id="xsGIQm" name="MediaClip.h" compile="0" resource="0" file="Source/Media/medias/sequence/MediaClip.h"/>
+            <FILE id="pzOKBh" name="MediaClipManager.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/sequence/MediaClipManager.cpp"/>
+            <FILE id="cqM7QD" name="MediaClipManager.h" compile="0" resource="0"
+                  file="Source/Media/medias/sequence/MediaClipManager.h"/>
+            <FILE id="KcWaJX" name="MediaLayer.cpp" compile="0" resource="0" file="Source/Media/medias/sequence/MediaLayer.cpp"/>
+            <FILE id="DV3Q3Y" name="MediaLayer.h" compile="0" resource="0" file="Source/Media/medias/sequence/MediaLayer.h"/>
+            <FILE id="vVMCka" name="SequenceMedia.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/sequence/SequenceMedia.cpp"/>
+            <FILE id="aeDsTI" name="SequenceMedia.h" compile="0" resource="0" file="Source/Media/medias/sequence/SequenceMedia.h"/>
+          </GROUP>
+          <GROUP id="{CF059ADF-8184-8DDC-E70E-02555368170C}" name="node">
+            <FILE id="h7viUd" name="NodeMedia.cpp" compile="0" resource="0" file="Source/Media/medias/node/NodeMedia.cpp"/>
+            <FILE id="PcIfQQ" name="NodeMedia.h" compile="0" resource="0" file="Source/Media/medias/node/NodeMedia.h"/>
+          </GROUP>
+          <GROUP id="{34DE5101-50DD-DFBC-E9E3-99E1944439CD}" name="color">
+            <FILE id="Zex5T9" name="ColorMedia.cpp" compile="0" resource="0" file="Source/Media/medias/color/ColorMedia.cpp"/>
+            <FILE id="SgIxxG" name="ColorMedia.h" compile="0" resource="0" file="Source/Media/medias/color/ColorMedia.h"/>
+          </GROUP>
+          <GROUP id="{C1D8290A-0898-63EE-5F55-905BBAF572B5}" name="composition">
+            <GROUP id="{8C1366DC-398D-DB5A-CDA8-038BF01A935F}" name="ui">
+              <FILE id="E3UraQ" name="CompositionEditorPanel.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/composition/ui/CompositionEditorPanel.cpp"/>
+              <FILE id="tzUb41" name="CompositionEditorPanel.h" compile="0" resource="0"
+                    file="Source/Media/medias/composition/ui/CompositionEditorPanel.h"/>
+            </GROUP>
+            <GROUP id="{6DFE3C41-BB95-5E6D-83E1-761C9503E865}" name="CompositionLayer">
+              <FILE id="SQhbhW" name="CompositionLayer.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/composition/CompositionLayer/CompositionLayer.cpp"/>
+              <FILE id="QnRAXh" name="CompositionLayer.h" compile="0" resource="0"
+                    file="Source/Media/medias/composition/CompositionLayer/CompositionLayer.h"/>
+              <FILE id="s7Uj9r" name="CompositionLayerManager.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/composition/CompositionLayer/CompositionLayerManager.cpp"/>
+              <FILE id="TAzm77" name="CompositionLayerManager.h" compile="0" resource="0"
+                    file="Source/Media/medias/composition/CompositionLayer/CompositionLayerManager.h"/>
+            </GROUP>
+            <FILE id="Qc0V4g" name="CompositionMedia.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/composition/CompositionMedia.cpp"/>
+            <FILE id="gB3RQv" name="CompositionMedia.h" compile="0" resource="0"
+                  file="Source/Media/medias/composition/CompositionMedia.h"/>
+          </GROUP>
+          <GROUP id="{C6442A20-240E-74D5-44AC-2F09FDBFAA13}" name="ndi">
+            <FILE id="h4TbQs" name="NDIMedia.cpp" compile="0" resource="0" file="Source/Media/medias/ndi/NDIMedia.cpp"/>
+            <FILE id="cGfKGN" name="NDIMedia.h" compile="0" resource="0" file="Source/Media/medias/ndi/NDIMedia.h"/>
+          </GROUP>
+          <GROUP id="{2247A8BB-4BCE-BF66-FE60-B7F0DD09AF0D}" name="picture">
+            <FILE id="MUk5db" name="PictureMedia.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/picture/PictureMedia.cpp"/>
+            <FILE id="E6j3FS" name="PictureMedia.h" compile="0" resource="0" file="Source/Media/medias/picture/PictureMedia.h"/>
+          </GROUP>
+          <GROUP id="{85865C8C-AC14-E279-F737-BC93A4D8B6E0}" name="shader">
+            <GROUP id="{3CFEF496-92F2-7331-1132-33362B638A2F}" name="ui"/>
+            <FILE id="EY9yW4" name="ShaderMedia.cpp" compile="0" resource="0" file="Source/Media/medias/shader/ShaderMedia.cpp"/>
+            <FILE id="hDwXde" name="ShaderMedia.h" compile="0" resource="0" file="Source/Media/medias/shader/ShaderMedia.h"/>
+          </GROUP>
+          <GROUP id="{45D85D7E-0A3B-33C4-DE6E-4E2C56AA2ECD}" name="sharedtexture">
+            <FILE id="EqiBCU" name="SharedTextureMedia.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/sharedtexture/SharedTextureMedia.cpp"/>
+            <FILE id="dPIWw1" name="SharedTextureMedia.h" compile="0" resource="0"
+                  file="Source/Media/medias/sharedtexture/SharedTextureMedia.h"/>
+          </GROUP>
+          <GROUP id="{789B912B-C9EF-806B-BBB4-78AE0DD44723}" name="video">
+            <FILE id="J1IVz4" name="VideoMedia.cpp" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.cpp"/>
+            <FILE id="HIszRg" name="VideoMedia.h" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.h"/>
+          </GROUP>
+          <GROUP id="{29E5A0E5-283C-5D87-478F-76221EEB97B9}" name="webcam">
+            <GROUP id="{3C37978B-3D67-185C-B209-94D40418B3D7}" name="ui">
+              <FILE id="ENdr19" name="webcamDeviceChooser.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/webcam/ui/webcamDeviceChooser.cpp"/>
+              <FILE id="AizcoX" name="webcamDeviceChooser.h" compile="0" resource="0"
+                    file="Source/Media/medias/webcam/ui/webcamDeviceChooser.h"/>
+              <FILE id="qHOsfU" name="webcamDeviceParameterUI.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/webcam/ui/webcamDeviceParameterUI.cpp"/>
+              <FILE id="bxPngw" name="webcamDeviceParameterUI.h" compile="0" resource="0"
+                    file="Source/Media/medias/webcam/ui/webcamDeviceParameterUI.h"/>
+            </GROUP>
+            <FILE id="Z4tGLT" name="webcamDevice.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/webcam/webcamDevice.cpp"/>
+            <FILE id="B6Zn0y" name="webcamDevice.h" compile="0" resource="0" file="Source/Media/medias/webcam/webcamDevice.h"/>
+            <FILE id="rRT2pY" name="webcamDeviceParameter.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/webcam/webcamDeviceParameter.cpp"/>
+            <FILE id="oCfLBL" name="webcamDeviceParameter.h" compile="0" resource="0"
+                  file="Source/Media/medias/webcam/webcamDeviceParameter.h"/>
+            <FILE id="QFJLS3" name="webcamManager.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/webcam/webcamManager.cpp"/>
+            <FILE id="NOCGs9" name="webcamManager.h" compile="0" resource="0" file="Source/Media/medias/webcam/webcamManager.h"/>
+            <FILE id="ZBYiVJ" name="webcamMedia.cpp" compile="0" resource="0" file="Source/Media/medias/webcam/webcamMedia.cpp"/>
+            <FILE id="mHVtOO" name="webcamMedia.h" compile="0" resource="0" file="Source/Media/medias/webcam/webcamMedia.h"/>
+          </GROUP>
+        </GROUP>
+        <GROUP id="{246EA82D-0CB9-1D91-B613-BEC53E0B6D70}" name="ui">
+          <FILE id="nf03WD" name="MediaEditor.cpp" compile="0" resource="0" file="Source/Media/ui/MediaEditor.cpp"/>
+          <FILE id="dQROr2" name="MediaEditor.h" compile="0" resource="0" file="Source/Media/ui/MediaEditor.h"/>
+          <FILE id="Gcnt6Z" name="MediaGridUI.cpp" compile="0" resource="0" file="Source/Media/ui/MediaGridUI.cpp"/>
+          <FILE id="SSYAzx" name="MediaGridUI.h" compile="0" resource="0" file="Source/Media/ui/MediaGridUI.h"/>
+          <FILE id="xCT11S" name="MediaManagerGridUI.cpp" compile="0" resource="0"
+                file="Source/Media/ui/MediaManagerGridUI.cpp" xcodeResource="0"/>
+          <FILE id="WtXlmN" name="MediaManagerGridUI.h" compile="0" resource="0"
+                file="Source/Media/ui/MediaManagerGridUI.h"/>
+          <FILE id="PQNCME" name="MediaManagerUI.cpp" compile="0" resource="0"
+                file="Source/Media/ui/MediaManagerUI.cpp"/>
+          <FILE id="i0ITQB" name="MediaManagerUI.h" compile="0" resource="0"
+                file="Source/Media/ui/MediaManagerUI.h"/>
+          <FILE id="U2PXOY" name="MediaPreviewPanel.cpp" compile="0" resource="0"
+                file="Source/Media/ui/MediaPreviewPanel.cpp"/>
+          <FILE id="jYmFXE" name="MediaPreviewPanel.h" compile="0" resource="0"
+                file="Source/Media/ui/MediaPreviewPanel.h"/>
+          <FILE id="K1OWpR" name="MediaUI.cpp" compile="0" resource="0" file="Source/Media/ui/MediaUI.cpp"/>
+          <FILE id="SpABRc" name="MediaUI.h" compile="0" resource="0" file="Source/Media/ui/MediaUI.h"/>
+        </GROUP>
+        <FILE id="DUraYx" name="Media.cpp" compile="0" resource="0" file="Source/Media/Media.cpp"/>
+        <FILE id="l2LpxR" name="Media.h" compile="0" resource="0" file="Source/Media/Media.h"/>
+        <FILE id="e2HHh5" name="MediaIncludes.cpp" compile="1" resource="0"
+              file="Source/Media/MediaIncludes.cpp"/>
+        <FILE id="iDqWiu" name="MediaIncludes.h" compile="0" resource="0" file="Source/Media/MediaIncludes.h"/>
+        <FILE id="h3GENf" name="MediaManager.cpp" compile="0" resource="0"
+              file="Source/Media/MediaManager.cpp"/>
+        <FILE id="XTtx72" name="MediaManager.h" compile="0" resource="0" file="Source/Media/MediaManager.h"/>
+      </GROUP>
+      <GROUP id="{FC63C548-493F-5EC6-9F20-217C89606A74}" name="Node">
+        <GROUP id="{AF2000C8-AF64-9BD5-A075-1F980FCB6D49}" name="Connection">
+          <GROUP id="{2B461789-8A64-7E76-78A0-8F6904C9E20D}" name="ui">
+            <FILE id="NlKy26" name="NodeConnectionManagerViewUI.cpp" compile="0"
+                  resource="0" file="Source/Node/Connection/ui/NodeConnectionManagerViewUI.cpp"/>
+            <FILE id="M7OJ8j" name="NodeConnectionManagerViewUI.h" compile="0"
+                  resource="0" file="Source/Node/Connection/ui/NodeConnectionManagerViewUI.h"/>
+            <FILE id="wNXy9K" name="NodeConnectionViewUI.cpp" compile="0" resource="0"
+                  file="Source/Node/Connection/ui/NodeConnectionViewUI.cpp"/>
+            <FILE id="H8xI3E" name="NodeConnectionViewUI.h" compile="0" resource="0"
+                  file="Source/Node/Connection/ui/NodeConnectionViewUI.h"/>
+            <FILE id="bqtO4F" name="NodeConnector.cpp" compile="0" resource="0"
+                  file="Source/Node/Connection/ui/NodeConnector.cpp"/>
+            <FILE id="gjnxEz" name="NodeConnector.h" compile="0" resource="0" file="Source/Node/Connection/ui/NodeConnector.h"/>
+          </GROUP>
+          <FILE id="ThZ7lf" name="NodeConnection.cpp" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnection.cpp"/>
+          <FILE id="X0l1Os" name="NodeConnection.h" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnection.h"/>
+          <FILE id="RAc6pQ" name="NodeConnectionManager.cpp" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnectionManager.cpp"/>
+          <FILE id="JjvGoV" name="NodeConnectionManager.h" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnectionManager.h"/>
+          <FILE id="oP8lPG" name="NodeConnectionSlot.cpp" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnectionSlot.cpp"/>
+          <FILE id="yBYQyo" name="NodeConnectionSlot.h" compile="0" resource="0"
+                file="Source/Node/Connection/NodeConnectionSlot.h"/>
+        </GROUP>
+        <GROUP id="{C170BEA4-4901-BA4E-6700-96866E3D18E8}" name="nodes">
+          <GROUP id="{6D1824C7-54FE-FCC8-2C45-8A7D64597024}" name="Output">
+            <FILE id="wcY2lX" name="OutputNode.cpp" compile="0" resource="0" file="Source/Node/nodes/Output/OutputNode.cpp"/>
+            <FILE id="dLaBT2" name="OutputNode.h" compile="0" resource="0" file="Source/Node/nodes/Output/OutputNode.h"/>
+          </GROUP>
+          <GROUP id="{7E9D8955-7F2C-8885-110C-DBA655FF9A75}" name="Drawing">
+            <GROUP id="{863F2D6B-F945-4B83-7BE6-24D895453820}" name="shape">
+              <FILE id="RheTn6" name="ShapeNode.cpp" compile="0" resource="0" file="Source/Node/nodes/Drawing/shape/ShapeNode.cpp"/>
+              <FILE id="TlUoi1" name="ShapeNode.h" compile="0" resource="0" file="Source/Node/nodes/Drawing/shape/ShapeNode.h"/>
+            </GROUP>
+          </GROUP>
+          <GROUP id="{9463CB10-632D-F3F3-AF50-2897AF332712}" name="Group">
+            <FILE id="Arc0BM" name="GroupNode.cpp" compile="0" resource="0" file="Source/Node/nodes/Group/GroupNode.cpp"/>
+            <FILE id="LZRaR2" name="GroupNode.h" compile="0" resource="0" file="Source/Node/nodes/Group/GroupNode.h"/>
+          </GROUP>
+          <GROUP id="{299E505E-1559-AEA1-3A24-EEBB54B9F346}" name="Source">
+            <FILE id="uOxSOq" name="MediaNode.cpp" compile="0" resource="0" file="Source/Node/nodes/Source/MediaNode.cpp"/>
+            <FILE id="be1xHi" name="MediaNode.h" compile="0" resource="0" file="Source/Node/nodes/Source/MediaNode.h"/>
+          </GROUP>
+        </GROUP>
+        <GROUP id="{10F9472F-423C-47E9-C611-4BE5E1A0A9A7}" name="ui">
+          <FILE id="jvOmMf" name="NodeManagerUI.cpp" compile="0" resource="0"
+                file="Source/Node/ui/NodeManagerUI.cpp"/>
+          <FILE id="prGazW" name="NodeManagerUI.h" compile="0" resource="0" file="Source/Node/ui/NodeManagerUI.h"/>
+          <FILE id="LoIPde" name="NodeManagerViewUI.cpp" compile="0" resource="0"
+                file="Source/Node/ui/NodeManagerViewUI.cpp"/>
+          <FILE id="tO7lip" name="NodeManagerViewUI.h" compile="0" resource="0"
+                file="Source/Node/ui/NodeManagerViewUI.h"/>
+          <FILE id="PfdKyk" name="NodeUI.cpp" compile="0" resource="0" file="Source/Node/ui/NodeUI.cpp"/>
+          <FILE id="JhP8AR" name="NodeUI.h" compile="0" resource="0" file="Source/Node/ui/NodeUI.h"/>
+          <FILE id="gBYogB" name="NodeViewUI.cpp" compile="0" resource="0" file="Source/Node/ui/NodeViewUI.cpp"/>
+          <FILE id="CT8yxw" name="NodeViewUI.h" compile="0" resource="0" file="Source/Node/ui/NodeViewUI.h"/>
+          <FILE id="g7FsnD" name="ViewStatsTimer.h" compile="0" resource="0"
+                file="Source/Node/ui/ViewStatsTimer.h"/>
+        </GROUP>
+        <FILE id="KD0yav" name="Node.cpp" compile="0" resource="0" file="Source/Node/Node.cpp"/>
+        <FILE id="UzNpzN" name="Node.h" compile="0" resource="0" file="Source/Node/Node.h"/>
+        <FILE id="biebGy" name="NodeFactory.cpp" compile="0" resource="0" file="Source/Node/NodeFactory.cpp"/>
+        <FILE id="nlWvf9" name="NodeFactory.h" compile="0" resource="0" file="Source/Node/NodeFactory.h"/>
+        <FILE id="kTjXYh" name="NodeIncludes.cpp" compile="1" resource="0"
+              file="Source/Node/NodeIncludes.cpp"/>
+        <FILE id="NgEDsM" name="NodeIncludes.h" compile="0" resource="0" file="Source/Node/NodeIncludes.h"/>
+        <FILE id="VxWdUv" name="NodeManager.cpp" compile="0" resource="0" file="Source/Node/NodeManager.cpp"/>
+        <FILE id="dRCquJ" name="NodeManager.h" compile="0" resource="0" file="Source/Node/NodeManager.h"/>
+      </GROUP>
+      <GROUP id="{7B97F172-AD12-D845-791F-697250E41BF4}" name="Screen">
+        <GROUP id="{B1E6FD4B-534C-4F1B-7B6F-D363C0DFB5E1}" name="Surface">
+          <GROUP id="{6622099E-00A8-BACB-9648-AF5B3A81F508}" name="ui">
+            <FILE id="k7NFL4" name="SurfaceEditorPanel.cpp" compile="0" resource="0"
+                  file="Source/Screen/Surface/ui/SurfaceEditorPanel.cpp"/>
+            <FILE id="eqpQMr" name="SurfaceEditorPanel.h" compile="0" resource="0"
+                  file="Source/Screen/Surface/ui/SurfaceEditorPanel.h"/>
+            <FILE id="YzFRQf" name="SurfaceUI.cpp" compile="0" resource="0" file="Source/Screen/Surface/ui/SurfaceUI.cpp"/>
+            <FILE id="x4H8IP" name="SurfaceUI.h" compile="0" resource="0" file="Source/Screen/Surface/ui/SurfaceUI.h"/>
+          </GROUP>
+          <FILE id="zcGwG6" name="Pin.cpp" compile="0" resource="0" file="Source/Screen/Surface/Pin.cpp"/>
+          <FILE id="JRExr9" name="Pin.h" compile="0" resource="0" file="Source/Screen/Surface/Pin.h"/>
+          <FILE id="D3Q4xT" name="Surface.cpp" compile="0" resource="0" file="Source/Screen/Surface/Surface.cpp"/>
+          <FILE id="ZQKMyQ" name="Surface.h" compile="0" resource="0" file="Source/Screen/Surface/Surface.h"/>
+          <FILE id="zrruYX" name="SurfaceManager.cpp" compile="0" resource="0"
+                file="Source/Screen/Surface/SurfaceManager.cpp"/>
+          <FILE id="Q0xQ7A" name="SurfaceManager.h" compile="0" resource="0"
+                file="Source/Screen/Surface/SurfaceManager.h"/>
+        </GROUP>
+        <GROUP id="{785167D1-B4D2-8CFB-BBE8-207B7056030A}" name="ui">
+          <FILE id="nwDWIk" name="ScreenEditorPanel.cpp" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenEditorPanel.cpp"/>
+          <FILE id="rK4yhM" name="ScreenEditorPanel.h" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenEditorPanel.h"/>
+          <FILE id="JzjTAu" name="ScreenManagerUI.cpp" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenManagerUI.cpp"/>
+          <FILE id="uNwBQQ" name="ScreenManagerUI.h" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenManagerUI.h"/>
+          <FILE id="gkfEHb" name="ScreenOutput.cpp" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenOutput.cpp"/>
+          <FILE id="Gt9FQa" name="ScreenOutput.h" compile="0" resource="0" file="Source/Screen/ui/ScreenOutput.h"/>
+          <FILE id="UcxRTZ" name="ScreenRenderer.cpp" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenRenderer.cpp"/>
+          <FILE id="g7k9TM" name="ScreenRenderer.h" compile="0" resource="0"
+                file="Source/Screen/ui/ScreenRenderer.h"/>
+        </GROUP>
+        <FILE id="fsjZqY" name="Screen.cpp" compile="0" resource="0" file="Source/Screen/Screen.cpp"/>
+        <FILE id="mMPxNm" name="Screen.h" compile="0" resource="0" file="Source/Screen/Screen.h"/>
+        <FILE id="IH8Rw8" name="ScreenIncludes.cpp" compile="1" resource="0"
+              file="Source/Screen/ScreenIncludes.cpp"/>
+        <FILE id="jZsk9v" name="ScreenIncludes.h" compile="0" resource="0"
+              file="Source/Screen/ScreenIncludes.h"/>
+        <FILE id="yum6o5" name="ScreenManager.cpp" compile="0" resource="0"
+              file="Source/Screen/ScreenManager.cpp"/>
+        <FILE id="Bdl4E1" name="ScreenManager.h" compile="0" resource="0" file="Source/Screen/ScreenManager.h"/>
+      </GROUP>
+      <FILE id="z9PQ17" name="Main.cpp" compile="0" resource="0" file="Source/Main.cpp"/>
+      <FILE id="NPvmUn" name="Main.h" compile="0" resource="0" file="Source/Main.h"/>
+      <FILE id="FMHTjX" name="MainComponent.cpp" compile="0" resource="0"
+            file="Source/MainComponent.cpp"/>
+      <FILE id="SJ1tt1" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="m5mvik" name="MainComponentCommands.cpp" compile="0" resource="0"
+            file="Source/MainComponentCommands.cpp"/>
+      <FILE id="MJaxtF" name="MainIncludes.cpp" compile="1" resource="0"
+            file="Source/MainIncludes.cpp"/>
+      <FILE id="jiTtA4" name="MainIncludes.h" compile="0" resource="0" file="Source/MainIncludes.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_organicui" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_sharedtexture" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_simpleweb" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_timeline" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" ORGANICUI_USE_SHAREDTEXTURE="1"
+               ORGANICUI_USE_WEBSERVER="1" ORGANICUI_USE_SERVUS="1" JUCE_ALLOW_SPECIAL_CHARS_IN_ADDRESS="1"
+               JUCE_ENABLE_BROADCAST_BY_DEFAULT="1" JUCE_EXCLUSIVE_BINDING_BY_DEFAULT="1"
+               JUCE_IP_AND_PORT_DETECTION="1" JUCE_USE_CAMERA="1"/>
+  <EXPORTFORMATS>
+    <VS2022 targetFolder="Builds/VisualStudio2022" smallIcon="AKcEsb" bigIcon="AKcEsb"
+            externalLibraries="libvlc.lib&#10;libvlccore.lib&#10;Servus.lib"
+            extraCompilerFlags="/bigobj">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
+                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;"
+                       binaryPath="Binaries/Debug"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
+                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;"
+                       binaryPath="Binaries/Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core"/>
+        <MODULEPATH id="juce_data_structures"/>
+        <MODULEPATH id="juce_events"/>
+        <MODULEPATH id="juce_graphics"/>
+        <MODULEPATH id="juce_gui_basics"/>
+        <MODULEPATH id="juce_opengl"/>
+        <MODULEPATH id="juce_osc" path="D:\Softwares\JUCE\modules"/>
+        <MODULEPATH id="juce_video"/>
+        <MODULEPATH id="juce_organicui" path="Modules"/>
+        <MODULEPATH id="juce_cryptography"/>
+        <MODULEPATH id="juce_gui_extra"/>
+        <MODULEPATH id="juce_sharedtexture" path="Modules"/>
+        <MODULEPATH id="juce_simpleweb" path="Modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics"/>
+        <MODULEPATH id="juce_audio_devices"/>
+        <MODULEPATH id="juce_audio_formats"/>
+        <MODULEPATH id="juce_audio_processors"/>
+        <MODULEPATH id="juce_audio_utils"/>
+      </MODULEPATHS>
+    </VS2022>
+    <VS2022 targetFolder="Builds/VisualStudio2022_CI" smallIcon="AKcEsb"
+            bigIcon="AKcEsb" extraCompilerFlags="/bigobj" externalLibraries="libvlc.lib&#10;libvlccore.lib&#10;Servus.lib">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
+                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;"
+                       binaryPath="Binaries/CI"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="JUCE/modules"/>
+        <MODULEPATH id="juce_organicui" path="Modules"/>
+        <MODULEPATH id="juce_osc" path="JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="JUCE/modules"/>
+        <MODULEPATH id="juce_sharedtexture" path="Modules"/>
+        <MODULEPATH id="juce_simpleweb" path="Modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2022>
+    <XCODE_MAC targetFolder="Builds/MacOSX_CI" extraDefs="JUCE_COREGRAPHICS_DRAW_ASYNC=0"
+               externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi" smallIcon="AKcEsb"
+               bigIcon="AKcEsb" xcodeValidArchs="arm64,x86_64" customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;&#9;&lt;dict&gt;&#10;&#9;&#9;&lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;&#9;&#9;&lt;true/&gt;&#10;&#9;&lt;/dict&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
+               postbuildCommand="cd $TARGET_BUILD_DIR&#10;install_name_tool -add_rpath @executable_path/../Resources spidermap.app/Contents/MacOS/spidermap&#10;install_name_tool -add_rpath @executable_path/../Resources/plugins spidermap.app/Contents/MacOS/spidermap"
+               frameworkSearchPaths="../../External/syphon" embeddedFrameworks="../../External/syphon/Syphon.framework">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="0" name="Release" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
+                       libraryPath="../../External/servus/lib/osx/release&#10;../../External/vlc/lib/osx/intel&#10;../../External/NDI/lib/osx"
+                       macOSDeploymentTarget="10.11" osxCompatibility="10.11 SDK"/>
+        <CONFIGURATION isDebug="0" name="ReleaseSilicon" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
+                       libraryPath="../../External/servus/lib/silicon/release&#10;../../External/vlc/lib/osx/silicon&#10;../../External/NDI/lib/osx"
+                       macOSDeploymentTarget="10.11" osxCompatibility="10.11 SDK"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="JUCE/modules"/>
+        <MODULEPATH id="juce_organicui" path="Modules"/>
+        <MODULEPATH id="juce_osc" path="JUCE/modules"/>
+        <MODULEPATH id="juce_sharedtexture" path="Modules"/>
+        <MODULEPATH id="juce_simpleweb" path="Modules"/>
+        <MODULEPATH id="juce_video" path="JUCE/modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed"
+                externalLibraries="Servus" smallIcon="AKcEsb" bigIcon="AKcEsb">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;"
+                       libraryPath="../../External/servus/lib/linux&#10;/usr/lib/x86_64-linux-gnu/"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;"
+                       libraryPath="../../External/servus/lib/linux&#10;/usr/lib/x86_64-linux-gnu/"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="JUCE/modules"/>
+        <MODULEPATH id="juce_organicui" path="Modules"/>
+        <MODULEPATH id="juce_osc" path="JUCE/modules"/>
+        <MODULEPATH id="juce_sharedtexture" path="Modules"/>
+        <MODULEPATH id="juce_simpleweb" path="Modules"/>
+        <MODULEPATH id="juce_video" path="JUCE/modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
+    <LINUX_MAKE targetFolder="Builds/Raspberry" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed&#10;-lm"
+                externalLibraries="Servus&#10;curl&#10;pthread&#10;atomic&#10;stdc++"
+                smallIcon="AKcEsb" bigIcon="AKcEsb">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/dnssd/include"
+                       libraryPath="../../External/servus/lib/raspberry&#10;/usr/lib/arm-linux-gnueabihf"
+                       linuxArchitecture="-march=armv8-a"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include"
+                       libraryPath="../../External/servus/lib/raspberry&#10;/usr/lib/arm-linux-gnueabihf"
+                       linuxArchitecture="-march=armv8-a"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="JUCE/modules"/>
+        <MODULEPATH id="juce_organicui" path="Modules"/>
+        <MODULEPATH id="juce_osc" path="JUCE/modules"/>
+        <MODULEPATH id="juce_sharedtexture" path="Modules"/>
+        <MODULEPATH id="juce_simpleweb" path="Modules"/>
+        <MODULEPATH id="juce_video" path="JUCE/modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
+    <LINUX_MAKE targetFolder="Builds/Raspberry64" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed"
+                externalLibraries="Servus&#10;curl&#10;pthread&#10;atomic&#10;stdc++"
+                smallIcon="AKcEsb" bigIcon="AKcEsb">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/dnssd/include"
+                       libraryPath="../../External/servus/lib/raspberry64"/>
+        <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/servus/lib/raspberry64"
+                       headerPath="../../External/servus/include&#10;../../External/dnssd/include"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="JUCE/modules"/>
+        <MODULEPATH id="juce_organicui" path="Modules"/>
+        <MODULEPATH id="juce_osc" path="JUCE/modules"/>
+        <MODULEPATH id="juce_sharedtexture" path="Modules"/>
+        <MODULEPATH id="juce_simpleweb" path="Modules"/>
+        <MODULEPATH id="juce_video" path="JUCE/modules"/>
+        <MODULEPATH id="juce_timeline" path="Modules"/>
+        <MODULEPATH id="juce_audio_basics" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
+  </EXPORTFORMATS>
+</JUCERPROJECT>

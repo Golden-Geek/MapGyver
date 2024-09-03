@@ -225,7 +225,7 @@ static const unsigned char temp_binary_data_9[] =
 
 const char* webcam_png = (const char*) temp_binary_data_9;
 
-//================== default.rmplayout ==================
+//================== default.smlayout ==================
 static const unsigned char temp_binary_data_10[] =
 "{\r\n"
 "  \"mainLayout\": {\r\n"
@@ -378,7 +378,7 @@ static const unsigned char temp_binary_data_10[] =
 "  \"windows\": null\r\n"
 "}";
 
-const char* default_rmplayout = (const char*) temp_binary_data_10;
+const char* default_smlayout = (const char*) temp_binary_data_10;
 
 //================== fragmentShaderMainSurface.glsl ==================
 static const unsigned char temp_binary_data_11[] =
@@ -2793,7 +2793,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x8c6a70e2:  numBytes = 1002; return solidColor_png;
         case 0x4f784065:  numBytes = 656; return video_png;
         case 0xf2126fe5:  numBytes = 1196; return webcam_png;
-        case 0x67012481:  numBytes = 4212; return default_rmplayout;
+        case 0xe7f13242:  numBytes = 4212; return default_smlayout;
         case 0x0ffdf71e:  numBytes = 1301; return fragmentShaderMainSurface_glsl;
         case 0x0ff5b690:  numBytes = 9164; return fragmentShaderTestGrid_glsl;
         case 0xd4093963:  numBytes = 52976; return icon_png;
@@ -2818,7 +2818,7 @@ const char* namedResourceList[] =
     "solidColor_png",
     "video_png",
     "webcam_png",
-    "default_rmplayout",
+    "default_smlayout",
     "fragmentShaderMainSurface_glsl",
     "fragmentShaderTestGrid_glsl",
     "icon_png",
@@ -2838,7 +2838,7 @@ const char* originalFilenames[] =
     "solidColor.png",
     "video.png",
     "webcam.png",
-    "default.rmplayout",
+    "default.smlayout",
     "fragmentShaderMainSurface.glsl",
     "fragmentShaderTestGrid.glsl",
     "icon.png",

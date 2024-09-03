@@ -7,17 +7,18 @@
 
  ==============================================================================
  */
-#include "RMPEngine.h"
+#include "SMEngine.h"
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
 #include "Node/NodeIncludes.h"
+
 
 juce_ImplementSingleton(RMPSettings);
 
 ControllableContainer* getAppSettings();
 
-RMPEngine::RMPEngine() :
-	Engine("RuleMaPool", ".poule")
+SMEngine::SMEngine() :
+	Engine(getApp().getApplicationName(), ".spidey")
 	//defaultBehaviors("Test"),
 	//ossiaFixture(nullptr)
 {
@@ -27,7 +28,7 @@ RMPEngine::RMPEngine() :
 	// OSCRemoteControl::getInstance()->addRemoteControlListener(UserInputManager::getInstance());
 	//init here
 	Engine::mainEngine = this;
-	RMPEngine::mainEngine = this;
+	SMEngine::mainEngine = this;
 
 	GlobalSettings::getInstance()->altScaleFactor->setDefaultValue(0.05);
 
@@ -47,7 +48,7 @@ RMPEngine::RMPEngine() :
 	//NDIManager::getInstance();
 }
 
-RMPEngine::~RMPEngine()
+SMEngine::~SMEngine()
 {
 	//Application-end cleanup, nothing should be recreated after this
 	//delete singletons here
@@ -65,14 +66,14 @@ RMPEngine::~RMPEngine()
 }
 
 
-void RMPEngine::clearInternal()
+void SMEngine::clearInternal()
 {
 	//clear
 	ScreenManager::getInstance()->clear();
 	MediaManager::getInstance()->clear();
 }
 
-var RMPEngine::getJSONData()
+var SMEngine::getJSONData()
 {
 	var data = Engine::getJSONData();
 
@@ -86,7 +87,7 @@ var RMPEngine::getJSONData()
 	return data;
 }
 
-void RMPEngine::loadJSONDataInternalEngine(var data, ProgressTask* loadingTask)
+void SMEngine::loadJSONDataInternalEngine(var data, ProgressTask* loadingTask)
 {
 	ProgressTask* ScreenTask = loadingTask->addTask("Screens");
 	ProgressTask* MediaTask = loadingTask->addTask("Medias");
@@ -107,27 +108,27 @@ void RMPEngine::loadJSONDataInternalEngine(var data, ProgressTask* loadingTask)
 
 }
 
-void RMPEngine::childStructureChanged(ControllableContainer* cc)
+void SMEngine::childStructureChanged(ControllableContainer* cc)
 {
 	Engine::childStructureChanged(cc);
 }
 
-void RMPEngine::controllableFeedbackUpdate(ControllableContainer* cc, Controllable* c)
+void SMEngine::controllableFeedbackUpdate(ControllableContainer* cc, Controllable* c)
 {
 	if (isClearing || isLoadingFile) return;
 }
 
-void RMPEngine::handleAsyncUpdate()
+void SMEngine::handleAsyncUpdate()
 {
 	Engine::handleAsyncUpdate();
 }
 
-String RMPEngine::getMinimumRequiredFileVersion()
+String SMEngine::getMinimumRequiredFileVersion()
 {
 	return "1.0.0b1";
 }
 
-void RMPEngine::importSelection()
+void SMEngine::importSelection()
 {
 	const MessageManagerLock mmLock;
 	FileChooser fc("Load some files", File::getCurrentWorkingDirectory(), "*.mochi");
@@ -142,7 +143,7 @@ void RMPEngine::importSelection()
 	*/
 }
 
-void RMPEngine::importMochi(var data)
+void SMEngine::importMochi(var data)
 {
 	if (!data.isObject()) return;
 
@@ -150,7 +151,7 @@ void RMPEngine::importMochi(var data)
 	MediaManager::getInstance()->addItemsFromData(data.getProperty(MediaManager::getInstance()->shortName, var()));
 }
 
-void RMPEngine::exportSelection()
+void SMEngine::exportSelection()
 {
 	var data(new DynamicObject());
 
@@ -169,7 +170,7 @@ void RMPEngine::exportSelection()
 	*/
 }
 
-void RMPEngine::parameterValueChanged(Parameter* p) {
+void SMEngine::parameterValueChanged(Parameter* p) {
 	Engine::parameterValueChanged(p);
 	/* if (p == panelScale) {
 		InputPanel::getInstance()->resized();

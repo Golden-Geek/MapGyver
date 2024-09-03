@@ -24,12 +24,12 @@ public:
 	IntParameter* fpsLimit;
 };
 
-class RMPEngine :
+class SMEngine :
 	public Engine
 {
 public:
-	RMPEngine();
-	~RMPEngine();
+	SMEngine();
+	~SMEngine();
 
 
 	std::unique_ptr<VLC::Instance> vlcInstance = nullptr;

@@ -1,40 +1,40 @@
 //==============================================================================
 
 #include "MainIncludes.h"
-#include "Engine/RMPEngine.h"
+#include "Engine/SMEngine.h"
 
-RuleMaPoolApplication::RuleMaPoolApplication() :
-	OrganicApplication("RuleMaPool", true, ImageCache::getFromMemory(BinaryData::icon_png, BinaryData::icon_pngSize))
+SpiderMapApplication::SpiderMapApplication() :
+	OrganicApplication("SpiderMap", true, ImageCache::getFromMemory(BinaryData::icon_png, BinaryData::icon_pngSize))
 {
 }
 
 
-void RuleMaPoolApplication::initialiseInternal(const String&)
+void SpiderMapApplication::initialiseInternal(const String&)
 {
-	engine.reset(new RMPEngine());
+	engine.reset(new SMEngine());
 	if (useWindow) mainComponent.reset(new MainContentComponent());
 
 	//Call after engine init
-	AppUpdater::getInstance()->setURLs("https://benjamin.kuperberg.fr/rulemapool/releases/update.json", "https://benjamin.kuperberg.fr/rulemapool/download/app", "RuleMaPool");
+	AppUpdater::getInstance()->setURLs("https://benjamin.kuperberg.fr/rulemapool/releases/update.json", "https://benjamin.kuperberg.fr/rulemapool/download/app", getApplicationName());
 	// HelpBox::getInstance()->helpURL = URL("https://benjamin.kuperberg.fr/rulemapool/help/");
 
 	//CrashDumpUploader::getInstance()->init("https://benjamin.kuperberg.fr/rulemapool/support/crash_report.php",ImageCache::getFromMemory(BinaryData::crash_png, BinaryData::crash_pngSize));
 
 	DashboardManager::getInstance()->setupDownloadURL("https://benjamin.kuperberg.fr/download/dashboard/dashboard.php?folder=dashboard");
 
-	ShapeShifterManager::getInstance()->setDefaultFileData(BinaryData::default_rmplayout);
-	ShapeShifterManager::getInstance()->setLayoutInformations("rmplayout", "RuleMaPool/layouts");
+	ShapeShifterManager::getInstance()->setDefaultFileData(BinaryData::default_smlayout);
+	ShapeShifterManager::getInstance()->setLayoutInformations("smlayout", getApplicationName() + "/layouts");
 }
 
 
-void RuleMaPoolApplication::afterInit()
+void SpiderMapApplication::afterInit()
 {
 	//ANALYTICS
 	if (mainWindow != nullptr)
 	{
 
 		// MainContentComponent* comp = (MainContentComponent*)mainComponent.get();
-		// RMPEngine* eng = (RMPEngine*)engine.get();
+		// SMEngine* eng = (SMEngine*)engine.get();
 		//RMPMenuBarComponent* menu = new RMPMenuBarComponent(comp, eng);
 		// mainWindow->setMenuBarComponent(menu);
 	}
@@ -42,13 +42,13 @@ void RuleMaPoolApplication::afterInit()
 
 }
 
-void RuleMaPoolApplication::shutdown()
+void SpiderMapApplication::shutdown()
 {
 	OrganicApplication::shutdown();
 	AppUpdater::deleteInstance();
 }
 
-void RuleMaPoolApplication::handleCrashed()
+void SpiderMapApplication::handleCrashed()
 {
 	/*
 	for (auto& m : ModuleManager::getInstance()->getItemsWithType<OSModule>())

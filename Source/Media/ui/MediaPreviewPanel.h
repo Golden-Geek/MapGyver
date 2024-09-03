@@ -24,6 +24,7 @@ public:
 	
 	bool useMediaOnPreview;
 	Media* media;
+	Image image;
 
 	void setMedia(Media* m);
 

@@ -3,15 +3,15 @@
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 
-#define ApplicationName 'RuleMaPool'
-#define ApplicationVersion GetStringFileInfo('Binaries/CI/App/RuleMaPool.exe',"ProductVersion")
+#define ApplicationName 'SpiderMap'
+#define ApplicationVersion GetStringFileInfo('Binaries/CI/App/SpiderMap.exe',"ProductVersion")
 
 [Setup]
 AppName={#ApplicationName}
 AppId={#ApplicationName}
 AppVersion={#ApplicationVersion}
 AppPublisher=Golden Geek
-AppPublisherURL=http://benjamin.kuperberg.fr/rulemapool
+AppPublisherURL=http://benjamin.kuperberg.fr/spidermap
 DefaultDirName={pf}\{#ApplicationName}
 DefaultGroupName={#ApplicationName}
 UninstallDisplayIcon={app}\{#ApplicationName}.exe

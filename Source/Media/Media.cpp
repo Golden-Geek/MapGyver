@@ -9,7 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "Engine/RMPEngine.h"
+#include "Engine/SMEngine.h"
 #include "Media.h"
 
 using namespace juce::gl;
