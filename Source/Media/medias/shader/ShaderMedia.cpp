@@ -27,14 +27,17 @@ ShaderMedia::ShaderMedia(var params) :
 	autoClearFrameBufferOnRender = false;
 
 	shaderType = addEnumParameter("Shader Type", "Type Shader to load");
-	shaderType->addOption("Shader GLSL File", ShaderGLSLFile)->addOption("ShaderToy File", ShaderToyFile)->addOption("ShaderToy Online", ShaderToyURL);
+	shaderType->addOption("Shader GLSL File", ShaderGLSLFile)->addOption("ShaderToy File", ShaderToyFile)->addOption("ShaderToy Online", ShaderToyURL)->addOption("ISF File", ShaderISFFile)->addOption("ISF Online", ShaderISFURL);
 
 	shaderFile = addFileParameter("Fragment Shader", "Fragment Shader");
 	shaderFile->setAutoReload(true);
 
-	shaderToyID = addStringParameter("ShaderToy ID", "ID of the shader toy. It's the last part of the URL when viewing it on the website", "tsXBzS", false);
+	onlineShaderID = addStringParameter("Shdaer ID", "ID of the shader, either for ShaderToy or ISF. It's the last part of the URL when viewing it on the website", "", false);
 	shaderToyKey = addStringParameter("ShaderToy Key", "Key of the shader toy. It's the last part of the URL when viewing it on the website", "Bd8jRr", false);
 	keepOfflineCache = addBoolParameter("Keep Offline Cache", "Keep the offline cache of the shader, to reload if file is missing or if no internet for online shaders", true);
+
+	shaderLoaded = addBoolParameter("Shader Loaded", "Shader Loaded", false);
+	shaderLoaded->setControllableFeedbackOnly(true);
 
 
 	fps = addIntParameter("FPS", "FPS", 60, 1, 1000);
@@ -74,11 +77,14 @@ void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
 	{
 		ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
 		shaderFile->setEnabled(st == ShaderGLSLFile || st == ShaderToyFile || st == ShaderISFFile);
-		shaderToyID->setEnabled(st == ShaderToyURL);
+		onlineShaderID->setEnabled(st == ShaderToyURL || st == ShaderISFURL);
+		if (onlineShaderID->enabled && onlineShaderID->stringValue().isEmpty()) onlineShaderID->setValue(st == ShaderToyURL ? defaultShaderToyID : defaultISFID);
 		shaderToyKey->setEnabled(st == ShaderToyURL);
+
+		sourceMedias.userCanAddControllables = !(st == ShaderISFFile || st == ShaderISFURL);
 	}
 
-	if (p == shaderType || p == shaderFile || p == shaderToyID || p == shaderToyKey)
+	if (p == shaderType || p == shaderFile || p == onlineShaderID || p == shaderToyKey)
 	{
 		if (!isLoadingShader) shouldReloadShader = true;
 	}
@@ -157,6 +163,8 @@ void ShaderMedia::renderGLInternal()
 	}
 
 
+	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
+
 	int texIndex = 0;
 	int offset = 5;
 	for (auto& tp : sourceMedias.controllables)
@@ -164,11 +172,15 @@ void ShaderMedia::renderGLInternal()
 		TargetParameter* p = dynamic_cast<TargetParameter*>(tp);
 		if (Media* m = p->getTargetContainerAs<Media>())
 		{
-			if (textureUniformName.isNotEmpty())
+			glActiveTexture(GL_TEXTURE0 + texIndex + offset);
+			glBindTexture(GL_TEXTURE_2D, m->getTextureID());
+
+			String texName = textureUniformName.isEmpty() ? "" : (textureUniformName + String(texIndex));
+			if (st == ShaderISFFile || st == ShaderISFURL) texName = p->niceName;
+
+			if (texName.isNotEmpty())
 			{
-				glActiveTexture(GL_TEXTURE0 + texIndex + offset);
-				glBindTexture(GL_TEXTURE_2D, m->getTextureID());
-				shader->setUniform((textureUniformName + String(texIndex)).toStdString().c_str(), texIndex + offset);
+				shader->setUniform(texName.toStdString().c_str(), texIndex + offset);
 				texIndex++;
 			}
 		}
@@ -183,7 +195,10 @@ void ShaderMedia::renderGLInternal()
 		switch (val.size())
 		{
 		case 0: shader->setUniform(p->niceName.toStdString().c_str(), (float)val); break;
-		case 1: shader->setUniform(p->niceName.toStdString().c_str(), (float)val[0]); break;
+		case 1:
+			if (cp->type == Controllable::BOOL) shader->setUniform(p->niceName.toStdString().c_str(), (GLint)(int)val[0]);
+			else shader->setUniform(p->niceName.toStdString().c_str(), (float)val);
+			break;
 		case 2: shader->setUniform(p->niceName.toStdString().c_str(), (float)val[0], (float)val[1]); break;
 		case 3: shader->setUniform(p->niceName.toStdString().c_str(), (float)val[0], (float)val[1], (float)val[2]); break;
 		case 4: shader->setUniform(p->niceName.toStdString().c_str(), (float)val[0], (float)val[1], (float)val[2], (float)val[3]); break;
@@ -257,6 +272,7 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	LOG("load fragment shader");
 
 	isLoadingShader = true;
+	shaderLoaded->setValue(false);
 
 	//unload shader
 	shader.reset();
@@ -283,15 +299,30 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 		}
 	}
 
-	String fullShader = lines.joinIntoString("\n");
-	fullShader = insertShaderIncludes(fullShader);
+	if (versionLine.isEmpty()) versionLine = "#version 330\n\n";
 
-	retrieveUniforms(fullShader);
 
 	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
 	bool isShaderToy = st == ShaderToyFile || st == ShaderToyURL;
-	bool fragmentIsShaderToy = fullShader.contains("mainImage");
-	if (isShaderToy != fragmentIsShaderToy) shaderType->setValueWithData(fragmentIsShaderToy ? ShaderToyFile : ShaderGLSLFile);
+
+	ShaderType newType = st;
+
+
+	bool fragmentIsShaderToy = fragmentShader.contains("mainImage") && !fragmentShader.contains("main(") && !fragmentShader.contains("main (");
+	if (fragmentIsShaderToy && isShaderToy != fragmentIsShaderToy) newType = ShaderToyFile;
+
+	bool isISF = st == ShaderISFFile || st == ShaderISFURL;
+	bool fragmentIsISF = fragmentShader.startsWith("/*");
+	if (fragmentIsISF && isISF != fragmentIsISF)  newType = ShaderISFFile;
+
+	if (!fragmentIsISF && !fragmentIsShaderToy) newType = ShaderGLSLFile;
+
+	if (newType != st) shaderType->setValueWithData(newType);
+
+	String fullShader = lines.joinIntoString("\n");
+	fullShader = insertShaderIncludes(fullShader);
+
+	fullShader = parseUniforms(fullShader);
 
 	shader.reset(new OpenGLShaderProgram(GlContextHolder::getInstance()->context));
 
@@ -366,7 +397,34 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	break;
 
 	case ShaderISFFile:
+	case ShaderISFURL:
 	{
+		fShader += R"(
+			int PASSINDEX;
+			uniform vec2 RENDERSIZE;
+			uniform float TIME;
+			uniform float TIMEDELTA;
+			uniform int FRAMEINDEX;
+			uniform vec4 DATE;	
+			uniform vec2 isf_FragNormCoord;
+
+			vec4 IMG_PIXEL(sampler2D img, vec2 coord) {
+				return texture(img, vec2(coord.x/RENDERSIZE.x,coord.y/RENDERSIZE.y) );
+			}
+			vec4 IMG_THIS_PIXEL(sampler2D img) {
+				return texture(img, vec2(isf_FragNormCoord.x,isf_FragNormCoord.y) );
+			}
+			vec4 IMG_NORM_PIXEL(sampler2D img, vec2 coord) {
+				return texture(img, vec2(coord.x,coord.y) );
+			}
+			vec4 IMG_THIS_NORM_PIXEL(sampler2D img) {
+				return texture(img, vec2(isf_FragNormCoord.x,isf_FragNormCoord.y) );
+			}
+
+			)"
+			+ fullShader
+			;
+
 		resolutionUniformName = "RENDERSIZE";
 		timeUniformName = "TIME";
 		timeDeltaUniformName = "TIMEDELTA";
@@ -375,7 +433,9 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 
 		useMouse4D = false;
 		useResolution3D = false;
-		fShader += fullShader;
+
+		LOG(fShader);
+
 	}
 	break;
 	}
@@ -408,16 +468,43 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	if (shader->getLastError().isEmpty())
 	{
 		NLOG(niceName, "Shader compiled and linked successfully");
+		shaderLoaded->setValue(true);
 	}
 	else
 	{
 		shader.reset();
 	}
 
+
 	shaderOfflineData = fragmentShaderToLoad;
 	fragmentShaderToLoad = "";
 	isLoadingShader = false;
 
+
+	if (shaderLoaded->boolValue() && fragmentIsISF)
+	{
+		//update source medias with isf names
+		while (sourceMedias.controllables.size() > isfTextureNames.size())
+		{
+			sourceMedias.controllables.removeLast();
+		}
+
+		for (int i = 0; i < sourceMedias.controllables.size(); i++)
+		{
+			TargetParameter* p = (TargetParameter*)sourceMedias.controllables[i];
+			p->setNiceName(isfTextureNames[i]);
+		}
+
+		while (sourceMedias.controllables.size() < isfTextureNames.size())
+		{
+			String n = isfTextureNames[sourceMedias.controllables.size()];
+			TargetParameter* p = sourceMedias.addTargetParameter(n, "Source Media for texture  " + n, MediaManager::getInstance());
+			p->targetType = TargetParameter::CONTAINER;
+			p->maxDefaultSearchLevel = 0;
+			p->saveValueOnly = false;
+		}
+
+	}
 }
 
 String ShaderMedia::insertShaderIncludes(const String& fragmentShader)
@@ -462,34 +549,154 @@ String ShaderMedia::insertShaderIncludes(const String& fragmentShader)
 	return newShader;
 }
 
-void ShaderMedia::retrieveUniforms(const String& fragmentShader)
+String ShaderMedia::parseUniforms(const String& fragmentShader)
 {
-	StringArray lines;
-	lines.addLines(fragmentShader);
+	String result = fragmentShader;
 
 	detectedUniforms.clear();
+	isfTextureNames.clear();
 
-	for (auto& l : lines)
+	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
+
+	if (st == ShaderISFFile || st == ShaderISFURL)
 	{
-		l = l.trimCharactersAtStart(" \t");
-		if (l.startsWith("uniform"))
-		{
-			StringArray parts;
-			parts.addTokens(l, true);
-			if (parts.size() > 2)
-			{
-				String type = parts[1];
-				String name = parts[2];
 
-				//add all uniforms to detected uniforms with their corresponding Controllable Type
-				if (type == "int") detectedUniforms.add({ name, Controllable::Type::INT });
-				else if (type == "float") detectedUniforms.add({ name, Controllable::Type::FLOAT });
-				else if (type == "vec2") detectedUniforms.add({ name, Controllable::Type::POINT2D });
-				else if (type == "vec3") detectedUniforms.add({ name, Controllable::Type::POINT3D });
-				else if (type == "vec4") detectedUniforms.add({ name, Controllable::Type::COLOR });
+		StringArray jsonData = RegexFunctions::getFirstMatch("\\/\\*([\\s\\S]+)\\*\\/", fragmentShader);
+		if (jsonData.size() >= 2)
+		{
+			String jsonStr = jsonData[1];
+			var json = JSON::parse(jsonStr);
+			if (json.isObject())
+			{
+
+				String uniformsDeclaration = "";
+
+				var inputs = json["INPUTS"];
+				if (inputs.isArray())
+				{
+					for (int i = 0; i < inputs.size(); i++)
+					{
+						var input = inputs[i];
+						String name = input["NAME"].toString();
+						String type = input["TYPE"].toString();
+						var minVal = input["MIN"];
+						var maxVal = input["MAX"];
+						var defaultVal = input["DEFAULT"];
+
+						if (type == "event") continue;
+
+						Controllable::Type controllableType = Controllable::Type::FLOAT;
+						String uniformType;
+						bool hasDefaultVal = true;
+						bool addToUniforms = true;
+
+						if (type == "bool")
+						{
+							controllableType = Controllable::Type::BOOL;
+							uniformType = "bool";
+						}
+						if (type == "float")
+						{
+							controllableType = Controllable::Type::FLOAT;
+							uniformType = "float";
+						}
+						else if (type == "int")
+						{
+							controllableType = Controllable::Type::INT;
+							uniformType = "int";
+						}
+						else if (type == "point2D")
+						{
+							controllableType = Controllable::Type::POINT2D;
+							uniformType = "vec2";
+						}
+						else if (type == "point3D")
+						{
+							controllableType = Controllable::Type::POINT3D;
+							uniformType = "vec3";
+						}
+						else if (type == "color")
+						{
+							controllableType = Controllable::Type::COLOR;
+							uniformType = "vec4";
+						}
+						else if (type == "image")
+						{
+							uniformType = "sampler2D";
+							controllableType = Controllable::Type::CUSTOM;
+							hasDefaultVal = false;
+							addToUniforms = false;
+							isfTextureNames.add(name);
+						}
+
+
+						if (uniformType.isNotEmpty())
+						{
+							if (addToUniforms) detectedUniforms.add({ name, controllableType, minVal, maxVal, defaultVal });
+
+							String defaultValStr = "";
+
+							if (!defaultVal.isArray())  defaultValStr = controllableType == Controllable::BOOL ? ((int)defaultVal ? "true" : "false") : defaultVal.toString();
+							else
+							{
+								defaultValStr = uniformType + "(";
+								for (int v = 0; v < defaultVal.size(); v++)
+								{
+									if (v > 0) defaultValStr += ",";
+									defaultValStr += defaultVal[v].toString();
+								}
+								defaultValStr += ")";
+							}
+
+							uniformsDeclaration += "uniform " + uniformType + " " + name + (hasDefaultVal ? " = " + defaultValStr : "") + ";\n";
+						}
+					}
+				}
+
+				result = result.substring(jsonData[0].length());
+				result = uniformsDeclaration + result;
+
+				LOG("Uniforms :\n" + uniformsDeclaration);
+			}
+			else
+			{
+				NLOGERROR(niceName, "ISF Shader json parsing error");
+			}
+		}
+		else
+		{
+			NLOGERROR(niceName, "ISF Shader needs to start with a comment block");
+		}
+	}
+	else
+	{
+		StringArray lines;
+		lines.addLines(fragmentShader);
+
+		for (auto& l : lines)
+		{
+			l = l.trimCharactersAtStart(" \t");
+			if (l.startsWith("uniform"))
+			{
+				StringArray parts;
+				parts.addTokens(l, true);
+				if (parts.size() > 2)
+				{
+					String type = parts[1];
+					String name = parts[2];
+
+					//add all uniforms to detected uniforms with their corresponding Controllable Type
+					if (type == "int") detectedUniforms.add({ name, Controllable::Type::INT });
+					else if (type == "float") detectedUniforms.add({ name, Controllable::Type::FLOAT });
+					else if (type == "vec2") detectedUniforms.add({ name, Controllable::Type::POINT2D });
+					else if (type == "vec3") detectedUniforms.add({ name, Controllable::Type::POINT3D });
+					else if (type == "vec4") detectedUniforms.add({ name, Controllable::Type::COLOR });
+				}
 			}
 		}
 	}
+
+	return result;
 }
 
 void ShaderMedia::showUniformControllableMenu(ControllableContainer* cc)
@@ -515,14 +722,31 @@ void ShaderMedia::showUniformControllableMenu(ControllableContainer* cc)
 
 void ShaderMedia::addUniformControllable(UniformInfo info)
 {
+	var minVal = info.minVal.isVoid() ? 0.f : info.minVal;
+	var maxVal = info.maxVal.isVoid() ? 1.f : info.maxVal;
+	var defaultVal = info.defaultVal.isVoid() ? 0.5f : info.defaultVal;
+
 	Controllable* c = nullptr;
 	switch (info.type)
 	{
-	case Controllable::Type::INT: c = mediaParams.addIntParameter(info.name, info.name, .5, 0, 1); break;
-	case Controllable::Type::FLOAT: c = mediaParams.addFloatParameter(info.name, info.name, .5, 0, 1); break;
-	case Controllable::Type::POINT2D: c = mediaParams.addPoint2DParameter(info.name, info.name); break;
-	case Controllable::Type::POINT3D: c = mediaParams.addPoint3DParameter(info.name, info.name); break;
-	case Controllable::Type::COLOR: c = mediaParams.addColorParameter(info.name, info.name, Colours::red); break;
+	case Controllable::Type::BOOL: c = mediaParams.addBoolParameter(info.name, info.name, (int)defaultVal); break;
+	case Controllable::Type::INT: c = mediaParams.addIntParameter(info.name, info.name, (float)defaultVal, (float)minVal, (float)maxVal); break;
+	case Controllable::Type::FLOAT: c = mediaParams.addFloatParameter(info.name, info.name, (float)defaultVal, (float)minVal, (float)maxVal); break;
+	case Controllable::Type::POINT2D:
+		c = mediaParams.addPoint2DParameter(info.name, info.name);
+		if (defaultVal.isArray()) ((Point2DParameter*)c)->setValue(defaultVal);
+		if (minVal.isArray() && maxVal.isArray()) ((Point2DParameter*)c)->setBounds(minVal[0], minVal[1], maxVal[0], maxVal[1]);
+		break;
+	case Controllable::Type::POINT3D:
+		c = mediaParams.addPoint3DParameter(info.name, info.name);
+		if (defaultVal.isArray()) ((Point3DParameter*)c)->setValue(defaultVal);
+		if (minVal.isArray() && maxVal.isArray()) ((Point3DParameter*)c)->setBounds(minVal[0], minVal[1], minVal[2], maxVal[0], maxVal[1], maxVal[2]);
+		break;
+
+	case Controllable::Type::COLOR:
+		c = mediaParams.addColorParameter(info.name, info.name, Colours::red);
+		if (defaultVal.isArray()) ((ColorParameter*)c)->setValue(defaultVal);
+		break;
 	}
 
 	if (c != nullptr)
@@ -536,23 +760,42 @@ void ShaderMedia::addUniformControllable(UniformInfo info)
 
 void ShaderMedia::run()
 {
-	String id = shaderToyID->stringValue();
+	String id = onlineShaderID->stringValue();
 	String key = shaderToyKey->stringValue();
 	String shaderStr = "";
 
-	if (id.isEmpty()) NLOGWARNING(niceName, "ShaderToy ID is empty");
-	if (key.isEmpty()) NLOGWARNING(niceName, "ShaderToy Key is empty");
+
+	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
+
+	if (id.isEmpty())
+	{
+		NLOGWARNING(niceName, "Online Shader ID is empty, not loading");
+		return;
+	}
+
+	if (st == ShaderToyURL && key.isEmpty())
+	{
+		NLOGWARNING(niceName, "ShaderToy Key is empty, not loading");
+		return;
+	}
+
+
 
 	if (id.isNotEmpty() && key.isNotEmpty())
 	{
 		//get fragment shader from url
 
-		URL url("https://www.shadertoy.com/api/v1/shaders/" + id + "?key=" + shaderToyKey->stringValue());
+		String urlStr = "";
+		if (st == ShaderToyURL) urlStr = "https://www.shadertoy.com/api/v1/shaders/" + id + "?key=" + shaderToyKey->stringValue();
+		else if (st == ShaderISFURL) urlStr = "https://editor.isf.video/api/shaders/" + id;
+
+		URL url(urlStr);
+
 		LOG("Loading Shader at " << url.toString(true));
 
 		if (!url.isWellFormed())
 		{
-			NLOGWARNING(niceName, "URL is alformed: " << url.toString(true));
+			NLOGWARNING(niceName, "URL is malformed: " << url.toString(true));
 			return;
 		}
 
@@ -565,38 +808,50 @@ void ShaderMedia::run()
 
 		if (dataStr.isEmpty())
 		{
-			NLOGWARNING(niceName, "No responde when loading shader at " << url.toString(true));
+			NLOGWARNING(niceName, "No response when loading shader at " << url.toString(true));
 		}
 
 		var data = JSON::parse(dataStr);
 
 		if (data.isObject())
 		{
-			if (data["Error"].isString())
+			if (st == ShaderToyURL)
 			{
-				NLOGWARNING(niceName, "ShaderToy Error: " << data["Error"].toString());
-			}
-			else
-			{
-				var shader = data["Shader"];
-				if (shader.isObject())
-				{
-					var info = shader["info"];
-					if (info.isObject())
-					{
-						NLOG(niceName, "Shader info : " << info["name"].toString() << "\n" << info["description"].toString());
-					}
-				}
 
-				if (data["Shader"]["renderpass"].size() > 1)
+				if (data["Error"].isString())
 				{
-					LOGWARNING("ShaderToy has more than one render pass, not supported right now");
+					NLOGWARNING(niceName, "ShaderToy Error: " << data["Error"].toString());
 				}
 				else
 				{
-					shaderStr = data["Shader"]["renderpass"][0]["code"].toString();
+					var shader = data["Shader"];
+					if (shader.isObject())
+					{
+						var info = shader["info"];
+						if (info.isObject())
+						{
+							NLOG(niceName, "Shader info : " << info["name"].toString() << "\n" << info["description"].toString());
+						}
+					}
+
+					if (data["Shader"]["renderpass"].size() > 1)
+					{
+						LOGWARNING("ShaderToy has more than one render pass, not supported right now");
+					}
+					else
+					{
+						shaderStr = data["Shader"]["renderpass"][0]["code"].toString();
+					}
 				}
 			}
+			else if (st == ShaderISFURL)
+			{
+				shaderStr = data["rawFragmentSource"].toString();
+			}
+		}
+		else
+		{
+			NLOGWARNING(niceName, "Could not parse JSON data from shader, response : " << data.toString());
 		}
 	}
 
@@ -621,7 +876,7 @@ void ShaderMedia::loadJSONDataItemInternal(var data)
 		((TargetParameter*)c)->targetType = TargetParameter::CONTAINER;
 		((TargetParameter*)c)->maxDefaultSearchLevel = 0;
 		((TargetParameter*)c)->saveValueOnly = false;
-		((TargetParameter*)c)->isRemovableByUser = false;
+		((TargetParameter*)c)->isRemovableByUser = true;
 	}
 
 	for (auto& c : mediaParams.controllables)

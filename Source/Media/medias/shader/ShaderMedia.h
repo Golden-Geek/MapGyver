@@ -33,17 +33,24 @@ public:
 	{
 		String name;
 		Controllable::Type type;
+		var minVal;
+		var maxVal;
+		var defaultVal;
 	};
 
 	Array<UniformInfo> detectedUniforms;
 
+	const String defaultShaderToyID = "4dX3Rn";
+	const String defaultISFID = "5e7a80077c113618206de928";
+
 	EnumParameter* shaderType;
 	FileParameter* shaderFile;
-	StringParameter* shaderToyID;
+	StringParameter* onlineShaderID;
 	StringParameter* shaderToyKey;
 	IntParameter* fps;
 	ColorParameter* backgroundColor;
 	BoolParameter* keepOfflineCache;
+	BoolParameter* shaderLoaded;
 
 	ControllableContainer sourceMedias;
 
@@ -75,6 +82,8 @@ public:
 	String mouseUniformName;
 	String frameUniformName;
 
+	StringArray isfTextureNames;
+
 	const float vertices[24] = {
 	-1.0f, -1.0f, 0.0f,
 	 1.0f, -1.0f, 0.0f,
@@ -93,7 +102,7 @@ public:
 	void reloadShader();
 	void loadFragmentShader(const String& fragmentShader);
 	String insertShaderIncludes(const String& fragmentShader);
-	void retrieveUniforms(const String& fragmentShader);
+	String parseUniforms(const String& fragmentShader);
 
 
 	void showUniformControllableMenu(ControllableContainer* cc);

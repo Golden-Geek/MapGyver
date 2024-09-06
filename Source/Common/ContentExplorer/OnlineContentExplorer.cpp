@@ -223,13 +223,13 @@ URL OnlineContentExplorer::getSearchURL()
 		return "https://www.shadertoy.com/api/v1/shaders/query/" + search.stringValue() + "?key=Bd8jRr&from=" + String((pageCount.intValue() - 1) * maxResults.intValue()) + "&num=" + String(maxResults.intValue());
 
 	case ISF:
-		return "https ://editor.isf.video/api/search?q=" + search.stringValue() + "&category=" + category.getValueData().toString() + "&showPrivate=false&from=" + String(pageCount.intValue() * 18);
+		return "https://editor.isf.video/api/search?q=" + search.stringValue() + "&category=" + category.getValueData().toString() + "&showPrivate=false&from=" + String(pageCount.intValue() * 18);
 
 	case Pexels_Photo:
-		return "https ://api.pexels.com/v1/search?query=" + search.stringValue() + "&per_page=" + String(maxResults.intValue()) + "&page=" + String(pageCount.intValue());
+		return "https://api.pexels.com/v1/search?query=" + search.stringValue() + "&per_page=" + String(maxResults.intValue()) + "&page=" + String(pageCount.intValue());
 
 	case Pexels_Video:
-		return "https ://api.pexels.com/videos/search?query=" + search.stringValue() + "&per_page=" + String(maxResults.intValue()) + "&page=" + String(pageCount.intValue());
+		return "https://api.pexels.com/videos/search?query=" + search.stringValue() + "&per_page=" + String(maxResults.intValue()) + "&page=" + String(pageCount.intValue());
 	}
 
 	return URL();
@@ -512,7 +512,7 @@ Media* OnlineContentItem::createMedia()
 	{
 		ShaderMedia* sm = new ShaderMedia();
 
-		sm->shaderToyID->setValue(id);
+		sm->onlineShaderID->setValue(id);
 		sm->shaderType->setValueWithData(source == OnlineContentExplorer::ShaderToy ? ShaderMedia::ShaderType::ShaderToyURL : ShaderMedia::ShaderType::ShaderISFURL);
 
 		return sm;
