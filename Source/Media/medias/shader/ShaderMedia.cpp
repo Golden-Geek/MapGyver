@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "ShaderMedia.h"
 
 ShaderMedia::ShaderMedia(var params) :
 	Media(getTypeString(), params, true),
@@ -44,17 +45,13 @@ ShaderMedia::ShaderMedia(var params) :
 	mouseInputPos->setBounds(0, 0, 1, 1);
 
 	mediaParams.userCanAddControllables = true;
-	mediaParams.userAddControllablesFilters.add(BoolParameter::getTypeStringStatic());
-	mediaParams.userAddControllablesFilters.add(IntParameter::getTypeStringStatic());
-	mediaParams.userAddControllablesFilters.add(FloatParameter::getTypeStringStatic());
-	mediaParams.userAddControllablesFilters.add(ColorParameter::getTypeStringStatic());
-	mediaParams.userAddControllablesFilters.add(Point2DParameter::getTypeStringStatic());
-	mediaParams.userAddControllablesFilters.add(Point3DParameter::getTypeStringStatic());
+	mediaParams.customUserCreateControllableFunc = std::bind(&ShaderMedia::showUniformControllableMenu, this, std::placeholders::_1);
 
 	sourceMedias.userCanAddControllables = true;
 	sourceMedias.customUserCreateControllableFunc = [&](ControllableContainer* cc)
 		{
 			TargetParameter* p = cc->addTargetParameter("Source Media", "Source Media", MediaManager::getInstance());
+			p->isRemovableByUser = true;
 			p->targetType = TargetParameter::CONTAINER;
 			p->maxDefaultSearchLevel = 0;
 			p->saveValueOnly = false;
@@ -90,14 +87,14 @@ void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
 void ShaderMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
 	Media::onControllableFeedbackUpdateInternal(cc, c);
-	if(cc == &sourceMedias)
+	if (cc == &sourceMedias)
 	{
 		int i = 0;
 		for (auto& tp : sourceMedias.controllables)
 		{
 			TargetParameter* p = dynamic_cast<TargetParameter*>(tp);
 			Media* m = p->getTargetContainerAs<Media>();
-			if(m != nullptr) registerUseMedia(i, m);
+			if (m != nullptr) registerUseMedia(i, m);
 			i++;
 		}
 		unregisterUseMedia(i); //if there are less sources than before, force unregister
@@ -181,6 +178,7 @@ void ShaderMedia::renderGLInternal()
 	{
 		if (!cp->enabled) continue;
 		Parameter* p = dynamic_cast<Parameter*>(cp);
+		shader->getUniformIDFromName(p->niceName.toStdString().c_str());
 		var val = p->getValue();
 		switch (val.size())
 		{
@@ -267,16 +265,38 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	{
 		isLoadingShader = false;
 		return;
+
 	}
+
+	//retrieve and remove #version directive from fragment shader
+	StringArray lines;
+	lines.addLines(fragmentShader);
+	String versionLine = "";
+	for (int i = 0; i < lines.size(); i++)
+	{
+		String l = lines[i].trimCharactersAtStart(" \t");
+		if (l.startsWith("#version"))
+		{
+			versionLine = l;
+			lines.remove(i);
+			break;
+		}
+	}
+
+	String fullShader = lines.joinIntoString("\n");
+	fullShader = insertShaderIncludes(fullShader);
+
+	retrieveUniforms(fullShader);
 
 	ShaderType st = shaderType->getValueDataAsEnum<ShaderType>();
 	bool isShaderToy = st == ShaderToyFile || st == ShaderToyURL;
-	bool fragmentIsShaderToy = fragmentShader.contains("mainImage");
+	bool fragmentIsShaderToy = fullShader.contains("mainImage");
 	if (isShaderToy != fragmentIsShaderToy) shaderType->setValueWithData(fragmentIsShaderToy ? ShaderToyFile : ShaderGLSLFile);
 
 	shader.reset(new OpenGLShaderProgram(GlContextHolder::getInstance()->context));
 
-	String fShader = fragmentShader.contains("#version") ? "" : "#version 330\n";
+	String fShader = versionLine;
+
 	st = shaderType->getValueDataAsEnum<ShaderType>();
 
 	switch (st)
@@ -284,7 +304,7 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	case ShaderToyFile:
 	case ShaderToyURL:
 	{
-		fShader = R"(
+		fShader += R"(
 			#ifdef GL_ES
 			precision mediump float;
 			#endif
@@ -303,7 +323,7 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 			uniform sampler2D iChannel2;             // input channel. XX = 2D/Cube
 			uniform sampler2D iChannel3;             // input channel. XX = 2D/Cube
 			)"
-			+ fragmentShader
+			+ fullShader
 			+ R"(
 
 			void main()
@@ -340,7 +360,7 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 		useMouse4D = false;
 		useResolution3D = false;
 
-		fShader = fragmentShader;
+		fShader += fullShader;
 
 	}
 	break;
@@ -355,7 +375,7 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 
 		useMouse4D = false;
 		useResolution3D = false;
-		fShader = fragmentShader;
+		fShader += fullShader;
 	}
 	break;
 	}
@@ -392,12 +412,126 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	else
 	{
 		shader.reset();
-	} 
+	}
 
 	shaderOfflineData = fragmentShaderToLoad;
 	fragmentShaderToLoad = "";
 	isLoadingShader = false;
 
+}
+
+String ShaderMedia::insertShaderIncludes(const String& fragmentShader)
+{
+	StringArray lines;
+	lines.addLines(fragmentShader);
+
+	String newShader = "";
+	for (auto& l : lines)
+	{
+		l = l.trimCharactersAtStart(" \t");
+		if (l.startsWith("#include"))
+		{
+			StringArray parts;
+			parts.addTokens(l, true);
+			if (parts.size() > 1)
+			{
+				String includeFile = parts[1];
+				includeFile = includeFile.removeCharacters("\"");
+				File f = shaderFile->getFile().getParentDirectory().getChildFile(includeFile);
+				if (f.existsAsFile())
+				{
+					String includeShader = f.loadFileAsString();
+					newShader += insertShaderIncludes(includeShader);
+				}
+				else
+				{
+					NLOGERROR(niceName, "Include file not found: " << f.getFullPathName());
+				}
+			}
+			else
+			{
+				NLOGWARNING(niceName, "Include line is malformed: " << l);
+			}
+		}
+		else
+		{
+			newShader += l + "\n";
+		}
+	}
+
+	return newShader;
+}
+
+void ShaderMedia::retrieveUniforms(const String& fragmentShader)
+{
+	StringArray lines;
+	lines.addLines(fragmentShader);
+
+	detectedUniforms.clear();
+
+	for (auto& l : lines)
+	{
+		l = l.trimCharactersAtStart(" \t");
+		if (l.startsWith("uniform"))
+		{
+			StringArray parts;
+			parts.addTokens(l, true);
+			if (parts.size() > 2)
+			{
+				String type = parts[1];
+				String name = parts[2];
+
+				//add all uniforms to detected uniforms with their corresponding Controllable Type
+				if (type == "int") detectedUniforms.add({ name, Controllable::Type::INT });
+				else if (type == "float") detectedUniforms.add({ name, Controllable::Type::FLOAT });
+				else if (type == "vec2") detectedUniforms.add({ name, Controllable::Type::POINT2D });
+				else if (type == "vec3") detectedUniforms.add({ name, Controllable::Type::POINT3D });
+				else if (type == "vec4") detectedUniforms.add({ name, Controllable::Type::COLOR });
+			}
+		}
+	}
+}
+
+void ShaderMedia::showUniformControllableMenu(ControllableContainer* cc)
+{
+	PopupMenu m;
+	m.addSectionHeader("Detected uniforms");
+	for (auto& u : detectedUniforms) m.addItem(u.name, [this, u]() { addUniformControllable(u); });
+	m.addSeparator();
+	m.addItem("Add all detected uniforms", [this, cc]()
+		{
+			for (auto& u : detectedUniforms) addUniformControllable(u);
+		});
+	m.addSeparator();
+	m.addSectionHeader("Custom uniforms");
+	m.addItem("Add Int", [this]() { addUniformControllable({ "myInt", Controllable::Type::FLOAT }); });
+	m.addItem("Add Float", [this]() { addUniformControllable({ "myFloat", Controllable::Type::FLOAT }); });
+	m.addItem("Add Point2D", [this]() { addUniformControllable({ "myPoint2D", Controllable::Type::POINT2D }); });
+	m.addItem("Add Point3D", [this]() { addUniformControllable({ "myPoint3D", Controllable::Type::POINT3D }); });
+	m.addItem("Add Color", [this]() { addUniformControllable({ "myColor", Controllable::Type::COLOR }); });
+
+	m.showMenuAsync(PopupMenu::Options());
+}
+
+void ShaderMedia::addUniformControllable(UniformInfo info)
+{
+	Controllable* c = nullptr;
+	switch (info.type)
+	{
+	case Controllable::Type::INT: c = mediaParams.addIntParameter(info.name, info.name, .5, 0, 1); break;
+	case Controllable::Type::FLOAT: c = mediaParams.addFloatParameter(info.name, info.name, .5, 0, 1); break;
+	case Controllable::Type::POINT2D: c = mediaParams.addPoint2DParameter(info.name, info.name); break;
+	case Controllable::Type::POINT3D: c = mediaParams.addPoint3DParameter(info.name, info.name); break;
+	case Controllable::Type::COLOR: c = mediaParams.addColorParameter(info.name, info.name, Colours::red); break;
+	}
+
+	if (c != nullptr)
+	{
+		c->isRemovableByUser = true;
+		c->isSavable = true;
+		c->isCustomizableByUser = true;
+		c->saveValueOnly = false;
+	}
 }
 
 void ShaderMedia::run()
@@ -487,6 +621,15 @@ void ShaderMedia::loadJSONDataItemInternal(var data)
 		((TargetParameter*)c)->targetType = TargetParameter::CONTAINER;
 		((TargetParameter*)c)->maxDefaultSearchLevel = 0;
 		((TargetParameter*)c)->saveValueOnly = false;
+		((TargetParameter*)c)->isRemovableByUser = false;
+	}
+
+	for (auto& c : mediaParams.controllables)
+	{
+		c->isRemovableByUser = true;
+		c->isSavable = true;
+		c->isCustomizableByUser = true;
+		c->saveValueOnly = false;
 	}
 
 	if (data.getDynamicObject()->hasProperty("shaderCache")) shaderOfflineData = data.getDynamicObject()->getProperty("shaderCache");

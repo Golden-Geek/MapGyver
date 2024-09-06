@@ -29,13 +29,16 @@ GlContextHolder::~GlContextHolder()
 void GlContextHolder::setup(juce::Component* topLevelComponent)
 {
 	parent = topLevelComponent;
-	if (OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(parent)) registerOpenGlRenderer(r);
+	//context.setOpenGLVersionRequired(juce::OpenGLContext::OpenGLVersion::openGL4_1);
 
+	if (OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(parent)) registerOpenGlRenderer(r);
 	context.setSwapInterval(0);
 	context.setRenderer(this);
 	context.setContinuousRepainting(true);
 	context.setComponentPaintingEnabled(true);
 	context.attachTo(*parent);
+
+
 }
 
 //==============================================================================
@@ -215,6 +218,16 @@ void GlContextHolder::componentBeingDeleted(juce::Component& component)
 
 void GlContextHolder::newOpenGLContextCreated()
 {
+	const char* version = (const char*)glGetString(GL_VERSION);
+	const char* vendor = (const char*)glGetString(GL_VENDOR);
+	const char* renderer = (const char*)glGetString(GL_RENDERER);
+
+	String openGLInfo = "OpenGL Version: " + String(version) + "\n"
+		"Vendor: " + String(vendor) + "\n"
+		"Renderer: " + String(renderer);
+
+	LOG("OpenGL init :\n" << openGLInfo);
+
 #if JUCE_WINDOWS
 	gl::glDebugMessageControl(gl::GL_DEBUG_SOURCE_API, gl::GL_DEBUG_TYPE_OTHER, gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, gl::GL_FALSE);
 	glDisable(GL_DEBUG_OUTPUT);

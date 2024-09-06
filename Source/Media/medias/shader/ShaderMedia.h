@@ -29,6 +29,14 @@ public:
 		ShaderISFURL
 	};
 
+	struct UniformInfo
+	{
+		String name;
+		Controllable::Type type;
+	};
+
+	Array<UniformInfo> detectedUniforms;
+
 	EnumParameter* shaderType;
 	FileParameter* shaderFile;
 	StringParameter* shaderToyID;
@@ -38,7 +46,6 @@ public:
 	BoolParameter* keepOfflineCache;
 
 	ControllableContainer sourceMedias;
-
 
 	bool useMouse4D;
 	int useResolution3D;
@@ -85,7 +92,12 @@ public:
 	void renderGLInternal() override;
 	void reloadShader();
 	void loadFragmentShader(const String& fragmentShader);
+	String insertShaderIncludes(const String& fragmentShader);
+	void retrieveUniforms(const String& fragmentShader);
 
+
+	void showUniformControllableMenu(ControllableContainer* cc);
+	void addUniformControllable(UniformInfo info);
 
 	void run() override;
 
