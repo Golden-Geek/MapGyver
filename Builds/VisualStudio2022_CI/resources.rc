@@ -16,9 +16,9 @@ BEGIN
     BLOCK "040904E4"
     BEGIN
       VALUE "CompanyName",  "GoldenGeek\0"
-      VALUE "FileDescription",  "SpiderMap\0"
+      VALUE "FileDescription",  "MapGyver\0"
       VALUE "FileVersion",  "1.0.0b1\0"
-      VALUE "ProductName",  "SpiderMap\0"
+      VALUE "ProductName",  "MapGyver\0"
       VALUE "ProductVersion",  "1.0.0b1\0"
     END
   END

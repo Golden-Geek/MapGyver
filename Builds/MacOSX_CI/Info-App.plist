@@ -13,11 +13,11 @@
     <key>CFBundleIconFile</key>
     <string>Icon.icns</string>
     <key>CFBundleIdentifier</key>
-    <string>com.goldengeek.spidermap</string>
+    <string>com.goldengeek.mapgyver</string>
     <key>CFBundleName</key>
-    <string>SpiderMap</string>
+    <string>MapGyver</string>
     <key>CFBundleDisplayName</key>
-    <string>SpiderMap</string>
+    <string>MapGyver</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleSignature</key>

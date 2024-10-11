@@ -92,13 +92,13 @@ void MainContentComponent::getCommandInfo(CommandID commandID, ApplicationComman
 		break;
 
 	case SMCommandID::exportSelection:
-		result.setInfo("Export Selection", "This will export the current selection as *.mochi file that can be later imported", "File", result.readOnlyInKeyEditor);
+		result.setInfo("Export Selection", "This will export the current selection as *.craft file that can be later imported", "File", result.readOnlyInKeyEditor);
 		result.addDefaultKeypress(KeyPress::createFromDescription("s").getKeyCode(), ModifierKeys::altModifier);
 		result.setActive(InspectableSelectionManager::mainSelectionManager->currentInspectables.size() > 0);
 		break;
 
 	case SMCommandID::importSelection:
-		result.setInfo("Import...", "This will import a *.mochi file and add it to the current project", "File", result.readOnlyInKeyEditor);
+		result.setInfo("Import...", "This will import a *.craft file and add it to the current project", "File", result.readOnlyInKeyEditor);
 		result.addDefaultKeypress(KeyPress::createFromDescription("o").getKeyCode(), ModifierKeys::altModifier);
 		break;
 
@@ -206,15 +206,15 @@ bool MainContentComponent::perform(const InvocationInfo& info)
 	break;
 
 	case SMCommandID::donate:
-		URL("https://benjamin.kuperberg.fr/spidermap/").launchInDefaultBrowser();
+		URL("https://benjamin.kuperberg.fr/mapgyver/").launchInDefaultBrowser();
 		break;
 
 	case SMCommandID::sponsor:
-		URL("https://benjamin.kuperberg.fr/spidermap/").launchInDefaultBrowser();
+		URL("https://benjamin.kuperberg.fr/mapgyver/").launchInDefaultBrowser();
 		break;
 
 	case SMCommandID::gotoWebsite:
-		URL("https://benjamin.kuperberg.fr/spidermap/").launchInDefaultBrowser();
+		URL("https://benjamin.kuperberg.fr/mapgyver/").launchInDefaultBrowser();
 		break;
 
 	case SMCommandID::gotoDiscord:
@@ -222,15 +222,15 @@ bool MainContentComponent::perform(const InvocationInfo& info)
 		break;
 
 	case SMCommandID::gotoDocs:
-		URL("https://benjamin.kuperberg.fr/spidermap/docs").launchInDefaultBrowser();
+		URL("https://benjamin.kuperberg.fr/mapgyver/docs").launchInDefaultBrowser();
 		break;
 
 	case SMCommandID::gotoChangelog:
-		URL("https://benjamin.kuperberg.fr/spidermap/releases/changelog.html").launchInDefaultBrowser();
+		URL("https://benjamin.kuperberg.fr/mapgyver/releases/changelog.html").launchInDefaultBrowser();
 		break;
 
 	case SMCommandID::postGithubIssue:
-		URL("http://github.com/benkuper/spidermap/issues").launchInDefaultBrowser();
+		URL("http://github.com/benkuper/mapgyver/issues").launchInDefaultBrowser();
 		break;
 
 
@@ -248,13 +248,13 @@ bool MainContentComponent::perform(const InvocationInfo& info)
 
 	case SMCommandID::exportSelection:
 	{
-		((SMEngine*)Engine::mainEngine)->exportSelection();
+		((MGEngine*)Engine::mainEngine)->exportSelection();
 	}
 	break;
 
 	case SMCommandID::importSelection:
 	{
-		((SMEngine*)Engine::mainEngine)->importSelection();
+		((MGEngine*)Engine::mainEngine)->importSelection();
 	}
 	break;
 	/*

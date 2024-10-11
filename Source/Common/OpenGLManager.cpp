@@ -9,7 +9,7 @@
 */
 
 #include "Common/CommonIncludes.h"
-#include "Engine/SMEngine.h"
+#include "Engine/MGEngine.h"
 
 juce_ImplementSingleton(GlContextHolder)
 

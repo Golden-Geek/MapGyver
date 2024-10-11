@@ -1,40 +1,40 @@
 //==============================================================================
 
 #include "MainIncludes.h"
-#include "Engine/SMEngine.h"
+#include "Engine/MGEngine.h"
 
-SpiderMapApplication::SpiderMapApplication() :
-	OrganicApplication("SpiderMap", true, ImageCache::getFromMemory(BinaryData::icon_png, BinaryData::icon_pngSize))
+MapGyverApplication::MapGyverApplication() :
+	OrganicApplication("MapGyver", true, ImageCache::getFromMemory(BinaryData::icon_png, BinaryData::icon_pngSize))
 {
 }
 
 
-void SpiderMapApplication::initialiseInternal(const String&)
+void MapGyverApplication::initialiseInternal(const String&)
 {
-	engine.reset(new SMEngine());
+	engine.reset(new MGEngine());
 	if (useWindow) mainComponent.reset(new MainContentComponent());
 
 	//Call after engine init
-	AppUpdater::getInstance()->setURLs("https://benjamin.kuperberg.fr/rulemapool/releases/update.json", "https://benjamin.kuperberg.fr/rulemapool/download/app", getApplicationName());
-	// HelpBox::getInstance()->helpURL = URL("https://benjamin.kuperberg.fr/rulemapool/help/");
+	AppUpdater::getInstance()->setURLs("https://benjamin.kuperberg.fr/mapgyver/releases/update.json", "https://benjamin.kuperberg.fr/mapgyver/download/app", getApplicationName());
+	// HelpBox::getInstance()->helpURL = URL("https://benjamin.kuperberg.fr/mapgyver/help/");
 
-	//CrashDumpUploader::getInstance()->init("https://benjamin.kuperberg.fr/rulemapool/support/crash_report.php",ImageCache::getFromMemory(BinaryData::crash_png, BinaryData::crash_pngSize));
+	//CrashDumpUploader::getInstance()->init("https://benjamin.kuperberg.fr/mapgyver/support/crash_report.php",ImageCache::getFromMemory(BinaryData::crash_png, BinaryData::crash_pngSize));
 
 	DashboardManager::getInstance()->setupDownloadURL("https://benjamin.kuperberg.fr/download/dashboard/dashboard.php?folder=dashboard");
 
 	ShapeShifterManager::getInstance()->setDefaultFileData(BinaryData::default_smlayout);
-	ShapeShifterManager::getInstance()->setLayoutInformations("smlayout", getApplicationName() + "/layouts");
+	ShapeShifterManager::getInstance()->setLayoutInformations("mglayout", getApplicationName() + "/layouts");
 }
 
 
-void SpiderMapApplication::afterInit()
+void MapGyverApplication::afterInit()
 {
 	//ANALYTICS
 	if (mainWindow != nullptr)
 	{
 
 		// MainContentComponent* comp = (MainContentComponent*)mainComponent.get();
-		// SMEngine* eng = (SMEngine*)engine.get();
+		// MGEngine* eng = (MGEngine*)engine.get();
 		//RMPMenuBarComponent* menu = new RMPMenuBarComponent(comp, eng);
 		// mainWindow->setMenuBarComponent(menu);
 	}
@@ -42,13 +42,13 @@ void SpiderMapApplication::afterInit()
 
 }
 
-void SpiderMapApplication::shutdown()
+void MapGyverApplication::shutdown()
 {
 	OrganicApplication::shutdown();
 	AppUpdater::deleteInstance();
 }
 
-void SpiderMapApplication::handleCrashed()
+void MapGyverApplication::handleCrashed()
 {
 	/*
 	for (auto& m : ModuleManager::getInstance()->getItemsWithType<OSModule>())

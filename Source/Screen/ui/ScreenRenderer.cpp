@@ -11,7 +11,7 @@
 #include "Screen/ScreenIncludes.h"
 #include "Common/CommonIncludes.h"
 #include "Media/MediaIncludes.h"
-#include "Engine/SMEngine.h"
+#include "Engine/MGEngine.h"
 
 using namespace juce::gl;
 

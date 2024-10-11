@@ -11,11 +11,11 @@
 #pragma once
 
 //==============================================================================
-class SpiderMapApplication : public OrganicApplication
+class MapGyverApplication : public OrganicApplication
 {
 public:
 	//==============================================================================
-	SpiderMapApplication();
+	MapGyverApplication();
 
 
 	void initialiseInternal(const String& /*commandLine*/) override;
@@ -26,4 +26,4 @@ public:
 	void handleCrashed() override;
 };
 
-START_JUCE_APPLICATION(SpiderMapApplication)
+START_JUCE_APPLICATION(MapGyverApplication)

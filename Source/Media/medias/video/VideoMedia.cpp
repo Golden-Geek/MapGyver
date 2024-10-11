@@ -9,7 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "Engine/SMEngine.h"
+#include "Engine/MGEngine.h"
 #include "VideoMedia.h"
 
 VideoMedia::VideoMedia(var params) :
@@ -23,7 +23,7 @@ VideoMedia::VideoMedia(var params) :
 {
 
 	//init vlc
-	vlcInstance = dynamic_cast<SMEngine*>(Engine::mainEngine)->vlcInstance.get();
+	vlcInstance = dynamic_cast<MGEngine*>(Engine::mainEngine)->vlcInstance.get();
 	vlcPlayer.reset(new VLC::MediaPlayer(*vlcInstance));
 	vlcPlayer->play();
 
