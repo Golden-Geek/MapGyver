@@ -18,7 +18,7 @@ MediaLayer::MediaLayer(Sequence* s, var params) :
 {
 	saveAndLoadRecursiveData = true;
 
-	backgroundColor = addColorParameter("Background Color", "Background Color for this layer", Colours::transparentBlack);
+	backgroundColor = addColorParameter("Background Color", "Background Color for this layer", Colours::black);
 
 	blendFunction = addEnumParameter("Blend function", "");
 	blendFunction

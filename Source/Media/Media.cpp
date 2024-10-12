@@ -317,15 +317,26 @@ void ImageMedia::initImage(const Image& newImage)
 		return;
 	}
 
+	bool imageUpdated = false;
 	if (newImage.getWidth() != image.getWidth() || newImage.getHeight() != image.getHeight())
 	{
 		image = newImage.convertedToFormat(Image::ARGB);
-		graphics = std::make_shared<Graphics>(image);
-		bitmapData = std::make_shared<Image::BitmapData>(image, Image::BitmapData::readWrite);
+		
+		imageUpdated = true;
+		bitmapData.reset();
+
 	}
 
-	if (graphics != nullptr && newImage.isValid())
-		graphics->drawImage(newImage, Rectangle<float>(0, 0, image.getWidth(), image.getHeight()));
+	if (imageUpdated && newImage.isValid())
+	{
+		//Graphics graphics(image);
+		//graphics.drawImage(newImage, Rectangle<float>(0, 0, image.getWidth(), image.getHeight()));
+	}
+
+	if (bitmapData == nullptr)
+	{
+		bitmapData.reset(new Image::BitmapData(image, Image::BitmapData::readWrite));
+	}
 }
 
 Point<int> ImageMedia::getMediaSize()

@@ -97,7 +97,6 @@ public:
 	CriticalSection imageLock;
 	Image image;
 	std::shared_ptr<Image::BitmapData> bitmapData;
-	std::shared_ptr<Graphics> graphics;
 	juce::OpenGLFrameBuffer imageFBO;
 
 	virtual void preRenderGLInternal() override;
