@@ -232,6 +232,8 @@ void Media::FPSTick()
 	lastFPSIndex = (lastFPSIndex + 1) % 10;
 	lastFPSHistory[lastFPSIndex] = elapsedMillis;
 
+	if (lastFPSIndex != 0) return;
+
 	double averageElapsed = 0;
 	for (int i = 0; i < 10; i++) {
 		averageElapsed += lastFPSHistory[i];
@@ -239,21 +241,24 @@ void Media::FPSTick()
 	averageElapsed /= 10;
 
 	float fps = 1000.0 / averageElapsed;
-
 	int max = ceil(fps / 10.0) * 10;
+	if ((float)currentFPS->maximumValue < max) {
+		currentFPS->maximumValue = max;
+	}
+	currentFPS->setValue(fps);
 
-	if (isClearing) return;
+	//if (isClearing) return;
 	// Calcul des FPS
-	MessageManager::callAsync([this, max, fps]()
-		{
-			if (Engine::mainEngine == nullptr || Engine::mainEngine->isClearing) return;
-			if (isClearing) return;
+	//MessageManager::callAsync([this, max, fps]()
+	//	{
+	//		if (Engine::mainEngine == nullptr || Engine::mainEngine->isClearing) return;
+	//		if (isClearing) return;
 
-			if ((float)currentFPS->maximumValue < max) {
-				currentFPS->maximumValue = max;
-			}
-			currentFPS->setValue(fps);
-		});
+	//		if ((float)currentFPS->maximumValue < max) {
+	//			currentFPS->maximumValue = max;
+	//		}
+	//		currentFPS->setValue(fps);
+	//	});
 }
 
 
