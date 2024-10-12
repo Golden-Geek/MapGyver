@@ -3,15 +3,15 @@
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 
-#define ApplicationName 'SpiderMap'
-#define ApplicationVersion GetStringFileInfo('Binaries/CI/App/SpiderMap.exe',"ProductVersion")
+#define ApplicationName 'MapGyver'
+#define ApplicationVersion GetStringFileInfo('Binaries/CI/App/MapGyver.exe',"ProductVersion")
 
 [Setup]
 AppName={#ApplicationName}
 AppId={#ApplicationName}
 AppVersion={#ApplicationVersion}
 AppPublisher=Golden Geek
-AppPublisherURL=https://benjamin.kuperberg.fr/spidermap
+AppPublisherURL=https://benjamin.kuperberg.fr/mapgyver
 DefaultDirName={pf}\{#ApplicationName}
 DefaultGroupName={#ApplicationName}
 UninstallDisplayIcon={app}\{#ApplicationName}.exe
