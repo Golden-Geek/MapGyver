@@ -1073,7 +1073,7 @@
 			name = "Post-build script";
 			alwaysOutOfDate = 1;
 			shellPath = /bin/sh;
-			shellScript = "cd $TARGET_BUILD_DIR\ninstall_name_tool -add_rpath @executable_path/../Resources spidermap.app/Contents/MacOS/spidermap\ninstall_name_tool -add_rpath @executable_path/../Resources/plugins spidermap.app/Contents/MacOS/spidermap";
+			shellScript = "cd $TARGET_BUILD_DIR\ninstall_name_tool -add_rpath @executable_path/../Resources MapGyver.app/Contents/MacOS/MapGyver\ninstall_name_tool -add_rpath @executable_path/../Resources/plugins MapGyver.app/Contents/MacOS/MapGyver";
 		};
 /* End PBXShellScriptBuildPhase section */
 

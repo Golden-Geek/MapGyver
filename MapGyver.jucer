@@ -439,7 +439,7 @@
     <XCODE_MAC targetFolder="Builds/MacOSX_CI" extraDefs="JUCE_COREGRAPHICS_DRAW_ASYNC=0"
                externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi" smallIcon="AKcEsb"
                bigIcon="AKcEsb" xcodeValidArchs="arm64,x86_64" customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;&#9;&lt;dict&gt;&#10;&#9;&#9;&lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;&#9;&#9;&lt;true/&gt;&#10;&#9;&lt;/dict&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
-               postbuildCommand="cd $TARGET_BUILD_DIR&#10;install_name_tool -add_rpath @executable_path/../Resources spidermap.app/Contents/MacOS/spidermap&#10;install_name_tool -add_rpath @executable_path/../Resources/plugins spidermap.app/Contents/MacOS/spidermap"
+               postbuildCommand="cd $TARGET_BUILD_DIR&#10;install_name_tool -add_rpath @executable_path/../Resources MapGyver.app/Contents/MacOS/MapGyver&#10;install_name_tool -add_rpath @executable_path/../Resources/plugins MapGyver.app/Contents/MacOS/MapGyver"
                frameworkSearchPaths="../../External/syphon" embeddedFrameworks="../../External/syphon/Syphon.framework">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="0" name="Release" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
