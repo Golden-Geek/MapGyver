@@ -670,30 +670,94 @@ String ShaderMedia::parseUniforms(const String& fragmentShader)
 	}
 	else
 	{
-		StringArray lines;
-		lines.addLines(fragmentShader);
 
-		for (auto& l : lines)
+
+		String regex = "[ \\t]*uniform (\\w+) ([\\w\\d]+) ?=? ?([\\w(), \\d\\.]+)?;[ \\t]*(?:\\/\\/)?[ \\t]*([\\[,\\]\\d\\.]+)?:?([\\[,\\]\\d\\.]+)?";
+		Array<StringArray> allMatches = RegexFunctions::getAllMatches(regex, fragmentShader);
+		LOG("found " << allMatches.size() << " matches");
+		for (auto& m : allMatches)
 		{
-			l = l.trimCharactersAtStart(" \t");
-			if (l.startsWith("uniform"))
-			{
-				StringArray parts;
-				parts.addTokens(l, true);
-				if (parts.size() > 2)
-				{
-					String type = parts[1];
-					String name = parts[2];
+			String type = m[1];
+			String name = m[2];
+			String dVal = m[3];
+			String minVal = m[4];
+			String maxVal = m[5];
 
-					//add all uniforms to detected uniforms with their corresponding Controllable Type
-					if (type == "int") detectedUniforms.add({ name, Controllable::Type::INT });
-					else if (type == "float") detectedUniforms.add({ name, Controllable::Type::FLOAT });
-					else if (type == "vec2") detectedUniforms.add({ name, Controllable::Type::POINT2D });
-					else if (type == "vec3") detectedUniforms.add({ name, Controllable::Type::POINT3D });
-					else if (type == "vec4") detectedUniforms.add({ name, Controllable::Type::COLOR });
-				}
+
+			Controllable::Type cType = Controllable::Type::CUSTOM;
+			var uVal;
+			var uMin;
+			var uMax;
+
+			if (type == "int")
+			{
+				cType = Controllable::INT;
+				uVal = dVal.getIntValue();
+				if (minVal.isNotEmpty()) uMin = minVal.getIntValue();
+				if (maxVal.isNotEmpty()) uMax = maxVal.getIntValue();
 			}
+			else if (type == "float")
+			{
+				cType = Controllable::FLOAT;
+				uVal = dVal.getFloatValue();
+				if (minVal.isNotEmpty()) uMin = minVal.getFloatValue();
+				if (maxVal.isNotEmpty()) uMax = maxVal.getFloatValue();
+			}
+			else if (type.startsWith("vec"))
+			{
+				String vecRegex = "\\w+\\(([\\d\\.]+)[, ]*([\\d\\.]+)[, ]*([\\d\\.]*)[, ]*([\\d\\.]*)\\)";
+				Array<StringArray> vecMatches = RegexFunctions::getAllMatches(vecRegex, dVal);
+				if (vecMatches.size() > 0)
+				{
+
+					if (vecMatches[0][1].isNotEmpty()) uVal.append((vecMatches[0][1]).getFloatValue());
+					if (vecMatches[0][2].isNotEmpty()) uVal.append(vecMatches[0][2].getFloatValue());
+					if (vecMatches[0][3].isNotEmpty()) uVal.append(vecMatches[0][3].getFloatValue());
+					if (vecMatches[0][4].isNotEmpty()) uVal.append(vecMatches[0][4].getFloatValue());
+				}
+				else
+				{
+					LOG("No match for vec value");
+				}
+
+				if (type == "vec2" || type == "vec3")
+				{
+					String arrRegex = "\\[([\\d\\.]+)[, ]+([\\d\\.]+)(?:[, ]+)?([\\d\\.]+)?\\]";
+					if (minVal.isNotEmpty())
+					{
+						Array<StringArray> minMatches = RegexFunctions::getAllMatches(arrRegex, minVal);
+						if (minMatches.size() > 0)
+						{
+							if (minMatches[0][1].isNotEmpty()) uMin.append(minMatches[0][1].getFloatValue());
+							if (minMatches[0][2].isNotEmpty()) uMin.append(minMatches[0][2].getFloatValue());
+							if (minMatches[0][3].isNotEmpty()) uMin.append(minMatches[0][3].getFloatValue());
+						}
+					}
+
+					if (maxVal.isNotEmpty())
+					{
+						Array<StringArray> maxMatches = RegexFunctions::getAllMatches(arrRegex, maxVal);
+						if (maxMatches.size() > 0)
+						{
+							if (maxMatches[0][1].isNotEmpty()) uMax.append(maxMatches[0][1].getFloatValue());
+							if (maxMatches[0][2].isNotEmpty()) uMax.append(maxMatches[0][2].getFloatValue());
+							if (maxMatches[0][3].isNotEmpty()) uMax.append(maxMatches[0][3].getFloatValue());
+						}
+					}
+
+					if (type == "vec2") cType = Controllable::POINT2D;
+					else if (type == "vec3") cType = Controllable::POINT3D;
+				}
+				else if (type == "vec4") cType = Controllable::COLOR;
+			}
+
+			if (cType != Controllable::CUSTOM)
+			{
+				detectedUniforms.add({ name, cType, uMin, uMax, uVal});
+			}
+
 		}
+
 	}
 
 	return result;
@@ -722,9 +786,9 @@ void ShaderMedia::showUniformControllableMenu(ControllableContainer* cc)
 
 void ShaderMedia::addUniformControllable(UniformInfo info)
 {
-	var minVal = info.minVal.isVoid() ? 0.f : info.minVal;
-	var maxVal = info.maxVal.isVoid() ? 1.f : info.maxVal;
-	var defaultVal = info.defaultVal.isVoid() ? 0.5f : info.defaultVal;
+	var minVal = info.minVal.isVoid() ? var(0.f) : info.minVal;
+	var maxVal = info.maxVal.isVoid() ? var(1.f) : info.maxVal;
+	var defaultVal = info.defaultVal.isVoid() ? var(0.5f) : info.defaultVal;
 
 	Controllable* c = nullptr;
 	switch (info.type)
