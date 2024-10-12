@@ -434,7 +434,7 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 		useMouse4D = false;
 		useResolution3D = false;
 
-		LOG(fShader);
+		//LOG(fShader);
 
 	}
 	break;
@@ -656,7 +656,6 @@ String ShaderMedia::parseUniforms(const String& fragmentShader)
 				result = result.substring(jsonData[0].length());
 				result = uniformsDeclaration + result;
 
-				LOG("Uniforms :\n" + uniformsDeclaration);
 			}
 			else
 			{
@@ -674,7 +673,6 @@ String ShaderMedia::parseUniforms(const String& fragmentShader)
 
 		String regex = "[ \\t]*uniform (\\w+) ([\\w\\d]+) ?=? ?([\\w(), \\d\\.]+)?;[ \\t]*(?:\\/\\/)?[ \\t]*([\\[,\\]\\d\\.]+)?:?([\\[,\\]\\d\\.]+)?";
 		Array<StringArray> allMatches = RegexFunctions::getAllMatches(regex, fragmentShader);
-		LOG("found " << allMatches.size() << " matches");
 		for (auto& m : allMatches)
 		{
 			String type = m[1];
@@ -753,12 +751,12 @@ String ShaderMedia::parseUniforms(const String& fragmentShader)
 
 			if (cType != Controllable::CUSTOM)
 			{
-				detectedUniforms.add({ name, cType, uMin, uMax, uVal});
+				detectedUniforms.add({ name, cType, uMin, uMax, uVal });
 			}
-
 		}
-
 	}
+
+	NLOG(niceName, "Found " << detectedUniforms.size() << " parameters in shader");
 
 	return result;
 }
@@ -767,11 +765,19 @@ void ShaderMedia::showUniformControllableMenu(ControllableContainer* cc)
 {
 	PopupMenu m;
 	m.addSectionHeader("Detected uniforms");
-	for (auto& u : detectedUniforms) m.addItem(u.name, [this, u]() { addUniformControllable(u); });
+	for (auto& u : detectedUniforms)
+	{
+		if (u.name == "progression") continue;
+		m.addItem(u.name, [this, u]() { addUniformControllable(u); });
+	}
 	m.addSeparator();
 	m.addItem("Add all detected uniforms", [this, cc]()
 		{
-			for (auto& u : detectedUniforms) addUniformControllable(u);
+			for (auto& u : detectedUniforms)
+			{
+				if (u.name == "progression") continue;
+				addUniformControllable(u);
+			}
 		});
 	m.addSeparator();
 	m.addSectionHeader("Custom uniforms");
