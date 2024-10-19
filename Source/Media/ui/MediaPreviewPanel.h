@@ -26,6 +26,8 @@ public:
 	Media* media;
 	Image image;
 
+	OpenGLContext context;
+
 	void setMedia(Media* m);
 
 	void paint(Graphics& g) override;
@@ -34,8 +36,6 @@ public:
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
 	void inspectableDestroyed(Inspectable* i) override;
-
-	OpenGLContext context;
 
 };
 

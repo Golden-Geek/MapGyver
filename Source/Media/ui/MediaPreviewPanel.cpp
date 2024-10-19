@@ -17,13 +17,18 @@ MediaPreview::MediaPreview() :
 	media(nullptr)
 {
 
-	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 3);
+	//GlContextHolder::getInstance()->registerOpenGlRenderer(this, 3);
 
-
+	context.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
+	context.setRenderer(this);
+	context.setContinuousRepainting(true);
+	context.setComponentPaintingEnabled(true);
+	context.attachTo(*this);
 }
 
 MediaPreview::~MediaPreview()
 {
+	context.detach();
 	if (GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
 	setMedia(nullptr);
 }
@@ -61,6 +66,7 @@ void MediaPreview::paint(Graphics& g)
 
 void MediaPreview::newOpenGLContextCreated()
 {
+	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
 }
 
 void MediaPreview::renderOpenGL()

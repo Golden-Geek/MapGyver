@@ -23,6 +23,8 @@ public:
 
 	double timeAtRender;
 
+	Component offScreenRenderComponent;
+
 	void setup(juce::Component* topLevelComponent);
 
 	//==============================================================================

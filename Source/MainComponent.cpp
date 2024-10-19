@@ -13,6 +13,7 @@ MainContentComponent::MainContentComponent()
 	// setSize (800, 600);
 
 	//getCommandManager().registerAllCommandsForTarget(this);
+	GlContextHolder::getInstance()->setup(this);
 	ScreenOutputWatcher::getInstance(); // triggers the creation of the singleton
 }
 
@@ -21,7 +22,6 @@ MainContentComponent::~MainContentComponent()
 	// This shuts down the audio Fixture and clears the audio source.
 	//shutdownAudio();
 
-	//GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
 
 	ScreenOutputWatcher::deleteInstance();
 	GlContextHolder::deleteInstance();
@@ -51,14 +51,13 @@ void MainContentComponent::init()
 void MainContentComponent::setupOpenGL()
 {
 	//do not use organic one
-	GlContextHolder::getInstance()->setup(this);
 	GlContextHolder::getInstance()->registerOpenGlRenderer(&sharedTextureDispatcher);
 }
 
 void MainContentComponent::paint(Graphics& g)
 {
 	//nothing
-	//OrganicMainContentComponent::paint(g);
+	OrganicMainContentComponent::paint(g);
 }
 
 void MainContentComponent::SharedTextureDispatcher::newOpenGLContextCreated()

@@ -19,7 +19,7 @@ MediaManagerGridUI::MediaManagerGridUI(const String& name) :
 	contentIsFlexible = true;
 	animateItemOnAdd = false;
 
-	transparentBG = true;
+	//transparentBG = true;
 
 	thumbSizeUI.reset(manager->gridThumbSize->createSlider());
 	addAndMakeVisible(thumbSizeUI.get());
@@ -36,6 +36,7 @@ MediaManagerGridUI::MediaManagerGridUI(const String& name) :
 
 MediaManagerGridUI::~MediaManagerGridUI()
 {
+	itemsUI.clear();
 	if (!inspectable.wasObjectDeleted()) manager->removeAsyncContainerListener(this);
 }
 

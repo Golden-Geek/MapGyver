@@ -28,9 +28,19 @@ ScreenEditorView::ScreenEditorView(Screen* screen) :
 	zoomAtMouseDown(1)
 {
 	selectionContourColor = NORMAL_COLOR;
-	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 3);
+	//GlContextHolder::getInstance()->registerOpenGlRenderer(this, 3);
 	setWantsKeyboardFocus(true); // Permet au composant de recevoir le focus clavier.
 	addKeyListener(this);
+
+	context.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
+	context.setRenderer(this);
+	context.setContinuousRepainting(true);
+	//context.setComponentPaintingEnabled(true);
+	Timer::callAfterDelay(500, [this]() {
+		DBG("before " << (int)Time::getMillisecondCounter());
+		context.attachTo(*this);
+		DBG("After  " << (int)Time::getMillisecondCounter());
+		});
 }
 
 ScreenEditorView::~ScreenEditorView()
@@ -405,7 +415,8 @@ Point<int> ScreenEditorView::getPointOnScreen(Point<float> pos)
 
 void ScreenEditorView::newOpenGLContextCreated()
 {
-
+	DBG("newOpenGLContextCreated " << (int)Time::getMillisecondCounter());
+	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
 }
 
 void ScreenEditorView::renderOpenGL()

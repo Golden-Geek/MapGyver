@@ -45,6 +45,8 @@ public:
 
 	GLuint framebuffer;
 
+	OpenGLContext context;
+
 	void paint(Graphics& g) override;
 	
 	Path getSurfacePath(Surface* s);

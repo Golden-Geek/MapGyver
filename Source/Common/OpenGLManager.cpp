@@ -18,6 +18,7 @@ using namespace juce::gl;
 GlContextHolder::GlContextHolder() :
 	timeAtRender(0)
 {
+	offScreenRenderComponent.setSize(1, 1); // (1, 1) is the minimum size for an OpenGL context (on Windows at least
 	setBackgroundColour(BG_COLOR.darker(.8f));
 }
 
@@ -28,17 +29,17 @@ GlContextHolder::~GlContextHolder()
 
 void GlContextHolder::setup(juce::Component* topLevelComponent)
 {
+	topLevelComponent->addAndMakeVisible(offScreenRenderComponent);
 	parent = topLevelComponent;
 	//context.setOpenGLVersionRequired(juce::OpenGLContext::OpenGLVersion::openGL4_1);
 
-	if (OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(parent)) registerOpenGlRenderer(r);
+	//if (OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(offScreenRenderComponent)) registerOpenGlRenderer(r);
+	//registerOpenGlRenderer(&offScreenRenderComponent);
 	context.setSwapInterval(0);
 	context.setRenderer(this);
 	context.setContinuousRepainting(true);
 	context.setComponentPaintingEnabled(true);
-	context.attachTo(*parent);
-
-
+	context.attachTo(offScreenRenderComponent);
 }
 
 //==============================================================================
