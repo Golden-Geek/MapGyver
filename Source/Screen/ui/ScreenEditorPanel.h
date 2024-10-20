@@ -18,7 +18,7 @@ class ScreenEditorView :
 	public EngineListener
 {
 public:
-	ScreenEditorView(Screen* screen);
+	ScreenEditorView();
 	~ScreenEditorView();
 
 	Screen* screen;
@@ -46,6 +46,7 @@ public:
 
 	GLuint framebuffer;
 
+	void setScreen(Screen* s);
 	void paint(Graphics& g) override;
 	
 	Path getSurfacePath(Surface* s);
@@ -90,7 +91,7 @@ public:
 	ScreenEditorPanel(const String& name);
 	~ScreenEditorPanel();
 
-	std::unique_ptr<ScreenEditorView> screenEditorView;
+	ScreenEditorView screenEditorView;
 
 	void paint(Graphics& g) override;
 	void resized() override;
