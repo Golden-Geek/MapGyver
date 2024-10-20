@@ -21,25 +21,25 @@ MediaPreview::MediaPreview() :
 
 	setSize(200, 200);
 	
-	MessageManager::callAsync([this]() {
+	//MessageManager::callAsync([this]() {
 
-		context.setRenderer(this);
-		context.setContinuousRepainting(true);
-		context.setComponentPaintingEnabled(true);
+		//context.setRenderer(this);
+		//context.setContinuousRepainting(true);
+		//context.setComponentPaintingEnabled(true);
 
-		GlContextHolder::getInstance()->context.executeOnGLThread([this](OpenGLContext& callerContext) {
-			context.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
-			}, true);
+		//GlContextHolder::getInstance()->context.executeOnGLThread([this](OpenGLContext& callerContext) {
+		//	context.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
+		//	}, true);
 
-		//attach the context to this component
-		context.attachTo(*this);
-		});
+		////attach the context to this component
+		//context.attachTo(*this);
+		//});
 }
 
 MediaPreview::~MediaPreview()
 {
-	context.detach();
-	if (GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+	//context.detach();
+	//if (GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
 	setMedia(nullptr);
 }
 

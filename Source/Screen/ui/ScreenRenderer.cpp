@@ -17,8 +17,7 @@
 using namespace juce::gl;
 
 ScreenRenderer::ScreenRenderer(Screen* screen) :
-	screen(screen),
-	shouldRegenerate(true)
+	screen(screen)
 {
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 2);
 }
@@ -30,7 +29,6 @@ ScreenRenderer::~ScreenRenderer()
 
 void ScreenRenderer::regenerateTextures()
 {
-	shouldRegenerate = true;
 }
 
 void ScreenRenderer::newOpenGLContextCreated()
@@ -42,12 +40,6 @@ void ScreenRenderer::newOpenGLContextCreated()
 
 void ScreenRenderer::renderOpenGL()
 {
-	//if (shouldRegenerate)
-	//{
-	//	frameBuffer.initialise(GlContextHolder::getInstance()->context, screen->screenWidth->intValue(), screen->screenHeight->intValue());
-	//	shouldRegenerate = false;
-	//}
-
 	frameBuffer.makeCurrentRenderingTarget();
 	glClearColor(0, 0, 0, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

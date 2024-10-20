@@ -11,11 +11,13 @@
 #include "Screen/ScreenIncludes.h"
 #include "Common/CommonIncludes.h"
 #include "Media/MediaIncludes.h"
+#include "ScreenEditorPanel.h"
 
 //EDITOR VIEW
 
 ScreenEditorView::ScreenEditorView(Screen* screen) :
 	InspectableContentComponent(screen),
+	OpenGLSharedRenderer(this),
 	screen(screen),
 	zoomSensitivity(3.f),
 	zoomingMode(false),
@@ -32,25 +34,15 @@ ScreenEditorView::ScreenEditorView(Screen* screen) :
 	setWantsKeyboardFocus(true); // Permet au composant de recevoir le focus clavier.
 	addKeyListener(this);
 
-	context.setRenderer(this);
-	context.setSwapInterval(0);
-	context.setContinuousRepainting(true);
+	if (Engine::mainEngine->isLoadingFile) Engine::mainEngine->addEngineListener(this);
+	else registerRenderer(10);
 
-	MessageManager::callAsync([this]() {
-
-		context.detach();
-		GlContextHolder::getInstance()->context.executeOnGLThread([this](OpenGLContext& callerContext) {
-			context.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
-			}, true);
-
-		//attach the context to this component
-		context.attachTo(*this);
-		});
 }
 
 ScreenEditorView::~ScreenEditorView()
 {
-	if (GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+	unregisterRenderer();
+
 	removeKeyListener(this);
 }
 
@@ -176,8 +168,6 @@ void ScreenEditorView::paint(Graphics& g)
 			break;
 		}
 	}
-
-
 }
 
 Path ScreenEditorView::getSurfacePath(Surface* s)
@@ -219,7 +209,7 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 	}
 
 	if (Surface* s = screen->getSurfaceAt(getRelativeMousePos())) s->selectThis();
-	
+
 	//surface manip mode
 	if (manipSurface != nullptr)
 	{
@@ -420,8 +410,7 @@ Point<int> ScreenEditorView::getPointOnScreen(Point<float> pos)
 
 void ScreenEditorView::newOpenGLContextCreated()
 {
-	DBG("newOpenGLContextCreated " << (int)Time::getMillisecondCounter());
-	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
+	//juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
 }
 
 void ScreenEditorView::renderOpenGL()
@@ -431,11 +420,10 @@ void ScreenEditorView::renderOpenGL()
 	OpenGLFrameBuffer* frameBuffer = &screen->renderer->frameBuffer;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	Init2DMatrix(getWidth(), getHeight());
+	Init2DMatrix(getWidth(), getHeight()); 
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 
 	Colour c = BG_COLOR.darker();
 	//draw BG
@@ -498,6 +486,12 @@ void ScreenEditorView::renderOpenGL()
 
 void ScreenEditorView::openGLContextClosing()
 {
+}
+
+void ScreenEditorView::fileLoaded()
+{
+	registerRenderer(10);
+	Engine::mainEngine->removeEngineListener(this);
 }
 
 bool ScreenEditorView::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
@@ -606,7 +600,6 @@ bool ScreenEditorView::keyPressed(const KeyPress& key, Component* originatingCom
 	repaint();
 	return true;
 }
-
 
 void ScreenEditorView::moveScreenPointTo(Point<float> screenPos, Point<int> posOnScreen)
 {

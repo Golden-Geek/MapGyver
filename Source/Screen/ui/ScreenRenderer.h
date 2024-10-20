@@ -23,8 +23,6 @@ public:
 	std::unique_ptr<OpenGLShaderProgram> shader;
 	juce::OpenGLFrameBuffer frameBuffer;
 
-	bool shouldRegenerate;
-
 	void regenerateTextures();
 
 	void newOpenGLContextCreated() override;

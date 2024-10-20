@@ -12,9 +12,10 @@
 
 class ScreenEditorView :
 	public InspectableContentComponent,
-	public OpenGLRenderer,
+	public OpenGLSharedRenderer,
 	public DragAndDropTarget,
-	public KeyListener
+	public KeyListener,
+	public EngineListener
 {
 public:
 	ScreenEditorView(Screen* screen);
@@ -44,8 +45,6 @@ public:
 	Surface* candidateDropSurface;
 
 	GLuint framebuffer;
-
-	OpenGLContext context;
 
 	void paint(Graphics& g) override;
 	
@@ -78,6 +77,8 @@ public:
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
+
+	void fileLoaded() override;
 };
 
 class ScreenEditorPanel :

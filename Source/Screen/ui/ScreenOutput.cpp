@@ -18,56 +18,23 @@ using namespace juce::gl;
 
 ScreenOutput::ScreenOutput(Screen* screen) :
 	InspectableContentComponent(screen),
+	OpenGLSharedRenderer(this),
 	isLive(false),
 	screen(screen),
 	timeAtRender(0)
 {
 	autoDrawContourWhenSelected = false;
 
-
-	MessageManager::callAsync([this]() {update(); });
-
-
 	setWantsKeyboardFocus(true);
 	addKeyListener(this);
-
-	RMPSettings::getInstance()->fpsLimit->addAsyncCoalescedParameterListener(this);
-
 }
 
 ScreenOutput::~ScreenOutput()
 {
-	RMPSettings::getInstance()->fpsLimit->removeAsyncParameterListener(this);
-
-	stopTimer();
+	unregisterRenderer();
 	removeFromDesktop();
-	openGLContext.detach();
 }
 
-
-void ScreenOutput::hiResTimerCallback()
-{
-	openGLContext.triggerRepaint();
-}
-
-void ScreenOutput::init()
-{
-	openGLContext.detach();
-
-	MessageManager::callAsync([this]() {
-
-		openGLContext.setRenderer(this);
-		openGLContext.setSwapInterval(0);
-
-		GlContextHolder::getInstance()->context.executeOnGLThread([this](OpenGLContext& callerContext) {
-			openGLContext.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
-			}, true);
-
-		//attach the context to this component
-		openGLContext.attachTo(*this);
-		});
-
-}
 
 void ScreenOutput::update()
 {
@@ -87,10 +54,6 @@ void ScreenOutput::update()
 	{
 		Displays::Display d = ds.displays[screen->screenID->intValue()];
 
-		
-
-		startTimer(1000.0 / RMPSettings::getInstance()->fpsLimit->intValue());
-
 		Rectangle<int> a = d.totalArea;
 		if (screen->positionCC.enabled->boolValue())
 		{
@@ -109,11 +72,12 @@ void ScreenOutput::update()
 
 		if (!prevIsLive)
 		{
-			//openGLContext.setContinuousRepainting(true);
 			addToDesktop(0);
 			setAlwaysOnTop(true);
 			setVisible(true);
-			init();
+
+			int index = ScreenOutputWatcher::getInstance()->outputs.indexOf(this);
+			registerRenderer(index == 0 ? 0 : 10);
 		}
 
 		repaint();
@@ -123,14 +87,11 @@ void ScreenOutput::update()
 	{
 		if (prevIsLive)
 		{
-			openGLContext.detach();
+			unregisterRenderer();
 			removeFromDesktop();
-			stopTimer();
-			//openGLContext.setContinuousRepainting(false);
 			setAlwaysOnTop(false);
 		}
 
-		openGLContext.triggerRepaint();
 	}
 
 	setVisible(shouldShow);
@@ -154,15 +115,7 @@ void ScreenOutput::renderOpenGL()
 		return;
 	}
 
-	//double lastRenderTime = timeAtRender;
-
-	//double t = Time::getMillisecondCounterHiRes();
-	//const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
-	//if (t - lastRenderTime < frameTime) return;
-
-	//timeAtRender = t;
-
-	openGLContext.makeActive();
+	//context.makeActive();
 
 	Init2DViewport(getWidth(), getHeight());
 
@@ -236,16 +189,18 @@ void ScreenOutputWatcher::updateOutput(Screen* s, bool forceRemove)
 	bool shouldShow = !forceRemove && !s->isClearing && s->enabled->boolValue() && s->outputType->getValueDataAsEnum<Screen::OutputType>() == Screen::OutputType::DISPLAY;
 	if (o == nullptr)
 	{
-		if (shouldShow)
-		{
-			outputs.add(new ScreenOutput(s));
-		}
+		if (shouldShow) o = outputs.add(new ScreenOutput(s));
 	}
 	else
 	{
-		if (!shouldShow) outputs.removeObject(o);
-		else o->update();
+		if (!shouldShow)
+		{
+			outputs.removeObject(o);
+			o = nullptr;
+		}
 	}
+
+	if (o != nullptr) o->update();
 }
 
 ScreenOutput* ScreenOutputWatcher::getOutputForScreen(Screen* s)
