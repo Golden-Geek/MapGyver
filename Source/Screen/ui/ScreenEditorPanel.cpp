@@ -32,14 +32,19 @@ ScreenEditorView::ScreenEditorView(Screen* screen) :
 	setWantsKeyboardFocus(true); // Permet au composant de recevoir le focus clavier.
 	addKeyListener(this);
 
-	context.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
 	context.setRenderer(this);
+	context.setSwapInterval(0);
 	context.setContinuousRepainting(true);
-	//context.setComponentPaintingEnabled(true);
-	Timer::callAfterDelay(500, [this]() {
-		DBG("before " << (int)Time::getMillisecondCounter());
+
+	MessageManager::callAsync([this]() {
+
+		context.detach();
+		GlContextHolder::getInstance()->context.executeOnGLThread([this](OpenGLContext& callerContext) {
+			context.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
+			}, true);
+
+		//attach the context to this component
 		context.attachTo(*this);
-		DBG("After  " << (int)Time::getMillisecondCounter());
 		});
 }
 

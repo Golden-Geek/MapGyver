@@ -10,6 +10,7 @@
 
 #include "Screen/ScreenIncludes.h"
 #include "Common/CommonIncludes.h"
+#include "ScreenOutput.h"
 
 juce_ImplementSingleton(ScreenOutputWatcher)
 
@@ -18,34 +19,54 @@ using namespace juce::gl;
 ScreenOutput::ScreenOutput(Screen* screen) :
 	InspectableContentComponent(screen),
 	isLive(false),
-	screen(screen)
+	screen(screen),
+	timeAtRender(0)
 {
-	setOpaque(true);
-
 	autoDrawContourWhenSelected = false;
 
-	openGLContext.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
-	openGLContext.setRenderer(this);
-	openGLContext.attachTo(*this);
-	//openGLContext.setComponentPaintingEnabled(true);
 
-	setWantsKeyboardFocus(true); // Permet à ce composant de recevoir le focus clavier
-	addKeyListener(this);        // Ajoutez ce composant comme écouteur clavier
+	MessageManager::callAsync([this]() {update(); });
 
-	update();
+
+	setWantsKeyboardFocus(true);
+	addKeyListener(this);
+
+	RMPSettings::getInstance()->fpsLimit->addAsyncCoalescedParameterListener(this);
 
 }
 
 ScreenOutput::~ScreenOutput()
 {
+	RMPSettings::getInstance()->fpsLimit->removeAsyncParameterListener(this);
+
+	stopTimer();
 	removeFromDesktop();
 	openGLContext.detach();
 }
 
 
-void ScreenOutput::timerCallback()
+void ScreenOutput::hiResTimerCallback()
 {
 	openGLContext.triggerRepaint();
+}
+
+void ScreenOutput::init()
+{
+	openGLContext.detach();
+
+	MessageManager::callAsync([this]() {
+
+		openGLContext.setRenderer(this);
+		openGLContext.setSwapInterval(0);
+
+		GlContextHolder::getInstance()->context.executeOnGLThread([this](OpenGLContext& callerContext) {
+			openGLContext.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
+			}, true);
+
+		//attach the context to this component
+		openGLContext.attachTo(*this);
+		});
+
 }
 
 void ScreenOutput::update()
@@ -66,13 +87,9 @@ void ScreenOutput::update()
 	{
 		Displays::Display d = ds.displays[screen->screenID->intValue()];
 
-		if (!prevIsLive)
-		{
-			startTimerHz(60);
-			//openGLContext.setContinuousRepainting(true);
-			addToDesktop(0);
-			setAlwaysOnTop(true);
-		}
+		
+
+		startTimer(1000.0 / RMPSettings::getInstance()->fpsLimit->intValue());
 
 		Rectangle<int> a = d.totalArea;
 		if (screen->positionCC.enabled->boolValue())
@@ -89,12 +106,24 @@ void ScreenOutput::update()
 		}
 
 		setBounds(a);
+
+		if (!prevIsLive)
+		{
+			//openGLContext.setContinuousRepainting(true);
+			addToDesktop(0);
+			setAlwaysOnTop(true);
+			setVisible(true);
+			init();
+		}
+
 		repaint();
+
 	}
 	else
 	{
 		if (prevIsLive)
 		{
+			openGLContext.detach();
 			removeFromDesktop();
 			stopTimer();
 			//openGLContext.setContinuousRepainting(false);
@@ -124,6 +153,15 @@ void ScreenOutput::renderOpenGL()
 	{
 		return;
 	}
+
+	//double lastRenderTime = timeAtRender;
+
+	//double t = Time::getMillisecondCounterHiRes();
+	//const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
+	//if (t - lastRenderTime < frameTime) return;
+
+	//timeAtRender = t;
+
 	openGLContext.makeActive();
 
 	Init2DViewport(getWidth(), getHeight());
@@ -133,6 +171,7 @@ void ScreenOutput::renderOpenGL()
 
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, screen->renderer->frameBuffer.getTextureID());
+	glGetError();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -141,6 +180,7 @@ void ScreenOutput::renderOpenGL()
 
 	glDisable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glGetError();
 
 }
 
@@ -152,6 +192,11 @@ void ScreenOutput::userTriedToCloseWindow()
 {
 	if (inspectable.wasObjectDeleted()) return;
 	screen->enabled->setValue(false);
+}
+
+void ScreenOutput::newMessage(const Parameter::ParameterEvent& e)
+{
+	update();
 }
 
 bool ScreenOutput::keyPressed(const KeyPress& key, Component* originatingComponent)
@@ -191,7 +236,10 @@ void ScreenOutputWatcher::updateOutput(Screen* s, bool forceRemove)
 	bool shouldShow = !forceRemove && !s->isClearing && s->enabled->boolValue() && s->outputType->getValueDataAsEnum<Screen::OutputType>() == Screen::OutputType::DISPLAY;
 	if (o == nullptr)
 	{
-		if (shouldShow) outputs.add(new ScreenOutput(s));
+		if (shouldShow)
+		{
+			outputs.add(new ScreenOutput(s));
+		}
 	}
 	else
 	{

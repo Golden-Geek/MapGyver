@@ -17,7 +17,9 @@ class ScreenOutput :
 	public InspectableContentComponent,
 	public OpenGLRenderer,
 	public KeyListener,
-	public Timer
+	public HighResolutionTimer,
+	public Parameter::AsyncListener,
+	public EngineListener
 {
 public:
 	ScreenOutput(Screen* parent);
@@ -26,8 +28,12 @@ public:
 	Screen* screen;
 
 	bool isLive;
+	double timeAtRender;
 	juce::OpenGLContext openGLContext;
+
 	
+	void init();
+
 	void paint(Graphics& g) override {}
 	void update();
 
@@ -35,11 +41,14 @@ public:
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
 
-	void timerCallback() override;
+	void hiResTimerCallback() override;
 
 	void userTriedToCloseWindow() override;
 
+	void newMessage(const Parameter::ParameterEvent& e) override;
+
 	bool keyPressed(const KeyPress& key, Component* originatingComponent);
+
 };
 
 

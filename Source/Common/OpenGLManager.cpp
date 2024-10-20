@@ -20,6 +20,7 @@ GlContextHolder::GlContextHolder() :
 {
 	offScreenRenderComponent.setSize(1, 1); // (1, 1) is the minimum size for an OpenGL context (on Windows at least
 	setBackgroundColour(BG_COLOR.darker(.8f));
+
 }
 
 GlContextHolder::~GlContextHolder()
@@ -115,6 +116,7 @@ void GlContextHolder::setBackgroundColour(const juce::Colour c)
 
 void GlContextHolder::checkComponents(bool isClosing, bool isDrawing)
 {
+
 	juce::Array<Client*> initClients, runningClients;
 
 	{
@@ -158,11 +160,10 @@ void GlContextHolder::checkComponents(bool isClosing, bool isDrawing)
 			if (comp != nullptr)
 			{
 				juce::Rectangle<int> r = (parent->getLocalArea(comp, comp->getLocalBounds()).toFloat() * displayScale).getSmallestIntegerContainer();
-					glViewport((GLint)r.getX(),
+				glViewport((GLint)r.getX(),
 					(GLint)parentBounds.getHeight() - (GLint)r.getBottom(),
 					(GLsizei)r.getWidth(), (GLsizei)r.getHeight());
 			}
-			//juce::OpenGLHelpers::clear(backgroundColour);
 
 			rc->r->renderOpenGL();
 		}
@@ -238,10 +239,21 @@ void GlContextHolder::newOpenGLContextCreated()
 
 void GlContextHolder::renderOpenGL()
 {
-	timeAtRender = Time::getMillisecondCounterHiRes();
+	GenericScopedLock lock(renderLock);
+	double lastRenderTime = timeAtRender;
+
+	double t = Time::getMillisecondCounterHiRes();
+	const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
+	if (t - lastRenderTime < frameTime) return;
+
+	timeAtRender = t;
+	
+	//LOG("*** Render Main GL >>");
 
 	juce::OpenGLHelpers::clear(backgroundColour);
 	checkComponents(false, true);
+
+	//LOG(">> end Render Main GL");
 }
 
 void GlContextHolder::openGLContextClosing()

@@ -25,6 +25,8 @@ public:
 
 	Component offScreenRenderComponent;
 
+	CriticalSection renderLock;
+
 	void setup(juce::Component* topLevelComponent);
 
 	//==============================================================================
@@ -36,6 +38,8 @@ public:
 	void registerOpenGlRenderer(juce::OpenGLRenderer* child, int priority = 0);
 
 	void unregisterOpenGlRenderer(juce::OpenGLRenderer* child);
+
+	void shareWith(OpenGLContext* targetContext, std::function<void()> cb);
 
 	void setBackgroundColour(const juce::Colour c);
 
@@ -61,8 +65,6 @@ private:
 
 	//==============================================================================
 	juce::Component* parent;
-
-	
 
 	struct Client
 	{
