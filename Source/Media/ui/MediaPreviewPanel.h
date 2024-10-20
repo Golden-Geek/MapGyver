@@ -12,7 +12,7 @@
 
 class MediaPreview :
 	public Component,
-	public OpenGLRenderer,
+	public OpenGLSharedRenderer,
 	public Inspectable::InspectableListener,
 	public MediaTarget
 
@@ -25,8 +25,6 @@ public:
 	bool useMediaOnPreview;
 	Media* media;
 	Image image;
-
-	OpenGLContext context;
 
 	void setMedia(Media* m);
 

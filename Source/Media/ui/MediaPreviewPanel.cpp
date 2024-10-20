@@ -13,6 +13,7 @@
 using namespace juce::gl;
 
 MediaPreview::MediaPreview() :
+	OpenGLSharedRenderer(this),
 	useMediaOnPreview(false),
 	media(nullptr)
 {
@@ -21,25 +22,12 @@ MediaPreview::MediaPreview() :
 
 	setSize(200, 200);
 	
-	//MessageManager::callAsync([this]() {
-
-		//context.setRenderer(this);
-		//context.setContinuousRepainting(true);
-		//context.setComponentPaintingEnabled(true);
-
-		//GlContextHolder::getInstance()->context.executeOnGLThread([this](OpenGLContext& callerContext) {
-		//	context.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
-		//	}, true);
-
-		////attach the context to this component
-		//context.attachTo(*this);
-		//});
+	GlContextHolder::getInstance()->registerSharedRenderer(this, 500);
 }
 
 MediaPreview::~MediaPreview()
 {
-	//context.detach();
-	//if (GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+	if (GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterSharedRenderer(this);
 	setMedia(nullptr);
 }
 
