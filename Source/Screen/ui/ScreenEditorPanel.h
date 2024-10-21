@@ -78,7 +78,6 @@ public:
 	bool keyPressed(const KeyPress& key, Component* originatingComponent) override;
 
 	// Inherited via OpenGLRenderer
-	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
 

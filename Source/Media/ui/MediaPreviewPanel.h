@@ -30,7 +30,6 @@ public:
 
 	void paint(Graphics& g) override;
 
-	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
 	void inspectableDestroyed(Inspectable* i) override;

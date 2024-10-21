@@ -16,16 +16,19 @@ class OpenGLSharedRenderer :
 	public juce::OpenGLRenderer
 {
 public:
-	OpenGLSharedRenderer(Component* component) : component(component) {}
+	OpenGLSharedRenderer(Component* component, bool useSizeTrick = false) : component(component), useSizeTrick(useSizeTrick) {}
 	~OpenGLSharedRenderer() {}
 
 	OpenGLContext context;
 	Component* component;
+	bool useSizeTrick;
+	Point<int> glInitSize;
 
 	void registerRenderer(int delay = 0);
 	void unregisterRenderer();
 
-	virtual void newOpenGLContextCreated() override = 0;
+	virtual void newOpenGLContextCreated() override;
+
 	virtual void renderOpenGL() override = 0;
 	virtual void openGLContextClosing() override = 0;
 };

@@ -120,18 +120,19 @@ void GlContextHolder::registerSharedRenderer(OpenGLSharedRenderer* r, int delayB
 		}, true);
 
 
-	if (delayBeforeAttach == 0)
-	{
+	std::function<void()> attachFunc = [this, r]() {
+		if (r->useSizeTrick)
+		{
+			r->glInitSize = Point<int>(r->component->getWidth(), r->component->getHeight());
+			r->component->setSize(1, 1);
+		}
+
 		r->context.attachTo(*r->component);
 		sharedRenderers.add(r);
-	}
-	else
-	{
-		Timer::callAfterDelay(delayBeforeAttach, [this, r]() {
-			r->context.attachTo(*r->component);
-			sharedRenderers.add(r);
-			});
-	}
+		};
+
+	if (delayBeforeAttach == 0) attachFunc();
+	else Timer::callAfterDelay(delayBeforeAttach, attachFunc);
 }
 
 void GlContextHolder::unregisterSharedRenderer(OpenGLSharedRenderer* r)
@@ -340,5 +341,18 @@ void OpenGLSharedRenderer::registerRenderer(int delay)
 
 void OpenGLSharedRenderer::unregisterRenderer()
 {
-	if(GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterSharedRenderer(this);
+	if (GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterSharedRenderer(this);
+}
+
+void OpenGLSharedRenderer::newOpenGLContextCreated()
+{
+	juce::gl::glDebugMessageControl(juce::gl::GL_DEBUG_SOURCE_API, juce::gl::GL_DEBUG_TYPE_OTHER, juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, juce::gl::GL_FALSE);
+	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
+
+	if (useSizeTrick)
+	{
+		Timer::callAfterDelay(50, [this]() {
+			component->setSize(glInitSize.x, glInitSize.y);
+			});
+	}
 }

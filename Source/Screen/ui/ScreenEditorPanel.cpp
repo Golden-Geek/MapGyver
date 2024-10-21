@@ -17,7 +17,7 @@
 
 ScreenEditorPanel::ScreenEditorPanel() :
 	ShapeShifterContentComponent("Screen Editor"),
-	OpenGLSharedRenderer(this),
+	OpenGLSharedRenderer(this, true),
 	screen(nullptr),
 	zoomSensitivity(3.f),
 	zoomingMode(false),
@@ -459,17 +459,8 @@ Point<int> ScreenEditorPanel::getPointOnScreen(Point<float> pos)
 	return frameBufferRect.getTopLeft() + Point<float>((pos.x - viewOffset.x) * (frameBufferRect.getWidth() * zoom), (1 - pos.y + viewOffset.y) * (frameBufferRect.getHeight() * zoom)).toInt();
 }
 
-
-void ScreenEditorPanel::newOpenGLContextCreated()
-{
-	juce::gl::glDebugMessageControl(juce::gl::GL_DEBUG_SOURCE_API, juce::gl::GL_DEBUG_TYPE_OTHER, juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, juce::gl::GL_FALSE);
-	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
-}
-
 void ScreenEditorPanel::renderOpenGL()
 {
-
-	
 	Init2DMatrix(getWidth(), getHeight());
 
 	glEnable(GL_BLEND);

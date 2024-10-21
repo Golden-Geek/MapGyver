@@ -9,7 +9,7 @@ using namespace juce::gl;
 //EDITOR VIEW
 SurfaceEditorPanel::SurfaceEditorPanel() :
 	ShapeShifterContentComponent("Surface Editor"),
-	OpenGLSharedRenderer(this),
+	OpenGLSharedRenderer(this, true),
 	surface(nullptr),
 	zoomSensitivity(3.f),
 	zoomingMode(false),
@@ -168,12 +168,6 @@ void SurfaceEditorPanel::paint(Graphics& g)
 	updateFocus();
 }
 
-void SurfaceEditorPanel::newOpenGLContextCreated()
-{
-	//disable gl debug
-	juce::gl::glDebugMessageControl(juce::gl::GL_DEBUG_SOURCE_API, juce::gl::GL_DEBUG_TYPE_OTHER, juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, juce::gl::GL_FALSE);
-	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
-}
 
 void SurfaceEditorPanel::renderOpenGL()
 {

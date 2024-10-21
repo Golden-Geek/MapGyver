@@ -65,7 +65,6 @@ public:
 	void visibilityChanged() override;
 
 	void paint(Graphics& g) override;
-	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
 
