@@ -32,6 +32,7 @@ public:
 	void paint(Graphics& g) override {}
 	void update();
 
+
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 	void openGLContextClosing() override;

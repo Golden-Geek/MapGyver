@@ -7,9 +7,10 @@
 using namespace juce::gl;
 
 //EDITOR VIEW
-SurfaceEditorView::SurfaceEditorView(Surface* surface) :
-	InspectableContentComponent(surface),
-	surface(surface),
+SurfaceEditorPanel::SurfaceEditorPanel() :
+	ShapeShifterContentComponent("Surface Editor"),
+	OpenGLSharedRenderer(this),
+	surface(nullptr),
 	zoomSensitivity(3.f),
 	zoomingMode(false),
 	panningMode(false),
@@ -18,28 +19,64 @@ SurfaceEditorView::SurfaceEditorView(Surface* surface) :
 	focusComp(this),
 	updatingFocus(false)
 {
-	selectionContourColor = NORMAL_COLOR;
-	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 3);
 	setWantsKeyboardFocus(true); // Permet au composant de recevoir le focus clavier.
 	addKeyListener(this);
 
 	addAndMakeVisible(focusComp);
 	updateFocus();
 
-	surface->addAsyncContainerListener(this);
+	Engine::mainEngine->addEngineListener(this);
+
+	InspectableSelectionManager::mainSelectionManager->addSelectionListener(this);
+
 }
 
-SurfaceEditorView::~SurfaceEditorView()
+SurfaceEditorPanel::~SurfaceEditorPanel()
 {
+	Engine::mainEngine->removeEngineListener(this);
+
+	InspectableSelectionManager::mainSelectionManager->removeSelectionListener(this);
+
 	if (GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
 	removeKeyListener(this);
 
-	if(!inspectable.wasObjectDeleted()) surface->removeAsyncContainerListener(this);
+	unregisterRenderer();
+
+	setSurface(nullptr);
 
 }
 
-void SurfaceEditorView::resized()
+void SurfaceEditorPanel::setSurface(Surface* s)
 {
+	if (surface == s) return;
+
+	if (surface != nullptr)
+	{
+		surface->removeAsyncContainerListener(this);
+		surface->removeInspectableListener(this);
+	}
+
+	surface = s;
+	surfaceRef = s;
+
+	if (surface != nullptr)
+	{
+		surface->addAsyncContainerListener(this);
+		surface->addInspectableListener(this);
+
+		if(!context.isAttached()) registerRenderer(50);
+
+	}
+
+	resized();
+	repaint();
+}
+
+
+void SurfaceEditorPanel::resized()
+{
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
+
 	Media* media = surface->getMedia();
 	if (media == nullptr) return;
 
@@ -66,13 +103,21 @@ void SurfaceEditorView::resized()
 	updateFocus();
 }
 
-void SurfaceEditorView::visibilityChanged()
+void SurfaceEditorPanel::visibilityChanged()
 {
 	updateFocus();
 }
 
-void SurfaceEditorView::paint(Graphics& g)
+void SurfaceEditorPanel::paint(Graphics& g)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted())
+	{
+		g.setColour(TEXT_COLOR);
+		g.setFont(16);
+		g.drawFittedText("Select a surface to edit it here", getLocalBounds(), Justification::centred, 1);
+		return;
+	}
+
 	Point<int> topLeft = getPointOnScreen(Point<float>(0, 0));
 	Point<int> bottomRight = getPointOnScreen(Point<float>(1, 1));
 	Rectangle<int> r(topLeft, bottomRight);
@@ -88,7 +133,7 @@ void SurfaceEditorView::paint(Graphics& g)
 
 	g.setColour(NORMAL_COLOR.withAlpha(.5f));
 	g.drawRect(r.toFloat(), 1);
-
+	
 	//draw softedge gradient feedback if they are not 0
 	Point<int> tl = focusComp.getBounds().getTopLeft();
 	Point<int> br = focusComp.getBounds().getBottomRight();
@@ -123,20 +168,16 @@ void SurfaceEditorView::paint(Graphics& g)
 	updateFocus();
 }
 
-void SurfaceEditorView::newOpenGLContextCreated()
+void SurfaceEditorPanel::newOpenGLContextCreated()
 {
-
+	//disable gl debug
+	juce::gl::glDebugMessageControl(juce::gl::GL_DEBUG_SOURCE_API, juce::gl::GL_DEBUG_TYPE_OTHER, juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, juce::gl::GL_FALSE);
+	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
 }
 
-void SurfaceEditorView::renderOpenGL()
+void SurfaceEditorPanel::renderOpenGL()
 {
-	if (inspectable.wasObjectDeleted()) return;
 
-	Media* media = surface->getMedia();
-	if (media == nullptr) return;
-
-	GLint texID = media->getTextureID();
-	Point<int> mediaSize = media->getMediaSize();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	Init2DMatrix(getWidth(), getHeight());
@@ -156,6 +197,13 @@ void SurfaceEditorView::renderOpenGL()
 	glEnd();
 	glGetError();
 
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
+
+	Media* media = surface->getMedia();
+	if (media == nullptr) return;
+
+	GLint texID = media->getTextureID();
+	Point<int> mediaSize = media->getMediaSize();
 
 	//draw frameBuffer
 	glEnable(GL_TEXTURE_2D);
@@ -189,20 +237,24 @@ void SurfaceEditorView::renderOpenGL()
 }
 
 
-void SurfaceEditorView::openGLContextClosing()
+void SurfaceEditorPanel::openGLContextClosing()
 {
 }
 
-bool SurfaceEditorView::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
+bool SurfaceEditorPanel::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return false;
+
 	if (dragSourceDetails.description.getProperty("dataType", "") == "Media") return true;
 	if (dragSourceDetails.description.getProperty("type", "") == "OnlineContentItem") return true;
 	return false;
 }
 
 
-void SurfaceEditorView::itemDropped(const SourceDetails& source)
+void SurfaceEditorPanel::itemDropped(const SourceDetails& source)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
+
 	if (source.description.getProperty("type", "") == "OnlineContentItem")
 	{
 		OnlineContentItem* item = dynamic_cast<OnlineContentItem*>(source.sourceComponent.get());
@@ -223,8 +275,10 @@ void SurfaceEditorView::itemDropped(const SourceDetails& source)
 	repaint();
 }
 
-void SurfaceEditorView::mouseDown(const MouseEvent& e)
+void SurfaceEditorPanel::mouseDown(const MouseEvent& e)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
+
 	zoomingMode = e.mods.isCommandDown() && KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey);
 	if (zoomingMode)
 	{
@@ -246,13 +300,16 @@ void SurfaceEditorView::mouseDown(const MouseEvent& e)
 	}
 }
 
-void SurfaceEditorView::mouseMove(const MouseEvent& e)
+void SurfaceEditorPanel::mouseMove(const MouseEvent& e)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
 	repaint();
 }
 
-void SurfaceEditorView::mouseDrag(const MouseEvent& e)
+void SurfaceEditorPanel::mouseDrag(const MouseEvent& e)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
+
 	Point<float> offsetRelative = (e.getOffsetFromDragStart().toFloat() * Point<float>(1, -1)) / Point<float>(frameBufferRect.getWidth(), frameBufferRect.getHeight());
 
 	Point<int> focusScreenPoint = e.getMouseDownPosition();
@@ -274,8 +331,10 @@ void SurfaceEditorView::mouseDrag(const MouseEvent& e)
 
 }
 
-void SurfaceEditorView::mouseUp(const MouseEvent& e)
+void SurfaceEditorPanel::mouseUp(const MouseEvent& e)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
+
 	if (zoomingMode)
 	{
 		zoomingMode = false;
@@ -292,24 +351,29 @@ void SurfaceEditorView::mouseUp(const MouseEvent& e)
 }
 
 
-void SurfaceEditorView::mouseExit(const MouseEvent& e)
+void SurfaceEditorPanel::mouseExit(const MouseEvent& e)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
 	repaint();
 }
 
-void SurfaceEditorView::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
+void SurfaceEditorPanel::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
+
 	Point<float> screenPos = getRelativeMousePos();
 	zoom += wheel.deltaY * zoomSensitivity / 10;
 	moveScreenPointTo(screenPos, getMouseXYRelative());
 }
 
 
-bool SurfaceEditorView::keyPressed(const KeyPress& key, Component* originatingComponent)
+bool SurfaceEditorPanel::keyPressed(const KeyPress& key, Component* originatingComponent)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return false;
+
 	if (key.getTextCharacter() == 'f')
 	{
-		zoom = 1;
+		zoom = .95f;
 		viewOffset = Point<float>();
 		repaint();
 		return true;
@@ -318,16 +382,20 @@ bool SurfaceEditorView::keyPressed(const KeyPress& key, Component* originatingCo
 	return false;
 }
 
-void SurfaceEditorView::updateFocus()
+void SurfaceEditorPanel::updateFocus()
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
+
 	updatingFocus = true;
 	Rectangle<int> r(getPointOnScreen(Point<float>(surface->cropLeft->floatValue(), 1 - surface->cropTop->floatValue())), getPointOnScreen(Point<float>(1 - surface->cropRight->floatValue(), surface->cropBottom->floatValue())));
 	focusComp.setBounds(r);
 	updatingFocus = false;
 }
 
-void SurfaceEditorView::childBoundsChanged(Component* child)
+void SurfaceEditorPanel::childBoundsChanged(Component* child)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
+
 	if (child == &focusComp && !updatingFocus)
 	{
 		Point<float> tl = getRelativeScreenPos(focusComp.getBounds().getTopLeft());
@@ -339,8 +407,10 @@ void SurfaceEditorView::childBoundsChanged(Component* child)
 	}
 }
 
-void SurfaceEditorView::newMessage(const ContainerAsyncEvent& e)
+void SurfaceEditorPanel::newMessage(const ContainerAsyncEvent& e)
 {
+	if (surface == nullptr || surfaceRef.wasObjectDeleted()) return;
+
 	if (e.type == ContainerAsyncEvent::ControllableFeedbackUpdate)
 	{
 		if (e.targetControllable == surface->cropLeft || e.targetControllable == surface->cropTop || e.targetControllable == surface->cropRight || e.targetControllable == surface->cropBottom)
@@ -355,108 +425,63 @@ void SurfaceEditorView::newMessage(const ContainerAsyncEvent& e)
 }
 
 
-Point<float> SurfaceEditorView::getRelativeMousePos()
+Point<float> SurfaceEditorPanel::getRelativeMousePos()
 {
 	return getRelativeScreenPos(getMouseXYRelative());
 }
 
-Point<float> SurfaceEditorView::getRelativeScreenPos(Point<int> screenPos)
+Point<float> SurfaceEditorPanel::getRelativeScreenPos(Point<int> screenPos)
 {
 	Point<float> p = screenPos.toFloat() - frameBufferRect.getTopLeft().toFloat();
 	return Point<float>(p.x / (frameBufferRect.getWidth() * zoom) + viewOffset.x, 1 - (p.y / (frameBufferRect.getHeight() * zoom) - viewOffset.y));
 }
 
-Point<int> SurfaceEditorView::getPointOnScreen(Point<float> pos)
+Point<int> SurfaceEditorPanel::getPointOnScreen(Point<float> pos)
 {
 	return frameBufferRect.getTopLeft() + Point<float>((pos.x - viewOffset.x) * (frameBufferRect.getWidth() * zoom), (1 - pos.y + viewOffset.y) * (frameBufferRect.getHeight() * zoom)).toInt();
 }
 
 
 
-void SurfaceEditorView::moveScreenPointTo(Point<float> screenPos, Point<int> posOnScreen)
+void SurfaceEditorPanel::moveScreenPointTo(Point<float> screenPos, Point<int> posOnScreen)
 {
 	Point<float> relativePosOnScreen = getRelativeScreenPos(posOnScreen);
 	viewOffset += screenPos - relativePosOnScreen;
 }
 
-// PANEL
-SurfaceEditorPanel::SurfaceEditorPanel(const String& name) :
-	ShapeShifterContentComponent(name)
-{
-	InspectableSelectionManager::mainSelectionManager->addSelectionListener(this);
-}
-
-SurfaceEditorPanel::~SurfaceEditorPanel()
-{
-	InspectableSelectionManager::mainSelectionManager->removeSelectionListener(this);
-	setCurrentSurface(nullptr);
-}
-
-void SurfaceEditorPanel::paint(Graphics& g)
-{
-	//nothing here
-	if (surfaceEditorView == nullptr)
-	{
-		g.setColour(TEXT_COLOR);
-		g.setFont(16);
-		g.drawFittedText("Select a surface to edit it here", getLocalBounds(), Justification::centred, 1);
-	}
-}
-
-void SurfaceEditorPanel::resized()
-{
-	if (surfaceEditorView != nullptr)
-		surfaceEditorView->setBounds(getLocalBounds());
-
-}
-
-void SurfaceEditorPanel::setCurrentSurface(Surface* surface)
-{
-	if (surfaceEditorView != nullptr)
-	{
-		if (surfaceEditorView->surface == surface) return;
-		if (surfaceEditorView->surface != nullptr) surfaceEditorView->surface->removeInspectableListener(this);
-		removeChildComponent(surfaceEditorView.get());
-		surfaceEditorView.reset();
-
-	}
-
-	if (surface != nullptr)
-	{
-		surfaceEditorView.reset(new SurfaceEditorView(surface));
-		addAndMakeVisible(surfaceEditorView.get());
-		surface->addInspectableListener(this);
-	}
-
-	resized();
-	if(surface != nullptr) surfaceEditorView->repaint();
-}
-
 void SurfaceEditorPanel::inspectablesSelectionChanged()
 {
-	if (Surface* s = InspectableSelectionManager::mainSelectionManager->getInspectableAs<Surface>()) setCurrentSurface(s);
+	if (Surface* s = InspectableSelectionManager::mainSelectionManager->getInspectableAs<Surface>()) setSurface(s);
 }
 
 void SurfaceEditorPanel::inspectableDestroyed(Inspectable* i)
 {
-	if (surfaceEditorView != nullptr && surfaceEditorView->surface == i) setCurrentSurface(nullptr);
+	if (surface == i) setSurface(nullptr);
 }
 
-SurfaceEditorView::FocusComp::FocusComp(SurfaceEditorView* view) :
+void SurfaceEditorPanel::startLoadFile()
+{
+	setSurface(nullptr);
+	repaint();
+
+}
+
+
+SurfaceEditorPanel::FocusComp::FocusComp(SurfaceEditorPanel* view) :
 	ResizableBorderComponent(this, nullptr)
 {
 }
 
-SurfaceEditorView::FocusComp::~FocusComp()
+SurfaceEditorPanel::FocusComp::~FocusComp()
 {
 }
 
-void SurfaceEditorView::FocusComp::paint(Graphics& g)
+void SurfaceEditorPanel::FocusComp::paint(Graphics& g)
 {
 	g.setColour(YELLOW_COLOR);
 	g.drawRect(getLocalBounds(), 1);
 }
 
-void SurfaceEditorView::FocusComp::resized()
+void SurfaceEditorPanel::FocusComp::resized()
 {
 }

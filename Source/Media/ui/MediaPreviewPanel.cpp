@@ -18,16 +18,12 @@ MediaPreview::MediaPreview() :
 	media(nullptr)
 {
 
-	//GlContextHolder::getInstance()->registerOpenGlRenderer(this, 3);
-
 	setSize(200, 200);
-	
-	GlContextHolder::getInstance()->registerSharedRenderer(this, 500);
 }
 
 MediaPreview::~MediaPreview()
 {
-	if (GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterSharedRenderer(this);
+	unregisterRenderer();
 	setMedia(nullptr);
 }
 
@@ -42,8 +38,10 @@ void MediaPreview::setMedia(Media* m)
 
 	if (media != nullptr)
 	{
+		
 		media->addInspectableListener(this);
 		if(useMediaOnPreview) registerUseMedia(0, media);
+		if (!context.isAttached()) registerRenderer(50);
 	}
 }
 

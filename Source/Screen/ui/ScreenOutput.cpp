@@ -26,7 +26,7 @@ ScreenOutput::ScreenOutput(Screen* screen) :
 	autoDrawContourWhenSelected = false;
 
 	setWantsKeyboardFocus(true);
-	addKeyListener(this);
+	setInterceptsMouseClicks(true, true);
 }
 
 ScreenOutput::~ScreenOutput()
@@ -72,12 +72,14 @@ void ScreenOutput::update()
 
 		if (!prevIsLive)
 		{
-			addToDesktop(0);
 			setAlwaysOnTop(true);
 			setVisible(true);
+			setOpaque(true);
+			addKeyListener(this);
+			addToDesktop(ComponentPeer::StyleFlags::windowRequiresSynchronousCoreGraphicsRendering);
 
 			int index = ScreenOutputWatcher::getInstance()->outputs.indexOf(this);
-			registerRenderer(index == 0 ? 0 : 10);
+			registerRenderer(index == 0 ? (Engine::mainEngine->isLoadingFile ? 0: 10) : (Engine::mainEngine->isLoadingFile ? 100 : 200));
 		}
 
 		repaint();
@@ -90,6 +92,7 @@ void ScreenOutput::update()
 			unregisterRenderer();
 			removeFromDesktop();
 			setAlwaysOnTop(false);
+			removeKeyListener(this);
 		}
 
 	}
@@ -151,6 +154,7 @@ void ScreenOutput::newMessage(const Parameter::ParameterEvent& e)
 {
 	update();
 }
+
 
 bool ScreenOutput::keyPressed(const KeyPress& key, Component* originatingComponent)
 {
@@ -236,26 +240,6 @@ void ScreenOutputWatcher::newMessage(const ScreenManager::ManagerEvent& e)
 		break;
 	}
 }
-
-//void ScreenOutputWatcher::itemAdded(Screen* item)
-//{
-//	updateOutput(item);
-//}
-//
-//void ScreenOutputWatcher::itemsAdded(Array<Screen*> items)
-//{
-//	for (auto& s : items) updateOutput(s);
-//}
-//
-//void ScreenOutputWatcher::itemRemoved(Screen* item)
-//{
-//	updateOutput(item, true);
-//}
-//
-//void ScreenOutputWatcher::itemsRemoved(Array<Screen*> items)
-//{
-//	for (auto& s : items) updateOutput(s, true);
-//}
 
 void ScreenOutputWatcher::newMessage(const ContainerAsyncEvent& e)
 {

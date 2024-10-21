@@ -10,18 +10,21 @@
 
 #pragma once
 
-class ScreenEditorView :
-	public InspectableContentComponent,
+class ScreenEditorPanel :
+	public ShapeShifterContentComponent,
+	public InspectableSelectionManager::Listener,
+	public Inspectable::InspectableListener,
 	public OpenGLSharedRenderer,
 	public DragAndDropTarget,
 	public KeyListener,
 	public EngineListener
 {
 public:
-	ScreenEditorView();
-	~ScreenEditorView();
+	ScreenEditorPanel();
+	~ScreenEditorPanel();
 
 	Screen* screen;
+	WeakReference<Inspectable> screenRef;
 
 	Rectangle<int> frameBufferRect;
 	Point2DParameter* closestHandle;
@@ -79,28 +82,10 @@ public:
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
 
-	void fileLoaded() override;
-};
-
-class ScreenEditorPanel :
-	public ShapeShifterContentComponent,
-	public InspectableSelectionManager::Listener,
-	public Inspectable::InspectableListener
-{
-public:
-	ScreenEditorPanel(const String& name);
-	~ScreenEditorPanel();
-
-	ScreenEditorView screenEditorView;
-
-	void paint(Graphics& g) override;
-	void resized() override;
-
-	void setCurrentScreen(Screen* screen);
-
 	void inspectablesSelectionChanged() override;
 	void inspectableDestroyed(Inspectable* i) override;
 
+	void startLoadFile() override;
 
-	static ScreenEditorPanel* create(const String& name) { return new ScreenEditorPanel(name); }
+	static ScreenEditorPanel* create(const String& name) { return new ScreenEditorPanel(); }
 };
