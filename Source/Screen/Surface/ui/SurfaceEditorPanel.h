@@ -10,18 +10,23 @@
 
 #pragma once
 
-class SurfaceEditorView :
-	public InspectableContentComponent,
-	public OpenGLRenderer,
+
+class SurfaceEditorPanel :
+	public ShapeShifterContentComponent,
+	public InspectableSelectionManager::Listener,
+	public Inspectable::InspectableListener,
+	public OpenGLSharedRenderer,
 	public DragAndDropTarget,
 	public KeyListener,
-	public ContainerAsyncListener
+	public ContainerAsyncListener,
+	public EngineListener
 {
 public:
-	SurfaceEditorView(Surface* surface);
-	~SurfaceEditorView();
+	SurfaceEditorPanel();
+	~SurfaceEditorPanel();
 
 	Surface* surface;
+	WeakReference<Inspectable> surfaceRef;
 
 	Rectangle<int> frameBufferRect;
 
@@ -41,10 +46,10 @@ public:
 		public ResizableBorderComponent
 	{
 	public:
-		FocusComp(SurfaceEditorView* view);
+		FocusComp(SurfaceEditorPanel* surfaceEditor);
 		~FocusComp();
 
-		SurfaceEditorView* view;
+		SurfaceEditorPanel* surfaceEditor;
 
 		void paint(Graphics& g) override;
 		void resized() override;
@@ -53,6 +58,8 @@ public:
 
 	FocusComp focusComp;
 	bool updatingFocus;
+
+	void setSurface(Surface* surface);
 
 	void resized() override;
 	void visibilityChanged() override;
@@ -84,27 +91,12 @@ public:
 	void childBoundsChanged(Component* child) override;
 
 	void newMessage(const ContainerAsyncEvent& e) override;
-};
-
-class SurfaceEditorPanel :
-	public ShapeShifterContentComponent,
-	public InspectableSelectionManager::Listener,
-	public Inspectable::InspectableListener
-{
-public:
-	SurfaceEditorPanel(const String& name);
-	~SurfaceEditorPanel();
-
-	std::unique_ptr<SurfaceEditorView> surfaceEditorView;
-
-	void paint(Graphics& g) override;
-	void resized() override;
-
-	void setCurrentSurface(Surface* surface);
 
 	void inspectablesSelectionChanged() override;
 	void inspectableDestroyed(Inspectable* i) override;
 
 
-	static SurfaceEditorPanel* create(const String& name) { return new SurfaceEditorPanel(name); }
+	void startLoadFile() override;
+
+	static SurfaceEditorPanel* create(const String& name) { return new SurfaceEditorPanel(); }
 };

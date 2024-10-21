@@ -11,9 +11,29 @@
 #pragma once
 #include "JuceHeader.h"
 
+
+class OpenGLSharedRenderer :
+	public juce::OpenGLRenderer
+{
+public:
+	OpenGLSharedRenderer(Component* component) : component(component) {}
+	~OpenGLSharedRenderer() {}
+
+	OpenGLContext context;
+	Component* component;
+
+	void registerRenderer(int delay = 0);
+	void unregisterRenderer();
+
+	virtual void newOpenGLContextCreated() override = 0;
+	virtual void renderOpenGL() override = 0;
+	virtual void openGLContextClosing() override = 0;
+};
+
 class GlContextHolder :
 	private juce::ComponentListener,
 	private juce::OpenGLRenderer
+	//public juce::HighResolutionTimer
 {
 public:
 	juce_DeclareSingleton(GlContextHolder, true);
@@ -23,44 +43,33 @@ public:
 
 	double timeAtRender;
 
-	void setup(juce::Component* topLevelComponent);
+	juce::OpenGLContext context;
+	juce::Component* parent;
+	Component offScreenRenderComponent;
+	CriticalSection renderLock;
 
-	//==============================================================================
-	// The context holder MUST explicitely call detach in their destructor
+	Array<OpenGLSharedRenderer*, juce::CriticalSection> sharedRenderers;
+
+	void setup(juce::Component* topLevelComponent);
 	void detach();
 
-	//==============================================================================
-	// Clients MUST call unregisterOpenGlRenderer manually in their destructors!!
+
 	void registerOpenGlRenderer(juce::OpenGLRenderer* child, int priority = 0);
-
 	void unregisterOpenGlRenderer(juce::OpenGLRenderer* child);
+	void registerSharedRenderer(OpenGLSharedRenderer* r, int delayBeforeAttach);
+	void unregisterSharedRenderer(OpenGLSharedRenderer* r);
 
-	void setBackgroundColour(const juce::Colour c);
+	class RenderTimerListener
+	{
+	public:
+		virtual void renderCallback() {};
+	};
 
-	juce::OpenGLContext context;
+	LightweightListenerList<RenderTimerListener> renderTimerListeners;
+	void addRenderTimerListener(RenderTimerListener* listener) { renderTimerListeners.add(listener); }
+	void removeRenderTimerListener(RenderTimerListener* listener) { renderTimerListeners.remove(listener); }
 
 private:
-	//==============================================================================
-	void checkComponents(bool isClosing, bool isDrawing);
-
-	//==============================================================================
-	void componentParentHierarchyChanged(juce::Component& component) override;
-
-	void componentVisibilityChanged(juce::Component& component) override;
-
-	void componentBeingDeleted(juce::Component& component) override;
-
-	//==============================================================================
-	void newOpenGLContextCreated() override;
-
-	void renderOpenGL() override;
-
-	void openGLContextClosing() override;
-
-	//==============================================================================
-	juce::Component* parent;
-
-	
 
 	struct Client
 	{
@@ -85,46 +94,22 @@ private:
 	juce::CriticalSection stateChangeCriticalSection;
 	juce::OwnedArray<Client, juce::CriticalSection> clients;
 
-	//==============================================================================
-	int findClientIndexForComponent(juce::Component* c) const
-	{
-		const int n = clients.size();
-		for (int i = 0; i < n; ++i)
-			if (c == clients[i]->c)
-				return i;
+	void checkComponents(bool isClosing, bool isDrawing);
 
-		return -1;
-	}
-
-	Client* findClientForComponent(juce::Component* c) const
-	{
-		const int index = findClientIndexForComponent(c);
-		if (index >= 0 && index < clients.size())
-			return clients[index];
-
-		return nullptr;
-	}
-
-	int findClientIndexForRenderer(juce::OpenGLRenderer* r) const
-	{
-		const int n = clients.size();
-		for (int i = 0; i < n; ++i)
-			if (r == clients[i]->r)
-				return i;
-
-		return -1;
-	}
-
-	Client* findClientForRenderer(juce::OpenGLRenderer* r) const
-	{
-		const int index = findClientIndexForRenderer(r);
-		if (index >= 0 && index < clients.size())
-			return clients[index];
-
-		return nullptr;
-	}
+	void componentParentHierarchyChanged(juce::Component& component) override;
+	void componentVisibilityChanged(juce::Component& component) override;
+	void componentBeingDeleted(juce::Component& component) override;
 
 
-	//==============================================================================
-	juce::Colour backgroundColour{ juce::Colours::black };
+	void newOpenGLContextCreated() override;
+	void renderOpenGL() override;
+	void openGLContextClosing() override;
+
+	int findClientIndexForComponent(juce::Component* c) const;
+	Client* findClientForComponent(juce::Component* c) const;
+	int findClientIndexForRenderer(juce::OpenGLRenderer* r) const;
+	Client* findClientForRenderer(juce::OpenGLRenderer* r) const;
+
+
+
 };

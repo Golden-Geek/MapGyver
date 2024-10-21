@@ -13,7 +13,7 @@
 ColorMedia::ColorMedia(var params) :
 	Media(getTypeString(), params)
 {
-	color = mediaParams.addColorParameter("Color", "", Colour(255, 255, 255));
+	color = mediaParams.addColorParameter("Color", "", Colour(10,100,200));
 }
 
 ColorMedia::~ColorMedia()

@@ -10,6 +10,7 @@
 
 #include "Screen/ScreenIncludes.h"
 #include "Common/CommonIncludes.h"
+#include "ScreenOutput.h"
 
 juce_ImplementSingleton(ScreenOutputWatcher)
 
@@ -17,36 +18,23 @@ using namespace juce::gl;
 
 ScreenOutput::ScreenOutput(Screen* screen) :
 	InspectableContentComponent(screen),
+	OpenGLSharedRenderer(this),
 	isLive(false),
-	screen(screen)
+	screen(screen),
+	timeAtRender(0)
 {
-	setOpaque(true);
-
 	autoDrawContourWhenSelected = false;
 
-	openGLContext.setNativeSharedContext(GlContextHolder::getInstance()->context.getRawContext());
-	openGLContext.setRenderer(this);
-	openGLContext.attachTo(*this);
-	//openGLContext.setComponentPaintingEnabled(true);
-
-	setWantsKeyboardFocus(true); // Permet à ce composant de recevoir le focus clavier
-	addKeyListener(this);        // Ajoutez ce composant comme écouteur clavier
-
-	update();
-
+	setWantsKeyboardFocus(true);
+	setInterceptsMouseClicks(true, true);
 }
 
 ScreenOutput::~ScreenOutput()
 {
+	unregisterRenderer();
 	removeFromDesktop();
-	openGLContext.detach();
 }
 
-
-void ScreenOutput::timerCallback()
-{
-	openGLContext.triggerRepaint();
-}
 
 void ScreenOutput::update()
 {
@@ -66,14 +54,6 @@ void ScreenOutput::update()
 	{
 		Displays::Display d = ds.displays[screen->screenID->intValue()];
 
-		if (!prevIsLive)
-		{
-			startTimerHz(60);
-			//openGLContext.setContinuousRepainting(true);
-			addToDesktop(0);
-			setAlwaysOnTop(true);
-		}
-
 		Rectangle<int> a = d.totalArea;
 		if (screen->positionCC.enabled->boolValue())
 		{
@@ -89,19 +69,32 @@ void ScreenOutput::update()
 		}
 
 		setBounds(a);
+
+		if (!prevIsLive)
+		{
+			setAlwaysOnTop(true);
+			setVisible(true);
+			setOpaque(true);
+			addKeyListener(this);
+			addToDesktop(ComponentPeer::StyleFlags::windowRequiresSynchronousCoreGraphicsRendering);
+
+			int index = ScreenOutputWatcher::getInstance()->outputs.indexOf(this);
+			registerRenderer(index == 0 ? (Engine::mainEngine->isLoadingFile ? 0: 10) : (Engine::mainEngine->isLoadingFile ? 100 : 200));
+		}
+
 		repaint();
+
 	}
 	else
 	{
 		if (prevIsLive)
 		{
+			unregisterRenderer();
 			removeFromDesktop();
-			stopTimer();
-			//openGLContext.setContinuousRepainting(false);
 			setAlwaysOnTop(false);
+			removeKeyListener(this);
 		}
 
-		openGLContext.triggerRepaint();
 	}
 
 	setVisible(shouldShow);
@@ -124,7 +117,8 @@ void ScreenOutput::renderOpenGL()
 	{
 		return;
 	}
-	openGLContext.makeActive();
+
+	//context.makeActive();
 
 	Init2DViewport(getWidth(), getHeight());
 
@@ -133,6 +127,7 @@ void ScreenOutput::renderOpenGL()
 
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, screen->renderer->frameBuffer.getTextureID());
+	glGetError();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -141,6 +136,7 @@ void ScreenOutput::renderOpenGL()
 
 	glDisable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glGetError();
 
 }
 
@@ -153,6 +149,12 @@ void ScreenOutput::userTriedToCloseWindow()
 	if (inspectable.wasObjectDeleted()) return;
 	screen->enabled->setValue(false);
 }
+
+void ScreenOutput::newMessage(const Parameter::ParameterEvent& e)
+{
+	update();
+}
+
 
 bool ScreenOutput::keyPressed(const KeyPress& key, Component* originatingComponent)
 {
@@ -191,13 +193,18 @@ void ScreenOutputWatcher::updateOutput(Screen* s, bool forceRemove)
 	bool shouldShow = !forceRemove && !s->isClearing && s->enabled->boolValue() && s->outputType->getValueDataAsEnum<Screen::OutputType>() == Screen::OutputType::DISPLAY;
 	if (o == nullptr)
 	{
-		if (shouldShow) outputs.add(new ScreenOutput(s));
+		if (shouldShow) o = outputs.add(new ScreenOutput(s));
 	}
 	else
 	{
-		if (!shouldShow) outputs.removeObject(o);
-		else o->update();
+		if (!shouldShow)
+		{
+			outputs.removeObject(o);
+			o = nullptr;
+		}
 	}
+
+	if (o != nullptr) o->update();
 }
 
 ScreenOutput* ScreenOutputWatcher::getOutputForScreen(Screen* s)
@@ -233,26 +240,6 @@ void ScreenOutputWatcher::newMessage(const ScreenManager::ManagerEvent& e)
 		break;
 	}
 }
-
-//void ScreenOutputWatcher::itemAdded(Screen* item)
-//{
-//	updateOutput(item);
-//}
-//
-//void ScreenOutputWatcher::itemsAdded(Array<Screen*> items)
-//{
-//	for (auto& s : items) updateOutput(s);
-//}
-//
-//void ScreenOutputWatcher::itemRemoved(Screen* item)
-//{
-//	updateOutput(item, true);
-//}
-//
-//void ScreenOutputWatcher::itemsRemoved(Array<Screen*> items)
-//{
-//	for (auto& s : items) updateOutput(s, true);
-//}
 
 void ScreenOutputWatcher::newMessage(const ContainerAsyncEvent& e)
 {

@@ -11,12 +11,14 @@
 #include "Screen/ScreenIncludes.h"
 #include "Common/CommonIncludes.h"
 #include "Media/MediaIncludes.h"
+#include "ScreenEditorPanel.h"
 
 //EDITOR VIEW
 
-ScreenEditorView::ScreenEditorView(Screen* screen) :
-	InspectableContentComponent(screen),
-	screen(screen),
+ScreenEditorPanel::ScreenEditorPanel() :
+	ShapeShifterContentComponent("Screen Editor"),
+	OpenGLSharedRenderer(this),
+	screen(nullptr),
 	zoomSensitivity(3.f),
 	zoomingMode(false),
 	panningMode(false),
@@ -27,20 +29,65 @@ ScreenEditorView::ScreenEditorView(Screen* screen) :
 	zoom(1),
 	zoomAtMouseDown(1)
 {
-	selectionContourColor = NORMAL_COLOR;
-	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 3);
+	//GlContextHolder::getInstance()->registerOpenGlRenderer(this, 3);
 	setWantsKeyboardFocus(true); // Permet au composant de recevoir le focus clavier.
 	addKeyListener(this);
+
+	Engine::mainEngine->addEngineListener(this);
+
+	InspectableSelectionManager::mainSelectionManager->addSelectionListener(this);
+
+	setScreen(ScreenManager::getInstance()->editingScreen);
 }
 
-ScreenEditorView::~ScreenEditorView()
+ScreenEditorPanel::~ScreenEditorPanel()
 {
-	if (GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+	Engine::mainEngine->removeEngineListener(this);
+
+	InspectableSelectionManager::mainSelectionManager->removeSelectionListener(this);
+	setScreen(nullptr);
+	unregisterRenderer();
 	removeKeyListener(this);
 }
 
-void ScreenEditorView::paint(Graphics& g)
+void ScreenEditorPanel::setScreen(Screen* s)
 {
+	if (screen == s) return;
+
+	if (screen != nullptr) screen->removeInspectableListener(this);
+
+	screen = s;
+	screenRef = s;
+
+	if (screen != nullptr) screen->addInspectableListener(this);
+
+	ScreenManager::getInstance()->editingScreen = screen;
+	setCustomName("Screen Editor " + String(screen != nullptr ? " : " + screen->niceName : ""));
+	
+	
+	manipSurface = nullptr;
+	closestHandle = nullptr;
+	selectedPinMediaHandle = nullptr;
+	candidateDropSurface = nullptr;
+
+	repaint();
+
+	if (screen != nullptr && !context.isAttached())
+	{
+		registerRenderer(500);
+	}
+}
+
+void ScreenEditorPanel::paint(Graphics& g)
+{
+	if (screen == nullptr)
+	{
+		g.setFont(16);
+		g.setColour(NORMAL_COLOR.withAlpha(.5f));
+		g.drawFittedText("Select a screen to edit", getLocalBounds(), Justification::centred, 2);
+		return;
+	}
+
 	if (frameBufferRect.isEmpty()) return;
 
 	Point<int> topLeft = getPointOnScreen(Point<float>(0, 0));
@@ -161,11 +208,9 @@ void ScreenEditorView::paint(Graphics& g)
 			break;
 		}
 	}
-
-
 }
 
-Path ScreenEditorView::getSurfacePath(Surface* s)
+Path ScreenEditorPanel::getSurfacePath(Surface* s)
 {
 	Path surfacePath;
 	surfacePath.addPath(s->quadPath);
@@ -180,8 +225,10 @@ Path ScreenEditorView::getSurfacePath(Surface* s)
 
 }
 
-void ScreenEditorView::mouseDown(const MouseEvent& e)
+void ScreenEditorPanel::mouseDown(const MouseEvent& e)
 {
+	if (screen == nullptr) return;
+
 	zoomingMode = e.mods.isCommandDown() && KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey);
 	if (zoomingMode)
 	{
@@ -204,7 +251,7 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 	}
 
 	if (Surface* s = screen->getSurfaceAt(getRelativeMousePos())) s->selectThis();
-	
+
 	//surface manip mode
 	if (manipSurface != nullptr)
 	{
@@ -247,8 +294,10 @@ void ScreenEditorView::mouseDown(const MouseEvent& e)
 
 }
 
-void ScreenEditorView::mouseMove(const MouseEvent& e)
+void ScreenEditorPanel::mouseMove(const MouseEvent& e)
 {
+	if (screen == nullptr) return;
+
 	if (zoomingMode || panningMode)
 	{
 		repaint();
@@ -269,8 +318,10 @@ void ScreenEditorView::mouseMove(const MouseEvent& e)
 
 }
 
-void ScreenEditorView::mouseDrag(const MouseEvent& e)
+void ScreenEditorPanel::mouseDrag(const MouseEvent& e)
 {
+	if (screen == nullptr) return;
+
 	Point<float> offsetRelative = (e.getOffsetFromDragStart().toFloat() * Point<float>(1, -1)) / Point<float>(frameBufferRect.getWidth(), frameBufferRect.getHeight());
 
 	Point<int> focusScreenPoint = e.getMouseDownPosition();
@@ -330,8 +381,10 @@ void ScreenEditorView::mouseDrag(const MouseEvent& e)
 	repaint();
 }
 
-void ScreenEditorView::mouseUp(const MouseEvent& e)
+void ScreenEditorPanel::mouseUp(const MouseEvent& e)
 {
+	if (screen == nullptr) return;
+
 	selectedPinMediaHandle = nullptr;
 	if (zoomingMode)
 	{
@@ -370,15 +423,19 @@ void ScreenEditorView::mouseUp(const MouseEvent& e)
 	repaint();
 }
 
-void ScreenEditorView::mouseExit(const MouseEvent& e)
+void ScreenEditorPanel::mouseExit(const MouseEvent& e)
 {
+	if (screen == nullptr) return;
+
 	manipSurface = nullptr;
 	closestHandle = nullptr;
 	repaint();
 }
 
-void ScreenEditorView::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
+void ScreenEditorPanel::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
 {
+	if (screen == nullptr) return;
+
 	Point<float> screenPos = getRelativeMousePos();
 	zoom += wheel.deltaY * zoomSensitivity / 10;
 	moveScreenPointTo(screenPos, getMouseXYRelative());
@@ -386,40 +443,37 @@ void ScreenEditorView::mouseWheelMove(const MouseEvent& e, const MouseWheelDetai
 }
 
 
-Point<float> ScreenEditorView::getRelativeMousePos()
+Point<float> ScreenEditorPanel::getRelativeMousePos()
 {
 	return getRelativeScreenPos(getMouseXYRelative());
 }
 
-Point<float> ScreenEditorView::getRelativeScreenPos(Point<int> screenPos)
+Point<float> ScreenEditorPanel::getRelativeScreenPos(Point<int> screenPos)
 {
 	Point<float> p = screenPos.toFloat() - frameBufferRect.getTopLeft().toFloat();
 	return Point<float>(p.x / (frameBufferRect.getWidth() * zoom) + viewOffset.x, 1 - (p.y / (frameBufferRect.getHeight() * zoom) - viewOffset.y));
 }
 
-Point<int> ScreenEditorView::getPointOnScreen(Point<float> pos)
+Point<int> ScreenEditorPanel::getPointOnScreen(Point<float> pos)
 {
 	return frameBufferRect.getTopLeft() + Point<float>((pos.x - viewOffset.x) * (frameBufferRect.getWidth() * zoom), (1 - pos.y + viewOffset.y) * (frameBufferRect.getHeight() * zoom)).toInt();
 }
 
 
-void ScreenEditorView::newOpenGLContextCreated()
+void ScreenEditorPanel::newOpenGLContextCreated()
 {
-
+	juce::gl::glDebugMessageControl(juce::gl::GL_DEBUG_SOURCE_API, juce::gl::GL_DEBUG_TYPE_OTHER, juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, juce::gl::GL_FALSE);
+	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
 }
 
-void ScreenEditorView::renderOpenGL()
+void ScreenEditorPanel::renderOpenGL()
 {
-	if (inspectable.wasObjectDeleted()) return;
 
-	OpenGLFrameBuffer* frameBuffer = &screen->renderer->frameBuffer;
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+	
 	Init2DMatrix(getWidth(), getHeight());
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 
 	Colour c = BG_COLOR.darker();
 	//draw BG
@@ -431,6 +485,11 @@ void ScreenEditorView::renderOpenGL()
 	glTexCoord2f(1, 0); glVertex2f(getWidth(), 0);
 	glEnd();
 	glGetError();
+
+	if (screen == nullptr || screenRef.wasObjectDeleted()) return;
+
+	OpenGLFrameBuffer* frameBuffer = &screen->renderer->frameBuffer;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 	//draw frameBuffer
@@ -480,19 +539,23 @@ void ScreenEditorView::renderOpenGL()
 }
 
 
-void ScreenEditorView::openGLContextClosing()
+void ScreenEditorPanel::openGLContextClosing()
 {
 }
 
-bool ScreenEditorView::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
+bool ScreenEditorPanel::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
+	if (screen == nullptr) return false;
+
 	if (dragSourceDetails.description.getProperty("dataType", "") == "Media") return true;
 	if (dragSourceDetails.description.getProperty("type", "") == "OnlineContentItem") return true;
 	return false;
 }
 
-void ScreenEditorView::itemDragEnter(const SourceDetails& source)
+void ScreenEditorPanel::itemDragEnter(const SourceDetails& source)
 {
+	if (screen == nullptr) return;
+
 	Media* m = nullptr;
 	if (BaseItemMinimalUI<Media>* mui = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())) mui->item;
 
@@ -500,8 +563,10 @@ void ScreenEditorView::itemDragEnter(const SourceDetails& source)
 	repaint();
 }
 
-void ScreenEditorView::itemDragMove(const SourceDetails& source)
+void ScreenEditorPanel::itemDragMove(const SourceDetails& source)
 {
+	if (screen == nullptr) return;
+
 	Media* m = nullptr;
 	if (BaseItemMinimalUI<Media>* mui = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())) mui->item;
 
@@ -509,15 +574,19 @@ void ScreenEditorView::itemDragMove(const SourceDetails& source)
 	repaint();
 }
 
-void ScreenEditorView::itemDragExit(const SourceDetails& source)
+void ScreenEditorPanel::itemDragExit(const SourceDetails& source)
 {
+	if (screen == nullptr) return;
+
 	setCandidateDropSurface(nullptr);
 	repaint();
 }
 
 
-void ScreenEditorView::itemDropped(const SourceDetails& source)
+void ScreenEditorPanel::itemDropped(const SourceDetails& source)
 {
+	if (screen == nullptr) return;
+
 	if (candidateDropSurface == nullptr) return;
 
 	if (source.description.getProperty("type", "") == "OnlineContentItem")
@@ -541,8 +610,10 @@ void ScreenEditorView::itemDropped(const SourceDetails& source)
 	repaint();
 }
 
-void ScreenEditorView::setCandidateDropSurface(Surface* s, Media* m)
+void ScreenEditorPanel::setCandidateDropSurface(Surface* s, Media* m)
 {
+	if (screen == nullptr) return;
+
 	if (candidateDropSurface == s) return;
 	if (candidateDropSurface != nullptr) candidateDropSurface->previewMedia = nullptr;
 
@@ -550,8 +621,10 @@ void ScreenEditorView::setCandidateDropSurface(Surface* s, Media* m)
 	if (candidateDropSurface != nullptr) candidateDropSurface->previewMedia = m;
 }
 
-bool ScreenEditorView::keyPressed(const KeyPress& key, Component* originatingComponent)
+bool ScreenEditorPanel::keyPressed(const KeyPress& key, Component* originatingComponent)
 {
+	if (screen == nullptr) return false;
+
 	if (key.getTextCharacter() == 'f')
 	{
 		zoom = 1;
@@ -591,77 +664,26 @@ bool ScreenEditorView::keyPressed(const KeyPress& key, Component* originatingCom
 	return true;
 }
 
-
-void ScreenEditorView::moveScreenPointTo(Point<float> screenPos, Point<int> posOnScreen)
+void ScreenEditorPanel::moveScreenPointTo(Point<float> screenPos, Point<int> posOnScreen)
 {
 	Point<float> relativePosOnScreen = getRelativeScreenPos(posOnScreen);
 	viewOffset += screenPos - relativePosOnScreen;
 }
 
-
-// PANEL
-
-
-ScreenEditorPanel::ScreenEditorPanel(const String& name) :
-	ShapeShifterContentComponent(name)
-{
-	InspectableSelectionManager::mainSelectionManager->addSelectionListener(this);
-	if (ScreenManager::getInstance()->editingScreen != nullptr) setCurrentScreen(ScreenManager::getInstance()->editingScreen);
-}
-
-ScreenEditorPanel::~ScreenEditorPanel()
-{
-	InspectableSelectionManager::mainSelectionManager->removeSelectionListener(this);
-	setCurrentScreen(nullptr);
-}
-
-void ScreenEditorPanel::paint(Graphics& g)
-{
-	//nothing here
-	if (screenEditorView == nullptr)
-	{
-		g.setColour(TEXT_COLOR);
-		g.setFont(16);
-		g.drawFittedText("Select a screen to edit it here", getLocalBounds(), Justification::centred, 1);
-	}
-}
-
-void ScreenEditorPanel::resized()
-{
-	if (screenEditorView != nullptr)
-		screenEditorView->setBounds(getLocalBounds());
-}
-
-void ScreenEditorPanel::setCurrentScreen(Screen* screen)
-{
-	if (screenEditorView != nullptr)
-	{
-		if (screenEditorView->screen == screen) return;
-		if (screenEditorView->screen != nullptr) screenEditorView->screen->removeInspectableListener(this);
-		removeChildComponent(screenEditorView.get());
-		screenEditorView.reset();
-
-	}
-
-	if (screen != nullptr)
-	{
-		screenEditorView.reset(new ScreenEditorView(screen));
-		addAndMakeVisible(screenEditorView.get());
-		screen->addInspectableListener(this);
-	}
-
-	ScreenManager::getInstance()->editingScreen = screen;
-
-	resized();
-}
-
 void ScreenEditorPanel::inspectablesSelectionChanged()
 {
-	if (Screen* s = InspectableSelectionManager::mainSelectionManager->getInspectableAs<Screen>()) setCurrentScreen(s);
+	if (Screen* s = InspectableSelectionManager::mainSelectionManager->getInspectableAs<Screen>()) setScreen(s);
 }
 
 void ScreenEditorPanel::inspectableDestroyed(Inspectable* i)
 {
-	if (screenEditorView != nullptr && screenEditorView->screen == i) setCurrentScreen(nullptr);
+	if (screen == i) setScreen(nullptr);
+}
+
+void ScreenEditorPanel::startLoadFile()
+{
+	setScreen(nullptr);
+	repaint();
+	context.triggerRepaint();
 }
 

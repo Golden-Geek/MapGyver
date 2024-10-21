@@ -12,12 +12,12 @@
 #include "Common/CommonIncludes.h"
 #include "Media/MediaIncludes.h"
 #include "Engine/MGEngine.h"
+#include "ScreenRenderer.h"
 
 using namespace juce::gl;
 
 ScreenRenderer::ScreenRenderer(Screen* screen) :
-	screen(screen),
-	timeAtLastRender(0)
+	screen(screen)
 {
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 2);
 }
@@ -25,6 +25,10 @@ ScreenRenderer::ScreenRenderer(Screen* screen) :
 ScreenRenderer::~ScreenRenderer()
 {
 	if (GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+}
+
+void ScreenRenderer::regenerateTextures()
+{
 }
 
 void ScreenRenderer::newOpenGLContextCreated()
@@ -36,11 +40,6 @@ void ScreenRenderer::newOpenGLContextCreated()
 
 void ScreenRenderer::renderOpenGL()
 {
-	const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
-	double t = GlContextHolder::getInstance()->timeAtRender;
-	if (t < timeAtLastRender + frameTime) return;
-	timeAtLastRender = t;
-
 	frameBuffer.makeCurrentRenderingTarget();
 	glClearColor(0, 0, 0, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

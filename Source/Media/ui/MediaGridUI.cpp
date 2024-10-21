@@ -14,7 +14,7 @@ MediaGridUI::MediaGridUI(Media* item) :
 	BaseItemUI(item, NONE)
 {
 	preview.setMedia(item);
-	addAndMakeVisible(&preview);
+	addAndMakeVisible(preview);
 	bgColor = Colours::transparentBlack;
 	preview.setInterceptsMouseClicks(false, false);
 

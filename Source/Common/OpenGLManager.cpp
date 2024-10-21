@@ -18,7 +18,7 @@ using namespace juce::gl;
 GlContextHolder::GlContextHolder() :
 	timeAtRender(0)
 {
-	setBackgroundColour(BG_COLOR.darker(.8f));
+	offScreenRenderComponent.setSize(1, 1); // (1, 1) is the minimum size for an OpenGL context (on Windows at least
 }
 
 GlContextHolder::~GlContextHolder()
@@ -28,17 +28,17 @@ GlContextHolder::~GlContextHolder()
 
 void GlContextHolder::setup(juce::Component* topLevelComponent)
 {
+	topLevelComponent->addAndMakeVisible(offScreenRenderComponent);
 	parent = topLevelComponent;
 	//context.setOpenGLVersionRequired(juce::OpenGLContext::OpenGLVersion::openGL4_1);
 
-	if (OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(parent)) registerOpenGlRenderer(r);
+	//if (OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(offScreenRenderComponent)) registerOpenGlRenderer(r);
+	//registerOpenGlRenderer(&offScreenRenderComponent);
 	context.setSwapInterval(0);
 	context.setRenderer(this);
 	context.setContinuousRepainting(true);
 	context.setComponentPaintingEnabled(true);
-	context.attachTo(*parent);
-
-
+	context.attachTo(offScreenRenderComponent);
 }
 
 //==============================================================================
@@ -56,6 +56,7 @@ void GlContextHolder::detach()
 	context.detach();
 	context.setRenderer(nullptr);
 }
+
 
 //==============================================================================
 // Clients MUST call unregisterOpenGlRenderer manually in their destructors!!
@@ -105,15 +106,47 @@ void GlContextHolder::unregisterOpenGlRenderer(juce::OpenGLRenderer* child)
 	}
 }
 
-void GlContextHolder::setBackgroundColour(const juce::Colour c)
+void GlContextHolder::registerSharedRenderer(OpenGLSharedRenderer* r, int delayBeforeAttach)
 {
-	backgroundColour = c;
+	//GenericScopedLock lock(renderLock);
+
+	r->context.detach();
+
+	r->context.setSwapInterval(0);
+	r->context.setRenderer(r);
+
+	context.executeOnGLThread([this, r](OpenGLContext& callerContext) {
+		r->context.setNativeSharedContext(context.getRawContext());
+		}, true);
+
+
+	if (delayBeforeAttach == 0)
+	{
+		r->context.attachTo(*r->component);
+		sharedRenderers.add(r);
+	}
+	else
+	{
+		Timer::callAfterDelay(delayBeforeAttach, [this, r]() {
+			r->context.attachTo(*r->component);
+			sharedRenderers.add(r);
+			});
+	}
 }
+
+void GlContextHolder::unregisterSharedRenderer(OpenGLSharedRenderer* r)
+{
+	//GenericScopedLock lock(renderLock);
+	sharedRenderers.removeAllInstancesOf(r);
+	r->context.detach();
+}
+
 
 //==============================================================================
 
 void GlContextHolder::checkComponents(bool isClosing, bool isDrawing)
 {
+
 	juce::Array<Client*> initClients, runningClients;
 
 	{
@@ -157,11 +190,10 @@ void GlContextHolder::checkComponents(bool isClosing, bool isDrawing)
 			if (comp != nullptr)
 			{
 				juce::Rectangle<int> r = (parent->getLocalArea(comp, comp->getLocalBounds()).toFloat() * displayScale).getSmallestIntegerContainer();
-					glViewport((GLint)r.getX(),
+				glViewport((GLint)r.getX(),
 					(GLint)parentBounds.getHeight() - (GLint)r.getBottom(),
 					(GLsizei)r.getWidth(), (GLsizei)r.getHeight());
 			}
-			//juce::OpenGLHelpers::clear(backgroundColour);
 
 			rc->r->renderOpenGL();
 		}
@@ -237,13 +269,76 @@ void GlContextHolder::newOpenGLContextCreated()
 
 void GlContextHolder::renderOpenGL()
 {
-	timeAtRender = Time::getMillisecondCounterHiRes();
+	double lastRenderTime = timeAtRender;
 
-	juce::OpenGLHelpers::clear(backgroundColour);
+	double t = Time::getMillisecondCounterHiRes();
+	const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
+	if (t - lastRenderTime < frameTime) return;
+
+	timeAtRender = t;
+
+	//LOG("*** Render Main GL >>");
+
+	juce::OpenGLHelpers::clear(Colours::black);
 	checkComponents(false, true);
+
+	for (auto& c : sharedRenderers) c->context.triggerRepaint();
 }
 
 void GlContextHolder::openGLContextClosing()
 {
 	checkComponents(true, false);
+}
+
+//==============================================================================
+// CLIENT
+//==============================================================================
+
+int GlContextHolder::findClientIndexForComponent(juce::Component* c) const
+{
+	const int n = clients.size();
+	for (int i = 0; i < n; ++i)
+		if (c == clients[i]->c)
+			return i;
+
+	return -1;
+}
+
+GlContextHolder::Client* GlContextHolder::findClientForComponent(juce::Component* c) const
+{
+	const int index = findClientIndexForComponent(c);
+	if (index >= 0 && index < clients.size())
+		return clients[index];
+
+	return nullptr;
+}
+
+int GlContextHolder::findClientIndexForRenderer(juce::OpenGLRenderer* r) const
+{
+	const int n = clients.size();
+	for (int i = 0; i < n; ++i)
+		if (r == clients[i]->r)
+			return i;
+
+	return -1;
+}
+
+GlContextHolder::Client* GlContextHolder::findClientForRenderer(juce::OpenGLRenderer* r) const
+{
+	const int index = findClientIndexForRenderer(r);
+	if (index >= 0 && index < clients.size())
+		return clients[index];
+
+	return nullptr;
+}
+
+
+void OpenGLSharedRenderer::registerRenderer(int delay)
+{
+	GlContextHolder::getInstance()->registerSharedRenderer(this, delay);
+}
+
+void OpenGLSharedRenderer::unregisterRenderer()
+{
+	if(GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterSharedRenderer(this);
 }

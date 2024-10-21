@@ -13,18 +13,17 @@
 using namespace juce::gl;
 
 MediaPreview::MediaPreview() :
+	OpenGLSharedRenderer(this),
 	useMediaOnPreview(false),
 	media(nullptr)
 {
 
-	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 3);
-
-
+	setSize(200, 200);
 }
 
 MediaPreview::~MediaPreview()
 {
-	if (GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+	unregisterRenderer();
 	setMedia(nullptr);
 }
 
@@ -39,8 +38,10 @@ void MediaPreview::setMedia(Media* m)
 
 	if (media != nullptr)
 	{
+		
 		media->addInspectableListener(this);
 		if(useMediaOnPreview) registerUseMedia(0, media);
+		if (!context.isAttached()) registerRenderer(50);
 	}
 }
 
@@ -61,6 +62,7 @@ void MediaPreview::paint(Graphics& g)
 
 void MediaPreview::newOpenGLContextCreated()
 {
+	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
 }
 
 void MediaPreview::renderOpenGL()

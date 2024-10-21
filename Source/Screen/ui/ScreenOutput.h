@@ -15,9 +15,9 @@ class Media;
 
 class ScreenOutput :
 	public InspectableContentComponent,
-	public OpenGLRenderer,
+	public OpenGLSharedRenderer,
 	public KeyListener,
-	public Timer
+	public Parameter::AsyncListener
 {
 public:
 	ScreenOutput(Screen* parent);
@@ -26,18 +26,20 @@ public:
 	Screen* screen;
 
 	bool isLive;
-	juce::OpenGLContext openGLContext;
-	
+	double timeAtRender;
+
+
 	void paint(Graphics& g) override {}
 	void update();
+
 
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
 
-	void timerCallback() override;
-
 	void userTriedToCloseWindow() override;
+
+	void newMessage(const Parameter::ParameterEvent& e) override;
 
 	bool keyPressed(const KeyPress& key, Component* originatingComponent);
 };

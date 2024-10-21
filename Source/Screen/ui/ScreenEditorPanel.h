@@ -10,17 +10,21 @@
 
 #pragma once
 
-class ScreenEditorView :
-	public InspectableContentComponent,
-	public OpenGLRenderer,
+class ScreenEditorPanel :
+	public ShapeShifterContentComponent,
+	public InspectableSelectionManager::Listener,
+	public Inspectable::InspectableListener,
+	public OpenGLSharedRenderer,
 	public DragAndDropTarget,
-	public KeyListener
+	public KeyListener,
+	public EngineListener
 {
 public:
-	ScreenEditorView(Screen* screen);
-	~ScreenEditorView();
+	ScreenEditorPanel();
+	~ScreenEditorPanel();
 
 	Screen* screen;
+	WeakReference<Inspectable> screenRef;
 
 	Rectangle<int> frameBufferRect;
 	Point2DParameter* closestHandle;
@@ -45,6 +49,7 @@ public:
 
 	GLuint framebuffer;
 
+	void setScreen(Screen* s);
 	void paint(Graphics& g) override;
 	
 	Path getSurfacePath(Surface* s);
@@ -76,27 +81,11 @@ public:
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
-};
-
-class ScreenEditorPanel :
-	public ShapeShifterContentComponent,
-	public InspectableSelectionManager::Listener,
-	public Inspectable::InspectableListener
-{
-public:
-	ScreenEditorPanel(const String& name);
-	~ScreenEditorPanel();
-
-	std::unique_ptr<ScreenEditorView> screenEditorView;
-
-	void paint(Graphics& g) override;
-	void resized() override;
-
-	void setCurrentScreen(Screen* screen);
 
 	void inspectablesSelectionChanged() override;
 	void inspectableDestroyed(Inspectable* i) override;
 
+	void startLoadFile() override;
 
-	static ScreenEditorPanel* create(const String& name) { return new ScreenEditorPanel(name); }
+	static ScreenEditorPanel* create(const String& name) { return new ScreenEditorPanel(); }
 };

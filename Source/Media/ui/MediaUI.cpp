@@ -25,7 +25,7 @@ MediaUI::MediaUI(Media* item) :
 
 MediaUI::~MediaUI()
 {
-	if (!inspectable.wasObjectDeleted())	item->removeAsyncMediaListener(this);
+	if (!inspectable.wasObjectDeleted()) item->removeAsyncMediaListener(this);
 }
 
 void MediaUI::paint(Graphics& g)

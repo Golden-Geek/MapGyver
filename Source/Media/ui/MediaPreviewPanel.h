@@ -12,7 +12,7 @@
 
 class MediaPreview :
 	public Component,
-	public OpenGLRenderer,
+	public OpenGLSharedRenderer,
 	public Inspectable::InspectableListener,
 	public MediaTarget
 
@@ -34,8 +34,6 @@ public:
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
 	void inspectableDestroyed(Inspectable* i) override;
-
-	OpenGLContext context;
 
 };
 
