@@ -13,7 +13,7 @@
 using namespace juce::gl;
 
 MediaPreview::MediaPreview() :
-	OpenGLSharedRenderer(this, true),
+	OpenGLSharedRenderer(this),
 	useMediaOnPreview(false),
 	media(nullptr)
 {
@@ -23,7 +23,6 @@ MediaPreview::MediaPreview() :
 
 MediaPreview::~MediaPreview()
 {
-	unregisterRenderer();
 	setMedia(nullptr);
 }
 
@@ -41,7 +40,7 @@ void MediaPreview::setMedia(Media* m)
 		
 		media->addInspectableListener(this);
 		if(useMediaOnPreview) registerUseMedia(0, media);
-		if (!context.isAttached()) registerRenderer(50);
+		
 	}
 }
 

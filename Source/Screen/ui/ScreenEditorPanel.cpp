@@ -17,7 +17,7 @@
 
 ScreenEditorPanel::ScreenEditorPanel() :
 	ShapeShifterContentComponent("Screen Editor"),
-	OpenGLSharedRenderer(this, true),
+	OpenGLSharedRenderer(this),
 	screen(nullptr),
 	zoomSensitivity(3.f),
 	zoomingMode(false),
@@ -46,7 +46,6 @@ ScreenEditorPanel::~ScreenEditorPanel()
 
 	InspectableSelectionManager::mainSelectionManager->removeSelectionListener(this);
 	setScreen(nullptr);
-	unregisterRenderer();
 	removeKeyListener(this);
 }
 
@@ -71,17 +70,13 @@ void ScreenEditorPanel::setScreen(Screen* s)
 	candidateDropSurface = nullptr;
 
 	repaint();
-
-	if (screen != nullptr && !context.isAttached())
-	{
-		registerRenderer(500);
-	}
 }
 
 void ScreenEditorPanel::paint(Graphics& g)
 {
 	if (screen == nullptr)
 	{
+		ShapeShifterContentComponent::paint(g);
 		g.setFont(16);
 		g.setColour(NORMAL_COLOR.withAlpha(.5f));
 		g.drawFittedText("Select a screen to edit", getLocalBounds(), Justification::centred, 2);

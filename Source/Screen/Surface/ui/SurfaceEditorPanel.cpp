@@ -9,7 +9,7 @@ using namespace juce::gl;
 //EDITOR VIEW
 SurfaceEditorPanel::SurfaceEditorPanel() :
 	ShapeShifterContentComponent("Surface Editor"),
-	OpenGLSharedRenderer(this, true),
+	OpenGLSharedRenderer(this),
 	surface(nullptr),
 	zoomSensitivity(3.f),
 	zoomingMode(false),
@@ -40,8 +40,6 @@ SurfaceEditorPanel::~SurfaceEditorPanel()
 	if (GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
 	removeKeyListener(this);
 
-	unregisterRenderer();
-
 	setSurface(nullptr);
 
 }
@@ -63,9 +61,6 @@ void SurfaceEditorPanel::setSurface(Surface* s)
 	{
 		surface->addAsyncContainerListener(this);
 		surface->addInspectableListener(this);
-
-		if(!context.isAttached()) registerRenderer(50);
-
 	}
 
 	resized();
@@ -112,6 +107,7 @@ void SurfaceEditorPanel::paint(Graphics& g)
 {
 	if (surface == nullptr || surfaceRef.wasObjectDeleted())
 	{
+		ShapeShifterContentComponent::paint(g);
 		g.setColour(TEXT_COLOR);
 		g.setFont(16);
 		g.drawFittedText("Select a surface to edit it here", getLocalBounds(), Justification::centred, 1);

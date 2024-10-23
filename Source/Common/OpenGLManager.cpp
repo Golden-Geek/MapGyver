@@ -106,40 +106,15 @@ void GlContextHolder::unregisterOpenGlRenderer(juce::OpenGLRenderer* child)
 	}
 }
 
-void GlContextHolder::registerSharedRenderer(OpenGLSharedRenderer* r, int delayBeforeAttach)
+void GlContextHolder::registerSharedRenderer(OpenGLSharedRenderer* r)
 {
-	//GenericScopedLock lock(renderLock);
-
-	r->context.detach();
-
-	r->context.setSwapInterval(0);
-	r->context.setRenderer(r);
-
-	context.executeOnGLThread([this, r](OpenGLContext& callerContext) {
-		r->context.setNativeSharedContext(context.getRawContext());
-		}, true);
-
-
-	std::function<void()> attachFunc = [this, r]() {
-		if (r->useSizeTrick)
-		{
-			r->glInitSize = Point<int>(r->component->getWidth(), r->component->getHeight());
-			r->component->setSize(1, 1);
-		}
-
-		r->context.attachTo(*r->component);
-		sharedRenderers.add(r);
-		};
-
-	if (delayBeforeAttach == 0) attachFunc();
-	else Timer::callAfterDelay(delayBeforeAttach, attachFunc);
+	r->context.setNativeSharedContext(context.getRawContext());
+	sharedRenderers.add(r);
 }
 
 void GlContextHolder::unregisterSharedRenderer(OpenGLSharedRenderer* r)
 {
-	//GenericScopedLock lock(renderLock);
 	sharedRenderers.removeAllInstancesOf(r);
-	r->context.detach();
 }
 
 
@@ -334,25 +309,25 @@ GlContextHolder::Client* GlContextHolder::findClientForRenderer(juce::OpenGLRend
 }
 
 
-void OpenGLSharedRenderer::registerRenderer(int delay)
+OpenGLSharedRenderer::OpenGLSharedRenderer(Component* component) : component(component)
 {
-	GlContextHolder::getInstance()->registerSharedRenderer(this, delay);
+	GlContextHolder::getInstance()->registerSharedRenderer(this);
+	context.detach();
+	context.setSwapInterval(0);
+	context.setRenderer(this);
+	context.attachTo(*component);
+
 }
 
-void OpenGLSharedRenderer::unregisterRenderer()
+OpenGLSharedRenderer::~OpenGLSharedRenderer()
 {
 	if (GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterSharedRenderer(this);
+	context.detach();
 }
+
 
 void OpenGLSharedRenderer::newOpenGLContextCreated()
 {
 	juce::gl::glDebugMessageControl(juce::gl::GL_DEBUG_SOURCE_API, juce::gl::GL_DEBUG_TYPE_OTHER, juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, juce::gl::GL_FALSE);
 	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
-
-	if (useSizeTrick)
-	{
-		Timer::callAfterDelay(50, [this]() {
-			component->setSize(glInitSize.x, glInitSize.y);
-			});
-	}
 }

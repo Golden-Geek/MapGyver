@@ -31,7 +31,6 @@ ScreenOutput::ScreenOutput(Screen* screen) :
 
 ScreenOutput::~ScreenOutput()
 {
-	unregisterRenderer();
 	removeFromDesktop();
 }
 
@@ -77,9 +76,6 @@ void ScreenOutput::update()
 			setOpaque(true);
 			addKeyListener(this);
 			addToDesktop(ComponentPeer::StyleFlags::windowRequiresSynchronousCoreGraphicsRendering);
-
-			int index = ScreenOutputWatcher::getInstance()->outputs.indexOf(this);
-			registerRenderer(index == 0 ? (Engine::mainEngine->isLoadingFile ? 0: 10) : (Engine::mainEngine->isLoadingFile ? 100 : 200));
 		}
 
 		repaint();
@@ -89,7 +85,6 @@ void ScreenOutput::update()
 	{
 		if (prevIsLive)
 		{
-			unregisterRenderer();
 			removeFromDesktop();
 			setAlwaysOnTop(false);
 			removeKeyListener(this);
