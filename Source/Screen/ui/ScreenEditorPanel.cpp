@@ -397,7 +397,7 @@ void ScreenEditorPanel::mouseUp(const MouseEvent& e)
 	{
 		Array<Point2DParameter*> handles = manipSurface->getAllHandles();
 		Array<UndoableAction*> actions;
-		for (int i = 0; i < handles.size(); i++) actions.add(handles[i]->setUndoablePoint(posAtMouseDown[i], handles[i]->getPoint(), true));
+		for (int i = 0; i < handles.size(); i++) actions.addArray(handles[i]->setUndoablePoint(handles[i]->getPoint(), true));
 		UndoMaster::getInstance()->performActions("Move surface", actions);
 
 	}
@@ -410,7 +410,7 @@ void ScreenEditorPanel::mouseUp(const MouseEvent& e)
 		handles.addArray(overlapHandles);
 
 		Array<UndoableAction*> actions;
-		for (int i = 0; i < handles.size(); i++) actions.add(handles[i]->setUndoablePoint(posAtMouseDown[i], handles[i]->getPoint(), true));
+		for (int i = 0; i < handles.size(); i++) actions.addArray(handles[i]->setUndoablePoint(handles[i]->getPoint(), true));
 		UndoMaster::getInstance()->performActions("Move handles", actions);
 		overlapHandles.clear();
 	}

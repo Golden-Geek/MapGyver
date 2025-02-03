@@ -66,9 +66,9 @@ Array<UndoableAction*> NodeManager::getRemoveItemsUndoableAction(Array<Node*> it
 }
 
 
-var NodeManager::getJSONData()
+var NodeManager::getJSONData(bool includeNonOverriden)
 {
-	var data = BaseManager::getJSONData();
+	var data = BaseManager::getJSONData(includeNonOverriden);
 	data.getDynamicObject()->setProperty(connectionManager->shortName, connectionManager->getJSONData());
 	return data;
 }

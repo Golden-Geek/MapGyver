@@ -25,9 +25,9 @@ ScreenManager::~ScreenManager()
 }
 
 
-var ScreenManager::getJSONData()
+var ScreenManager::getJSONData(bool includeNonOverriden)
 {
-	var data = BaseManager::getJSONData();
+	var data = BaseManager::getJSONData(includeNonOverriden);
 	if(editingScreen != nullptr) data.getDynamicObject()->setProperty("editingScreen", editingScreen->shortName);
 	return data;
 }

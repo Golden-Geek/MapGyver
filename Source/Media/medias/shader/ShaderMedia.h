@@ -110,7 +110,7 @@ public:
 
 	void run() override;
 
-	var getJSONData() override;
+	var getJSONData(bool includeNonOverriden = false) override;
 	void loadJSONDataItemInternal(var data) override;
 
 	DECLARE_TYPE("Shader")

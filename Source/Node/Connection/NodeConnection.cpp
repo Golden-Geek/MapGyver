@@ -108,9 +108,9 @@ void NodeConnection::inspectableDestroyed(Inspectable* i)
 	else if (dest != nullptr && i == dest->node) setSource(nullptr);
 }
 
-var NodeConnection::getJSONData()
+var NodeConnection::getJSONData(bool includeNonOverriden)
 {
-	var data = BaseItem::getJSONData();
+	var data = BaseItem::getJSONData(includeNonOverriden);
 	if (source != nullptr)
 	{
 		data.getDynamicObject()->setProperty("source", source->node->shortName);

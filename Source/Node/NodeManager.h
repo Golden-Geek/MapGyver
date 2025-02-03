@@ -33,7 +33,7 @@ public:
 	virtual void addItemInternal(Node* item, var data) override;
 	virtual void removeItemInternal(Node* item) override;
 
-	var getJSONData() override;
+	var getJSONData(bool includeNonOverriden = false) override;
 	void loadJSONDataManagerInternal(var data) override;
 };
 

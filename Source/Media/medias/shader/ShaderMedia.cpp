@@ -929,9 +929,9 @@ void ShaderMedia::run()
 	fragmentShaderToLoad = shaderStr.isNotEmpty() ? shaderStr : shaderOfflineData;
 }
 
-var ShaderMedia::getJSONData()
+var ShaderMedia::getJSONData(bool includeNonOverriden)
 {
-	var data = Media::getJSONData();
+	var data = Media::getJSONData(includeNonOverriden);
 	data.getDynamicObject()->setProperty("shaderCache", shaderOfflineData);
 	data.getDynamicObject()->setProperty(sourceMedias.shortName, sourceMedias.getJSONData());
 	return data;

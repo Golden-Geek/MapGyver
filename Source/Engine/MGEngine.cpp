@@ -73,9 +73,9 @@ void MGEngine::clearInternal()
 	MediaManager::getInstance()->clear();
 }
 
-var MGEngine::getJSONData()
+var MGEngine::getJSONData(bool includeNonOverriden)
 {
-	var data = Engine::getJSONData();
+	var data = Engine::getJSONData(includeNonOverriden);
 
 	var MediaData = MediaManager::getInstance()->getJSONData();
 	if (!MediaData.isVoid() && MediaData.getDynamicObject()->getProperties().size() > 0) data.getDynamicObject()->setProperty(MediaManager::getInstance()->shortName, MediaData);

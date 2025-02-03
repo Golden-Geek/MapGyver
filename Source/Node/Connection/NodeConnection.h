@@ -39,7 +39,7 @@ public:
 
 	void inspectableDestroyed(Inspectable*) override;
 
-	var getJSONData() override;
+	var getJSONData(bool includeNonOverriden = false) override;
 	void loadJSONDataItemInternal(var data) override;
 	virtual void loadJSONDataConnectionInternal(var data) {}
 

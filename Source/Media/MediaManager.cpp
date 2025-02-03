@@ -88,9 +88,9 @@ void MediaManager::inspectableDestroyed(Inspectable* i)
 	}
 }
 
-var MediaManager::getJSONData()
+var MediaManager::getJSONData(bool includeNonOverriden)
 {
-	var data = BaseManager::getJSONData();
+	var data = BaseManager::getJSONData(includeNonOverriden);
 	if (editingSequenceMedia != nullptr)
 	{
 		data.getDynamicObject()->setProperty("editingSequenceMedia", editingSequenceMedia->getControlAddress());
