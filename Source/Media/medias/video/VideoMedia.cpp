@@ -25,7 +25,7 @@ VideoMedia::VideoMedia(var params) :
 	//init vlc
 	vlcInstance = dynamic_cast<MGEngine*>(Engine::mainEngine)->vlcInstance.get();
 	vlcPlayer.reset(new VLC::MediaPlayer(*vlcInstance));
-	vlcPlayer->play();
+	//vlcPlayer->play();
 
 
 	source = addEnumParameter("Source", "Source");
