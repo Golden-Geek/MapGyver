@@ -318,6 +318,7 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	if (!fragmentIsISF && !fragmentIsShaderToy) newType = ShaderGLSLFile;
 
 	if (newType != st) shaderType->setValueWithData(newType);
+	st = newType;
 
 	String fullShader = lines.joinIntoString("\n");
 	fullShader = insertShaderIncludes(fullShader);
