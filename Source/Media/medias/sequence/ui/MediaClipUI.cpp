@@ -88,6 +88,12 @@ void MediaClipUI::paint(Graphics& g)
 
 	g.setColour(bgColor);
 	g.fillPath(clipPath);
+	g.setColour(bgColor.darker());
+	g.fillRect(getLoopBounds());
+
+	g.setColour(TEXT_COLOR.withAlpha(.6f));
+	g.setFont(FontOptions(20));
+	g.drawText("Loop", loopPath.getBounds().reduced(2).toFloat(), Justification::centred);
 
 	if (mediaClip->isActive->boolValue())
 	{
@@ -163,50 +169,46 @@ void MediaClipUI::resizedBlockInternal()
 	fadeInHandle.setCentrePosition((mediaClip->fadeIn->floatValue() / mediaClip->getTotalLength()) * getWidth(), fadeInHandle.getHeight() / 2);
 	fadeOutHandle.setCentrePosition((1 - mediaClip->fadeOut->floatValue() / mediaClip->getTotalLength()) * getWidth(), fadeOutHandle.getHeight() / 2);
 
-	generatePath();
+	clipPath = generatePath();
+	loopPath = generatePath(true);
 }
 
-void MediaClipUI::generatePath()
+Path MediaClipUI::generatePath(bool isLoop)
 {
 	const int margin = 20;
-	usableLeft = 0;
-	usableRight = getWidth();
-
-
+	Path path;
 	if (ClipTransition* t = dynamic_cast<ClipTransition*>(mediaClip))
 	{
-		clipPath.clear();
-		clipPath.addRoundedRectangle(getLocalBounds().toFloat().reduced(0, margin + 2), 2);
-		return;
+		path.addRoundedRectangle(getLocalBounds().toFloat().reduced(0, margin + 2), 2);
+		return path;
 	}
 
+	float tStart = isLoop ? mediaClip->getCoreEndTime() : mediaClip->time->floatValue();
+	float tEnd = isLoop ? mediaClip->getEndTime() : mediaClip->getEndTime();
+	
+	bool inTransitionOverlap = mediaClip->inTransition != nullptr && mediaClip->inTransition->getEndTime() > tStart;
+	bool outTransitionOverlap = mediaClip->outTransition != nullptr && mediaClip->outTransition->time->floatValue() < tEnd;
 
-	bool inTransitionOverlap = mediaClip->inTransition != nullptr && mediaClip->inTransition->getEndTime() > mediaClip->time->floatValue();
-	bool outTransitionOverlap = mediaClip->outTransition != nullptr && mediaClip->outTransition->getEndTime() > mediaClip->time->floatValue();
-
-
-	Path path;
-
-	Rectangle<float> r = getLocalBounds().toFloat();
 
 	LayerBlockManagerUI* mui = dynamic_cast<LayerBlockManagerUI*>(getParentComponent());
 
-
+	Rectangle<float> r = (isLoop? getLoopBounds() : getLocalBounds()).toFloat();
 
 	if ((!inTransitionOverlap && !outTransitionOverlap) || mui == nullptr)
 	{
-		clipPath.clear();
-		clipPath.addRoundedRectangle(r, 2);
-		return;
+		path.addRoundedRectangle(r, 2);
+		return path;
 	}
 
+	float xStart = mui->timeline->getXForTime(tStart);
+	float xEnd = mui->timeline->getXForTime(tEnd);
 
-	path.startNewSubPath(0, getHeight());
+	path.startNewSubPath(xStart, getHeight());
 
 	if (inTransitionOverlap)
 	{
-		usableLeft = mui->timeline->getXForTime(mediaClip->inTransition->getEndTime()) - getX() + 2;
-		path.lineTo(0, getHeight() - margin);
+		float usableLeft = mui->timeline->getXForTime(mediaClip->inTransition->getEndTime()) - xStart + 2;
+		path.lineTo(xStart, getHeight() - margin);
 		path.lineTo(usableLeft, getHeight() - margin);
 		path.lineTo(usableLeft, 0);
 	}
@@ -219,19 +221,19 @@ void MediaClipUI::generatePath()
 
 	if (outTransitionOverlap)
 	{
-		usableRight = mui->timeline->getXForTime(mediaClip->outTransition->time->floatValue()) - getX() - 2;
-		path.lineTo(getWidth(), margin);
+		float usableRight = mui->timeline->getXForTime(mediaClip->outTransition->time->floatValue()) - xStart - 2;
+		path.lineTo(xStart, margin);
 		path.lineTo(usableRight, margin);
 		path.lineTo(usableRight, getHeight());
 	}
 	else
 	{
-		path.lineTo(getWidth(), getHeight());
+		path.lineTo(xEnd, getHeight());
 	}
 
-	path.lineTo(0, getHeight());
+	path.lineTo(xStart, getHeight());
 	path.closeSubPath();
-	clipPath = path.createPathWithRoundedCorners(2);
+	return path.createPathWithRoundedCorners(2);
 }
 
 

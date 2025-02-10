@@ -31,6 +31,7 @@ public:
 	bool alwaysRedraw;
 	bool shouldRedraw;
 	bool autoClearFrameBufferOnRender;
+	bool autoClearWhenNotUsed;
 
 	Array<MediaTarget*> usedTargets;
 

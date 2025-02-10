@@ -20,7 +20,7 @@ MediaClip::MediaClip(const String& name, var params) :
 	settingLengthFromMethod(false),
 	inTransition(nullptr),
 	outTransition(nullptr),
-	justActivated(false),
+	activationChanged(false),
 	mediaClipNotifier(5)
 {
 	saveAndLoadRecursiveData = true;
@@ -72,8 +72,8 @@ void MediaClip::setMedia(Media* m)
 
 void MediaClip::setTime(double t, bool seekMode)
 {
+	relativeTime = getRelativeTime(t, true);
 	if (!enabled->boolValue() || !isActive->boolValue()) return;
-	relativeTime = jlimit(0., (double)getTotalLength(), t - time->doubleValue());
 	if (media != nullptr) media->setCustomTime(relativeTime, seekMode);
 }
 
@@ -107,9 +107,10 @@ void MediaClip::onContainerParameterChangedInternal(Parameter* p)
 
 		if (media != nullptr)
 		{
+			activationChanged = true;
+		
 			if (active)
 			{
-				justActivated = true;
 				media->handleEnter(relativeTime, isPlaying);
 				media->updateBeingUsed();
 			}

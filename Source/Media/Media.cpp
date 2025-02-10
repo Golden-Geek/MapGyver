@@ -23,6 +23,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	alwaysRedraw(false),
 	shouldRedraw(false),
 	autoClearFrameBufferOnRender(true),
+	autoClearWhenNotUsed(true),
 	timeAtLastRender(0),
 	lastFPSTick(0),
 	lastFPSIndex(0),
@@ -89,9 +90,9 @@ void Media::renderOpenGLMedia(bool force)
 	if (size.isOrigin()) return;
 	if (frameBuffer.getWidth() != size.x || frameBuffer.getHeight() != size.y) initFrameBuffer();
 
+	bool shouldRenderContent = enabled->boolValue() && isBeingUsed->boolValue();
 
-	if (!enabled->boolValue()) return;
-	if (!isBeingUsed->boolValue() && !force) return;
+	if (!(shouldRenderContent || force)) return;
 
 	const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
 	double t = GlContextHolder::getInstance()->timeAtRender;
@@ -116,14 +117,14 @@ void Media::renderOpenGLMedia(bool force)
 		{
 			frameBuffer.makeCurrentAndClear();
 			Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
-			glColor4f(1, 1, 1, 1);
+			glColor4f(0, 0, 0, 1);
 		}
 		else
 		{
 			frameBuffer.makeCurrentRenderingTarget();
 		}
 
-		renderGLInternal();
+		if (shouldRenderContent) renderGLInternal();
 		//if (dynamic_cast<SequenceMedia*>(this) == nullptr) NLOG(niceName, "Render GL Internal");
 
 
@@ -286,6 +287,7 @@ void ImageMedia::preRenderGLInternal()
 
 void ImageMedia::renderGLInternal()
 {
+	glColor4f(1, 1, 1, 1);
 	glBindTexture(GL_TEXTURE_2D, imageFBO.getTextureID());
 	Draw2DTexRectFlipped(0, 0, imageFBO.getWidth(), imageFBO.getHeight());
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -321,7 +323,7 @@ void ImageMedia::initImage(const Image& newImage)
 	if (newImage.getWidth() != image.getWidth() || newImage.getHeight() != image.getHeight())
 	{
 		image = newImage.convertedToFormat(Image::ARGB);
-		
+
 		imageUpdated = true;
 		bitmapData.reset();
 

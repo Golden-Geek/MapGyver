@@ -38,6 +38,7 @@ public:
     std::unique_ptr<Component> automationUI;
 
     Path clipPath;
+	Path loopPath;
     int usableLeft;
     int usableRight;
 
@@ -48,7 +49,7 @@ public:
 
     void resizedBlockInternal() override;
 
-    void generatePath();
+    Path generatePath(bool isLoop = false);
 
     void mouseDown(const MouseEvent& e) override;
     void mouseDrag(const MouseEvent& e) override;

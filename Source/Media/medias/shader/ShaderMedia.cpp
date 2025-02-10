@@ -88,6 +88,7 @@ void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
 	{
 		if (!isLoadingShader) shouldReloadShader = true;
 	}
+
 }
 
 void ShaderMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)

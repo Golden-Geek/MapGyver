@@ -160,6 +160,12 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 			{
 				transitions.add(t);
 			}
+
+			if (clip->activationChanged)
+			{
+				if (Media* m = clip->media) m->renderOpenGLMedia(true);
+				clip->activationChanged = false;
+			}
 		}
 	}
 
@@ -175,18 +181,17 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 	if (frameBuffer.getWidth() != width || frameBuffer.getHeight() != height) initFrameBuffer(width, height);
 
 
-	for (auto& clip : clipsToProcess)
-	{
-		if (clip->justActivated)
-		{
+	//for (auto& clip : clipsToProcess)
+	//{
+		//if (clip->justActivated)
+		//{
 			//LOG("just activated, render openGl");
 			//clip->media->renderOpenGLMedia(true); //force render one frame on activation
-			clip->justActivated = false;
-		}
+			//clip->justActivated = false;
+		//}
 
 		//LOG("Render GL layer");
 		//clip->media->renderOpenGLMedia(true);
-	}
 
 	frameBuffer.makeCurrentRenderingTarget();
 
@@ -300,6 +305,8 @@ void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool ev
 					}
 				}
 			}
+
+			clip->setTime(t, s->isSeeking || !s->isPlaying->boolValue());
 		}
 	}
 }
