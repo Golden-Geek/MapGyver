@@ -23,6 +23,18 @@
     <Filter Include="MapGyver\Source\Engine">
       <UniqueIdentifier>{AEEB5641-9CF0-9160-1D21-1488A608CB92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MapGyver\Source\Media\medias\web">
+      <UniqueIdentifier>{7285CEDF-B1B0-D074-5CA7-0515B7E2C01A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MapGyver\Source\Media\medias\canvas">
+      <UniqueIdentifier>{6FD222FE-0AB6-738F-9E48-4A90B3713203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MapGyver\Source\Media\medias\grid">
+      <UniqueIdentifier>{51EF38B6-90A8-6DE2-F442-484A092C4B4B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MapGyver\Source\Media\medias\interactiveapp">
+      <UniqueIdentifier>{54D49844-2738-4A0F-4429-DCC44C763EEE}</UniqueIdentifier>
+    </Filter>
     <Filter Include="MapGyver\Source\Media\medias\sequence\ui">
       <UniqueIdentifier>{5B314CDE-FCD6-2B67-2974-80043537E698}</UniqueIdentifier>
     </Filter>
@@ -1266,6 +1278,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Engine\MGEngine.cpp">
       <Filter>MapGyver\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\web\WebMedia.cpp">
+      <Filter>MapGyver\Source\Media\medias\web</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\canvas\CanvasMedia.cpp">
+      <Filter>MapGyver\Source\Media\medias\canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridMedia.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\interactiveapp\InteractiveAppMedia.cpp">
+      <Filter>MapGyver\Source\Media\medias\interactiveapp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\sequence\ui\MediaClipManagerUI.cpp">
       <Filter>MapGyver\Source\Media\medias\sequence\ui</Filter>
@@ -5327,6 +5351,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Engine\MGEngine.h">
       <Filter>MapGyver\Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h">
+      <Filter>MapGyver\Source\Media\medias\web</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\canvas\CanvasMedia.h">
+      <Filter>MapGyver\Source\Media\medias\canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridMedia.h">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\interactiveapp\InteractiveAppMedia.h">
+      <Filter>MapGyver\Source\Media\medias\interactiveapp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaClipManagerUI.h">
       <Filter>MapGyver\Source\Media\medias\sequence\ui</Filter>
@@ -13220,7 +13256,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Resources\media\canvas.png">
+      <Filter>MapGyver\Resources\media</Filter>
+    </None>
     <None Include="..\..\Resources\media\composition.png">
+      <Filter>MapGyver\Resources\media</Filter>
+    </None>
+    <None Include="..\..\Resources\media\grid.png">
       <Filter>MapGyver\Resources\media</Filter>
     </None>
     <None Include="..\..\Resources\media\ndi.png">
@@ -13245,6 +13287,9 @@
       <Filter>MapGyver\Resources\media</Filter>
     </None>
     <None Include="..\..\Resources\media\video.png">
+      <Filter>MapGyver\Resources\media</Filter>
+    </None>
+    <None Include="..\..\Resources\media\web.png">
       <Filter>MapGyver\Resources\media</Filter>
     </None>
     <None Include="..\..\Resources\media\webcam.png">

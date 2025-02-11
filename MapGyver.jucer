@@ -9,7 +9,9 @@
   <MAINGROUP id="HVgNxl" name="MapGyver">
     <GROUP id="{F38B7255-1DCA-93A3-BDC5-0B94B29FDCE3}" name="Resources">
       <GROUP id="{714BA6B0-CDE8-2433-11E9-E60FA7C30A64}" name="media">
+        <FILE id="GNHBSL" name="canvas.png" compile="0" resource="1" file="Resources/media/canvas.png"/>
         <FILE id="KECrPT" name="composition.png" compile="0" resource="1" file="Resources/media/composition.png"/>
+        <FILE id="hstznm" name="grid.png" compile="0" resource="1" file="Resources/media/grid.png"/>
         <FILE id="hy3WxJ" name="ndi.png" compile="0" resource="1" file="Resources/media/ndi.png"/>
         <FILE id="XaeL6p" name="node.png" compile="0" resource="1" file="Resources/media/node.png"/>
         <FILE id="bfc5ka" name="picture.png" compile="0" resource="1" file="Resources/media/picture.png"/>
@@ -19,6 +21,7 @@
               file="Resources/media/sharedTexture.png"/>
         <FILE id="TjLrHq" name="solidColor.png" compile="0" resource="1" file="Resources/media/solidColor.png"/>
         <FILE id="UGCeS2" name="video.png" compile="0" resource="1" file="Resources/media/video.png"/>
+        <FILE id="o68nUr" name="web.png" compile="0" resource="1" file="Resources/media/web.png"/>
         <FILE id="IVmIP8" name="webcam.png" compile="0" resource="1" file="Resources/media/webcam.png"/>
       </GROUP>
       <GROUP id="{2197F95F-2563-5673-95CA-08F7626CAAB1}" name="osx">
@@ -80,6 +83,24 @@
       </GROUP>
       <GROUP id="{924D741D-3B07-1454-A4CF-6C278ABC753A}" name="Media">
         <GROUP id="{284332BF-9D8F-13AD-1288-491679B1B400}" name="medias">
+          <GROUP id="{B66DF542-4193-4078-8115-073DF5EE8816}" name="web">
+            <FILE id="gUgDE5" name="WebMedia.cpp" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.cpp"/>
+            <FILE id="J0Hcrn" name="WebMedia.h" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.h"/>
+          </GROUP>
+          <GROUP id="{477FB961-CBA6-A8B6-E44C-CB14FF111F6E}" name="canvas">
+            <FILE id="TUdw4Y" name="CanvasMedia.cpp" compile="0" resource="0" file="Source/Media/medias/canvas/CanvasMedia.cpp"/>
+            <FILE id="anTbqo" name="CanvasMedia.h" compile="0" resource="0" file="Source/Media/medias/canvas/CanvasMedia.h"/>
+          </GROUP>
+          <GROUP id="{8B65EAAE-1833-46C9-185E-1205E1BD21D7}" name="grid">
+            <FILE id="G99yyI" name="GridMedia.cpp" compile="0" resource="0" file="Source/Media/medias/grid/GridMedia.cpp"/>
+            <FILE id="Z8jmCm" name="GridMedia.h" compile="0" resource="0" file="Source/Media/medias/grid/GridMedia.h"/>
+          </GROUP>
+          <GROUP id="{0ACF4C6F-D70F-B647-AB53-86362B760AB9}" name="interactiveapp">
+            <FILE id="eimaBw" name="InteractiveAppMedia.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/interactiveapp/InteractiveAppMedia.cpp"/>
+            <FILE id="eyyq76" name="InteractiveAppMedia.h" compile="0" resource="0"
+                  file="Source/Media/medias/interactiveapp/InteractiveAppMedia.h"/>
+          </GROUP>
           <GROUP id="{74028E00-52A0-D56B-3373-0305324DB36B}" name="sequence">
             <GROUP id="{075A33E0-67BA-6E57-7A86-FF46DD2CCC9B}" name="ui">
               <FILE id="KB0rmV" name="MediaClipManagerUI.cpp" compile="0" resource="0"

@@ -86,7 +86,7 @@ public:
 
 
 	void setIsEditing(bool editing);
-	void updateBeingUsed();
+	virtual void updateBeingUsed();
 
 	virtual Point<int> getMediaSize();
 	virtual double getMediaLength() { return -1; }

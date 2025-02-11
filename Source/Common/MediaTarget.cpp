@@ -1,8 +1,9 @@
 #include "Common/CommonIncludes.h"
-#include "Media/MediaIncludes.h"
 
 MediaTarget::~MediaTarget()
 {
+	if (Engine::mainEngine->isClearing) return;
+
 	Array<int> ids;
 	HashMap<int, Media*>::Iterator it(usedMedias);
 	while (it.next()) ids.add(it.getKey());

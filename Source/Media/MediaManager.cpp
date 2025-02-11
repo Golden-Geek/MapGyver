@@ -29,6 +29,11 @@ MediaManager::MediaManager() :
 	factory.defs.add(Factory<Media>::Definition::createDef<CompositionMedia>(""));
 	factory.defs.add(Factory<Media>::Definition::createDef<NodeMedia>(""));
 	factory.defs.add(Factory<Media>::Definition::createDef<SequenceMedia>(""));
+	factory.defs.add(Factory<Media>::Definition::createDef<CanvasMedia>(""));
+	factory.defs.add(Factory<Media>::Definition::createDef<GridMedia>(""));
+	factory.defs.add(Factory<Media>::Definition::createDef<InteractiveAppMedia>(""));
+	factory.defs.add(Factory<Media>::Definition::createDef<WebMedia>(""));
+
 
 	itemDataType = "Media";
 	selectItemWhenCreated = true;

@@ -37,6 +37,9 @@ public:
 	Automation fadeCurve;
 	bool settingLengthFromMethod;
 	
+	FloatParameter* preStart;
+	FloatParameter* postEnd;
+
 	ClipTransition* inTransition;
 	ClipTransition* outTransition;
 
@@ -120,6 +123,7 @@ public:
 	virtual ~OwnedMediaClip();
 
 	std::unique_ptr<Media> ownedMedia;
+
 
 	void setMedia(Media* m) override;
 

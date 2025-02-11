@@ -10,15 +10,15 @@
 
 #pragma once
 
-class SharedTextureMedia :
+class BaseSharedTextureMedia :
 	public Media,
 	public SharedTextureManager::Listener,
 	public SharedTextureReceiver::Listener
 {
 public:
-	SharedTextureMedia(var params = var());
-	~SharedTextureMedia();
-	
+	BaseSharedTextureMedia(const String& name = "BaseSharedTexture", var params = var());
+	virtual ~BaseSharedTextureMedia();
+
 	bool frameUpdated;
 
 	StringParameter* sharingName;
@@ -34,6 +34,15 @@ public:
 	Point<int> getMediaSize();
 
 	void afterLoadJSONDataInternal() override;
+
+};
+
+class SharedTextureMedia :
+	public BaseSharedTextureMedia
+{
+public:
+	SharedTextureMedia(var params = var()) : BaseSharedTextureMedia(getTypeString(), params) {}
+	~SharedTextureMedia() {}
 
 	DECLARE_TYPE("Shared Texture")
 };

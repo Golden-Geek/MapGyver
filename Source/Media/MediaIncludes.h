@@ -26,6 +26,11 @@
 #include "medias/ndi/NDIMedia.h"
 #include "medias/sharedtexture/SharedTextureMedia.h"
 
+#include "medias/canvas/CanvasMedia.h"
+#include "medias/web/WebMedia.h"
+#include "medias/grid/GridMedia.h"
+#include "medias/interactiveapp/InteractiveAppMedia.h"
+
 #include "medias/shader/ShaderMedia.h"
 
 #include "medias/color/ColorMedia.h"

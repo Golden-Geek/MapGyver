@@ -69,7 +69,7 @@ MediaLayer::MediaLayer(Sequence* s, var params) :
 	blendFunctionDestinationFactor->setControllableFeedbackOnly(true);
 
 
-	transitionBlendFunction = addEnumParameter("Blend function", "");
+	transitionBlendFunction = addEnumParameter("Transition Blend function", "");
 	transitionBlendFunction
 		->addOption("Standard Transparency", STANDARD)
 		->addOption("Addition", ADDITION)
@@ -88,7 +88,7 @@ MediaLayer::MediaLayer(Sequence* s, var params) :
 		->addOption("Inverse Multiplication", INVERTMULT)
 		->addOption("Custom", CUSTOM);
 
-	transitionBlendFunctionSourceFactor = addEnumParameter("Blend source factor", "");
+	transitionBlendFunctionSourceFactor = addEnumParameter("Transition Blend source factor", "");
 	transitionBlendFunctionSourceFactor->addOption("GL_ZERO", (int)GL_ZERO)
 		->addOption("GL_ONE", (int)GL_ONE)
 		->addOption("GL_SRC_ALPHA", (int)GL_SRC_ALPHA)
@@ -100,7 +100,7 @@ MediaLayer::MediaLayer(Sequence* s, var params) :
 		->addOption("GL_DST_COLOR", (int)GL_DST_COLOR)
 		->addOption("GL_ONE_MINUS_DST_COLOR", (int)GL_ONE_MINUS_DST_COLOR);
 
-	transitionBlendFunctionDestinationFactor = addEnumParameter("Blend destination factor", "");
+	transitionBlendFunctionDestinationFactor = addEnumParameter("Transition Blend destination factor", "");
 	transitionBlendFunctionDestinationFactor->addOption("GL_ZERO", (int)GL_ZERO)
 		->addOption("GL_ONE", (int)GL_ONE)
 		->addOption("GL_SRC_ALPHA", (int)GL_SRC_ALPHA)
@@ -279,9 +279,7 @@ void MediaLayer::renderGL(int depth)
 void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool evaluateSkippedData)
 {
 	double t = s->currentTime->doubleValue();
-	double nextFrameTime = t + .1f;// (1.0f / jmax(sequence->fps->intValue() - 1, 1));
-	Array<LayerBlock*> activeBlocks = blockManager.getBlocksInRange(t, nextFrameTime);// getBlocksInRange(s->currentTime->floatValue(), s->currentTime->floatValue() + .01f, false);
-
+	//Array<LayerBlock*> activeBlocks = blockManager.getBlocksInRange(t, nextFrameTime);// getBlocksInRange(s->currentTime->floatValue(), s->currentTime->floatValue() + .01f, false);
 
 	for (auto& b : blockManager.items)
 	{
@@ -289,7 +287,8 @@ void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool ev
 		{
 			clip->setTime(t, s->isSeeking || !s->isPlaying->boolValue());
 
-			bool isActive = activeBlocks.contains(clip);
+			bool isActive = t >= clip->time->floatValue() - clip->preStart->floatValue() && t <= clip->getEndTime() + clip->postEnd->floatValue();
+
 			if (isActive != clip->isActive->boolValue())
 			{
 				//LOG("Set active " << (int)isActive);

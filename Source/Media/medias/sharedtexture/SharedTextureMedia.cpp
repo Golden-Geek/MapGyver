@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-	SharedTextureMedia.cpp
+	eSharedTextureMedia.cpp
 	Created: 22 Nov 2023 9:45:13pm
 	Author:  bkupe
 
@@ -10,15 +10,15 @@
 
 #include "Media/MediaIncludes.h"
 
-SharedTextureMedia::SharedTextureMedia(var params) :
-	Media(getTypeString(), params),
+BaseSharedTextureMedia::BaseSharedTextureMedia(const String& name, var params) :
+	Media(name, params),
 	receiver(nullptr)
 {
 	sharingName = addStringParameter("Sharing name", "Sharing name", "");
 	if (!Engine::mainEngine->isLoadingFile) setupReceiver();
 }
 
-SharedTextureMedia::~SharedTextureMedia()
+BaseSharedTextureMedia::~BaseSharedTextureMedia()
 {
 	if (receiver != nullptr)
 	{
@@ -27,14 +27,14 @@ SharedTextureMedia::~SharedTextureMedia()
 }
 
 
-void SharedTextureMedia::setupReceiver()
+void BaseSharedTextureMedia::setupReceiver()
 {
 	if(receiver != nullptr) SharedTextureManager::getInstance()->removeReceiver(receiver);
 	receiver = SharedTextureManager::getInstance()->addReceiver(sharingName->stringValue());
 	if(receiver != nullptr) receiver->addListener(this);
 }
 
-void SharedTextureMedia::onContainerParameterChangedInternal(Parameter* p)
+void BaseSharedTextureMedia::onContainerParameterChangedInternal(Parameter* p)
 {
 	if (p == sharingName)
 	{
@@ -42,12 +42,12 @@ void SharedTextureMedia::onContainerParameterChangedInternal(Parameter* p)
 	}
 }
 
-void SharedTextureMedia::textureUpdated(SharedTextureReceiver* receiver)
+void BaseSharedTextureMedia::textureUpdated(SharedTextureReceiver* receiver)
 {
 	shouldRedraw = true;
 }
 
-void SharedTextureMedia::renderGLInternal()
+void BaseSharedTextureMedia::renderGLInternal()
 {
 	if (receiver == nullptr || receiver->width == 0 || receiver->height == 0) return;
 
@@ -64,13 +64,13 @@ void SharedTextureMedia::renderGLInternal()
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Point<int> SharedTextureMedia::getMediaSize()
+Point<int> BaseSharedTextureMedia::getMediaSize()
 {
-	if (receiver == nullptr) Point<int>();
+	if (receiver == nullptr) return Point<int>();
 	return Point<int>(receiver->width, receiver->height);
 }
 
-void SharedTextureMedia::afterLoadJSONDataInternal()
+void BaseSharedTextureMedia::afterLoadJSONDataInternal()
 {
 	setupReceiver();
 }

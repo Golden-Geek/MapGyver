@@ -33,6 +33,11 @@ MediaClip::MediaClip(const String& name, var params) :
 	fadeOut->defaultUI = FloatParameter::TIME;
 	fadeOut->canBeDisabledByUser = true;
 
+	preStart = addFloatParameter("Pre Start", "Pre start time", 0, 0, 10);
+	preStart->defaultUI = FloatParameter::TIME;
+	postEnd = addFloatParameter("Post End", "Post end time", 0, 0, 10);
+	postEnd->defaultUI = FloatParameter::TIME;
+
 
 	fadeCurve.addKey(0, 0);
 	fadeCurve.addKey(1, 1);
@@ -41,13 +46,13 @@ MediaClip::MediaClip(const String& name, var params) :
 
 MediaClip::~MediaClip()
 {
-	if(media != nullptr && !mediaRef.wasObjectDeleted()) unregisterUseMedia(CLIP_MEDIA_ID);
 }
 
 void MediaClip::clearItem()
 {
 	LayerBlock::clearItem();
 	setMedia(nullptr);
+	if (media != nullptr && !mediaRef.wasObjectDeleted()) unregisterUseMedia(CLIP_MEDIA_ID);
 }
 
 void MediaClip::setMedia(Media* m)
@@ -276,4 +281,10 @@ void OwnedMediaClip::setMedia(Media* m)
 		media->addAsyncMediaListener(this);
 		addChildControllableContainer(ownedMedia.get());
 	}
+	else
+	{
+		ownedMedia.reset();
+	}
+
+	
 }

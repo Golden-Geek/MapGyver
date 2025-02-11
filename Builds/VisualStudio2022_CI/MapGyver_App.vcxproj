@@ -117,6 +117,18 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Engine\MGEngine.cpp"/>
+    <ClCompile Include="..\..\Source\Media\medias\web\WebMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\canvas\CanvasMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\interactiveapp\InteractiveAppMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\sequence\ui\MediaClipManagerUI.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3899,6 +3911,10 @@
     <ClInclude Include="..\..\Source\Common\MediaTarget.h"/>
     <ClInclude Include="..\..\Source\Common\OpenGLManager.h"/>
     <ClInclude Include="..\..\Source\Engine\MGEngine.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\canvas\CanvasMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\interactiveapp\InteractiveAppMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaClipManagerUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaClipUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaLayerTimeline.h"/>
@@ -6531,7 +6547,9 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Resources\media\canvas.png"/>
     <None Include="..\..\Resources\media\composition.png"/>
+    <None Include="..\..\Resources\media\grid.png"/>
     <None Include="..\..\Resources\media\ndi.png"/>
     <None Include="..\..\Resources\media\node.png"/>
     <None Include="..\..\Resources\media\picture.png"/>
@@ -6540,6 +6558,7 @@
     <None Include="..\..\Resources\media\sharedTexture.png"/>
     <None Include="..\..\Resources\media\solidColor.png"/>
     <None Include="..\..\Resources\media\video.png"/>
+    <None Include="..\..\Resources\media\web.png"/>
     <None Include="..\..\Resources\media\webcam.png"/>
     <None Include="..\..\Resources\default.smlayout"/>
     <None Include="..\..\Resources\fragmentShaderMainSurface.glsl"/>

@@ -8,8 +8,14 @@
 
 namespace BinaryData
 {
+    extern const char*   canvas_png;
+    const int            canvas_pngSize = 1872;
+
     extern const char*   composition_png;
     const int            composition_pngSize = 665;
+
+    extern const char*   grid_png;
+    const int            grid_pngSize = 1055;
 
     extern const char*   ndi_png;
     const int            ndi_pngSize = 847;
@@ -35,6 +41,9 @@ namespace BinaryData
     extern const char*   video_png;
     const int            video_pngSize = 656;
 
+    extern const char*   web_png;
+    const int            web_pngSize = 1438;
+
     extern const char*   webcam_png;
     const int            webcam_pngSize = 1196;
 
@@ -54,7 +63,7 @@ namespace BinaryData
     const int            VertexShaderMainSurface_glslSize = 381;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 15;
+    const int namedResourceListSize = 18;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
