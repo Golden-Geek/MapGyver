@@ -12,7 +12,8 @@
 
 class InteractiveAppMedia :
 	public BaseSharedTextureMedia,
-	public Timer
+	public Timer,
+	public Thread
 {
 public:
 	InteractiveAppMedia(var params = var());
@@ -27,10 +28,12 @@ public:
 	BoolParameter* autoStartOnUse;
 	BoolParameter* autoStopOnUse;
 	BoolParameter* hardKill;
+	BoolParameter* launchMinimized;
 
 	SimpleWebSocketClient oscQuery;
 
 	bool checkingProcess;
+	bool shouldMinimize;
 
 	void onContainerParameterChangedInternal(Parameter* p) override;
 
@@ -42,6 +45,13 @@ public:
 	void launchProcess();
 	void killProcess();
 	void timerCallback() override;
+
+#if JUCE_WINDOWS
+	static BOOL enumWindowCallback(HWND hWnd, LPARAM lparam);
+#endif
+
+	void run() override;
+
 
 	DECLARE_TYPE("Interactive App")
 };

@@ -12,12 +12,15 @@
 
 #if JUCE_WINDOWS
 #include <TlHelp32.h>
-#include "InteractiveAppMedia.h"
 #endif
+
+#include "InteractiveAppMedia.h"
 
 InteractiveAppMedia::InteractiveAppMedia(var params) :
 	BaseSharedTextureMedia(getTypeString(), params),
-	checkingProcess(false)
+	Thread("Interactive App"),
+	checkingProcess(false),
+	shouldMinimize(false)
 {
 	appParam = addFileParameter("App", "App", "");
 	launchArguments = addStringParameter("Launch Arguments", "Launch Arguments", "");
@@ -31,6 +34,7 @@ InteractiveAppMedia::InteractiveAppMedia(var params) :
 	autoStartOnPreUse = addBoolParameter("Auto Start On Pre Use", "Auto Start On Pre Use", false);
 	autoStartOnUse = addBoolParameter("Auto Start On Use", "Auto Start On Use", false);
 	autoStopOnUse = addBoolParameter("Auto Stop On Use", "Auto Stop On Use", false);
+	launchMinimized = addBoolParameter("Launch Minimized", "Launch Minimized", false);
 
 	hardKill = addBoolParameter("Hard Kill", "Hard Kill", false);
 
@@ -89,6 +93,14 @@ void InteractiveAppMedia::checkAppRunning()
 #endif
 
 	bool isRunning = processes.contains(appParam->getFile().getFileName());
+
+	if (isRunning && !isThreadRunning())
+	{
+#if JUCE_WINDOWS
+		startThread();
+#endif
+	}
+
 	appRunning->setValue(isRunning);
 	checkingProcess = false;
 }
@@ -99,7 +111,7 @@ void InteractiveAppMedia::updateTextureList()
 
 	StringArray senders = SharedTextureManager::getInstance()->getAvailableSenders();
 	StringArray keys = availableTextures->getAllKeys();
-	
+
 
 	StringArray goodSenders;
 	for (auto& s : senders)
@@ -127,14 +139,14 @@ void InteractiveAppMedia::updateTextureList()
 			listHasChanged = true;
 		}
 	}
-	
+
 	if (listHasChanged)
 	{
 		String curSharingName = sharingName->stringValue();
 		Array<EnumParameter::EnumValue> options;
 		for (auto& s : goodSenders) options.add(EnumParameter::EnumValue(s, s));
 		availableTextures->setOptions(options);
-		if(curSharingName.isNotEmpty()) availableTextures->setValueWithKey(curSharingName);
+		if (curSharingName.isNotEmpty()) availableTextures->setValueWithKey(curSharingName);
 	}
 }
 
@@ -171,12 +183,17 @@ void InteractiveAppMedia::launchProcess()
 		NLOGWARNING(niceName, "File does not exist : " + f.getFullPathName());
 	}
 
+	String args = launchArguments->stringValue();
+
+
 	File wDir = File::getCurrentWorkingDirectory();
 	f.getParentDirectory().setAsCurrentWorkingDirectory();
-	bool result = f.startAsProcess(launchArguments->stringValue());
+	bool result = f.startAsProcess(args);
 	wDir.setAsCurrentWorkingDirectory();
 
-	if(!result) LOGERROR("Could not launch application " << f.getFullPathName() << " with arguments : " << launchArguments->stringValue());
+	if (launchMinimized->boolValue()) shouldMinimize = true;
+
+	if (!result) LOGERROR("Could not launch application " << f.getFullPathName() << " with arguments : " << launchArguments->stringValue());
 }
 
 void InteractiveAppMedia::killProcess()
@@ -200,4 +217,56 @@ void InteractiveAppMedia::timerCallback()
 {
 	checkAppRunning();
 	updateTextureList();
+}
+
+#if JUCE_WINDOWS
+BOOL InteractiveAppMedia::enumWindowCallback(HWND hWnd, LPARAM lparam)
+{
+
+
+	InteractiveAppMedia* c = reinterpret_cast<InteractiveAppMedia*>(lparam);
+	String pName = c->appParam->getFile().getFileName();
+
+	if (!c->shouldMinimize) return FALSE;
+
+
+	String hwndProcessName = "";
+	DWORD pid;
+	GetWindowThreadProcessId(hWnd, &pid);
+	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
+	if (hProcess)
+	{
+		TCHAR processName[MAX_PATH] = TEXT("<unknown>");
+		DWORD processNameLength = MAX_PATH;
+		//Get only file name process, like "App.exe" not the full path
+		QueryFullProcessImageName(hProcess, 0, processName, &processNameLength);
+		String fullPath = String(processName);
+		hwndProcessName = fullPath.fromLastOccurrenceOf("\\", false, true);
+		CloseHandle(hProcess);
+	}
+
+	if (pName == hwndProcessName)
+	{
+		//check if already minimized 
+		WINDOWPLACEMENT wp;
+		wp.length = sizeof(WINDOWPLACEMENT);
+		GetWindowPlacement(hWnd, &wp);
+		if (wp.showCmd != SW_MINIMIZE) ShowWindow(hWnd, SW_MINIMIZE);
+		c->shouldMinimize = false;
+	}
+
+	return TRUE;
+}
+#endif
+
+
+void InteractiveAppMedia::run()
+{
+#if JUCE_WINDOWS
+	while (!threadShouldExit() && shouldMinimize)
+	{
+		EnumWindows(enumWindowCallback, reinterpret_cast<LPARAM>(this));
+		wait(1000);
+	}
+#endif
 }
