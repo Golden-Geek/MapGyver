@@ -22,6 +22,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	mediaParams("Media Parameters"),
 	alwaysRedraw(false),
 	shouldRedraw(false),
+	forceRedraw(false),
 	autoClearFrameBufferOnRender(true),
 	autoClearWhenNotUsed(true),
 	timeAtLastRender(0),
@@ -29,6 +30,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	lastFPSIndex(0),
 	customFPSTick(false),
 	isEditing(false),
+	shouldGeneratePreviewImage(true),
 	mediaNotifier(5)
 {
 	setHasCustomColor(true);
@@ -47,6 +49,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	currentFPS = addFloatParameter("current FPS", "", 0, 0, 60);
 	currentFPS->isSavable = false;
 	currentFPS->enabled = false;
+	generatePreview = addTrigger("Generate Preview", "Generate a preview image of the media");
 
 	manualRender = params.getProperty("manualRender", false);
 	if (!manualRender) GlContextHolder::getInstance()->registerOpenGlRenderer(this, 1);
@@ -61,6 +64,15 @@ Media::~Media()
 }
 
 
+
+void Media::onContainerTriggerTriggered(Trigger* t)
+{
+	if (t == generatePreview)
+	{
+		shouldGeneratePreviewImage = true;
+		shouldRedraw = true;
+	}
+}
 
 void Media::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
@@ -82,17 +94,23 @@ void Media::renderOpenGL()
 
 void Media::renderOpenGLMedia(bool force)
 {
-	//if(dynamic_cast<SequenceMedia*>(this) == nullptr) NLOG(niceName, "-- Render GL Media");
-
 	if (isClearing) return;
 
 	Point<int> size = getMediaSize();
 	if (size.isOrigin()) return;
 	if (frameBuffer.getWidth() != size.x || frameBuffer.getHeight() != size.y) initFrameBuffer();
 
-	bool shouldRenderContent = enabled->boolValue() && isBeingUsed->boolValue();
+	if (forceRedraw)
+	{
+		force = true;
+	}
 
-	if (!(shouldRenderContent || force)) return;
+	bool shouldRenderContent = (enabled->boolValue() && isBeingUsed->boolValue()) || forceRedraw;
+
+	forceRedraw = false;
+
+	if (!shouldRenderContent && !force) return;
+
 
 	const double frameTime = 1000.0 / RMPSettings::getInstance()->fpsLimit->intValue();
 	double t = GlContextHolder::getInstance()->timeAtRender;
@@ -124,10 +142,16 @@ void Media::renderOpenGLMedia(bool force)
 			frameBuffer.makeCurrentRenderingTarget();
 		}
 
-		if (shouldRenderContent) renderGLInternal();
-		//if (dynamic_cast<SequenceMedia*>(this) == nullptr) NLOG(niceName, "Render GL Internal");
+		if (shouldRenderContent)
+		{
+			renderGLInternal();
+		}
 
-
+		if (shouldGeneratePreviewImage)
+		{
+			generatePreviewImage();
+			shouldGeneratePreviewImage = false;
+		}
 		frameBuffer.releaseAsRenderingTarget();
 		shouldRedraw = false;
 
@@ -144,6 +168,30 @@ OpenGLFrameBuffer* Media::getFrameBuffer()
 GLint Media::getTextureID()
 {
 	return getFrameBuffer()->getTextureID();
+}
+
+void Media::generatePreviewImage()
+{
+	if (frameBuffer.isValid())
+	{
+		const int width = frameBuffer.getWidth();
+		const int height = frameBuffer.getHeight();
+		Image img = Image(Image::ARGB, width, height, true);
+
+		{
+			Image::BitmapData bitmapData(img, Image::BitmapData::writeOnly);
+			frameBuffer.readPixels(reinterpret_cast<juce::PixelARGB*> (bitmapData.data), Rectangle<int>(0, 0, width, height));
+		}
+		if (width > 200 || height > 200)
+		{
+			float scale = jmin(200.0f / width, 200.0f / height);
+			previewImage = img.rescaled(width * scale, height * scale);
+		}
+
+		mediaNotifier.addMessage(new MediaEvent(MediaEvent::PREVIEW_CHANGED, this));
+	}
+
+
 }
 
 void Media::registerTarget(MediaTarget* target)

@@ -14,6 +14,7 @@
 ShaderMedia::ShaderMedia(var params) :
 	Media(getTypeString(), params, true),
 	Thread("ShaderToy Loader"),
+	autoLoadShader(true),
 	shouldReloadShader(false),
 	isLoadingShader(false),
 	lastModificationTime(0),
@@ -32,7 +33,7 @@ ShaderMedia::ShaderMedia(var params) :
 	shaderFile = addFileParameter("Fragment Shader", "Fragment Shader");
 	shaderFile->setAutoReload(true);
 
-	onlineShaderID = addStringParameter("Shdaer ID", "ID of the shader, either for ShaderToy or ISF. It's the last part of the URL when viewing it on the website", "", false);
+	onlineShaderID = addStringParameter("Shader ID", "ID of the shader, either for ShaderToy or ISF. It's the last part of the URL when viewing it on the website", "", false);
 	shaderToyKey = addStringParameter("ShaderToy Key", "Key of the shader toy. It's the last part of the URL when viewing it on the website", "Bd8jRr", false);
 	keepOfflineCache = addBoolParameter("Keep Offline Cache", "Keep the offline cache of the shader, to reload if file is missing or if no internet for online shaders", true);
 
@@ -86,7 +87,25 @@ void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
 
 	if (p == shaderType || p == shaderFile || p == onlineShaderID || p == shaderToyKey)
 	{
-		if (!isLoadingShader) shouldReloadShader = true;
+		if (!isLoadingShader)
+		{
+			shouldReloadShader = true;
+			if (autoLoadShader)
+			{
+				shouldRedraw = true;
+				forceRedraw = true;
+			}
+		}
+	}
+
+	if (p == shaderLoaded)
+	{
+		if (shaderLoaded->boolValue())
+		{
+			shouldGeneratePreviewImage = true;
+			forceRedraw = true;
+			shouldRedraw = true;
+		}
 	}
 
 }
@@ -929,6 +948,11 @@ void ShaderMedia::run()
 
 
 	fragmentShaderToLoad = shaderStr.isNotEmpty() ? shaderStr : shaderOfflineData;
+	if (autoLoadShader)
+	{
+		shouldRedraw = true;
+		forceRedraw = true;
+	}
 }
 
 var ShaderMedia::getJSONData(bool includeNonOverriden)

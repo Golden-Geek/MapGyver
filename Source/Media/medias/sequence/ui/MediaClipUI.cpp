@@ -16,7 +16,6 @@ MediaClipUI::MediaClipUI(MediaClip* b) :
 	mediaClip(b),
 	fadeValueAtMouseDown(0)
 {
-
 	addChildComponent(&fadeInHandle, 0);
 	addChildComponent(&fadeOutHandle, 0);
 
@@ -84,16 +83,21 @@ void MediaClipUI::setTargetAutomation(ParameterAutomation* a)
 
 void MediaClipUI::paint(Graphics& g)
 {
-	//LayerBlockUI::paint(g);
+	if (inspectable.wasObjectDeleted()) return;
+	if (mediaClip->media == nullptr) return;
 
 	g.setColour(bgColor);
 	g.fillPath(clipPath);
+
 	g.setColour(bgColor.darker());
 	g.fillRect(getLoopBounds());
 
-	g.setColour(TEXT_COLOR.withAlpha(.6f));
-	g.setFont(FontOptions(20));
-	g.drawText("Loop", loopPath.getBounds().reduced(2).toFloat(), Justification::centred);
+	if (mediaClip->media->previewImage.isValid())
+	{
+		Rectangle<float> usableBounds = usableCoreBounds.getUnion(usableLoopBounds);
+		g.drawImage(mediaClip->media->previewImage, usableBounds.removeFromLeft(getHeight()).reduced(2).toFloat(), RectanglePlacement::onlyReduceInSize);
+		g.drawImage(mediaClip->media->previewImage, usableBounds.removeFromRight(getHeight()).reduced(2).toFloat(), RectanglePlacement::onlyReduceInSize);
+	}
 
 	if (mediaClip->isActive->boolValue())
 	{
@@ -105,21 +109,46 @@ void MediaClipUI::paint(Graphics& g)
 		}
 	}
 
-
 	if (mediaClip->media != nullptr)
 	{
 		double length = mediaClip->media->getMediaLength();
 		if (length > 0)
 		{
-			int w = getCoreWidth() * (length / mediaClip->coreLength->doubleValue());
+			int tx = getRealXForTime(length);
 			g.setColour(BLUE_COLOR.withAlpha(.5f));
-			g.fillRoundedRectangle(getLocalBounds().withWidth(jmin(getCoreWidth(), w)).toFloat(), 2);
+			g.fillRoundedRectangle(getLocalBounds().withWidth(jmin(getCoreWidth(), tx)).toFloat(), 2);
 		}
 	}
 
 	g.setColour(TEXT_COLOR);
 	g.setFont(g.getCurrentFont().withHeight(jlimit<float>(10, 16, getHeight() - 20)).boldened());
-	g.drawText(mediaClip->niceName, getCoreBounds().withLeft(usableLeft).withRight(usableRight).toFloat(), Justification::centred);
+	g.drawText(mediaClip->niceName, usableCoreBounds.toFloat(), Justification::centred);
+
+	if (mediaClip->loopLength->floatValue() > 0)
+	{
+		g.setColour(TEXT_COLOR.withAlpha(.6f));
+		g.setFont(FontOptions(20));
+		g.drawText("Loop", usableLoopBounds.toFloat(), Justification::centred);
+	}
+
+	if (viewStart > 0)
+	{
+		int tx = jmax(0, blockManagerUI->timeline->getXForTime(mediaClip->time->floatValue() + viewStart + 1)) - getX();
+		tx = jmap<float>(jmin(viewStart / 1.f, 1.f), 0, tx);
+		tx = jlimit<int>(0, 20, tx);
+		g.setGradientFill(ColourGradient(YELLOW_COLOR.withAlpha(.5f), 0, getHeight() / 2, YELLOW_COLOR.withAlpha(.0f), tx, getHeight() / 2, false));
+
+		g.fillRoundedRectangle(getLocalBounds().toFloat().removeFromLeft(tx), 2);
+	}
+
+	if (viewEnd < mediaClip->getTotalLength() - .1f)
+	{
+		int tx = jmin(getWidth(), blockManagerUI->timeline->getXForTime(viewEnd - 1)) - getX();
+		int tw = jmap<float>(jmin((mediaClip->getTotalLength() - viewEnd) / 1.f, 1.f), 0, getWidth() - tx);
+		tw = jlimit<int>(0, 20, tw);
+		g.setGradientFill(ColourGradient(YELLOW_COLOR.withAlpha(.0f), tx, getHeight() / 2, YELLOW_COLOR.withAlpha(.5f), getWidth(), getHeight() / 2, false));
+		g.fillRoundedRectangle(getLocalBounds().toFloat().removeFromRight(tw), 2);
+	}
 }
 
 void MediaClipUI::paintOverChildren(Graphics& g)
@@ -132,8 +161,14 @@ void MediaClipUI::paintOverChildren(Graphics& g)
 
 		if (mediaClip->fadeIn->floatValue() > 0)
 		{
-			g.setColour(fInColor);
-			g.drawLine(0, getHeight(), getWidth() * (mediaClip->fadeIn->floatValue() / mediaClip->getTotalLength()), fadeInHandle.getY() + fadeInHandle.getHeight() / 2);
+			int startX = getRealXForTime(0);
+			int endX = getRealXForTime(mediaClip->fadeIn->floatValue());
+
+			if (endX > 0)
+			{
+				g.setColour(fInColor);
+				g.drawLine(startX, getHeight(), endX, fadeInHandle.getY() + fadeInHandle.getHeight() / 2);
+			}
 		}
 	}
 
@@ -142,8 +177,14 @@ void MediaClipUI::paintOverChildren(Graphics& g)
 		Colour fOutColor = (mediaClip->fadeOut->enabled ? NORMAL_COLOR : BLUE_COLOR).withAlpha(.5f);
 		if (mediaClip->fadeOut->floatValue() > 0)
 		{
-			g.setColour(fOutColor);
-			g.drawLine(getWidth() * (1 - (mediaClip->fadeOut->floatValue() / mediaClip->getTotalLength())), fadeOutHandle.getY() + fadeOutHandle.getHeight() / 2, getWidth(), getHeight());
+			int endX = getRealXForTime(mediaClip->getTotalLength());
+			int startX = getRealXForTime(mediaClip->getTotalLength() - mediaClip->fadeOut->floatValue());
+
+			if (startX < getWidth())
+			{
+				g.setColour(fOutColor);
+				g.drawLine(startX, fadeOutHandle.getY() + fadeOutHandle.getHeight() / 2, endX, getHeight());
+			}
 		}
 	}
 
@@ -166,8 +207,14 @@ void MediaClipUI::resizedBlockInternal()
 		}
 	}
 
-	fadeInHandle.setCentrePosition((mediaClip->fadeIn->floatValue() / mediaClip->getTotalLength()) * getWidth(), fadeInHandle.getHeight() / 2);
-	fadeOutHandle.setCentrePosition((1 - mediaClip->fadeOut->floatValue() / mediaClip->getTotalLength()) * getWidth(), fadeOutHandle.getHeight() / 2);
+	int fadeInX = getRealXForTime(mediaClip->fadeIn->floatValue());
+	fadeInHandle.setVisible(mediaClip->fadeIn->enabled && mediaClip->inTransition == nullptr && fadeInX > -fadeInHandle.getWidth() / 2);
+
+	int fadeOutX = getRealXForTime(mediaClip->getTotalLength() - mediaClip->fadeOut->floatValue());
+	fadeOutHandle.setVisible(mediaClip->fadeOut->enabled && mediaClip->outTransition == nullptr && fadeOutX < getWidth() + fadeOutHandle.getWidth() / 2);
+
+	if (fadeInHandle.isVisible()) fadeInHandle.setCentrePosition(fadeInX, fadeInHandle.getHeight() / 2);
+	if (fadeOutHandle.isVisible()) fadeOutHandle.setCentrePosition(fadeOutX, fadeOutHandle.getHeight() / 2);
 
 	clipPath = generatePath();
 	loopPath = generatePath(true);
@@ -177,6 +224,13 @@ Path MediaClipUI::generatePath(bool isLoop)
 {
 	const int margin = 20;
 	Path path;
+
+	float usableLeft = isLoop ? getCoreWidth() : 0;
+	float usableRight = isLoop ? getWidth() : getCoreWidth();
+
+	Rectangle<float>* usableBounds = isLoop ? &usableLoopBounds : &usableCoreBounds;
+	usableBounds->setBounds(usableLeft, 0, usableRight - usableLeft, getHeight());
+
 	if (ClipTransition* t = dynamic_cast<ClipTransition*>(mediaClip))
 	{
 		path.addRoundedRectangle(getLocalBounds().toFloat().reduced(0, margin + 2), 2);
@@ -185,14 +239,13 @@ Path MediaClipUI::generatePath(bool isLoop)
 
 	float tStart = isLoop ? mediaClip->getCoreEndTime() : mediaClip->time->floatValue();
 	float tEnd = isLoop ? mediaClip->getEndTime() : mediaClip->getEndTime();
-	
+
 	bool inTransitionOverlap = mediaClip->inTransition != nullptr && mediaClip->inTransition->getEndTime() > tStart;
 	bool outTransitionOverlap = mediaClip->outTransition != nullptr && mediaClip->outTransition->time->floatValue() < tEnd;
 
-
 	LayerBlockManagerUI* mui = dynamic_cast<LayerBlockManagerUI*>(getParentComponent());
 
-	Rectangle<float> r = (isLoop? getLoopBounds() : getLocalBounds()).toFloat();
+	Rectangle<float> r = (isLoop ? getLoopBounds() : getLocalBounds()).toFloat();
 
 	if ((!inTransitionOverlap && !outTransitionOverlap) || mui == nullptr)
 	{
@@ -205,9 +258,11 @@ Path MediaClipUI::generatePath(bool isLoop)
 
 	path.startNewSubPath(xStart, getHeight());
 
+
+
 	if (inTransitionOverlap)
 	{
-		float usableLeft = mui->timeline->getXForTime(mediaClip->inTransition->getEndTime()) - xStart + 2;
+		usableLeft = mui->timeline->getXForTime(mediaClip->inTransition->getEndTime()) - xStart + 2;
 		path.lineTo(xStart, getHeight() - margin);
 		path.lineTo(usableLeft, getHeight() - margin);
 		path.lineTo(usableLeft, 0);
@@ -221,7 +276,7 @@ Path MediaClipUI::generatePath(bool isLoop)
 
 	if (outTransitionOverlap)
 	{
-		float usableRight = mui->timeline->getXForTime(mediaClip->outTransition->time->floatValue()) - xStart - 2;
+		usableRight = mui->timeline->getXForTime(mediaClip->outTransition->time->floatValue()) - xStart - 2;
 		path.lineTo(xStart, margin);
 		path.lineTo(usableRight, margin);
 		path.lineTo(usableRight, getHeight());
@@ -231,8 +286,12 @@ Path MediaClipUI::generatePath(bool isLoop)
 		path.lineTo(xEnd, getHeight());
 	}
 
+
 	path.lineTo(xStart, getHeight());
 	path.closeSubPath();
+
+	usableBounds->setBounds(usableLeft, 0, usableRight - usableLeft, getHeight());
+
 	return path.createPathWithRoundedCorners(2);
 }
 
@@ -385,8 +444,9 @@ void MediaClipUI::controllableFeedbackUpdateInternal(Controllable* c)
 {
 	LayerBlockUI::controllableFeedbackUpdateInternal(c);
 
-	if (c == mediaClip->fadeIn) fadeInHandle.setCentrePosition((mediaClip->fadeIn->floatValue() / mediaClip->getTotalLength()) * getWidth(), fadeInHandle.getHeight() / 2);
-	else if (c == mediaClip->fadeOut) fadeOutHandle.setCentrePosition((1 - mediaClip->fadeOut->floatValue() / mediaClip->getTotalLength()) * getWidth(), fadeOutHandle.getHeight() / 2);
+	//if (c == mediaClip->fadeIn) fadeInHandle.setCentrePosition((mediaClip->fadeIn->floatValue() / mediaClip->getTotalLength()) * getWidth(), fadeInHandle.getHeight() / 2);
+	//else if (c == mediaClip->fadeOut) fadeOutHandle.setCentrePosition((1 - mediaClip->fadeOut->floatValue() / mediaClip->getTotalLength()) * getWidth(), fadeOutHandle.getHeight() / 2);
+	if (c == mediaClip->fadeIn || c == mediaClip->fadeOut) resized();
 	else if (c == mediaClip->isActive)
 	{
 		bgColor = mediaClip->isActive->boolValue() ? GREEN_COLOR.darker(.6f) : BG_COLOR.darker(.4f);
@@ -404,13 +464,14 @@ void MediaClipUI::newMessage(const MediaClip::MediaClipEvent& e)
 	{
 	case MediaClip::MediaClipEvent::FADES_CHANGED:
 	case MediaClip::MediaClipEvent::TRANSITIONS_CHANGED:
-		fadeInHandle.setVisible(mediaClip->fadeIn->enabled && mediaClip->inTransition == nullptr);
-		fadeOutHandle.setVisible(mediaClip->fadeOut->enabled && mediaClip->outTransition == nullptr);
+		//fadeInHandle.setVisible(mediaClip->fadeIn->enabled && mediaClip->inTransition == nullptr);
+		//fadeOutHandle.setVisible(mediaClip->fadeOut->enabled && mediaClip->outTransition == nullptr);
 		resized();
 		repaint();
 		break;
 
-	case MediaClip::MediaClipEvent::REGENERATE_PREVIEW:
+	case MediaClip::MediaClipEvent::PREVIEW_CHANGED:
+		repaint();
 		break;
 
 	}

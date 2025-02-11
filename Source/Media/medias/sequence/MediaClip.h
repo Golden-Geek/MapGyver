@@ -16,7 +16,8 @@ class ClipTransition;
 
 class MediaClip :
 	public LayerBlock,
-	public MediaTarget
+	public MediaTarget,
+	public Media::AsyncListener
 {
 public:
 	MediaClip(const String& name, var params = var());
@@ -58,12 +59,14 @@ public:
 
 	bool isUsingMedia(Media* m) override;
 
+	void newMessage(const Media::MediaEvent& e) override;
 
 	class  MediaClipListener
 	{
 	public:
 		/** Destructor. */
 		virtual ~MediaClipListener() {}
+		virtual void mediaChanged(MediaClip*) {}
 		virtual void mediaClipFadesChanged(MediaClip*) {}
 	};
 
@@ -75,7 +78,7 @@ public:
 	class  MediaClipEvent
 	{
 	public:
-		enum Type { FADES_CHANGED, REGENERATE_PREVIEW, TRANSITIONS_CHANGED };
+		enum Type { MEDIA_CHANGED, FADES_CHANGED, TRANSITIONS_CHANGED, PREVIEW_CHANGED };
 
 		MediaClipEvent(Type t, MediaClip* p, var v = var()) :
 			type(t), mediaClip(p), value(v) {}

@@ -52,6 +52,7 @@ public:
 	BoolParameter* keepOfflineCache;
 	BoolParameter* shaderLoaded;
 
+
 	ControllableContainer sourceMedias;
 
 	bool useMouse4D;
@@ -69,6 +70,7 @@ public:
 	std::unique_ptr<OpenGLShaderProgram> shader;
 	GLuint VBO, VAO;
 
+	bool autoLoadShader;
 	bool shouldReloadShader;
 	String fragmentShaderToLoad;
 	String shaderOfflineData; //for online shader, store the data to be able to reload it offline

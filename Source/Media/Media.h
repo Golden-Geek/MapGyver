@@ -24,12 +24,14 @@ public:
 
 	IntParameter* width;
 	IntParameter* height;
+	Trigger* generatePreview;
 
 	ControllableContainer mediaParams;
 
 	OpenGLFrameBuffer frameBuffer;
 	bool alwaysRedraw;
 	bool shouldRedraw;
+	bool forceRedraw;
 	bool autoClearFrameBufferOnRender;
 	bool autoClearWhenNotUsed;
 
@@ -41,14 +43,17 @@ public:
 
 	FloatParameter* currentFPS;
 	double lastFPSTick;
-	double lastFPSHistory[10];
+	double lastFPSHistory[10]{};
 	int lastFPSIndex;
 	bool customFPSTick;
 	void FPSTick();
 
 	bool isEditing;
-	bool willBeUsed;
-	
+
+	Image previewImage;
+	bool shouldGeneratePreviewImage;
+
+	void onContainerTriggerTriggered(Trigger* t) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 	void newOpenGLContextCreated() override;
@@ -65,6 +70,8 @@ public:
 
 	OpenGLFrameBuffer* getFrameBuffer();
 	GLint getTextureID();
+
+	virtual void generatePreviewImage();
 
 	void registerTarget(MediaTarget* target);
 	void unregisterTarget(MediaTarget* target);
@@ -84,7 +91,7 @@ public:
 	virtual Point<int> getMediaSize();
 	virtual double getMediaLength() { return -1; }
 
-	DECLARE_ASYNC_EVENT(Media, Media, media, ENUM_LIST(EDITING_CHANGED), EVENT_ITEM_CHECK);
+	DECLARE_ASYNC_EVENT(Media, Media, media, ENUM_LIST(EDITING_CHANGED, PREVIEW_CHANGED), EVENT_ITEM_CHECK);
 };
 
 

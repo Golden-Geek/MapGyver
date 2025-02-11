@@ -39,8 +39,8 @@ public:
 
     Path clipPath;
 	Path loopPath;
-    int usableLeft;
-    int usableRight;
+    Rectangle<float> usableCoreBounds;
+	Rectangle<float> usableLoopBounds;
 
     void setTargetAutomation(ParameterAutomation* a);
 

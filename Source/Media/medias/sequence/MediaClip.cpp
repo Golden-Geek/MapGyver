@@ -55,6 +55,7 @@ void MediaClip::setMedia(Media* m)
 	if (m == media) return;
 	if (media != nullptr && !mediaRef.wasObjectDeleted() && !media->isClearing)
 	{
+		media->removeAsyncMediaListener(this);
 		media->handleExit();
 		unregisterUseMedia(CLIP_MEDIA_ID);
 	}
@@ -64,10 +65,14 @@ void MediaClip::setMedia(Media* m)
 
 	if (media != nullptr)
 	{
+		media->addAsyncMediaListener(this);
 		registerUseMedia(CLIP_MEDIA_ID, media);
 		media->handleEnter(relativeTime);
 		if (isPlaying) media->handleStart();
 	}
+
+	mediaClipListeners.call(&MediaClipListener::mediaChanged, this);
+	mediaClipNotifier.addMessage(new MediaClipEvent(MediaClipEvent::MEDIA_CHANGED, this));
 }
 
 void MediaClip::setTime(double t, bool seekMode)
@@ -198,6 +203,19 @@ bool MediaClip::isUsingMedia(Media* m)
 	return enabled->boolValue() && isActive->boolValue() && media == m;
 }
 
+void MediaClip::newMessage(const Media::MediaEvent& e)
+{
+	switch (e.type)
+	{
+	case Media::MediaEvent::PREVIEW_CHANGED:
+		mediaClipNotifier.addMessage(new MediaClipEvent(MediaClipEvent::PREVIEW_CHANGED, this));
+		break;
+
+	default:
+		break;
+	}
+}
+
 ReferenceMediaClip::ReferenceMediaClip(var params) :
 	MediaClip(getTypeString(), params)
 {
@@ -245,6 +263,7 @@ void OwnedMediaClip::setMedia(Media* m)
 
 	if (ownedMedia != nullptr)
 	{
+		ownedMedia->removeAsyncMediaListener(this);
 		removeChildControllableContainer(ownedMedia.get());
 		ownedMedia.reset();
 	}
@@ -254,6 +273,7 @@ void OwnedMediaClip::setMedia(Media* m)
 	if (media != nullptr)
 	{
 		ownedMedia.reset(media);
+		media->addAsyncMediaListener(this);
 		addChildControllableContainer(ownedMedia.get());
 	}
 }
