@@ -123,6 +123,39 @@
     <ClCompile Include="..\..\Source\Media\medias\canvas\CanvasMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridBoard.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridItemUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerItemManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerPanel.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridMediaPanel.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridColumn.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridItem.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridLayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerItemManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\grid\GridMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3913,6 +3946,17 @@
     <ClInclude Include="..\..\Source\Engine\MGEngine.h"/>
     <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\canvas\CanvasMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridBoard.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridItemUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerItemManagerUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerManagerUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerPanel.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridMediaPanel.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridColumn.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridItem.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridLayer.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerItemManager.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerManager.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\interactiveapp\InteractiveAppMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sequence\ui\MediaClipManagerUI.h"/>

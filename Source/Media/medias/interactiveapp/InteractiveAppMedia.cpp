@@ -20,7 +20,10 @@ InteractiveAppMedia::InteractiveAppMedia(var params) :
 	BaseSharedTextureMedia(getTypeString(), params),
 	Thread("Interactive App"),
 	checkingProcess(false),
-	shouldMinimize(false)
+	shouldMinimize(false),
+	shouldSynchronize(false),
+	isUpdatingStructure(false),
+	hasListenExtension(false)
 {
 	appParam = addFileParameter("App", "App", "");
 	launchArguments = addStringParameter("Launch Arguments", "Launch Arguments", "");
@@ -35,11 +38,22 @@ InteractiveAppMedia::InteractiveAppMedia(var params) :
 	autoStartOnPreUse = addBoolParameter("Auto Start On Pre Use", "Auto Start On Pre Use", false);
 	autoStartOnUse = addBoolParameter("Auto Start On Use", "Auto Start On Use", false);
 	autoStopOnUse = addBoolParameter("Auto Stop On Use", "Auto Stop On Use", false);
+	stopOnClear = addBoolParameter("Stop On Clear", "Stop when this media is removed or the app closes", false);
 	launchMinimized = addBoolParameter("Launch Minimized", "Launch Minimized", false);
 
 	hardKill = addBoolParameter("Hard Kill", "Hard Kill", false);
 
+	oscQueryPort = addIntParameter("OSC Query Port", "OSC Query Port", 9010);
+	keepValuesOnSync = addBoolParameter("Keep Values On Sync", "Keep Values On Sync", false);
+
+	serverName = addStringParameter("Server Name", "Server Name", "");
+	serverName->setControllableFeedbackOnly(true);
+	isConnected = addBoolParameter("Is Connected", "Is Connected", false);
+	isConnected->setControllableFeedbackOnly(true);
+
 	sharingName->hideInEditor = true;
+
+	oscSender.connect("0.0.0.0", 0);
 
 	startTimerHz(2);
 }
@@ -47,6 +61,15 @@ InteractiveAppMedia::InteractiveAppMedia(var params) :
 InteractiveAppMedia::~InteractiveAppMedia()
 {
 	stopTimer();
+}
+
+void InteractiveAppMedia::clearItem()
+{
+	stopTimer();
+	stopThread(1000);
+	if (stopOnClear->boolValue()) killProcess();
+
+	if (wsClient != nullptr) wsClient->stop();
 }
 
 void InteractiveAppMedia::onContainerParameterChangedInternal(Parameter* p)
@@ -64,6 +87,33 @@ void InteractiveAppMedia::onContainerParameterChangedInternal(Parameter* p)
 	else if (p == availableTextures)
 	{
 		sharingName->setValue(availableTextures->stringValue());
+	}
+}
+
+void InteractiveAppMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
+{
+	if (cc == &mediaParams)
+	{
+		if (OSCQueryHelpers::OSCQueryValueContainer* gcc = c->getParentAs<OSCQueryHelpers::OSCQueryValueContainer>())
+		{
+			if (c == gcc->enableListen)
+			{
+				updateListenToContainer(gcc);
+			}
+			else if (c == gcc->syncContent)
+			{
+				shouldSynchronize = true;
+				if (!isThreadRunning()) startThread();
+			}
+			else
+			{
+				sendOSCForControllable(c);
+			}
+		}
+		else
+		{
+			sendOSCForControllable(c);
+		}
 	}
 }
 
@@ -174,6 +224,403 @@ void InteractiveAppMedia::updateBeingUsed()
 	}
 }
 
+void InteractiveAppMedia::syncOSCQuery()
+{
+	requestHostInfo();
+}
+
+
+
+void InteractiveAppMedia::requestHostInfo()
+{
+	isConnected->setValue(false);
+	hasListenExtension = false;
+
+	URL url("http://127.0.0.1:" + String(oscQueryPort->intValue()) + "?HOST_INFO");
+	StringPairArray responseHeaders;
+	int statusCode = 0;
+
+	std::unique_ptr<InputStream> stream(url.createInputStream(
+		URL::InputStreamOptions(URL::ParameterHandling::inAddress)
+		.withConnectionTimeoutMs(2000)
+		.withResponseHeaders(&responseHeaders)
+		.withStatusCode(&statusCode)
+	));
+
+	bool success = false;
+
+#if JUCE_WINDOWS
+	if (statusCode != 200)
+	{
+		stream.reset();
+	}
+#endif
+
+	if (stream != nullptr)
+	{
+		String content = stream->readEntireStreamAsString();
+		//if (logIncomingData->boolValue()) NLOG(niceName, "Request status code : " << statusCode << ", content :\n" << content);
+
+		var data = JSON::parse(content);
+		if (data.isObject())
+		{
+			//if (logIncomingData->boolValue()) NLOG(niceName, "Received HOST_INFO :\n" << JSON::toString(data));
+
+			success = true;
+
+			String curServerName = serverName->stringValue();
+			String newServerName = data.getProperty("NAME", "");
+			if (curServerName.isNotEmpty() && newServerName != curServerName)
+			{
+				NLOG(niceName, "Server name has changed, if you wish to not sync, please enable \"Only sync from same name\"");
+			}
+
+			serverName->setValue(newServerName);
+
+
+			//String oscIP = data.getProperty("OSC_IP", remoteHost->stringValue());
+			/*int oscPort = data.getProperty("OSC_PORT", remotePort->intValue());
+			remoteOSCPort->setEnabled(oscPort != remotePort->intValue());
+			remoteOSCPort->setValue(oscPort);
+			if (oscPort != remotePort->intValue()) NLOG(niceName, "OSC_PORT is different from OSCQuery port, setting custom OSC port to " << oscPort);
+
+			int wsPort = data.getProperty("WS_PORT", remotePort->intValue());
+			remoteWSPort->setEnabled(wsPort != remotePort->intValue());
+			remoteWSPort->setValue(wsPort);
+			if (wsPort != remotePort->intValue()) NLOG(niceName, "WS_PORT is different from OSCQuery port, setting custom Websocket port to " << wsPort);*/
+
+
+			hasListenExtension = data.getProperty("EXTENSIONS", var()).getProperty("LISTEN", false);
+			requestStructure();
+
+			if (hasListenExtension) NLOG(niceName, "Server has LISTEN extension, setting up websocket");
+			setupWSAndOSC();
+
+			shouldSynchronize = false;
+		}
+
+	}
+
+	if (!success)
+	{
+		setWarningMessage("Can't connect to OSCQuery server", "sync");
+
+		if (getWarningMessage("sync").isEmpty()) NLOGERROR(niceName, "Error with host info request, status code : " << statusCode << ", url : " << url.toString(true));
+	}
+	else
+	{
+		clearWarning("sync");
+	}
+}
+
+void InteractiveAppMedia::requestStructure()
+{
+	URL url("http://127.0.0.1:" + String(oscQueryPort->intValue()));
+	StringPairArray responseHeaders;
+	int statusCode = 0;
+
+	std::unique_ptr<InputStream> stream(url.createInputStream(
+		URL::InputStreamOptions(URL::ParameterHandling::inAddress)
+		.withConnectionTimeoutMs(15000)
+		.withResponseHeaders(&responseHeaders)
+		.withStatusCode(&statusCode)
+	));
+
+#if JUCE_WINDOWS
+	if (statusCode != 200)
+	{
+		NLOGWARNING(niceName, "Failed to request Structure, status code = " + String(statusCode));
+		return;
+	}
+#endif
+
+
+	if (stream != nullptr)
+	{
+		String content = stream->readEntireStreamAsString();
+		//if (logIncomingData->boolValue()) NLOG(niceName, "Request status code : " << statusCode << ", content :\n" << content);
+
+		var data = JSON::parse(content);
+		if (data.isObject())
+		{
+			//if (logIncomingData->boolValue()) NLOG(niceName, "Received structure :\n" << JSON::toString(data));
+
+			updateTreeFromData(data);
+		}
+	}
+	else
+	{
+		//if (logIncomingData->boolValue()) NLOGWARNING(niceName, "Error with request, status code : " << statusCode << ", url : " << url.toString(true));
+	}
+}
+
+void InteractiveAppMedia::updateTreeFromData(var data)
+{
+	if (data.isVoid()) return;
+
+	isUpdatingStructure = true;
+
+	Array<String> enableListenContainers;
+	Array<String> expandedContainers;
+	Array<WeakReference<ControllableContainer>> containers = mediaParams.getAllContainers(true);
+
+	if (!keepValuesOnSync->boolValue())
+	{
+		for (auto& cc : containers)
+		{
+			if (OSCQueryHelpers::OSCQueryValueContainer* gcc = dynamic_cast<OSCQueryHelpers::OSCQueryValueContainer*>(cc.get()))
+			{
+				if (gcc->enableListen->boolValue())
+				{
+					enableListenContainers.add(gcc->getControlAddress(&mediaParams));
+					gcc->enableListen->setValue(false);
+					if (!gcc->editorIsCollapsed) expandedContainers.add(gcc->getControlAddress(&mediaParams));
+				}
+			}
+		}
+	}
+
+
+	var vData(new DynamicObject());
+	if (keepValuesOnSync->boolValue())
+	{
+		Array<WeakReference<Parameter>> params = mediaParams.getAllParameters(true);
+		for (auto& p : params)
+		{
+			vData.getDynamicObject()->setProperty(p->getControlAddress(&mediaParams), p->value);
+		}
+
+		for (auto& cc : containers)
+		{
+			if (OSCQueryHelpers::OSCQueryValueContainer* gcc = dynamic_cast<OSCQueryHelpers::OSCQueryValueContainer*>(cc.get()))
+			{
+				if (gcc->enableListen->boolValue()) gcc->enableListen->setValue(true, false, true); //force relistening
+			}
+		}
+	}
+
+	//mediaParams.clear();
+
+	OSCQueryHelpers::updateContainerFromData(&mediaParams, data, false);
+
+	isUpdatingStructure = false;
+
+	if (keepValuesOnSync->boolValue())
+	{
+		NamedValueSet nvs = vData.getDynamicObject()->getProperties();
+		for (auto& nv : nvs)
+		{
+			if (Parameter* p = dynamic_cast<Parameter*>(mediaParams.getControllableForAddress(nv.name.toString())))
+			{
+				p->setValue(nv.value);
+			}
+		}
+	}
+	else
+	{
+		for (auto& addr : enableListenContainers)
+		{
+			if (OSCQueryHelpers::OSCQueryValueContainer* gcc = dynamic_cast<OSCQueryHelpers::OSCQueryValueContainer*>(mediaParams.getControllableContainerForAddress(addr)))
+			{
+				gcc->enableListen->setValue(true, false, true);
+			}
+		}
+
+		for (auto& addr : expandedContainers)
+		{
+			if (ControllableContainer* cc = mediaParams.getControllableContainerForAddress(addr))
+			{
+				cc->editorIsCollapsed = false;
+				cc->queuedNotifier.addMessage(new ContainerAsyncEvent(ContainerAsyncEvent::ControllableContainerCollapsedChanged, cc)); //should move to a setCollapsed from ControllableContainer.cpp
+			}
+		}
+	}
+
+	treeData = data;
+}
+
+void InteractiveAppMedia::setupWSAndOSC()
+{
+	isConnected->setValue(false);
+	if (wsClient != nullptr) wsClient->stop();
+	wsClient.reset();
+	if (isCurrentlyLoadingData || !hasListenExtension) return;
+
+	if (!enabled->boolValue()) return;
+	wsClient.reset(new SimpleWebSocketClient());
+	wsClient->addWebSocketListener(this);
+
+	String host = "127.0.0.1";
+	String wsPort = oscQueryPort->stringValue();
+	String url = host + ":" + wsPort + "/";
+	wsClient->start(url);
+}
+
+void InteractiveAppMedia::sendOSC(const OSCMessage& m)
+{
+	if (!enabled->boolValue()) return;
+
+	//if (logOutgoingData->boolValue())
+	//{
+	//	NLOG(niceName, "Send OSC : " << m.getAddressPattern().toString());
+	//	for (auto& a : m) LOG(OSCHelpers::getStringArg(a));
+	//}
+
+	//outActivityTrigger->trigger();
+
+	String host = "127.0.0.1";
+	int port = oscQueryPort->intValue();
+	oscSender.sendToIPAddress(host, port, m);
+}
+
+void InteractiveAppMedia::sendOSCForControllable(Controllable* c)
+{
+	if (!enabled->boolValue()) return;
+	if (isUpdatingStructure) return;
+	if (isCurrentlyLoadingData) return;
+	if (noFeedbackList.contains(c)) return;
+
+
+	String s = c->getControlAddress(&mediaParams);
+	try
+	{
+		OSCMessage m(s);
+		if (c->type != Controllable::TRIGGER)
+		{
+			Parameter* p = (Parameter*)c;
+			var v = p->getValue().clone();
+
+			if (v.isArray() && p->type != Controllable::COLOR)
+			{
+				for (int i = 0; i < v.size(); ++i)
+				{
+					m.addArgument(OSCHelpers::varToArgument(v[i], OSCHelpers::BoolMode::TF));
+				}
+			}
+			else
+			{
+				m.addArgument(OSCHelpers::varToArgument(v, OSCHelpers::BoolMode::TF));
+			}
+		}
+		sendOSC(m);
+	}
+	catch (OSCFormatError& e)
+	{
+		NLOGERROR(niceName, "Can't send to address " << s << " : " << e.description);
+	}
+}
+
+
+OSCArgument InteractiveAppMedia::varToArgument(const var& v)
+{
+	if (v.isBool()) return OSCArgument(((bool)v) ? 1 : 0);
+	else if (v.isInt()) return OSCArgument((int)v);
+	else if (v.isInt64()) return OSCArgument((int)v);
+	else if (v.isDouble()) return OSCArgument((float)v);
+	else if (v.isString()) return OSCArgument(v.toString());
+	jassert(false);
+	return OSCArgument("error");
+}
+
+void InteractiveAppMedia::updateAllListens()
+{
+	Array<WeakReference<ControllableContainer>> containers = mediaParams.getAllContainers(true);
+	for (auto& cc : containers)
+	{
+		if (OSCQueryHelpers::OSCQueryValueContainer* gcc = dynamic_cast<OSCQueryHelpers::OSCQueryValueContainer*>(cc.get()))
+		{
+			updateListenToContainer(gcc, true);
+		}
+	}
+}
+
+void InteractiveAppMedia::updateListenToContainer(OSCQueryHelpers::OSCQueryValueContainer* gcc, bool onlySendIfListen)
+{
+	if (!enabled->boolValue() || !hasListenExtension || isCurrentlyLoadingData || isUpdatingStructure) return;
+	if (wsClient == nullptr || !wsClient->isConnected)
+	{
+		NLOGWARNING(niceName, "Websocket not connected, can't LISTEN");
+		return;
+	}
+
+	if (onlySendIfListen && !gcc->enableListen->boolValue()) return;
+
+	String command = gcc->enableListen->boolValue() ? "LISTEN" : "IGNORE";
+	Array<WeakReference<Controllable>> params = gcc->getAllControllables();
+
+	var o(new DynamicObject());
+	o.getDynamicObject()->setProperty("COMMAND", command);
+
+	for (auto& p : params)
+	{
+		if (p == gcc->enableListen || p == gcc->syncContent) continue;
+		String addr = p->getControlAddress(&mediaParams);
+		o.getDynamicObject()->setProperty("DATA", addr);
+		wsClient->send(JSON::toString(o, true));
+	}
+}
+
+void InteractiveAppMedia::connectionOpened()
+{
+	NLOG(niceName, "Websocket connection is opened, let's get bi, baby !");
+	isConnected->setValue(true);
+	clearWarning("sync");
+	updateAllListens();
+}
+
+void InteractiveAppMedia::connectionClosed(int status, const String& reason)
+{
+	NLOG(niceName, "Websocket connection is closed, bye bye!");
+	isConnected->setValue(false);
+}
+
+void InteractiveAppMedia::connectionError(const String& errorMessage)
+{
+	NLOGERROR(niceName, "Connection error " << errorMessage);
+	isConnected->setValue(false);
+}
+
+void InteractiveAppMedia::dataReceived(const MemoryBlock& data)
+{
+	if (!enabled->boolValue()) return;
+
+	OSCPacketParser parser(data.getData(), (int)data.getSize());
+	OSCMessage m = parser.readMessage();
+
+	processOSCMessage(m);
+}
+
+void InteractiveAppMedia::processOSCMessage(const OSCMessage& m)
+{
+	/*if (logIncomingData->boolValue())
+	{
+		String s = m.getAddressPattern().toString();
+		for (auto& a : m) s += "\n" + OSCHelpers::getStringArg(a);
+		NLOG(niceName, "Feedback received : " << s);
+	}*/
+
+	//inActivityTrigger->trigger();
+
+	if (Controllable* c = OSCHelpers::findControllable(&mediaParams, m))
+	{
+		noFeedbackList.add(c);
+		OSCHelpers::handleControllableForOSCMessage(c, m);
+		noFeedbackList.removeAllInstancesOf(c);
+	}
+}
+
+void InteractiveAppMedia::messageReceived(const String& message)
+{
+	if (!enabled->boolValue()) return;
+
+	//if (logIncomingData->boolValue())
+	//{
+	//	NLOG(niceName, "Websocket message received : " << message);
+	//}
+
+	//inActivityTrigger->trigger();
+}
+
 void InteractiveAppMedia::launchProcess()
 {
 	if (checkingProcess || isClearing) return;
@@ -192,10 +639,13 @@ void InteractiveAppMedia::launchProcess()
 	bool result = f.startAsProcess(args);
 	wDir.setAsCurrentWorkingDirectory();
 
-	if (launchMinimized->boolValue()) shouldMinimize = true;
 
 	if (!result) LOGERROR("Could not launch application " << f.getFullPathName() << " with arguments : " << launchArguments->stringValue());
+
+	shouldMinimize = result && launchMinimized->boolValue();
+	shouldSynchronize = result;
 }
+
 
 void InteractiveAppMedia::killProcess()
 {
@@ -212,6 +662,8 @@ void InteractiveAppMedia::killProcess()
 	int result = system(String("killall " + String(hardKillMode ? "-9" : "-2") + " \"" + processName + "\"").getCharPointer());
 	if (result != 0) LOGWARNING("Problem killing app " + processName);
 #endif
+
+
 }
 
 void InteractiveAppMedia::timerCallback()
@@ -264,9 +716,17 @@ BOOL InteractiveAppMedia::enumWindowCallback(HWND hWnd, LPARAM lparam)
 void InteractiveAppMedia::run()
 {
 #if JUCE_WINDOWS
-	while (!threadShouldExit() && shouldMinimize)
+	while (!threadShouldExit() && (shouldMinimize || shouldSynchronize))
 	{
-		EnumWindows(enumWindowCallback, reinterpret_cast<LPARAM>(this));
+		if (shouldMinimize)
+		{
+			EnumWindows(enumWindowCallback, reinterpret_cast<LPARAM>(this));
+		}
+
+		if (shouldSynchronize)
+		{
+			syncOSCQuery();
+		}
 		wait(1000);
 	}
 #endif

@@ -29,6 +29,9 @@
     <Filter Include="MapGyver\Source\Media\medias\canvas">
       <UniqueIdentifier>{6FD222FE-0AB6-738F-9E48-4A90B3713203}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MapGyver\Source\Media\medias\grid\ui">
+      <UniqueIdentifier>{4C45CBA7-FEE0-B494-66C4-8008DDDFC119}</UniqueIdentifier>
+    </Filter>
     <Filter Include="MapGyver\Source\Media\medias\grid">
       <UniqueIdentifier>{51EF38B6-90A8-6DE2-F442-484A092C4B4B}</UniqueIdentifier>
     </Filter>
@@ -1284,6 +1287,39 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\canvas\CanvasMedia.cpp">
       <Filter>MapGyver\Source\Media\medias\canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridBoard.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridItemUI.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerItemManagerUI.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerManagerUI.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerPanel.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridMediaPanel.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridColumn.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridItem.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridLayer.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerItemManager.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerManager.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\grid\GridMedia.cpp">
       <Filter>MapGyver\Source\Media\medias\grid</Filter>
@@ -5357,6 +5393,39 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\canvas\CanvasMedia.h">
       <Filter>MapGyver\Source\Media\medias\canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridBoard.h">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridItemUI.h">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerItemManagerUI.h">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerManagerUI.h">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerPanel.h">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridMediaPanel.h">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridColumn.h">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridItem.h">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridLayer.h">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerItemManager.h">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerManager.h">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridMedia.h">
       <Filter>MapGyver\Source\Media\medias\grid</Filter>

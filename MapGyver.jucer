@@ -92,6 +92,42 @@
             <FILE id="anTbqo" name="CanvasMedia.h" compile="0" resource="0" file="Source/Media/medias/canvas/CanvasMedia.h"/>
           </GROUP>
           <GROUP id="{8B65EAAE-1833-46C9-185E-1205E1BD21D7}" name="grid">
+            <GROUP id="{DFE956BD-7F73-5DBC-C291-DD1A2E9F2046}" name="ui">
+              <FILE id="wZHlvy" name="GridBoard.cpp" compile="0" resource="0" file="Source/Media/medias/grid/ui/GridBoard.cpp"/>
+              <FILE id="ldDu9W" name="GridBoard.h" compile="0" resource="0" file="Source/Media/medias/grid/ui/GridBoard.h"/>
+              <FILE id="JYe50h" name="GridItemUI.cpp" compile="0" resource="0" file="Source/Media/medias/grid/ui/GridItemUI.cpp"/>
+              <FILE id="k3x4Yk" name="GridItemUI.h" compile="0" resource="0" file="Source/Media/medias/grid/ui/GridItemUI.h"/>
+              <FILE id="VKv4Sn" name="GridLayerItemManagerUI.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/grid/ui/GridLayerItemManagerUI.cpp"/>
+              <FILE id="EBVJP8" name="GridLayerItemManagerUI.h" compile="0" resource="0"
+                    file="Source/Media/medias/grid/ui/GridLayerItemManagerUI.h"/>
+              <FILE id="EzVL8K" name="GridLayerManagerUI.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/grid/ui/GridLayerManagerUI.cpp"/>
+              <FILE id="F0GsgC" name="GridLayerManagerUI.h" compile="0" resource="0"
+                    file="Source/Media/medias/grid/ui/GridLayerManagerUI.h"/>
+              <FILE id="tHsIYP" name="GridLayerPanel.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/grid/ui/GridLayerPanel.cpp"/>
+              <FILE id="XKXzfd" name="GridLayerPanel.h" compile="0" resource="0"
+                    file="Source/Media/medias/grid/ui/GridLayerPanel.h"/>
+              <FILE id="RxmJr2" name="GridMediaPanel.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/grid/ui/GridMediaPanel.cpp"/>
+              <FILE id="YtwCBS" name="GridMediaPanel.h" compile="0" resource="0"
+                    file="Source/Media/medias/grid/ui/GridMediaPanel.h"/>
+            </GROUP>
+            <FILE id="hxjXMv" name="GridColumn.cpp" compile="0" resource="0" file="Source/Media/medias/grid/GridColumn.cpp"/>
+            <FILE id="PzSkLr" name="GridColumn.h" compile="0" resource="0" file="Source/Media/medias/grid/GridColumn.h"/>
+            <FILE id="aTRQMU" name="GridItem.cpp" compile="0" resource="0" file="Source/Media/medias/grid/GridItem.cpp"/>
+            <FILE id="C2Kj0G" name="GridItem.h" compile="0" resource="0" file="Source/Media/medias/grid/GridItem.h"/>
+            <FILE id="LOUzJn" name="GridLayer.cpp" compile="0" resource="0" file="Source/Media/medias/grid/GridLayer.cpp"/>
+            <FILE id="uQkwSj" name="GridLayer.h" compile="0" resource="0" file="Source/Media/medias/grid/GridLayer.h"/>
+            <FILE id="G0dR9V" name="GridLayerItemManager.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/grid/GridLayerItemManager.cpp"/>
+            <FILE id="Xe3Wjf" name="GridLayerItemManager.h" compile="0" resource="0"
+                  file="Source/Media/medias/grid/GridLayerItemManager.h"/>
+            <FILE id="N45HQm" name="GridLayerManager.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/grid/GridLayerManager.cpp"/>
+            <FILE id="XJAvj3" name="GridLayerManager.h" compile="0" resource="0"
+                  file="Source/Media/medias/grid/GridLayerManager.h"/>
             <FILE id="G99yyI" name="GridMedia.cpp" compile="0" resource="0" file="Source/Media/medias/grid/GridMedia.cpp"/>
             <FILE id="Z8jmCm" name="GridMedia.h" compile="0" resource="0" file="Source/Media/medias/grid/GridMedia.h"/>
           </GROUP>

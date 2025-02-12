@@ -28,7 +28,20 @@
 
 #include "medias/canvas/CanvasMedia.h"
 #include "medias/web/WebMedia.h"
+
 #include "medias/grid/GridMedia.h"
+#include "medias/grid/GridItem.h"
+#include "medias/grid/GridLayerItemManager.h"
+#include "medias/grid/GridLayer.h"
+#include "medias/grid/GridLayerManager.h"
+
+#include "medias/grid/ui/GridItemUI.h"
+#include "medias/grid/ui/GridBoard.h"
+#include "medias/grid/ui/GridLayerItemManagerUI.h"
+#include "medias/grid/ui/GridLayerPanel.h"
+#include "medias/grid/ui/GridMediaPanel.h"
+#include "medias/grid/ui/GridLayerManagerUI.h"
+
 #include "medias/interactiveapp/InteractiveAppMedia.h"
 
 #include "medias/shader/ShaderMedia.h"
