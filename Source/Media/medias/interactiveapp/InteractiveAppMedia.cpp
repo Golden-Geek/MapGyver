@@ -29,7 +29,8 @@ InteractiveAppMedia::InteractiveAppMedia(var params) :
 	availableTextures = addEnumParameter("Available Textures", "Available Textures");
 	availableTextures->saveValueOnly = false;
 
-	appRunning = addBoolParameter("App Running", "App Running", false);
+	appRunning = addBoolParameter("App Is Running", "App Running", false);
+	appRunning->isSavable = false;
 
 	autoStartOnPreUse = addBoolParameter("Auto Start On Pre Use", "Auto Start On Pre Use", false);
 	autoStartOnUse = addBoolParameter("Auto Start On Use", "Auto Start On Use", false);
