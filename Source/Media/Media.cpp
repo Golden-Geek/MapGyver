@@ -55,6 +55,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	if (!manualRender) GlContextHolder::getInstance()->registerOpenGlRenderer(this, 1);
 	saveAndLoadRecursiveData = true;
 
+
 	itemDataType = "Media";
 }
 

@@ -96,5 +96,8 @@ public:
 	void run() override;
 
 
+	var getJSONData(bool includeNonOverriden = false) override;
+	void loadJSONDataInternal(var data) override;
+
 	DECLARE_TYPE("Interactive App")
 };

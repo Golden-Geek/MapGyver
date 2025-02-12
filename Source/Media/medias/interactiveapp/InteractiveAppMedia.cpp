@@ -119,7 +119,6 @@ void InteractiveAppMedia::onControllableFeedbackUpdateInternal(ControllableConta
 
 void InteractiveAppMedia::checkAppRunning()
 {
-	checkingProcess = true;
 	StringArray processes;
 
 #if JUCE_WINDOWS
@@ -145,13 +144,14 @@ void InteractiveAppMedia::checkAppRunning()
 
 	bool isRunning = processes.contains(appParam->getFile().getFileName());
 
-	if (isRunning && !isThreadRunning())
+	if (isRunning && (shouldMinimize || shouldSynchronize) && !isThreadRunning())
 	{
 #if JUCE_WINDOWS
 		startThread();
 #endif
 	}
 
+	checkingProcess = true;
 	appRunning->setValue(isRunning);
 	checkingProcess = false;
 }
@@ -652,6 +652,8 @@ void InteractiveAppMedia::killProcess()
 	File f = appParam->getFile();
 	if (checkingProcess || !f.existsAsFile()) return;
 
+	if (wsClient != nullptr) wsClient->stop();
+
 	String processName = f.getFileName();
 	bool hardKillMode = hardKill->boolValue();
 
@@ -663,7 +665,8 @@ void InteractiveAppMedia::killProcess()
 	if (result != 0) LOGWARNING("Problem killing app " + processName);
 #endif
 
-
+	shouldMinimize = false;
+	shouldSynchronize = false;
 }
 
 void InteractiveAppMedia::timerCallback()
@@ -723,11 +726,27 @@ void InteractiveAppMedia::run()
 			EnumWindows(enumWindowCallback, reinterpret_cast<LPARAM>(this));
 		}
 
+		wait(1000);
+
 		if (shouldSynchronize)
 		{
 			syncOSCQuery();
 		}
-		wait(1000);
 	}
 #endif
+}
+
+var InteractiveAppMedia::getJSONData(bool includeNonOverriden)
+{
+	var data = BaseSharedTextureMedia::getJSONData(includeNonOverriden);
+	data.getDynamicObject()->setProperty("treeData", treeData);
+	return data;
+}
+
+
+void InteractiveAppMedia::loadJSONDataInternal(var data)
+{
+	BaseSharedTextureMedia::loadJSONDataInternal(data);
+	var tData = data.getProperty("treeData", var());
+	updateTreeFromData(tData);
 }
