@@ -51,12 +51,14 @@
 #include "vlcpp/vlc.hpp"
 #include "medias/video/VideoMedia.h"
 
-#include "medias/Webcam/WebcamDevice.h"
-#include "medias/Webcam/WebcamManager.h"
-#include "medias/Webcam/WebcamDeviceParameter.h"
-#include "medias/Webcam/ui/WebcamDeviceChooser.h"
-#include "medias/Webcam/ui/WebcamDeviceParameterUI.h"
-#include "medias/Webcam/WebcamMedia.h"
+#if !JUCE_LINUX
+#include "medias/webcam/WebcamDevice.h"
+#include "medias/webcam/WebcamManager.h"
+#include "medias/webcam/WebcamDeviceParameter.h"
+#include "medias/webcam/ui/WebcamDeviceChooser.h"
+#include "medias/webcam/ui/WebcamDeviceParameterUI.h"
+#include "medias/webcam/WebcamMedia.h"
+#endif
 
 #include "medias/node/NodeMedia.h"
 

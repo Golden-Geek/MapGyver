@@ -58,7 +58,9 @@ MGEngine::~MGEngine()
 	MediaManager::deleteInstance();
 	ScreenManager::deleteInstance();
 	NDIManager::deleteInstance();
+#if !JUCE_LINUX
 	WebcamManager::deleteInstance();
+#endif
 	RMPSettings::deleteInstance();
 	MediaClipFactory::deleteInstance();
 	CompositionLayerFactory::deleteInstance();

@@ -532,13 +532,13 @@
         <MODULEPATH id="juce_javascript" path="JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed"
-                externalLibraries="Servus" smallIcon="AKcEsb" bigIcon="AKcEsb">
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi"
+                smallIcon="AKcEsb" bigIcon="AKcEsb" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;"
-                       libraryPath="../../External/servus/lib/linux&#10;/usr/lib/x86_64-linux-gnu/"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;"
-                       libraryPath="../../External/servus/lib/linux&#10;/usr/lib/x86_64-linux-gnu/"/>
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"
+                       libraryPath="../../External/servus/lib/linux&#10;../../External/vlc/lib/linux&#10;/usr/lib/x86_64-linux-gnu/"/>
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"
+                       libraryPath="../../External/servus/lib/linux&#10;../../External/vlc/lib/linux&#10;/usr/lib/x86_64-linux-gnu/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="JUCE/modules"/>
@@ -564,13 +564,13 @@
       </MODULEPATHS>
     </LINUX_MAKE>
     <LINUX_MAKE targetFolder="Builds/Raspberry" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed&#10;-lm"
-                externalLibraries="Servus&#10;curl&#10;pthread&#10;atomic&#10;stdc++"
+                externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi&#10;curl&#10;pthread&#10;atomic&#10;stdc++"
                 smallIcon="AKcEsb" bigIcon="AKcEsb">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/dnssd/include"
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"
                        libraryPath="../../External/servus/lib/raspberry&#10;/usr/lib/arm-linux-gnueabihf"
                        linuxArchitecture="-march=armv8-a"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include"
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"
                        libraryPath="../../External/servus/lib/raspberry&#10;/usr/lib/arm-linux-gnueabihf"
                        linuxArchitecture="-march=armv8-a"/>
       </CONFIGURATIONS>
@@ -598,13 +598,13 @@
       </MODULEPATHS>
     </LINUX_MAKE>
     <LINUX_MAKE targetFolder="Builds/Raspberry64" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed"
-                externalLibraries="Servus&#10;curl&#10;pthread&#10;atomic&#10;stdc++"
+                externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi&#10;curl&#10;pthread&#10;atomic&#10;stdc++"
                 smallIcon="AKcEsb" bigIcon="AKcEsb">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/dnssd/include"
+        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"
                        libraryPath="../../External/servus/lib/raspberry64"/>
         <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/servus/lib/raspberry64"
-                       headerPath="../../External/servus/include&#10;../../External/dnssd/include"/>
+                       headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="JUCE/modules"/>
