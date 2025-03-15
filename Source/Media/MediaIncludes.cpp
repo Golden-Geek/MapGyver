@@ -29,12 +29,14 @@
 
 #include "medias/video/VideoMedia.cpp"
 
-#include "medias/Webcam/WebcamDevice.cpp"
-#include "medias/Webcam/WebcamManager.cpp"
-#include "medias/Webcam/WebcamDeviceParameter.cpp"
-#include "medias/Webcam/ui/WebcamDeviceChooser.cpp"
-#include "medias/Webcam/ui/WebcamDeviceParameterUI.cpp"
-#include "medias/Webcam/WebcamMedia.cpp"
+#if !JUCE_LINUX
+#include "medias/webcam/WebcamDevice.cpp"
+#include "medias/webcam/WebcamManager.cpp"
+#include "medias/webcam/WebcamDeviceParameter.cpp"
+#include "medias/webcam/ui/WebcamDeviceChooser.cpp"
+#include "medias/webcam/ui/WebcamDeviceParameterUI.cpp"
+#include "medias/webcam/WebcamMedia.cpp"
+#endif
 
 #include "medias/node/NodeMedia.cpp"
 

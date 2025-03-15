@@ -22,7 +22,9 @@ MediaManager::MediaManager() :
 	factory.defs.add(Factory<Media>::Definition::createDef<ColorMedia>(""));
 	factory.defs.add(Factory<Media>::Definition::createDef<PictureMedia>(""));
 	factory.defs.add(Factory<Media>::Definition::createDef<VideoMedia>(""));
+#if !JUCE_LINUX
 	factory.defs.add(Factory<Media>::Definition::createDef<WebcamMedia>(""));
+#endif
 	factory.defs.add(Factory<Media>::Definition::createDef<NDIMedia>(""));
 	factory.defs.add(Factory<Media>::Definition::createDef<SharedTextureMedia>(""));
 	factory.defs.add(Factory<Media>::Definition::createDef<ShaderMedia>(""));
