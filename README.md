@@ -26,8 +26,21 @@ Features :
 
 ## Linux specific instructions
 
+### Dependencies
 - You need to install the [NDI SDK](https://ndi.video/for-developers/ndi-sdk/) (you can use the `ndi-sdk` AUR package on Arch)
 - `libvlc` **4.0.x** (for 64bit x86 only) and `Servus` pre-built libraries are included but you might need to recompile them for your needs
+- Official Projucer from JUCE: [Download here](https://juce.com/download/)
+
+### Building
+- Clone this repository with submodules: `git clone --recursive https://github.com/Golden-Geek/MapGyver.git`
+- Clone fork of JUCE from your branch to the cloned folder:
+    - `cd MapGyver`
+    - `git clone --branch=juce8_local http://github.com/benkuper/JUCE`
+- Open MapGyver JUCE with the official Projucer 
+- Save Ctrl + S in Projucer to write the MakeFile
+- Navigate to `Builds/LinuxMakefile` and make with `make -j 8`
+
+### Running
 - After compiling, run MapGyver with :
 ```bash
 LD_LIBRARY_PATH=../../External/servus/lib/linux:../../External/vlc/lib/linux:$LD_LIBRARY_PATH build/MapGyver
