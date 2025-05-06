@@ -50,6 +50,8 @@ MediaClip::~MediaClip()
 
 void MediaClip::clearItem()
 {
+	clearTarget();
+
 	LayerBlock::clearItem();
 	setMedia(nullptr);
 	if (media != nullptr && !mediaRef.wasObjectDeleted()) unregisterUseMedia(CLIP_MEDIA_ID);

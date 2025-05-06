@@ -52,7 +52,7 @@ public:
 
 	Image previewImage;
 	bool shouldGeneratePreviewImage;
-
+	
 	void onContainerTriggerTriggered(Trigger* t) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
@@ -92,6 +92,9 @@ public:
 	virtual double getMediaLength() { return -1; }
 
 	DECLARE_ASYNC_EVENT(Media, Media, media, ENUM_LIST(EDITING_CHANGED, PREVIEW_CHANGED), EVENT_ITEM_CHECK);
+
+
+	JUCE_DECLARE_WEAK_REFERENCEABLE(Media);
 };
 
 
@@ -115,4 +118,5 @@ public:
 	virtual void initImage(const Image& image);
 
 	virtual Point<int> getMediaSize() override;
+
 };

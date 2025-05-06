@@ -39,13 +39,13 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := 
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DDEBUG=1" "-D_DEBUG=1" "-DJUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" "-DORGANIC_REMOTE_CONTROL_PORT=46000" "-DJUCER_LINUX_MAKE_30E7ABE=1" "-DJUCE_APP_VERSION=1.0.0b1" "-DJUCE_APP_VERSION_HEX=0x10000" $(shell $(PKG_CONFIG) --cflags $(shell ($(PKG_CONFIG) --exists webkit2gtk-4.1 && echo webkit2gtk-4.1) || echo webkit2gtk-4.0) alsa freetype2 fontconfig gl libcurl gtk+-x11-3.0) -pthread -I../../JuceLibraryCode -I../../JUCE/modules -I../../Modules -I../../External/servus/include -I../../External/dnssd/include -I../../Source -I../../External/vlc/include4 -I../../EXternal/vlc/vlcpp -I../../External/NDI/include -I../../External/servus/include $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DDEBUG=1" "-D_DEBUG=1" "-DJUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" "-DORGANIC_REMOTE_CONTROL_PORT=46000" "-DJUCER_LINUX_MAKE_30E7ABE=1" "-DJUCE_APP_VERSION=1.0.0b1" "-DJUCE_APP_VERSION_HEX=0x10000" $(shell $(PKG_CONFIG) --cflags $(shell ($(PKG_CONFIG) --exists webkit2gtk-4.1 && echo webkit2gtk-4.1) || echo webkit2gtk-4.0) alsa freetype2 fontconfig gl libcurl gtk+-x11-3.0) -pthread -I../../JuceLibraryCode -I../../JUCE/modules -I../../Modules -I../../External/servus/include -I../../External/vlc/include -I../../External/vlc/include/vlc/plugins -I../../External/vlc/vlcpp -I../../External/NDI/Include/ -I../../Source -I../../External/vlc/include4 -I../../EXternal/vlc/vlcpp -I../../External/NDI/include -I../../External/servus/include $(CPPFLAGS)
   JUCE_CPPFLAGS_APP :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
   JUCE_TARGET_APP := MapGyver
 
   JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -g -ggdb -O0 $(CFLAGS)
   JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=c++17 $(CXXFLAGS)
-  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -L../../External/servus/lib/raspberry64 -L../../Modules/juce_simpleweb/libs/Linux/${JUCE_ARCH_LABEL} $(shell $(PKG_CONFIG) --libs alsa freetype2 fontconfig gl libcurl) -fvisibility=hidden -Wl,-rpath,"lib" -Wl,--as-needed -lrt -ldl -lpthread -lssl -lcrypto -lServus -lcurl -lpthread -latomic -lstdc++ $(LDFLAGS)
+  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -L../../External/servus/lib/raspberry64 -L../../Modules/juce_simpleweb/libs/Linux/${JUCE_ARCH_LABEL} $(shell $(PKG_CONFIG) --libs alsa freetype2 fontconfig gl libcurl) -fvisibility=hidden -Wl,-rpath,"lib" -Wl,--as-needed -lrt -ldl -lpthread -lssl -lcrypto -lServus -lvlc -lvlccore -lndi -lcurl -lpthread -latomic -lstdc++ $(LDFLAGS)
 
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) $(JUCE_OBJDIR)
 endif
@@ -60,13 +60,13 @@ ifeq ($(CONFIG),Release)
     TARGET_ARCH := 
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DNDEBUG=1" "-DJUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" "-DORGANIC_REMOTE_CONTROL_PORT=46000" "-DJUCER_LINUX_MAKE_30E7ABE=1" "-DJUCE_APP_VERSION=1.0.0b1" "-DJUCE_APP_VERSION_HEX=0x10000" $(shell $(PKG_CONFIG) --cflags $(shell ($(PKG_CONFIG) --exists webkit2gtk-4.1 && echo webkit2gtk-4.1) || echo webkit2gtk-4.0) alsa freetype2 fontconfig gl libcurl gtk+-x11-3.0) -pthread -I../../JuceLibraryCode -I../../JUCE/modules -I../../Modules -I../../External/servus/include -I../../External/dnssd/include -I../../Source -I../../External/vlc/include4 -I../../EXternal/vlc/vlcpp -I../../External/NDI/include -I../../External/servus/include $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DNDEBUG=1" "-DJUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" "-DORGANIC_REMOTE_CONTROL_PORT=46000" "-DJUCER_LINUX_MAKE_30E7ABE=1" "-DJUCE_APP_VERSION=1.0.0b1" "-DJUCE_APP_VERSION_HEX=0x10000" $(shell $(PKG_CONFIG) --cflags $(shell ($(PKG_CONFIG) --exists webkit2gtk-4.1 && echo webkit2gtk-4.1) || echo webkit2gtk-4.0) alsa freetype2 fontconfig gl libcurl gtk+-x11-3.0) -pthread -I../../JuceLibraryCode -I../../JUCE/modules -I../../Modules -I../../External/servus/include -I../../External/vlc/include -I../../External/vlc/include/vlc/plugins -I../../External/vlc/vlcpp -I../../External/NDI/Include/ -I../../Source -I../../External/vlc/include4 -I../../EXternal/vlc/vlcpp -I../../External/NDI/include -I../../External/servus/include $(CPPFLAGS)
   JUCE_CPPFLAGS_APP :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
   JUCE_TARGET_APP := MapGyver
 
   JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -O3 $(CFLAGS)
   JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=c++17 $(CXXFLAGS)
-  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -L../../External/servus/lib/raspberry64 -L../../Modules/juce_simpleweb/libs/Linux/${JUCE_ARCH_LABEL} $(shell $(PKG_CONFIG) --libs alsa freetype2 fontconfig gl libcurl) -fvisibility=hidden -Wl,-rpath,"lib" -Wl,--as-needed -lrt -ldl -lpthread -lssl -lcrypto -lServus -lcurl -lpthread -latomic -lstdc++ $(LDFLAGS)
+  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -L../../External/servus/lib/raspberry64 -L../../Modules/juce_simpleweb/libs/Linux/${JUCE_ARCH_LABEL} $(shell $(PKG_CONFIG) --libs alsa freetype2 fontconfig gl libcurl) -fvisibility=hidden -Wl,-rpath,"lib" -Wl,--as-needed -lrt -ldl -lpthread -lssl -lcrypto -lServus -lvlc -lvlccore -lndi -lcurl -lpthread -latomic -lstdc++ $(LDFLAGS)
 
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) $(JUCE_OBJDIR)
 endif

@@ -2,10 +2,14 @@
 
 MediaTarget::~MediaTarget()
 {
-	if (Engine::mainEngine->isClearing) return;
+	clearTarget();
+}
 
+void MediaTarget::clearTarget()
+{
+	if (Engine::mainEngine->isClearing) return;
 	Array<int> ids;
-	HashMap<int, Media*>::Iterator it(usedMedias);
+	HashMap<int, WeakReference<Media>, DefaultHashFunctions, CriticalSection>::Iterator it(usedMedias);
 	while (it.next()) ids.add(it.getKey());
 
 	for (auto& id : ids) unregisterUseMedia(id);
@@ -13,8 +17,8 @@ MediaTarget::~MediaTarget()
 
 bool MediaTarget::isUsingMedia(Media* m)
 {
-	HashMap<int, Media*>::Iterator it(usedMedias);
-	while (it.next()) if(it.getValue() == m) return true;
+	HashMap<int, WeakReference<Media>, DefaultHashFunctions, CriticalSection>::Iterator it(usedMedias);
+	while (it.next()) if (it.getValue() == m) return true;
 	return false;
 }
 
@@ -32,13 +36,13 @@ void MediaTarget::registerUseMedia(int id, Media* m)
 		unregisterUseMedia(id);
 	}
 
-	usedMedias.set(id, m);
+	usedMedias.set(id, WeakReference<Media>(m));
 	m->registerTarget(this);
 }
 
 void MediaTarget::unregisterUseMedia(int id)
 {
 	if (!usedMedias.contains(id)) return;
-	usedMedias[id]->unregisterTarget(this);
+	if (!usedMedias[id].wasObjectDeleted()) usedMedias[id]->unregisterTarget(this);
 	usedMedias.remove(id);
 }

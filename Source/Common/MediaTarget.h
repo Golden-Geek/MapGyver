@@ -18,10 +18,14 @@ public:
 	MediaTarget() {}
 	virtual ~MediaTarget();
 
-	HashMap<int, Media*> usedMedias;
+	void clearTarget();
+
+	HashMap<int, WeakReference<Media>, DefaultHashFunctions, CriticalSection> usedMedias;
 
 	virtual bool isUsingMedia(Media* m);
 
 	void registerUseMedia(int id, Media* m);
 	void unregisterUseMedia(int id);
+
+
 };

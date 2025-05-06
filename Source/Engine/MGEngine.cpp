@@ -65,6 +65,7 @@ MGEngine::~MGEngine()
 	MediaClipFactory::deleteInstance();
 	CompositionLayerFactory::deleteInstance();
 	NodeFactory::deleteInstance();
+	MediaGridUIPreview::deleteInstance();
 }
 
 

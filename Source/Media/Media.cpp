@@ -10,7 +10,6 @@
 
 #include "Media/MediaIncludes.h"
 #include "Engine/MGEngine.h"
-#include "Media.h"
 
 using namespace juce::gl;
 
@@ -63,7 +62,6 @@ Media::~Media()
 {
 	if (!manualRender && GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
 }
-
 
 
 void Media::onContainerTriggerTriggered(Trigger* t)
