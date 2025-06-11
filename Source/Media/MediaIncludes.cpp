@@ -44,6 +44,24 @@
 #include "medias/web/WebMedia.cpp"
 #include "medias/grid/GridMedia.cpp"
 
+#include "medias/grid/GridClip.cpp"
+#include "medias/grid/GridClipManager.cpp"
+#include "medias/grid/GridLayer.cpp"
+#include "medias/grid/GridLayerGroup.cpp"
+#include "medias/grid/GridLayerManager.cpp"
+#include "medias/grid/GridColumn.cpp"
+#include "medias/grid/GridColumnManager.cpp"
+
+#include "medias/grid/ui/GridClipUI.cpp"
+#include "medias/grid/ui/GridEmptySlotUI.cpp"
+#include "medias/grid/ui/GridClipManagerUI.cpp"
+#include "medias/grid/ui/GridColumnUI.cpp"
+#include "medias/grid/ui/GridColumnManagerUI.cpp"
+#include "medias/grid/ui/GridBoard.cpp"
+#include "medias/grid/ui/GridLayerPanel.cpp"
+#include "medias/grid/ui/GridLayerGroupPanel.cpp"
+#include "medias/grid/ui/GridLayerManagerUI.cpp"
+#include "medias/grid/ui/GridMediaPanel.cpp"
 
 #include "medias/interactiveapp/InteractiveAppMedia.cpp"
 

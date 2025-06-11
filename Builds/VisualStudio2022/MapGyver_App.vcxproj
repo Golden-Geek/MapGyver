@@ -195,10 +195,22 @@
     <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridBoard.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridItemUI.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridClipManagerUI.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerItemManagerUI.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridClipUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridColumnManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridColumnUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridEmptySlotUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerGroupPanel.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerManagerUI.cpp">
@@ -210,16 +222,22 @@
     <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridMediaPanel.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridClip.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridClipManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\grid\GridColumn.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\grid\GridItem.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridColumnManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\grid\GridLayer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerItemManager.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerGroup.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerManager.cpp">
@@ -1160,9 +1178,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ustring.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\samples\vst-utilities\moduleinfotool\source\main.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\commonstringconvert.cpp">
@@ -2159,6 +2174,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_GlyphArrangement.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_GlyphArrangementOptions.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_TextLayout.cpp">
@@ -4022,15 +4040,21 @@
     <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\canvas\CanvasMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridBoard.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridItemUI.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerItemManagerUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridClipManagerUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridClipUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridColumnManagerUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridColumnUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridEmptySlotUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerGroupPanel.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerManagerUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerPanel.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridMediaPanel.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridClip.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridClipManager.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridColumn.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\grid\GridItem.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridColumnManager.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridLayer.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerItemManager.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerGroup.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerManager.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\interactiveapp\InteractiveAppMedia.h"/>
@@ -4515,6 +4539,7 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\format_types\juce_VST3Common.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\format_types\juce_VST3Headers.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\format_types\juce_VST3PluginFormat.h"/>
+    <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\format_types\juce_VST3Utilities.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\format_types\juce_VSTCommon.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\format_types\juce_VSTMidiEventList.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\format_types\juce_VSTPluginFormat.h"/>
@@ -4552,6 +4577,7 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\utilities\juce_RangedAudioParameter.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\utilities\juce_VST2ClientExtensions.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\utilities\juce_VST3ClientExtensions.h"/>
+    <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\utilities\juce_VST3Interface.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_processors\juce_audio_processors.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDBurner.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDReader.h"/>
@@ -4591,6 +4617,7 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\containers\juce_SparseSet.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\containers\juce_Variant.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\detail\juce_CallbackListenerList.h"/>
+    <ClInclude Include="..\..\..\JUCE\modules\juce_core\detail\juce_LruCache.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\detail\juce_NativeFileHandle.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\files\juce_AndroidDocument.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\files\juce_common_MimeTypes.h"/>
@@ -5074,7 +5101,7 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_FontOptions.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_FunctionPointerDestructor.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_GlyphArrangement.h"/>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_LruCache.h"/>
+    <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_GlyphArrangementOptions.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_TextLayout.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_Typeface.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_TypefaceFileCache.h"/>

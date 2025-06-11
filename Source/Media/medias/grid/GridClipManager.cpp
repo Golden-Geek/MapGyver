@@ -1,11 +1,11 @@
 /*
   ==============================================================================
 
-    GridLayerItemManager.cpp
-    Created: 12 Feb 2025 11:53:48am
+    GridClipManager.cpp
+    Created: 11 Jun 2025 4:39:38pm
     Author:  bkupe
 
   ==============================================================================
 */
 
-#include "GridLayerItemManager.h"
+#include "GridClipManager.h"

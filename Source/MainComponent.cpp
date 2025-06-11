@@ -34,11 +34,12 @@ void MainContentComponent::init()
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Screen Editor", &ScreenEditorPanel::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Surface Editor", &SurfaceEditorPanel::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Medias", &MediaManagerUI::create));
-	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Medias Grid", &MediaManagerGridUI::create));
+	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Medias (Grid View)", &MediaManagerGridUI::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Media Preview", &MediaPreviewPanel::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Online Explorer", &OnlineContentExplorer::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Node Editor", &NodeManagerViewPanel::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Sequence Editor", &TimeMachineView::create));
+	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Grid Editor", &GridMediaPanel::create));
 
 	OrganicMainContentComponent::init();
 
