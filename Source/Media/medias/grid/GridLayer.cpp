@@ -8,4 +8,16 @@
   ==============================================================================
 */
 
-#include "GridLayer.h"
+#include "Media/MediaIncludes.h"
+
+GridLayer::GridLayer(const String& name, var params)
+{
+}
+
+GridLayer::~GridLayer()
+{
+}
+
+void GridLayer::clearItem()
+{
+}

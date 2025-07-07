@@ -29,14 +29,17 @@
 #include "medias/canvas/CanvasMedia.h"
 #include "medias/web/WebMedia.h"
 
-#include "medias/grid/GridMedia.h"
 #include "medias/grid/GridClip.h"
 #include "medias/grid/GridClipManager.h"
 #include "medias/grid/GridLayer.h"
-#include "medias/grid/GridLayerGroup.h"
 #include "medias/grid/GridLayerManager.h"
+#include "medias/grid/GridLayerGroup.h"
+#include "medias/grid/GridLayerGroupManager.h"
 #include "medias/grid/GridColumn.h"
 #include "medias/grid/GridColumnManager.h"
+
+#include "medias/grid/GridMedia.h"
+
 
 #include "medias/grid/ui/GridClipUI.h"
 #include "medias/grid/ui/GridEmptySlotUI.h"

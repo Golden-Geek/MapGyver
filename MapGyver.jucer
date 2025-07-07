@@ -147,6 +147,10 @@
                   file="Source/Media/medias/grid/GridLayerGroup.cpp"/>
             <FILE id="OOaiHl" name="GridLayerGroup.h" compile="0" resource="0"
                   file="Source/Media/medias/grid/GridLayerGroup.h"/>
+            <FILE id="qLVxFA" name="GridLayerGroupManager.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/grid/GridLayerGroupManager.cpp"/>
+            <FILE id="SDVL5Z" name="GridLayerGroupManager.h" compile="0" resource="0"
+                  file="Source/Media/medias/grid/GridLayerGroupManager.h"/>
             <FILE id="N45HQm" name="GridLayerManager.cpp" compile="0" resource="0"
                   file="Source/Media/medias/grid/GridLayerManager.cpp"/>
             <FILE id="XJAvj3" name="GridLayerManager.h" compile="0" resource="0"

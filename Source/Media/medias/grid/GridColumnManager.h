@@ -9,3 +9,11 @@
 */
 
 #pragma once
+
+class GridColumnManager :
+    public Manager<GridColumn>
+{
+    public:
+    GridColumnManager();
+    ~GridColumnManager() {}
+};

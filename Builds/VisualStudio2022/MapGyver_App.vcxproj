@@ -240,6 +240,9 @@
     <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerGroup.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerGroupManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4077,6 +4080,7 @@
     <ClInclude Include="..\..\Source\Media\medias\grid\GridColumnManager.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridLayer.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerGroup.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerGroupManager.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerManager.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\interactiveapp\InteractiveAppMedia.h"/>

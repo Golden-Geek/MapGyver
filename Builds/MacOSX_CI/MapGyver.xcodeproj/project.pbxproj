@@ -223,6 +223,7 @@
 		72D99348147B46B1401834CA /* GridMediaPanel.cpp */ /* GridMediaPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridMediaPanel.cpp; path = ../../Source/Media/medias/grid/ui/GridMediaPanel.cpp; sourceTree = SOURCE_ROOT; };
 		737D83C0B98E4DBFB4E8E72C /* icon.png */ /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../../Resources/icon.png; sourceTree = SOURCE_ROOT; };
 		73C1EC972E4F55EFD7C927EB /* Surface.cpp */ /* Surface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Surface.cpp; path = ../../Source/Screen/Surface/Surface.cpp; sourceTree = SOURCE_ROOT; };
+		74C65D32E13C763BF9838EE3 /* GridLayerGroupManager.cpp */ /* GridLayerGroupManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridLayerGroupManager.cpp; path = ../../Source/Media/medias/grid/GridLayerGroupManager.cpp; sourceTree = SOURCE_ROOT; };
 		75A08A18DB31BF990EE335D0 /* grid.png */ /* grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grid.png; path = ../../Resources/media/grid.png; sourceTree = SOURCE_ROOT; };
 		75C65143D898EE85FD3BD8CE /* GridClipUI.h */ /* GridClipUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridClipUI.h; path = ../../Source/Media/medias/grid/ui/GridClipUI.h; sourceTree = SOURCE_ROOT; };
 		7766CB83931B00FCC4FB075C /* include_juce_audio_basics.mm */ /* include_juce_audio_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_basics.mm; path = ../../JuceLibraryCode/include_juce_audio_basics.mm; sourceTree = SOURCE_ROOT; };
@@ -309,6 +310,7 @@
 		BEBD9D4F96604EED790FB26B /* PictureMedia.cpp */ /* PictureMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PictureMedia.cpp; path = ../../Source/Media/medias/picture/PictureMedia.cpp; sourceTree = SOURCE_ROOT; };
 		BF5DB2BB2B9C32EC40BA160C /* WebMedia.h */ /* WebMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WebMedia.h; path = ../../Source/Media/medias/web/WebMedia.h; sourceTree = SOURCE_ROOT; };
 		C052F251EC349D63E56C6B0B /* BinaryData.cpp */ /* BinaryData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BinaryData.cpp; path = ../../JuceLibraryCode/BinaryData.cpp; sourceTree = SOURCE_ROOT; };
+		C3B14B7F0C4EC742B1BD9CE1 /* GridLayerGroupManager.h */ /* GridLayerGroupManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridLayerGroupManager.h; path = ../../Source/Media/medias/grid/GridLayerGroupManager.h; sourceTree = SOURCE_ROOT; };
 		C538E2025F0461E4153F5114 /* InteractiveAppMedia.cpp */ /* InteractiveAppMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InteractiveAppMedia.cpp; path = ../../Source/Media/medias/interactiveapp/InteractiveAppMedia.cpp; sourceTree = SOURCE_ROOT; };
 		C578B110C7CB0B82B89E7671 /* GridColumnManager.cpp */ /* GridColumnManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridColumnManager.cpp; path = ../../Source/Media/medias/grid/GridColumnManager.cpp; sourceTree = SOURCE_ROOT; };
 		C6C69B5FAA9B2514D86B4E91 /* JuceHeader.h */ /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
@@ -453,6 +455,8 @@
 				5E7966B09150EA7DE1F4C298,
 				3471193933649D22E3FA16EB,
 				297A02C43768F84C657706DD,
+				74C65D32E13C763BF9838EE3,
+				C3B14B7F0C4EC742B1BD9CE1,
 				53BB2A026EAD5EC34AE09269,
 				E43D9326E603A451DF17CFBE,
 				CD219EAFA5B487FE7A8914CB,

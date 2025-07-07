@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "MediaClip.h"
 
 MediaClip::MediaClip(const String& name, var params) :
 	LayerBlock(name),

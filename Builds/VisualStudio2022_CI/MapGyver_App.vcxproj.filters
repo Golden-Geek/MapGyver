@@ -1324,6 +1324,9 @@
     <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerGroup.cpp">
       <Filter>MapGyver\Source\Media\medias\grid</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerGroupManager.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\grid\GridLayerManager.cpp">
       <Filter>MapGyver\Source\Media\medias\grid</Filter>
     </ClCompile>
@@ -5476,6 +5479,9 @@
       <Filter>MapGyver\Source\Media\medias\grid</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerGroup.h">
+      <Filter>MapGyver\Source\Media\medias\grid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerGroupManager.h">
       <Filter>MapGyver\Source\Media\medias\grid</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\grid\GridLayerManager.h">

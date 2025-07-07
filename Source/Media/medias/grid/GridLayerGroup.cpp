@@ -8,4 +8,20 @@
   ==============================================================================
 */
 
+#include "Media/MediaIncludes.h"
 #include "GridLayerGroup.h"
+
+GridLayerGroup::GridLayerGroup(var params) :
+    BaseItem(getTypeString())
+{
+    saveAndLoadRecursiveData = true;
+	addChildControllableContainer(&layerManager);
+}
+
+GridLayerGroup::~GridLayerGroup()
+{
+}
+
+void GridLayerGroup::clearItem()
+{
+}

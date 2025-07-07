@@ -17,5 +17,11 @@ public:
     GridMedia(var params = var());
     ~GridMedia();
 
+	GridLayerGroupManager layerGroupManager;
+	GridColumnManager columnManager;
+	GridClipManager clipManager;
+
+    void createDefaultSetup();
+
 	DECLARE_TYPE("Grid")
 };

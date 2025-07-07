@@ -1,21 +1,19 @@
 /*
   ==============================================================================
 
-    GridColumn.h
-    Created: 12 Feb 2025 11:51:09am
-    Author:  bkupe
+	GridLayerGroupManager.h
+	Created: 7 Jul 2025 4:10:27pm
+	Author:  bkupe
 
   ==============================================================================
 */
 
 #pragma once
 
-class GridColumn :
-    public BaseItem
+class GridLayerGroupManager :
+	public Manager<GridLayerGroup>
 {
 public:
-	GridColumn(var params = var());
-	~GridColumn();
-
-	DECLARE_TYPE("Grid Column");
+	GridLayerGroupManager();
+	~GridLayerGroupManager();
 };

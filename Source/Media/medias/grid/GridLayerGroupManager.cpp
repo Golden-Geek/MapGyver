@@ -1,8 +1,8 @@
 /*
   ==============================================================================
 
-    GridColumnManager.cpp
-    Created: 11 Jun 2025 4:39:09pm
+    GridLayerGroupManager.cpp
+    Created: 7 Jul 2025 4:10:27pm
     Author:  bkupe
 
   ==============================================================================
@@ -10,7 +10,11 @@
 
 #include "Media/MediaIncludes.h"
 
-GridColumnManager::GridColumnManager() : 
-    Manager<GridColumn>("Columns")
+GridLayerGroupManager::GridLayerGroupManager() :
+	Manager<GridLayerGroup>("Layer Groups")
+{
+}
+
+GridLayerGroupManager::~GridLayerGroupManager()
 {
 }

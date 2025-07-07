@@ -49,6 +49,7 @@
 #include "medias/grid/GridLayer.cpp"
 #include "medias/grid/GridLayerGroup.cpp"
 #include "medias/grid/GridLayerManager.cpp"
+#include "medias/grid/GridLayerGroupManager.cpp"
 #include "medias/grid/GridColumn.cpp"
 #include "medias/grid/GridColumnManager.cpp"
 

@@ -8,4 +8,13 @@
   ==============================================================================
 */
 
-#include "GridColumn.h"
+#include "MediaIncludes.h"
+
+GridColumn::GridColumn(var params) :
+	BaseItem(getTypeString())
+{
+}
+
+GridColumn::~GridColumn()
+{
+}

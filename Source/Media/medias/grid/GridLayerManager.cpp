@@ -1,11 +1,21 @@
 /*
   ==============================================================================
 
-    GridLayerManager.cpp
-    Created: 12 Feb 2025 11:50:39am
-    Author:  bkupe
+	GridLayerManager.cpp
+	Created: 12 Feb 2025 11:50:39am
+	Author:  bkupe
 
   ==============================================================================
 */
 
-#include "GridLayerManager.h"
+#include "Media/MediaIncludes.h"
+
+GridLayerManager::GridLayerManager() :
+	Manager<GridLayer>("Layers")
+{
+
+}
+
+GridLayerManager::~GridLayerManager()
+{
+}

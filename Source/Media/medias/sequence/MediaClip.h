@@ -73,30 +73,9 @@ public:
 		virtual void mediaClipFadesChanged(MediaClip*) {}
 	};
 
-	ListenerList<MediaClipListener> mediaClipListeners;
-	void addMediaClipListener(MediaClipListener* newListener) { mediaClipListeners.add(newListener); }
-	void removeMediaClipListener(MediaClipListener* listener) { mediaClipListeners.remove(listener); }
+	DECLARE_INSPECTACLE_SAFE_LISTENER(MediaClip, mediaClip);
 
-	// ASYNC
-	class  MediaClipEvent
-	{
-	public:
-		enum Type { MEDIA_CHANGED, FADES_CHANGED, TRANSITIONS_CHANGED, PREVIEW_CHANGED };
-
-		MediaClipEvent(Type t, MediaClip* p, var v = var()) :
-			type(t), mediaClip(p), value(v) {}
-
-		Type type;
-		MediaClip* mediaClip;
-		var value;
-	};
-
-	QueuedNotifier<MediaClipEvent> mediaClipNotifier;
-	typedef QueuedNotifier<MediaClipEvent>::Listener AsyncListener;
-
-	void addAsyncMediaClipListener(AsyncListener* newListener) { mediaClipNotifier.addListener(newListener); }
-	void addAsyncCoalescedMediaClipListener(AsyncListener* newListener) { mediaClipNotifier.addAsyncCoalescedListener(newListener); }
-	void removeAsyncMediaClipListener(AsyncListener* listener) { mediaClipNotifier.removeListener(listener); }
+	DECLARE_ASYNC_EVENT(MediaClip, MediaClip, mediaClip, ENUM_LIST(MEDIA_CHANGED, FADES_CHANGED, TRANSITIONS_CHANGED, PREVIEW_CHANGED), EVENT_ITEM_CHECK);
 
 	DECLARE_TYPE("Media Clip");
 };
@@ -111,7 +90,7 @@ public:
 	TargetParameter* mediaTarget;
 	void onContainerParameterChangedInternal(Parameter* p) override;
 
-	DECLARE_TYPE("Reference");
+	DECLARE_TYPE("Reference Clip");
 };
 
 class OwnedMediaClip :

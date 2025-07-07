@@ -33,6 +33,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	mediaNotifier(5)
 {
 	setHasCustomColor(true);
+	saveAndLoadRecursiveData = true;
 
 	addChildControllableContainer(&mediaParams);
 
@@ -52,7 +53,6 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 
 	manualRender = params.getProperty("manualRender", false);
 	if (!manualRender) GlContextHolder::getInstance()->registerOpenGlRenderer(this, 1);
-	saveAndLoadRecursiveData = true;
 
 
 	itemDataType = "Media";
