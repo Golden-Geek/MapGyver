@@ -112,6 +112,10 @@
                     file="Source/Media/medias/grid/ui/GridEmptySlotUI.cpp"/>
               <FILE id="fjg4MM" name="GridEmptySlotUI.h" compile="0" resource="0"
                     file="Source/Media/medias/grid/ui/GridEmptySlotUI.h"/>
+              <FILE id="QchPai" name="GridLayerGroupManagerUI.cpp" compile="0" resource="0"
+                    file="Source/Media/medias/grid/ui/GridLayerGroupManagerUI.cpp"/>
+              <FILE id="QIrhBc" name="GridLayerGroupManagerUI.h" compile="0" resource="0"
+                    file="Source/Media/medias/grid/ui/GridLayerGroupManagerUI.h"/>
               <FILE id="Z28UQs" name="GridLayerGroupPanel.cpp" compile="0" resource="0"
                     file="Source/Media/medias/grid/ui/GridLayerGroupPanel.cpp"/>
               <FILE id="kyuscy" name="GridLayerGroupPanel.h" compile="0" resource="0"

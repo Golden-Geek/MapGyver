@@ -8,4 +8,21 @@
   ==============================================================================
 */
 
-#include "GridEmptySlotUI.h"
+#include "Media/MediaIncludes.h"
+
+GridEmptySlotUI::GridEmptySlotUI() :
+	Component("Grid Empty Slot")
+{
+}
+
+GridEmptySlotUI::~GridEmptySlotUI()
+{
+}
+
+void GridEmptySlotUI::paint(Graphics& g)
+{
+}
+
+void GridEmptySlotUI::resized()
+{
+}

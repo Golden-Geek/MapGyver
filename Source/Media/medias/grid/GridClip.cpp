@@ -12,7 +12,7 @@
 #include "GridClip.h"
 
 GridClip::GridClip(GridMedia* gridMedia, const String& name, var params) :
-	BaseItem(getTypeString()),
+	BaseItem(getTypeString(), false),
 	gridMedia(gridMedia),
 	media(nullptr),
 	mediaRef(nullptr),

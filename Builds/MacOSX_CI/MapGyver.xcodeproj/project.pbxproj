@@ -204,6 +204,7 @@
 		6AA5D7941584E8D8C3984106 /* MediaLayer.h */ /* MediaLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaLayer.h; path = ../../Source/Media/medias/sequence/MediaLayer.h; sourceTree = SOURCE_ROOT; };
 		6AB8DE71714CBCBD809CE98F /* include_juce_opengl.mm */ /* include_juce_opengl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_opengl.mm; path = ../../JuceLibraryCode/include_juce_opengl.mm; sourceTree = SOURCE_ROOT; };
 		6AD228C97881C89C01069C1E /* include_juce_video.mm */ /* include_juce_video.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_video.mm; path = ../../JuceLibraryCode/include_juce_video.mm; sourceTree = SOURCE_ROOT; };
+		6B15D2F7872050A57861B81B /* GridLayerGroupManagerUI.h */ /* GridLayerGroupManagerUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridLayerGroupManagerUI.h; path = ../../Source/Media/medias/grid/ui/GridLayerGroupManagerUI.h; sourceTree = SOURCE_ROOT; };
 		6B21DF06EFACA175EEF85BF0 /* NDIMedia.h */ /* NDIMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIMedia.h; path = ../../Source/Media/medias/ndi/NDIMedia.h; sourceTree = SOURCE_ROOT; };
 		6BD749992FC12D51E1B1F436 /* include_juce_gui_extra.mm */ /* include_juce_gui_extra.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_extra.mm; path = ../../JuceLibraryCode/include_juce_gui_extra.mm; sourceTree = SOURCE_ROOT; };
 		6C28CF38BE2480B0132880CE /* GridEmptySlotUI.h */ /* GridEmptySlotUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridEmptySlotUI.h; path = ../../Source/Media/medias/grid/ui/GridEmptySlotUI.h; sourceTree = SOURCE_ROOT; };
@@ -302,6 +303,7 @@
 		B77AA68FA0F37D899BB51922 /* Accelerate.framework */ /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		B77ADE5770568D7A1E1DC024 /* Node.cpp */ /* Node.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cpp; path = ../../Source/Node/Node.cpp; sourceTree = SOURCE_ROOT; };
 		B80C3FDE70F6FF55E871D57A /* CompositionLayer.h */ /* CompositionLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CompositionLayer.h; path = ../../Source/Media/medias/composition/CompositionLayer/CompositionLayer.h; sourceTree = SOURCE_ROOT; };
+		B9D85EE2CDE91EB992FDD602 /* GridLayerGroupManagerUI.cpp */ /* GridLayerGroupManagerUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridLayerGroupManagerUI.cpp; path = ../../Source/Media/medias/grid/ui/GridLayerGroupManagerUI.cpp; sourceTree = SOURCE_ROOT; };
 		BCD66E9A995775AF6B8F629A /* NodeFactory.h */ /* NodeFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeFactory.h; path = ../../Source/Node/NodeFactory.h; sourceTree = SOURCE_ROOT; };
 		BE4E254D4F5CE3AA48E65107 /* MediaClipUI.cpp */ /* MediaClipUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaClipUI.cpp; path = ../../Source/Media/medias/sequence/ui/MediaClipUI.cpp; sourceTree = SOURCE_ROOT; };
 		BE56D510EB32C1CBA3DB2144 /* NodeManager.cpp */ /* NodeManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeManager.cpp; path = ../../Source/Node/NodeManager.cpp; sourceTree = SOURCE_ROOT; };
@@ -882,6 +884,8 @@
 				9249974391B120ECC2F451E5,
 				5F3AB816C2621F3827EE77EC,
 				6C28CF38BE2480B0132880CE,
+				B9D85EE2CDE91EB992FDD602,
+				6B15D2F7872050A57861B81B,
 				0A79C355DD2D725B75B5BA90,
 				91C68BCDD82595AAC298A214,
 				FA548F138E1021CC07FC5E83,

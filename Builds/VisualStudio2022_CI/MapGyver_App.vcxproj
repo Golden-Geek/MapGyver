@@ -142,6 +142,9 @@
     <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridEmptySlotUI.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerGroupManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerGroupPanel.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4002,6 +4005,7 @@
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridColumnManagerUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridColumnUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridEmptySlotUI.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerGroupManagerUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerGroupPanel.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerManagerUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerPanel.h"/>

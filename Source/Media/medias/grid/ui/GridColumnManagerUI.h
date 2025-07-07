@@ -9,3 +9,11 @@
 */
 
 #pragma once
+
+class GridColumnManagerUI :
+    public ManagerUI<GridColumnManager, GridColumn, GridColumnUI>
+{
+public:
+    GridColumnManagerUI(GridColumnManager* manager);
+    ~GridColumnManagerUI() override;
+};

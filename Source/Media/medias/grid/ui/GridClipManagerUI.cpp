@@ -8,4 +8,17 @@
   ==============================================================================
 */
 
-#include "GridClipManagerUI.h"
+#include "Media/MediaIncludes.h"
+
+GridClipManagerUI::GridClipManagerUI(GridClipManager* manager) :
+	ManagerUI(manager->niceName, manager)
+{
+}
+
+GridClipManagerUI::~GridClipManagerUI()
+{
+}
+
+void GridClipManagerUI::paint(Graphics& g)
+{
+}

@@ -8,4 +8,21 @@
   ==============================================================================
 */
 
-#include "GridColumnUI.h"
+#include "Media/MediaIncludes.h"
+
+GridColumnUI::GridColumnUI(GridColumn* item) :
+	ItemMinimalUI(item)
+{
+}
+
+GridColumnUI::~GridColumnUI()
+{
+}
+
+void GridColumnUI::paint(Graphics& g)
+{
+}
+
+void GridColumnUI::resized()
+{
+}

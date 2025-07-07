@@ -8,4 +8,13 @@
   ==============================================================================
 */
 
-#include "GridColumnManagerUI.h"
+#include "Media/MediaIncludes.h"
+
+GridColumnManagerUI::GridColumnManagerUI(GridColumnManager* manager) :
+	ManagerUI(manager->niceName, manager)
+{
+}
+
+GridColumnManagerUI::~GridColumnManagerUI()
+{
+}

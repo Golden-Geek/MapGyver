@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    GridLayerManagerUI.h
+    GridLayerGroupManagerUI.h
     Created: 12 Feb 2025 11:52:24am
     Author:  bkupe
 
@@ -10,10 +10,11 @@
 
 #pragma once
 
-class GridLayerManagerUI :
-    public ManagerUI<GridLayerManager, GridLayer, GridLayerPanel>
+class GridLayerGroupManagerUI :
+    public ManagerUI<GridLayerGroupManager, GridLayerGroup, GridLayerGroupPanel>
 {
 public:
-    GridLayerManagerUI(GridLayerManager* manager);
-    ~GridLayerManagerUI();
+    GridLayerGroupManagerUI(GridLayerGroupManager* manager);
+    ~GridLayerGroupManagerUI();
+
 };

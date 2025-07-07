@@ -1294,6 +1294,9 @@
     <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridEmptySlotUI.cpp">
       <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerGroupManagerUI.cpp">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\grid\ui\GridLayerGroupPanel.cpp">
       <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
     </ClCompile>
@@ -5449,6 +5452,9 @@
       <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridEmptySlotUI.h">
+      <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerGroupManagerUI.h">
       <Filter>MapGyver\Source\Media\medias\grid\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridLayerGroupPanel.h">

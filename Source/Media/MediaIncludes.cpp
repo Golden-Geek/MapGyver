@@ -60,8 +60,10 @@
 #include "medias/grid/ui/GridColumnManagerUI.cpp"
 #include "medias/grid/ui/GridBoard.cpp"
 #include "medias/grid/ui/GridLayerPanel.cpp"
-#include "medias/grid/ui/GridLayerGroupPanel.cpp"
 #include "medias/grid/ui/GridLayerManagerUI.cpp"
+#include "medias/grid/ui/GridLayerGroupPanel.cpp"
+#include "medias/grid/ui/GridLayerGroupManagerUI.cpp"
+
 #include "medias/grid/ui/GridMediaPanel.cpp"
 
 #include "medias/interactiveapp/InteractiveAppMedia.cpp"

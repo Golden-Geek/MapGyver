@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "GridClipManager.h"
 
 GridClipFactory::GridClipFactory(GridMedia* gridMedia)
 {
@@ -36,6 +37,12 @@ GridClipManager::GridClipManager(GridMedia* gridMedia) :
 	factory(gridMedia)
 {
 	managerFactory = &factory;
+
+	slotSize = addFloatParameter("Slot Size", "Size of each slot in the grid", 60, 32, 128);
+}
+
+GridClipManager::~GridClipManager()
+{
 }
 
 GridClip* GridClipFactory::GridClipDefinition::create()

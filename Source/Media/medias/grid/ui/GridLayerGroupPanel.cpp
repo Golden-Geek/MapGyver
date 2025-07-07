@@ -8,4 +8,21 @@
   ==============================================================================
 */
 
-#include "GridLayerGroupPanel.h"
+#include "Media/MediaIncludes.h"
+
+GridLayerGroupPanel::GridLayerGroupPanel(GridLayerGroup* item) :
+	ItemUI(item)
+{
+}
+
+GridLayerGroupPanel::~GridLayerGroupPanel()
+{
+}
+
+void GridLayerGroupPanel::paint(Graphics& g)
+{
+}
+
+void GridLayerGroupPanel::resized()
+{
+}

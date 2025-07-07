@@ -8,4 +8,21 @@
   ==============================================================================
 */
 
-#include "GridClipUI.h"
+#include "Media/MediaIncludes.h"
+
+GridClipUI::GridClipUI(GridClip* item) :
+	ItemMinimalUI(item)
+{
+}
+
+GridClipUI::~GridClipUI()
+{
+}
+
+void GridClipUI::paint(Graphics& g)
+{
+}
+
+void GridClipUI::resized()
+{
+}

@@ -36,7 +36,10 @@ class GridClipManager : public Manager<GridClip>
 {
 public:
 	GridClipManager(GridMedia* gridMedia);
+	~GridClipManager();
 
 	GridClipFactory factory;
 	GridMedia* gridMedia;
+
+	FloatParameter* slotSize;
 };

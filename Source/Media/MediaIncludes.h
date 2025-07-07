@@ -48,8 +48,9 @@
 #include "medias/grid/ui/GridColumnManagerUI.h"
 #include "medias/grid/ui/GridBoard.h"
 #include "medias/grid/ui/GridLayerPanel.h"
-#include "medias/grid/ui/GridLayerGroupPanel.h"
 #include "medias/grid/ui/GridLayerManagerUI.h"
+#include "medias/grid/ui/GridLayerGroupPanel.h"
+#include "medias/grid/ui/GridLayerGroupManagerUI.h"
 #include "medias/grid/ui/GridMediaPanel.h"
 
 #include "medias/interactiveapp/InteractiveAppMedia.h"
