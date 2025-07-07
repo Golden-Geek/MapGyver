@@ -13,7 +13,7 @@
 juce_ImplementSingleton(MediaGridUIPreview);
 
 MediaGridUI::MediaGridUI(Media* item) :
-	BaseItemUI(item, NONE),
+	ItemUI(item, NONE),
 	useLivePreview(false),
 	useLiveOnHover(false)
 {
@@ -71,7 +71,7 @@ void MediaGridUI::updatePreview()
 
 void MediaGridUI::paint(Graphics& g)
 {
-	BaseItemUI::paint(g);
+	ItemUI::paint(g);
 
 	if (inspectable.wasObjectDeleted()) return;
 
@@ -92,7 +92,7 @@ void MediaGridUI::resizedInternalContent(Rectangle<int>& r)
 
 void MediaGridUI::controllableFeedbackUpdateInternal(Controllable* c)
 {
-	BaseItemUI::controllableFeedbackUpdateInternal(c);
+	ItemUI::controllableFeedbackUpdateInternal(c);
 	if (c == item->isBeingUsed)
 	{
 		repaint();

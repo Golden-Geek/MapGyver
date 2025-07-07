@@ -259,7 +259,7 @@ void SurfaceEditorPanel::itemDropped(const SourceDetails& source)
 	}
 	else
 	{
-		surface->media->setValueFromTarget(dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())->item);
+		surface->media->setValueFromTarget(dynamic_cast<ItemMinimalUI<Media>*>(source.sourceComponent.get())->item);
 	}
 
 	repaint();

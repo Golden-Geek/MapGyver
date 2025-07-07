@@ -22,7 +22,7 @@ public:
 };
 
 class MediaGridUI :
-	public BaseItemUI<Media>,
+	public ItemUI<Media>,
 	public Media::AsyncListener
 {
 public:

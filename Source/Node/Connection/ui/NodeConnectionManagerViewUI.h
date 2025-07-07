@@ -13,7 +13,7 @@
 class NodeManagerViewUI;
 
 class NodeConnectionManagerViewUI :
-    public BaseManagerUI<NodeConnectionManager, NodeConnection, NodeConnectionViewUI>
+    public ManagerUI<NodeConnectionManager, NodeConnection, NodeConnectionViewUI>
 {
 public:
     NodeConnectionManagerViewUI(NodeManagerViewUI * vui, NodeConnectionManager* manager);
@@ -30,7 +30,7 @@ public:
 
     void addItemUIInternal(NodeConnectionViewUI* ui) override;
 
-    void resized() override; //override to avoid baseManagerUI stuff
+    void resized() override; //override to avoid ManagerUI stuff
 
     void startCreateConnection(NodeConnector* connector, NodeConnection * connectionToReplace = nullptr);
     void updateCreateConnection();

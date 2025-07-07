@@ -12,7 +12,7 @@
 #include "MediaUI.h"
 
 MediaUI::MediaUI(Media* item) :
-	BaseItemUI(item)
+	ItemUI(item)
 {
 	item->addAsyncMediaListener(this);
 	updateUI();
@@ -30,7 +30,7 @@ MediaUI::~MediaUI()
 
 void MediaUI::paint(Graphics& g)
 {
-	BaseItemUI::paint(g);
+	ItemUI::paint(g);
 
 	if (icon.isValid())
 	{
@@ -49,7 +49,7 @@ void MediaUI::resizedHeader(Rectangle<int>& r)
 	}
 
 
-	BaseItemUI::resizedHeader(r);
+	ItemUI::resizedHeader(r);
 
 	r.removeFromRight(2);
 	infoBounds = r.removeFromRight(r.getHeight()).reduced(2);

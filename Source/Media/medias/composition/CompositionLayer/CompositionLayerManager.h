@@ -22,7 +22,7 @@ public:
 };
 
 class CompositionLayerManager :
-    public BaseManager<CompositionLayer>
+    public Manager<CompositionLayer>
 {
 public:
     CompositionLayerManager();

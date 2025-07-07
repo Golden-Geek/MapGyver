@@ -11,7 +11,7 @@
 #include "Screen/ScreenIncludes.h"
 
 ScreenManagerUI::ScreenManagerUI(const String & contentName) :
-	BaseManagerShapeShifterUI(contentName, ScreenManager::getInstance())
+	ManagerShapeShifterUI(contentName, ScreenManager::getInstance())
 {
 	addItemText = "Add new Screen";
 	noItemText = "Draw here curves you wanna use often";

@@ -12,7 +12,7 @@
 #include "Media/MediaIncludes.h"
 
 NodeManagerViewUI::NodeManagerViewUI(NodeManager* manager) :
-	BaseManagerViewUI(manager->niceName, manager)
+	ManagerViewUI(manager->niceName, manager)
 {
 	addExistingItems(false);
 
@@ -51,14 +51,14 @@ BaseNodeViewUI* NodeManagerViewUI::createUIForItem(Node* n)
 
 void NodeManagerViewUI::resized()
 {
-	BaseManagerViewUI::resized();
+	ManagerViewUI::resized();
 	connectionManagerUI->setBounds(getLocalBounds());
 	connectionManagerUI->resized();
 }
 
 void NodeManagerViewUI::resizedInternalHeader(Rectangle<int>& r)
 {
-	BaseManagerViewUI::resizedInternalHeader(r);
+	ManagerViewUI::resizedInternalHeader(r);
 	statsLabel.setBounds(r.removeFromRight(300));
 }
 
@@ -71,19 +71,19 @@ void NodeManagerViewUI::mouseDown(const MouseEvent& e)
 		NodeConnector* cc = h == &cui->sourceHandle ? cui->destConnector : cui->sourceConnector;
 		connectionManagerUI->startCreateConnection(cc, cui->item);
 	}
-	else if (e.eventComponent == this) BaseManagerViewUI::mouseDown(e);
+	else if (e.eventComponent == this) ManagerViewUI::mouseDown(e);
 }
 
 void NodeManagerViewUI::mouseDrag(const MouseEvent& e)
 {
 	if (connectionManagerUI->tmpConnectionUI != nullptr) connectionManagerUI->updateCreateConnection();
-	else if (e.eventComponent == this) BaseManagerViewUI::mouseDrag(e);
+	else if (e.eventComponent == this) ManagerViewUI::mouseDrag(e);
 }
 
 void NodeManagerViewUI::mouseUp(const MouseEvent& e)
 {
 	if (connectionManagerUI->tmpConnectionUI != nullptr) connectionManagerUI->endCreateConnection();
-	else if (e.eventComponent == this) BaseManagerViewUI::mouseUp(e);
+	else if (e.eventComponent == this) ManagerViewUI::mouseUp(e);
 }
 
 void NodeManagerViewUI::refreshStats()

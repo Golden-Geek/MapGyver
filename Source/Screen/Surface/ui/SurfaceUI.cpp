@@ -11,7 +11,7 @@
 #include "Screen/ScreenIncludes.h"
 
 SurfaceUI::SurfaceUI(Surface* s) :
-	BaseItemUI<Surface>(s)
+	ItemUI<Surface>(s)
 {
 	headerHeight = 20;
 

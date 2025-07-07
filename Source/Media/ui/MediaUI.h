@@ -11,7 +11,7 @@
 #pragma once
 
 class MediaUI :
-    public BaseItemUI<Media>,
+    public ItemUI<Media>,
     public Media::AsyncListener
 {
 public:

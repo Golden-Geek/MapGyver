@@ -2102,6 +2102,9 @@
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\fonts\juce_Font.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_graphics\fonts\juce_FontFeatures.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\fonts\juce_FontOptions.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2141,10 +2144,16 @@
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\geometry\juce_Rectangle_test.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jaricom.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcapimin.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcapistd.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcarith.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jccoefct.c">
@@ -2177,9 +2186,6 @@
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcparam.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcphuff.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcprepct.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2193,6 +2199,12 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdapistd.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdarith.c">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdatadst.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdatasrc.c">
@@ -2225,9 +2237,6 @@
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdmerge.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdphuff.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdpostct.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2258,9 +2267,6 @@
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jidctint.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jidctred.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jmemmgr.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2274,9 +2280,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jutils.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\transupp.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\JUCE\modules\juce_graphics\image_formats\pnglib\png.c">
@@ -3506,10 +3509,22 @@
     <ClCompile Include="..\..\Modules\juce_organicui\manager\ui\BaseItemEditor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_organicui\manager\ui\BaseItemMinimalUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_organicui\manager\ui\BaseItemUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_organicui\manager\ui\BaseManagerUI.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Modules\juce_organicui\manager\ui\GenericControllableItemEditor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Modules\juce_organicui\manager\BaseItem.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_organicui\manager\BaseManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Modules\juce_organicui\manager\GenericControllableItem.cpp">
@@ -3866,6 +3881,9 @@
     <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayerGroup.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayerManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3903,6 +3921,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Modules\juce_timeline\juce_timeline.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\juce_timeline2.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Modules\juce_timeline\TimelineAppCommands.cpp">
@@ -3955,6 +3976,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_simpleweb.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_simpleweb2.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_timeline.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_timeline2.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_video.cpp"/>
   </ItemGroup>
   <ItemGroup>
@@ -4301,6 +4323,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatReader.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatReaderSource.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatWriter.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatWriterOptions.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_AudioSubsectionReader.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_BufferingAudioFormatReader.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_audio_formats\format\juce_MemoryMappedAudioFormatReader.h"/>
@@ -4596,6 +4619,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_core\misc\juce_EnumHelpers.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_core\misc\juce_Functional.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_core\misc\juce_OptionsHelpers.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_core\misc\juce_OrderedContainerHelpers.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_core\misc\juce_Result.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_core\misc\juce_RuntimePermissions.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_core\misc\juce_ScopeGuard.h"/>
@@ -5030,6 +5054,7 @@
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\fonts\harfbuzz\hb.hh"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\fonts\juce_AttributedString.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\fonts\juce_Font.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_graphics\fonts\juce_FontFeatures.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\fonts\juce_FontOptions.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\fonts\juce_FunctionPointerDestructor.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\fonts\juce_GlyphArrangement.h"/>
@@ -5049,10 +5074,9 @@
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\geometry\juce_Rectangle.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\geometry\juce_RectangleList.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\cderror.h"/>
-    <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jchuff.h"/>
+    <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\cdjpeg.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jconfig.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdct.h"/>
-    <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdhuff.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jerror.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jinclude.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jmemsys.h"/>
@@ -5060,7 +5084,6 @@
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jpegint.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jpeglib.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jversion.h"/>
-    <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\jpglib\transupp.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\pnglib\png.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\pnglib\pngconf.h"/>
     <ClInclude Include="..\..\JUCE\modules\juce_graphics\image_formats\pnglib\pngdebug.h"/>
@@ -5545,19 +5568,24 @@
     <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseItemEditor.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseItemMinimalUI.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseItemUI.h"/>
-    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseManagerShapeShifterUI.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseManagerUI.h"/>
-    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseManagerViewMiniPane.h"/>
-    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseManagerViewUI.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\GenericControllableItemEditor.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\GenericManagerEditor.h"/>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\ItemUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\ManagerShapeShifterUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\ManagerUI.h"/>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\ManagerViewMiniPane.h"/>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\ManagerViewUI.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\BaseItem.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\BaseItemListener.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\BaseManager.h"/>
-    <ClInclude Include="..\..\Modules\juce_organicui\manager\BaseManagerListener.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\Factory.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\GenericControllableItem.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\GenericControllableManager.h"/>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ItemGroup.h"/>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\Manager.h"/>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ManagerListener.h"/>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\NestingManager.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\outliner\Outliner.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\parrot\ui\ParrotPanel.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\parrot\ui\ParrotUI.h"/>
@@ -6605,6 +6633,7 @@
     <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\ui\SequenceLayerTimeline.h"/>
     <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\ui\SequenceLayerTimelineManagerUI.h"/>
     <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayer.h"/>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayerGroup.h"/>
     <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayerManager.h"/>
     <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceEditorView.h"/>
     <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\ui\SequenceTimelineHeader.h"/>

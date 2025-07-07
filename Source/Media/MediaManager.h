@@ -13,7 +13,7 @@
 class SequenceMedia;
 
 class MediaManager :
-    public BaseManager<Media>,
+    public Manager<Media>,
     public InspectableSelectionManager::Listener,
     public Inspectable::InspectableListener
 {

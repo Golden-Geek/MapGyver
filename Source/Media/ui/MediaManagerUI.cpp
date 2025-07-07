@@ -11,7 +11,7 @@
 #include "Media/MediaIncludes.h"
 
 MediaManagerUI::MediaManagerUI(const String& contentName) :
-	BaseManagerShapeShifterUI(contentName, MediaManager::getInstance())
+	ManagerShapeShifterUI(contentName, MediaManager::getInstance())
 {
 	addItemText = "Add new Media";
 	noItemText = "Medias are re-usable selections of SubFixtures.";
@@ -28,12 +28,12 @@ MediaManagerUI::~MediaManagerUI()
 bool MediaManagerUI::isInterestedInDragSource(const SourceDetails& source)
 {
 	if (source.description.getProperty("type", "") == "OnlineContentItem") return true;
-	return BaseManagerUI::isInterestedInDragSource(source);
+	return ManagerUI::isInterestedInDragSource(source);
 }
 
 void MediaManagerUI::itemDropped(const SourceDetails& source)
 {
-	BaseManagerUI::itemDropped(source);
+	ManagerUI::itemDropped(source);
 
 	if (source.description.getProperty("type", "") == "OnlineContentItem")
 	{

@@ -11,7 +11,7 @@
 #include "Media/MediaIncludes.h"
 
 CompositionLayerManager::CompositionLayerManager() :
-	BaseManager("CompositionLayer")
+	Manager("CompositionLayer")
 {
 	itemDataType = "CompositionLayer";
 	selectItemWhenCreated = false;
@@ -35,7 +35,7 @@ void CompositionLayerManager::removeItemInternal(CompositionLayer* o)
 
 void CompositionLayerManager::onContainerParameterChanged(Parameter* p)
 {
-	BaseManager::onContainerParameterChanged(p);
+	Manager::onContainerParameterChanged(p);
 }
 
 

@@ -12,7 +12,7 @@
 #include "MediaManagerGridUI.h"
 
 MediaManagerGridUI::MediaManagerGridUI(const String& name) :
-	BaseManagerShapeShifterUI(name, MediaManager::getInstance())
+	ManagerShapeShifterUI(name, MediaManager::getInstance())
 {
 	highlightOnDragOver = false;
 
@@ -42,7 +42,7 @@ MediaManagerGridUI::~MediaManagerGridUI()
 
 void MediaManagerGridUI::paint(Graphics& g)
 {
-	BaseManagerUI::paint(g);
+	ManagerUI::paint(g);
 
 	if (isDraggingOver)
 	{
@@ -59,7 +59,7 @@ void MediaManagerGridUI::paint(Graphics& g)
 
 void MediaManagerGridUI::resizedInternalHeader(Rectangle<int>& r)
 {
-	BaseManagerShapeShifterUI::resizedInternalHeader(r);
+	ManagerShapeShifterUI::resizedInternalHeader(r);
 	r.removeFromLeft(4);
 	thumbSizeUI->setBounds(r.removeFromLeft(150).reduced(3));
 	r.removeFromLeft(4);

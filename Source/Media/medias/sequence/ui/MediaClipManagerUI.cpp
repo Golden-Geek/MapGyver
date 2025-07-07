@@ -26,7 +26,7 @@ MediaClipManagerUI::~MediaClipManagerUI()
 
 void MediaClipManagerUI::paintOverChildren(Graphics& g)
 {
-	BaseManagerUI::paintOverChildren(g);
+	ManagerUI::paintOverChildren(g);
 
 	if (dropClipX >= 0)
 	{
@@ -43,7 +43,7 @@ LayerBlockUI* MediaClipManagerUI::createUIForItem(LayerBlock* b)
 bool MediaClipManagerUI::isInterestedInDragSource(const SourceDetails& source)
 {
 	if (source.description.getProperty("type", "") == "OnlineContentItem") return true;
-	return BaseManagerUI::isInterestedInDragSource(source);
+	return ManagerUI::isInterestedInDragSource(source);
 }
 
 
@@ -67,7 +67,7 @@ void MediaClipManagerUI::itemDragMove(const SourceDetails& source)
 
 void MediaClipManagerUI::itemDropped(const SourceDetails& source)
 {
-	BaseManagerUI::itemDropped(source);
+	ManagerUI::itemDropped(source);
 
 	if (source.description.getProperty("type", "") == "OnlineContentItem")
 	{
@@ -95,7 +95,7 @@ void MediaClipManagerUI::itemDropped(const SourceDetails& source)
 
 void MediaClipManagerUI::showMenuAndAddItem(bool fromAddButton, Point<int> mouseDownPos)
 {
-	mediaTimeline->mediaLayer->blockManager.managerFactory->showCreateMenu([this, mouseDownPos](LayerBlock* b)
+	mediaTimeline->mediaLayer->blockManager.managerFactory->showCreateMenu(manager, [this, mouseDownPos](LayerBlock* b)
 		{
 			float time = timeline->getTimeForX(mouseDownPos.x);
 			if (ClipTransition* t = dynamic_cast<ClipTransition*>(b))

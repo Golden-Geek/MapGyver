@@ -12,7 +12,7 @@
 
 
 NodeManager::NodeManager(NodeMedia* media) :
-	BaseManager("Nodes"),
+	Manager("Nodes"),
 	media(media)
 {
 	managerFactory = NodeFactory::getInstance();
@@ -32,7 +32,7 @@ NodeManager::~NodeManager()
 void NodeManager::clear()
 {
 	connectionManager->clear();
-	BaseManager::clear();
+	Manager::clear();
 }
 
 
@@ -53,7 +53,7 @@ Array<UndoableAction*> NodeManager::getRemoveItemUndoableAction(Node* item)
 	Array<Node*> itemsToRemove;
 	itemsToRemove.add(item);
 	result.addArray(connectionManager->getRemoveAllLinkedConnectionsActions(itemsToRemove));
-	result.addArray(BaseManager::getRemoveItemUndoableAction(item));
+	result.addArray(Manager::getRemoveItemUndoableAction(item));
 	return result;
 }
 
@@ -61,21 +61,21 @@ Array<UndoableAction*> NodeManager::getRemoveItemsUndoableAction(Array<Node*> it
 {
 	Array<UndoableAction*> result;
 	result.addArray(connectionManager->getRemoveAllLinkedConnectionsActions(itemsToRemove));
-	result.addArray(BaseManager::getRemoveItemsUndoableAction(itemsToRemove));
+	result.addArray(Manager::getRemoveItemsUndoableAction(itemsToRemove));
 	return result;
 }
 
 
 var NodeManager::getJSONData(bool includeNonOverriden)
 {
-	var data = BaseManager::getJSONData(includeNonOverriden);
+	var data = Manager::getJSONData(includeNonOverriden);
 	data.getDynamicObject()->setProperty(connectionManager->shortName, connectionManager->getJSONData());
 	return data;
 }
 
 void NodeManager::loadJSONDataManagerInternal(var data)
 {
-	BaseManager::loadJSONDataManagerInternal(data);
+	Manager::loadJSONDataManagerInternal(data);
 	connectionManager->loadJSONData(data.getProperty(connectionManager->shortName, var()));
 }
 

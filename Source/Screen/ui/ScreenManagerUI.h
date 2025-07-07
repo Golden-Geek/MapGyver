@@ -12,7 +12,7 @@
 
 
 class ScreenManagerUI :
-	public BaseManagerShapeShifterUI<BaseManager<Screen>, Screen, BaseItemUI<Screen>>
+	public ManagerShapeShifterUI<Manager<Screen>, Screen, ItemUI<Screen>>
 {
 public:
 	ScreenManagerUI(const String &contentName);

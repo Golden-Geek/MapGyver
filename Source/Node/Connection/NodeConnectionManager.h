@@ -13,7 +13,7 @@
 class NodeManager;
 
 class NodeConnectionManager :
-    public BaseManager<NodeConnection>
+    public Manager<NodeConnection>
 {
 public:
     NodeConnectionManager(NodeManager * nodeManager);

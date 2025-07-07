@@ -543,7 +543,7 @@ void ScreenEditorPanel::itemDragEnter(const SourceDetails& source)
 	if (screen == nullptr) return;
 
 	Media* m = nullptr;
-	if (BaseItemMinimalUI<Media>* mui = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())) mui->item;
+	if (ItemMinimalUI<Media>* mui = dynamic_cast<ItemMinimalUI<Media>*>(source.sourceComponent.get())) mui->item;
 
 	setCandidateDropSurface(screen->getSurfaceAt(getRelativeMousePos()), m);
 	repaint();
@@ -554,7 +554,7 @@ void ScreenEditorPanel::itemDragMove(const SourceDetails& source)
 	if (screen == nullptr) return;
 
 	Media* m = nullptr;
-	if (BaseItemMinimalUI<Media>* mui = dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())) mui->item;
+	if (ItemMinimalUI<Media>* mui = dynamic_cast<ItemMinimalUI<Media>*>(source.sourceComponent.get())) mui->item;
 
 	setCandidateDropSurface(screen->getSurfaceAt(getRelativeMousePos()), m);
 	repaint();
@@ -589,7 +589,12 @@ void ScreenEditorPanel::itemDropped(const SourceDetails& source)
 	}
 	else
 	{
-		candidateDropSurface->media->setValueFromTarget(dynamic_cast<BaseItemMinimalUI<Media>*>(source.sourceComponent.get())->item);
+		if(BaseItemMinimalUI* mui = dynamic_cast<BaseItemMinimalUI*>(source.sourceComponent.get()))
+		{
+			Media* m = dynamic_cast<Media*>(mui->baseItem);
+			if (m == nullptr) return;
+			candidateDropSurface->media->setValueFromTarget(m);
+		}
 	}
 
 	setCandidateDropSurface(nullptr);

@@ -11,7 +11,7 @@
 #pragma once
 
 class SurfaceManager :
-    public BaseManager<Surface>
+    public Manager<Surface>
 {
 public:
     SurfaceManager();

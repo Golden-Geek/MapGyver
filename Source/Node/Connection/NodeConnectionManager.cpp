@@ -11,7 +11,7 @@
 #include "Node/NodeIncludes.h"
 
 NodeConnectionManager::NodeConnectionManager(NodeManager * nodeManager) :
-    BaseManager("Connections"),
+    Manager("Connections"),
     nodeManager(nodeManager)
 {
 }
@@ -69,7 +69,7 @@ Array<UndoableAction*> NodeConnectionManager::getRemoveAllLinkedConnectionsActio
 
 void NodeConnectionManager::afterLoadJSONDataInternal()
 {
-    BaseManager::afterLoadJSONDataInternal();
+    Manager::afterLoadJSONDataInternal();
 
     Array<NodeConnection*> toRemove;
     for (auto& i : items) if (i->source == nullptr || i->dest == nullptr) toRemove.add(i);

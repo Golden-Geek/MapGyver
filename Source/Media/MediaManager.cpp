@@ -14,7 +14,7 @@
 juce_ImplementSingleton(MediaManager);
 
 MediaManager::MediaManager() :
-	BaseManager("Media"),
+	Manager("Media"),
 	editingSequenceMedia(nullptr)
 {
 	managerFactory = &factory;
@@ -97,7 +97,7 @@ void MediaManager::inspectableDestroyed(Inspectable* i)
 
 var MediaManager::getJSONData(bool includeNonOverriden)
 {
-	var data = BaseManager::getJSONData(includeNonOverriden);
+	var data = Manager::getJSONData(includeNonOverriden);
 	if (editingSequenceMedia != nullptr)
 	{
 		data.getDynamicObject()->setProperty("editingSequenceMedia", editingSequenceMedia->getControlAddress());
@@ -107,7 +107,7 @@ var MediaManager::getJSONData(bool includeNonOverriden)
 
 void MediaManager::loadJSONDataManagerInternal(var data)
 {
-	BaseManager::loadJSONDataManagerInternal(data);
+	Manager::loadJSONDataManagerInternal(data);
 	if (data.hasProperty("editingSequenceMedia"))
 	{
 		if (SequenceMedia* sm = dynamic_cast<SequenceMedia*>(Engine::mainEngine->getControllableContainerForAddress(data.getProperty("editingSequenceMedia", var()))))

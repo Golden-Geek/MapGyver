@@ -13,7 +13,7 @@
 juce_ImplementSingleton(ViewStatsTimer);
 
 BaseNodeViewUI::BaseNodeViewUI(Node* node) :
-	BaseItemUI(node, Direction::ALL, true)
+	ItemUI(node, Direction::ALL, true)
 {
 	dragAndDropEnabled = true;
 	autoHideWhenDragging = false;
@@ -80,7 +80,7 @@ void BaseNodeViewUI::updateConnectors()
 
 void BaseNodeViewUI::paint(Graphics& g)
 {
-	BaseItemUI::paint(g);
+	ItemUI::paint(g);
 
 	Rectangle<int> mr = getMainBounds();
 	mr.removeFromTop(headerHeight + headerGap);
@@ -100,12 +100,12 @@ void BaseNodeViewUI::paint(Graphics& g)
 
 void BaseNodeViewUI::paintOverChildren(Graphics& g)
 {
-	BaseItemUI::paintOverChildren(g);
+	ItemUI::paintOverChildren(g);
 }
 
 void BaseNodeViewUI::resized()
 {
-	BaseItemUI::resized();
+	ItemUI::resized();
 
 	int w = 10;
 	Rectangle<int> inR = getLocalBounds().removeFromLeft(w).reduced(0, 10);
@@ -136,13 +136,13 @@ void BaseNodeViewUI::resized()
 
 void BaseNodeViewUI::resizedInternalHeader(Rectangle<int>& r)
 {
-	BaseItemUI::resizedInternalHeader(r);
+	ItemUI::resizedInternalHeader(r);
 	statsLabel.setBounds(r.removeFromRight(80));
 }
 
 void BaseNodeViewUI::resizedInternalContent(Rectangle<int>& r)
 {
-	BaseItemUI::resizedInternalContent(r);
+	ItemUI::resizedInternalContent(r);
 	resizedInternalContentNode(r);
 }
 

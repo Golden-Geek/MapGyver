@@ -11,7 +11,7 @@
 #pragma once
 
 class MediaManagerUI :
-	public BaseManagerShapeShifterUI<MediaManager, Media, MediaUI>
+	public ManagerShapeShifterUI<MediaManager, Media, MediaUI>
 {
 public:
 	MediaManagerUI(const String &contentName);

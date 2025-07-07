@@ -14,7 +14,7 @@ class NodeConnectionManager;
 class NodeMedia;
 
 class NodeManager :
-	public BaseManager<Node>,
+	public Manager<Node>,
 	public Node::NodeListener
 {
 public:

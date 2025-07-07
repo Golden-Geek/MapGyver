@@ -11,7 +11,7 @@
 #pragma once
 
 class MediaManagerGridUI :
-	public BaseManagerShapeShifterUI<MediaManager, Media, MediaGridUI>,
+	public ManagerShapeShifterUI<MediaManager, Media, MediaGridUI>,
 	public ContainerAsyncListener
 {
 public:

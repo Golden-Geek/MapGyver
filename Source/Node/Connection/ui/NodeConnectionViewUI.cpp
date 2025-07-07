@@ -12,7 +12,7 @@
 #include "Node/NodeIncludes.h"
 
 NodeConnectionViewUI::NodeConnectionViewUI(NodeConnection* connection, NodeConnector* _sourceConnector, NodeConnector* _destConnector) :
-	BaseItemMinimalUI(connection),
+	ItemMinimalUI(connection),
 	sourceConnector(nullptr),
 	destConnector(nullptr),
 	prevHasSent(false),
@@ -135,7 +135,7 @@ void NodeConnectionViewUI::buildPath()
 }
 void NodeConnectionViewUI::mouseDoubleClick(const MouseEvent& e)
 {
-	BaseItemMinimalUI::mouseDoubleClick(e);
+	ItemMinimalUI::mouseDoubleClick(e);
 	if (item != nullptr) item->enabled->setValue(!item->enabled->boolValue());
 }
 

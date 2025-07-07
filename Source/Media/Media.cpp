@@ -19,7 +19,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	height(nullptr),
 	customTime(-1),
 	mediaParams("Media Parameters"),
-	alwaysRedraw(false),
+	alwaysRedraw(true),
 	shouldRedraw(false),
 	forceRedraw(false),
 	autoClearFrameBufferOnRender(true),

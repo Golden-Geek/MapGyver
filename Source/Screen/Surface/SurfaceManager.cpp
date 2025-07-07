@@ -12,7 +12,7 @@
 #include "Screen/ScreenIncludes.h"
 
 SurfaceManager::SurfaceManager() :
-    BaseManager("Surface")
+    Manager("Surface")
     {
     itemDataType = "Surface";
     selectItemWhenCreated = false;

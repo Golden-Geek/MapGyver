@@ -13,7 +13,7 @@
 juce_ImplementSingleton(ScreenManager);
 
 ScreenManager::ScreenManager() :
-	BaseManager("Screen"),
+	Manager("Screen"),
 	editingScreen(nullptr)
 {
 	itemDataType = "Screen";
@@ -27,14 +27,14 @@ ScreenManager::~ScreenManager()
 
 var ScreenManager::getJSONData(bool includeNonOverriden)
 {
-	var data = BaseManager::getJSONData(includeNonOverriden);
+	var data = Manager::getJSONData(includeNonOverriden);
 	if(editingScreen != nullptr) data.getDynamicObject()->setProperty("editingScreen", editingScreen->shortName);
 	return data;
 }
 
 void ScreenManager::loadJSONDataManagerInternal(var data)
 {
-	BaseManager::loadJSONDataManagerInternal(data);
+	Manager::loadJSONDataManagerInternal(data);
 
 	if (data.hasProperty("editingScreen"))
 	{

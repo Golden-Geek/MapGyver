@@ -48,7 +48,7 @@ public:
 	Point2DParameter* handleBezierRightTop;
 	Point2DParameter* handleBezierRightBottom;
 
-	BaseManager<Pin> pinsCC;
+	Manager<Pin> pinsCC;
 	OwnedArray<Pin> cornerPins; // 0: topLeft, 1: topRight, 2: bottomRight, 3: bottomLeft
 
 	ControllableContainer adjustmentsCC;

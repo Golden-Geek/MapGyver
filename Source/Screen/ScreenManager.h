@@ -11,7 +11,7 @@
 #pragma once
 
 class ScreenManager :
-    public BaseManager<Screen>
+    public Manager<Screen>
 {
 public:
     juce_DeclareSingleton(ScreenManager, true);

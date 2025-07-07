@@ -3337,6 +3337,9 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_Font.cpp">
       <Filter>JUCE Modules\juce_graphics\fonts</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_FontFeatures.cpp">
+      <Filter>JUCE Modules\juce_graphics\fonts</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_FontOptions.cpp">
       <Filter>JUCE Modules\juce_graphics\fonts</Filter>
     </ClCompile>
@@ -3376,10 +3379,16 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\geometry\juce_Rectangle_test.cpp">
       <Filter>JUCE Modules\juce_graphics\geometry</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jaricom.c">
+      <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcapimin.c">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcapistd.c">
+      <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcarith.c">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jccoefct.c">
@@ -3412,9 +3421,6 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcparam.c">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcphuff.c">
-      <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jcprepct.c">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
@@ -3428,6 +3434,12 @@
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdapistd.c">
+      <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdarith.c">
+      <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdatadst.c">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdatasrc.c">
@@ -3460,9 +3472,6 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdmerge.c">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdphuff.c">
-      <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdpostct.c">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
@@ -3493,9 +3502,6 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jidctint.c">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jidctred.c">
-      <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jmemmgr.c">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
@@ -3509,9 +3515,6 @@
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jutils.c">
-      <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\transupp.c">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_graphics\image_formats\pnglib\png.c">
@@ -4816,10 +4819,22 @@
     <ClCompile Include="..\..\Modules\juce_organicui\manager\ui\BaseItemEditor.cpp">
       <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_organicui\manager\ui\BaseItemMinimalUI.cpp">
+      <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_organicui\manager\ui\BaseItemUI.cpp">
+      <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_organicui\manager\ui\BaseManagerUI.cpp">
+      <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Modules\juce_organicui\manager\ui\GenericControllableItemEditor.cpp">
       <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Modules\juce_organicui\manager\BaseItem.cpp">
+      <Filter>JUCE Modules\juce_organicui\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_organicui\manager\BaseManager.cpp">
       <Filter>JUCE Modules\juce_organicui\manager</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Modules\juce_organicui\manager\GenericControllableItem.cpp">
@@ -5218,6 +5233,9 @@
     <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayer.cpp">
       <Filter>JUCE Modules\juce_timeline\timeline\Sequence\Layer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayerGroup.cpp">
+      <Filter>JUCE Modules\juce_timeline\timeline\Sequence\Layer</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayerManager.cpp">
       <Filter>JUCE Modules\juce_timeline\timeline\Sequence\Layer</Filter>
     </ClCompile>
@@ -5255,6 +5273,9 @@
       <Filter>JUCE Modules\juce_timeline\timeline</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Modules\juce_timeline\juce_timeline.cpp">
+      <Filter>JUCE Modules\juce_timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_timeline\juce_timeline2.cpp">
       <Filter>JUCE Modules\juce_timeline</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Modules\juce_timeline\TimelineAppCommands.cpp">
@@ -5360,6 +5381,9 @@
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_timeline.cpp">
+      <Filter>JUCE Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_timeline2.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_video.cpp">
@@ -6396,6 +6420,9 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatWriter.h">
       <Filter>JUCE Modules\juce_audio_formats\format</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\JUCE\modules\juce_audio_formats\format\juce_AudioFormatWriterOptions.h">
+      <Filter>JUCE Modules\juce_audio_formats\format</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\JUCE\modules\juce_audio_formats\format\juce_AudioSubsectionReader.h">
       <Filter>JUCE Modules\juce_audio_formats\format</Filter>
     </ClInclude>
@@ -7279,6 +7306,9 @@
       <Filter>JUCE Modules\juce_core\misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\misc\juce_OptionsHelpers.h">
+      <Filter>JUCE Modules\juce_core\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\JUCE\modules\juce_core\misc\juce_OrderedContainerHelpers.h">
       <Filter>JUCE Modules\juce_core\misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\misc\juce_Result.h">
@@ -8583,6 +8613,9 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_Font.h">
       <Filter>JUCE Modules\juce_graphics\fonts</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_FontFeatures.h">
+      <Filter>JUCE Modules\juce_graphics\fonts</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\fonts\juce_FontOptions.h">
       <Filter>JUCE Modules\juce_graphics\fonts</Filter>
     </ClInclude>
@@ -8640,16 +8673,13 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\cderror.h">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jchuff.h">
+    <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\cdjpeg.h">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jconfig.h">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdct.h">
-      <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jdhuff.h">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jerror.h">
@@ -8671,9 +8701,6 @@
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\jversion.h">
-      <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\transupp.h">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\JUCE\modules\juce_graphics\image_formats\pnglib\png.h">
@@ -10128,22 +10155,28 @@
     <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseItemUI.h">
       <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseManagerShapeShifterUI.h">
-      <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseManagerUI.h">
-      <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseManagerViewMiniPane.h">
-      <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\BaseManagerViewUI.h">
       <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\GenericControllableItemEditor.h">
       <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\GenericManagerEditor.h">
+      <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\ItemUI.h">
+      <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\ManagerShapeShifterUI.h">
+      <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\ManagerUI.h">
+      <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\ManagerViewMiniPane.h">
+      <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ui\ManagerViewUI.h">
       <Filter>JUCE Modules\juce_organicui\manager\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\BaseItem.h">
@@ -10155,9 +10188,6 @@
     <ClInclude Include="..\..\Modules\juce_organicui\manager\BaseManager.h">
       <Filter>JUCE Modules\juce_organicui\manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Modules\juce_organicui\manager\BaseManagerListener.h">
-      <Filter>JUCE Modules\juce_organicui\manager</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\Factory.h">
       <Filter>JUCE Modules\juce_organicui\manager</Filter>
     </ClInclude>
@@ -10165,6 +10195,18 @@
       <Filter>JUCE Modules\juce_organicui\manager</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Modules\juce_organicui\manager\GenericControllableManager.h">
+      <Filter>JUCE Modules\juce_organicui\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ItemGroup.h">
+      <Filter>JUCE Modules\juce_organicui\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\Manager.h">
+      <Filter>JUCE Modules\juce_organicui\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\ManagerListener.h">
+      <Filter>JUCE Modules\juce_organicui\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Modules\juce_organicui\manager\NestingManager.h">
       <Filter>JUCE Modules\juce_organicui\manager</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Modules\juce_organicui\outliner\Outliner.h">
@@ -13306,6 +13348,9 @@
       <Filter>JUCE Modules\juce_timeline\timeline\Sequence\Layer\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayer.h">
+      <Filter>JUCE Modules\juce_timeline\timeline\Sequence\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayerGroup.h">
       <Filter>JUCE Modules\juce_timeline\timeline\Sequence\Layer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Modules\juce_timeline\timeline\Sequence\Layer\SequenceLayerManager.h">

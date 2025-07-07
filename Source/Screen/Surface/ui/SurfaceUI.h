@@ -11,7 +11,7 @@
 #pragma once
 
 class SurfaceUI :
-	public BaseItemUI<Surface>
+	public ItemUI<Surface>
 	//public Surface::SurfaceListener
 {
 public:
