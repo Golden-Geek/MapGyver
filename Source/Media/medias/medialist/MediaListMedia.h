@@ -40,5 +40,5 @@ public:
 
 	void afterLoadJSONDataInternal() override;
 
-	DECLARE_TYPE("MediaListMedia")
+	DECLARE_TYPE("Media List")
 };
