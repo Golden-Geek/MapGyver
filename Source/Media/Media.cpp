@@ -204,10 +204,12 @@ GLint Media::getTextureID(const String& name)
 void Media::fillFrameBufferOptions(EnumParameter* e)
 {
 	Array<EnumParameter::EnumValue> options;
-	options.add({ "Default", "Default" });
-	HashMap<String, OpenGLFrameBuffer*>::Iterator it = frameBufferMap.begin();
-	while (it.next()) options.add({ it.getKey(), it.getKey() });
-
+	options.add({ "Default", "" });
+	HashMap<String, OpenGLFrameBuffer*>::Iterator it(frameBufferMap);
+	while (it.next())
+	{
+		options.add({ it.getKey(), it.getKey() });
+	}
 	e->setOptions(options);
 }
 
