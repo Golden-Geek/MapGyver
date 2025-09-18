@@ -83,6 +83,12 @@
       </GROUP>
       <GROUP id="{924D741D-3B07-1454-A4CF-6C278ABC753A}" name="Media">
         <GROUP id="{284332BF-9D8F-13AD-1288-491679B1B400}" name="medias">
+          <GROUP id="{53154DB8-20D2-418E-5E22-A9CED7320696}" name="medialist">
+            <FILE id="iwExna" name="MediaListMedia.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/medialist/MediaListMedia.cpp"/>
+            <FILE id="ix9ELY" name="MediaListMedia.h" compile="0" resource="0"
+                  file="Source/Media/medias/medialist/MediaListMedia.h"/>
+          </GROUP>
           <GROUP id="{B66DF542-4193-4078-8115-073DF5EE8816}" name="web">
             <FILE id="gUgDE5" name="WebMedia.cpp" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.cpp"/>
             <FILE id="J0Hcrn" name="WebMedia.h" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.h"/>

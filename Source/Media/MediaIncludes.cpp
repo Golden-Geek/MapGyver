@@ -20,6 +20,7 @@
 #include "medias/composition/CompositionMedia.cpp"
 
 #include "medias/picture/PictureMedia.cpp"
+#include "medias/medialist/MediaListMedia.cpp"
 
 #include "medias/ndi/NDIMedia.cpp"
 #include "medias/sharedtexture/SharedTextureMedia.cpp"

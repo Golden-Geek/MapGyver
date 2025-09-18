@@ -23,6 +23,8 @@
 
 #include "medias/picture/PictureMedia.h"
 
+#include "medias/medialist/MediaListMedia.h"
+
 #include "medias/ndi/NDIMedia.h"
 #include "medias/sharedtexture/SharedTextureMedia.h"
 

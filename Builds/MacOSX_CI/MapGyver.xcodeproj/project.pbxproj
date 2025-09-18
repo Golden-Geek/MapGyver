@@ -271,6 +271,7 @@
 		91C68BCDD82595AAC298A214 /* GridLayerGroupPanel.h */ /* GridLayerGroupPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridLayerGroupPanel.h; path = ../../Source/Media/medias/grid/ui/GridLayerGroupPanel.h; sourceTree = SOURCE_ROOT; };
 		922E5555E45EA796288B582D /* Node.h */ /* Node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Node.h; path = ../../Source/Node/Node.h; sourceTree = SOURCE_ROOT; };
 		9249974391B120ECC2F451E5 /* GridColumnUI.h */ /* GridColumnUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridColumnUI.h; path = ../../Source/Media/medias/grid/ui/GridColumnUI.h; sourceTree = SOURCE_ROOT; };
+		92D769C68B2CD3EDABD5E316 /* MediaListMedia.cpp */ /* MediaListMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaListMedia.cpp; path = ../../Source/Media/medias/medialist/MediaListMedia.cpp; sourceTree = SOURCE_ROOT; };
 		9426E7DA3C7F898B92A0B5AA /* MGEngine.cpp */ /* MGEngine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MGEngine.cpp; path = ../../Source/Engine/MGEngine.cpp; sourceTree = SOURCE_ROOT; };
 		94ABDDCF5D3E6A7C1ABAB043 /* NodeConnectionSlot.h */ /* NodeConnectionSlot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnectionSlot.h; path = ../../Source/Node/Connection/NodeConnectionSlot.h; sourceTree = SOURCE_ROOT; };
 		95C4F1C39FCBFCE8D0B75F38 /* include_juce_audio_utils.mm */ /* include_juce_audio_utils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_utils.mm; path = ../../JuceLibraryCode/include_juce_audio_utils.mm; sourceTree = SOURCE_ROOT; };
@@ -364,6 +365,7 @@
 		EC35D410B265006665D956B1 /* SequenceMedia.cpp */ /* SequenceMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SequenceMedia.cpp; path = ../../Source/Media/medias/sequence/SequenceMedia.cpp; sourceTree = SOURCE_ROOT; };
 		EC484241E4DF8872B89F9773 /* Foundation.framework */ /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		ECF95EA12287B29074B5124E /* ScreenOutput.cpp */ /* ScreenOutput.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenOutput.cpp; path = ../../Source/Screen/ui/ScreenOutput.cpp; sourceTree = SOURCE_ROOT; };
+		ED8719BFFF89D44E38F4EBF0 /* MediaListMedia.h */ /* MediaListMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaListMedia.h; path = ../../Source/Media/medias/medialist/MediaListMedia.h; sourceTree = SOURCE_ROOT; };
 		EDA6DC9FB3EACD745726EBD1 /* fragmentShaderTestGrid.glsl */ /* fragmentShaderTestGrid.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; name = fragmentShaderTestGrid.glsl; path = ../../Resources/fragmentShaderTestGrid.glsl; sourceTree = SOURCE_ROOT; };
 		EE224875B9AC60F4064A607E /* BinaryData.h */ /* BinaryData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BinaryData.h; path = ../../JuceLibraryCode/BinaryData.h; sourceTree = SOURCE_ROOT; };
 		EEC32EC811117A6F7AD6774D /* libndi.dylib */ /* libndi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libndi.dylib; path = ../../External/NDI/lib/osx/libndi.dylib; sourceTree = SOURCE_ROOT; };
@@ -644,6 +646,7 @@
 		4800E4570580FDBE7DFA1E31 /* medias */ = {
 			isa = PBXGroup;
 			children = (
+				684ABC779D1065F13921E52D,
 				6CF3B73084702B0D6EB91177,
 				B8DEBA77D1922E9D3E6FF29C,
 				05823E07FEDEAA1204F6A4A2,
@@ -706,6 +709,15 @@
 				EF0034FEBB52685D8AD849B8,
 			);
 			name = Drawing;
+			sourceTree = "<group>";
+		};
+		684ABC779D1065F13921E52D /* medialist */ = {
+			isa = PBXGroup;
+			children = (
+				92D769C68B2CD3EDABD5E316,
+				ED8719BFFF89D44E38F4EBF0,
+			);
+			name = medialist;
 			sourceTree = "<group>";
 		};
 		6CF3B73084702B0D6EB91177 /* web */ = {

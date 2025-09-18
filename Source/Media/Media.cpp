@@ -179,7 +179,7 @@ void Media::generatePreviewImage()
 
 		{
 			Image::BitmapData bitmapData(img, Image::BitmapData::writeOnly);
-			frameBuffer.readPixels(reinterpret_cast<juce::PixelARGB*> (bitmapData.data), Rectangle<int>(0, 0, width, height));
+			frameBuffer.readPixels(reinterpret_cast<juce::PixelARGB*> (bitmapData.data), Rectangle<int>(0, 0, width, height), OpenGLFrameBuffer::RowOrder::fromBottomUp);
 		}
 		if (width > 200 || height > 200)
 		{

@@ -22,6 +22,7 @@ MediaManager::MediaManager() :
 	factory.defs.add(Factory<Media>::Definition::createDef<ColorMedia>(""));
 	factory.defs.add(Factory<Media>::Definition::createDef<PictureMedia>(""));
 	factory.defs.add(Factory<Media>::Definition::createDef<VideoMedia>(""));
+	factory.defs.add(Factory<Media>::Definition::createDef<MediaListMedia>(""));
 #if !JUCE_LINUX
 	factory.defs.add(Factory<Media>::Definition::createDef<WebcamMedia>(""));
 #endif
