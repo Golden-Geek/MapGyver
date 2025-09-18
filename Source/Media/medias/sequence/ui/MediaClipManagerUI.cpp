@@ -95,7 +95,7 @@ void MediaClipManagerUI::itemDropped(const SourceDetails& source)
 
 void MediaClipManagerUI::showMenuAndAddItem(bool fromAddButton, Point<int> mouseDownPos)
 {
-	mediaTimeline->mediaLayer->blockManager.managerFactory->showCreateMenu(manager, [this, mouseDownPos](LayerBlock* b)
+	mediaTimeline->mediaLayer->blockManager.managerFactory->showCreateMenu([this, mouseDownPos](LayerBlock* b)
 		{
 			float time = timeline->getTimeForX(mouseDownPos.x);
 			if (ClipTransition* t = dynamic_cast<ClipTransition*>(b))

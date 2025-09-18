@@ -589,9 +589,9 @@ void ScreenEditorPanel::itemDropped(const SourceDetails& source)
 	}
 	else
 	{
-		if(BaseItemMinimalUI* mui = dynamic_cast<BaseItemMinimalUI*>(source.sourceComponent.get()))
+		if(ItemMinimalUI<Media>* mui = dynamic_cast<ItemMinimalUI<Media>*>(source.sourceComponent.get()))
 		{
-			Media* m = dynamic_cast<Media*>(mui->baseItem);
+			Media* m = mui->item;
 			if (m == nullptr) return;
 			candidateDropSurface->media->setValueFromTarget(m);
 		}
