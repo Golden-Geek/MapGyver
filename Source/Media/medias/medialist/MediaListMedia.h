@@ -32,6 +32,7 @@ public:
 	void setMediaFromIndex();
 
 	void onContainerParameterChangedInternal(Parameter* c) override;
+	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 		void renderGLInternal() override;
 

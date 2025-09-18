@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "MediaListMedia.h"
 
 MediaListMedia::MediaListMedia(var params) :
 	Media(getTypeString(), params),
@@ -22,6 +23,7 @@ MediaListMedia::MediaListMedia(var params) :
 			TargetParameter* tp = parent->addTargetParameter(parent->getUniqueNameInContainer("Media"), String("Media to use"), MediaManager::getInstance());
 			tp->targetType = TargetParameter::CONTAINER;
 			tp->maxDefaultSearchLevel = 0;
+			tp->saveValueOnly = false;
 			return tp;
 		};
 
@@ -29,8 +31,9 @@ MediaListMedia::MediaListMedia(var params) :
 	addChildControllableContainer(&listCC);
 
 	index = addIntParameter("Index", "Index of the media to use", 1, 1);
-	index->canBeDisabledByUser = true;
 	currentMedia = nullptr;
+
+	alwaysRedraw = true;
 }
 
 MediaListMedia::~MediaListMedia()
@@ -46,14 +49,17 @@ void MediaListMedia::setCurrentMedia(Media* m)
 
 	if (currentMedia != nullptr)
 	{
-		currentMedia->unregisterTarget(this);
+		unregisterUseMedia(0);
 	}
 
 	currentMedia = m;
+	currentMediaSize = Point<int>(0, 0);
 
 	if (currentMedia != nullptr)
 	{
-		currentMedia->registerTarget(this);
+		registerUseMedia(0, currentMedia);
+		currentMediaSize = currentMedia->getMediaSize();
+
 	}
 }
 
@@ -63,7 +69,7 @@ void MediaListMedia::setMediaFromIndex()
 	int idx = jlimit(0, controllables.size() - 1, index->intValue() - 1);
 	if (auto m = dynamic_cast<TargetParameter*>(controllables[idx].get()))
 	{
-		setCurrentMedia(m->getTargetAs<Media>());
+		setCurrentMedia(m->getTargetContainerAs<Media>());
 	}
 	else setCurrentMedia(nullptr);
 }
@@ -76,9 +82,36 @@ void MediaListMedia::onContainerParameterChangedInternal(Parameter* p)
 	}
 }
 
+void MediaListMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
+{
+	if(cc == &listCC)
+	{
+		if (auto tp = dynamic_cast<TargetParameter*>(c))
+		{
+			setMediaFromIndex();
+		}
+	}
+}
+
 void MediaListMedia::renderGLInternal()
 {
-
+	GenericScopedLock<SpinLock> lock(mediaLock);
+	if (currentMedia != nullptr)
+	{
+		//draw current media framebuffer
+		if (currentMedia->getFrameBuffer() != nullptr)
+		{
+			glColor4f(1, 1, 1, 1);
+			glBindTexture(GL_TEXTURE_2D, currentMedia->getTextureID());
+			Draw2DTexRect(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+	}
+	else
+	{
+		glColor4f(0, 0, 0, 1);
+		Draw2DRect(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
+	}
 }
 
 Point<int> MediaListMedia::getMediaSize()
@@ -96,6 +129,7 @@ void MediaListMedia::afterLoadJSONDataInternal()
 			tp->rootContainer = MediaManager::getInstance();
 			tp->targetType = TargetParameter::CONTAINER;
 			tp->maxDefaultSearchLevel = 0;
+			tp->saveValueOnly = false;
 		}
 	}
 
