@@ -177,9 +177,20 @@ void Media::removeFrameBuffer(const String& name)
 	mediaNotifier.addMessage(new MediaEvent(MediaEvent::SUB_FRAMEBUFFERS_CHANGED, this));
 }
 
+String Media::getNameForFrameBuffer(OpenGLFrameBuffer* f)
+{
+	HashMap<String, OpenGLFrameBuffer*>::Iterator it(frameBufferMap);
+	while (it.next())
+	{
+		if (it.getValue() == f) return it.getKey();
+	}
+
+	return "";
+}
+
 StringArray Media::getFrameBufferNames() {
 	StringArray result("Default", "");
-	HashMap<String, OpenGLFrameBuffer*>::Iterator it = frameBufferMap.begin();
+	HashMap<String, OpenGLFrameBuffer*>::Iterator it(frameBufferMap);
 	while (it.next()) result.add(it.getKey());
 	return result;
 }

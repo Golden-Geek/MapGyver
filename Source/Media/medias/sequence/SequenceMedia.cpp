@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "SequenceMedia.h"
 
 RMPSequence::RMPSequence()
 {
@@ -30,10 +31,42 @@ SequenceMedia::SequenceMedia(var params)
 	sequence.addSequenceListener(this);
 	addChildControllableContainer(&sequence);
 	alwaysRedraw = true;
+
+	sequence.layerManager->addManagerListener(this);
 }
 
 SequenceMedia::~SequenceMedia()
 {
+}
+
+void SequenceMedia::itemAdded(SequenceLayer* layer)
+{
+	if(MediaLayer* ml = dynamic_cast<MediaLayer*>(layer))
+	{
+		addFrameBuffer(ml->niceName, &ml->frameBuffer);
+		ml->addControllableContainerListener(this);
+	}
+}
+
+void SequenceMedia::itemRemoved(SequenceLayer* layer)
+{
+	if (MediaLayer* ml = dynamic_cast<MediaLayer*>(layer))
+	{
+		removeFrameBuffer(ml->niceName);
+		ml->removeControllableContainerListener(this);
+	}
+}
+
+void SequenceMedia::controllableContainerNameChanged(ControllableContainer* cc, const String& oldName)
+{
+	if (cc->parentContainer.get() == sequence.layerManager.get())
+	{
+		if (MediaLayer* ml = dynamic_cast<MediaLayer*>(cc))
+		{
+			removeFrameBuffer(oldName);
+			addFrameBuffer(ml->niceName, &ml->frameBuffer);
+		}
+	}
 }
 
 void SequenceMedia::renderGLInternal()
