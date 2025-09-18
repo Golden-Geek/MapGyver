@@ -40,7 +40,7 @@ void ColorMedia::renderGLInternal()
 	//Draw2DRect(0, 0, 20, 20);
 }
 
-Point<int> ColorMedia::getMediaSize()
+Point<int> ColorMedia::getDefaultMediaSize()
 {
 	return Point<int>(1, 1);
 }

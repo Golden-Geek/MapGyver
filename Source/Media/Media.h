@@ -35,6 +35,8 @@ public:
 	bool autoClearFrameBufferOnRender;
 	bool autoClearWhenNotUsed;
 
+	HashMap<String, OpenGLFrameBuffer*> frameBufferMap; //for media that have multiple frame buffers (like multi-pass shaders)
+
 	Array<MediaTarget*> usedTargets;
 
 	bool manualRender;
@@ -52,7 +54,7 @@ public:
 
 	Image previewImage;
 	bool shouldGeneratePreviewImage;
-	
+
 	void onContainerTriggerTriggered(Trigger* t) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
@@ -68,8 +70,16 @@ public:
 	virtual void renderGLInternal() {}
 	virtual void closeGLInternal() {}
 
-	OpenGLFrameBuffer* getFrameBuffer();
-	GLint getTextureID();
+
+
+	void addFrameBuffer(const String& name, OpenGLFrameBuffer* f);
+	void removeFrameBuffer(const String& name);
+	StringArray getFrameBufferNames(); //for media that have multiple frame buffers (like multi-pass shaders)
+	OpenGLFrameBuffer* getFrameBuffer(const String& name = String());
+	GLint getTextureID(const String& name = String());
+	void fillFrameBufferOptions(EnumParameter* e);
+
+	bool hasSubFrameBuffers();
 
 	virtual void generatePreviewImage();
 
@@ -88,10 +98,12 @@ public:
 	void setIsEditing(bool editing);
 	virtual void updateBeingUsed();
 
-	virtual Point<int> getMediaSize();
-	virtual double getMediaLength() { return -1; }
+	virtual Point<int> getMediaSize(const String& name = String()); //default to main fbo size
+	virtual Point<int> getDefaultMediaSize(); //default size when no media is loaded
 
-	DECLARE_ASYNC_EVENT(Media, Media, media, ENUM_LIST(EDITING_CHANGED, PREVIEW_CHANGED), EVENT_ITEM_CHECK);
+	virtual double getMediaLength() { return -1; } //for video and other time-based media
+
+	DECLARE_ASYNC_EVENT(Media, Media, media, ENUM_LIST(EDITING_CHANGED, PREVIEW_CHANGED, SUB_FRAMEBUFFERS_CHANGED), EVENT_ITEM_CHECK);
 
 
 	JUCE_DECLARE_WEAK_REFERENCEABLE(Media);
@@ -117,6 +129,6 @@ public:
 	void initImage(int width, int height);
 	virtual void initImage(const Image& image);
 
-	virtual Point<int> getMediaSize() override;
+	virtual Point<int> getDefaultMediaSize() override;
 
 };

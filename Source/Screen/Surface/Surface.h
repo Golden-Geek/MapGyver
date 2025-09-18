@@ -15,7 +15,8 @@ class Media;
 
 class Surface :
 	public BaseItem,
-	public MediaTarget
+	public MediaTarget,
+	public Media::AsyncListener
 {
 public:
 	Surface(var params = var());
@@ -27,7 +28,9 @@ public:
 	bool shouldUpdateVertices;
 
 
-	TargetParameter* media;
+	TargetParameter* mediaParam;
+	EnumParameter* mediaTextureName;
+	Media* currentMedia;
 
 	std::unique_ptr<Media> patternMedia;
 	SpinLock patternMediaLock;
@@ -99,6 +102,8 @@ public:
 	GLuint tintLocation;
 	GLuint ebo;
 
+	void setupMedia();
+	void updateMediaTextureNames();
 
 	void onContainerParameterChangedInternal(Parameter* p);
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
@@ -121,7 +126,8 @@ public:
 	void draw(GLuint shaderID);
 
 	Media* getMedia();
-	Point<int> getMediaSize();
+
+	void newMessage(const Media::MediaEvent& e) override;
 
 	bool isUsingMedia(Media* m) override;
 

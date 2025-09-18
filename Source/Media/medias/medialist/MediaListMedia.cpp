@@ -114,7 +114,7 @@ void MediaListMedia::renderGLInternal()
 	}
 }
 
-Point<int> MediaListMedia::getMediaSize()
+Point<int> MediaListMedia::getDefaultMediaSize()
 {
 	return currentMediaSize;
 }

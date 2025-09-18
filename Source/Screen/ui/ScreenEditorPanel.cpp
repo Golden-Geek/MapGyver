@@ -583,7 +583,7 @@ void ScreenEditorPanel::itemDropped(const SourceDetails& source)
 			if (Media* m = item->createMedia())
 			{
 				MediaManager::getInstance()->addItem(m);
-				candidateDropSurface->media->setValueFromTarget(m);
+				candidateDropSurface->mediaParam->setValueFromTarget(m);
 			}
 		}
 	}
@@ -593,7 +593,7 @@ void ScreenEditorPanel::itemDropped(const SourceDetails& source)
 		{
 			Media* m = mui->item;
 			if (m == nullptr) return;
-			candidateDropSurface->media->setValueFromTarget(m);
+			candidateDropSurface->mediaParam->setValueFromTarget(m);
 		}
 	}
 

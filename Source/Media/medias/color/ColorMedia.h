@@ -23,6 +23,6 @@ public:
 
 	void renderGLInternal() override;
 
-	Point<int> getMediaSize();
+	Point<int> getDefaultMediaSize() override;
 	DECLARE_TYPE("Solid Color")
 };

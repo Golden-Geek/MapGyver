@@ -37,7 +37,7 @@ void NodeMedia::renderGLInternal()
 	//glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Point<int> NodeMedia::getMediaSize()
+Point<int> NodeMedia::getDefaultMediaSize()
 {
 	return Point<int>();
 }

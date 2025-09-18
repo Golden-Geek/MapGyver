@@ -64,7 +64,7 @@ void BaseSharedTextureMedia::renderGLInternal()
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Point<int> BaseSharedTextureMedia::getMediaSize()
+Point<int> BaseSharedTextureMedia::getDefaultMediaSize()
 {
 	if (receiver == nullptr) return Point<int>();
 	return Point<int>(receiver->width, receiver->height);
