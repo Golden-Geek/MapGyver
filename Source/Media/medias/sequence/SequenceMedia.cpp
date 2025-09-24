@@ -9,16 +9,15 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "SequenceMedia.h"
 
-RMPSequence::RMPSequence()
+MGSequence::MGSequence()
 {
 	layerManager->factory.defs.add(SequenceLayerManager::LayerDefinition::createDef("", "Media", &MediaLayer::create, this));
-	layerManager->factory.defs.add(SequenceLayerManager::LayerDefinition::createDef("", "Audio", &AudioLayer::create, this, true));
+	layerManager->factory.defs.add(SequenceLayerManager::LayerDefinition::createDef("", "Audio", &MGAudioLayer::create, this, true));
 
 }
 
-String RMPSequence::getPanelName() const
+String MGSequence::getPanelName() const
 {
 	if (Media* m = dynamic_cast<Media*>(parentContainer.get())) return m->niceName;
 	return niceName;
@@ -29,6 +28,7 @@ SequenceMedia::SequenceMedia(var params)
 	: Media(getTypeString(), params, true)
 {
 	sequence.addSequenceListener(this);
+	sequence.setAudioDeviceManager(&AudioManager::getInstance()->am);
 	addChildControllableContainer(&sequence);
 	alwaysRedraw = true;
 
@@ -41,7 +41,7 @@ SequenceMedia::~SequenceMedia()
 
 void SequenceMedia::itemAdded(SequenceLayer* layer)
 {
-	if(MediaLayer* ml = dynamic_cast<MediaLayer*>(layer))
+	if (MediaLayer* ml = dynamic_cast<MediaLayer*>(layer))
 	{
 		addFrameBuffer(ml->niceName, &ml->frameBuffer);
 		ml->addControllableContainerListener(this);
@@ -84,7 +84,7 @@ void SequenceMedia::renderGLInternal()
 	for (int i = mediaLayers.size() - 1; i >= 0; i--) //reverse so first in list is the last one processed
 	{
 		if (!mediaLayers[i]->enabled->boolValue()) continue;
-		
+
 		GenericScopedLock<SpinLock> lock(mediaLayers[i]->renderLock);
 		bool hasContent = mediaLayers[i]->renderFrameBuffer(width->intValue(), height->intValue()); //generate framebuffers
 

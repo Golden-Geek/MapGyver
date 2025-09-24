@@ -17,7 +17,7 @@ public:
     GridMedia(var params = var());
     ~GridMedia();
 
-	GridLayerGroupManager layerGroupManager;
+	GridLayerManager layerManager;
 	GridColumnManager columnManager;
 	GridClipManager clipManager;
 

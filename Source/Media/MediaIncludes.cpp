@@ -73,6 +73,7 @@
 #include "medias/sequence/ClipTransition.cpp"
 #include "medias/sequence/MediaClipManager.cpp"
 #include "medias/sequence/MediaLayer.cpp"
+#include "medias/sequence/MGAudioLayer.cpp"
 #include "medias/sequence/SequenceMedia.cpp"
 #include "medias/sequence/ui/MediaClipUI.cpp"
 #include "medias/sequence/ui/MediaClipManagerUI.cpp"

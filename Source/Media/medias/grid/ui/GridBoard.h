@@ -20,6 +20,9 @@ public:
 	GridMedia* gridMedia;
 	WeakReference<Inspectable> inspectable;
 
+	std::unique_ptr<GridColumnManagerUI> columnManagerUI;
+	//std::unique_ptr<GridLayerManagerUI> layerGroupManagerUI;
+
 	void paint(Graphics& g) override;
 	void resized() override;
 
