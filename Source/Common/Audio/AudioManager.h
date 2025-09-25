@@ -77,6 +77,10 @@ public:
 	ControllableContainer inputsCC;
 	ControllableContainer outputsCC;
 
+	bool isFillingIO;
+
+	void childStructureChanged(ControllableContainer* cc) override;
+
 	void createVolumeControl(ControllableContainer* parent);
 
 	void checkFavoriteSetupAndApplyIfNeeded();
@@ -98,4 +102,15 @@ public:
 	juce::var getJSONData(bool includeNonOverriden = true) override;
 	void loadJSONDataInternal(juce::var data) override;
 	void afterLoadJSONDataInternal() override;
+
+	class AudioManagerListener
+	{
+	public:
+		virtual void audioSetupChanged() {}
+	};
+
+	juce::ListenerList<AudioManagerListener> amListeners;
+
+	void addAudioManagerListener(AudioManagerListener* l) { amListeners.add(l); }
+	void removeAudioManagerListener(AudioManagerListener* l) { amListeners.remove(l); }
 };

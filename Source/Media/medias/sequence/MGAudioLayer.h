@@ -13,12 +13,14 @@
 #include "JuceHeader.h"
 
 class MGAudioLayer :
-    public AudioLayer
+    public AudioLayer,
+	public AudioManager::AudioManagerListener
 {
 public:
     MGAudioLayer(Sequence* sequence, var params);
     ~MGAudioLayer();
 
+	void audioSetupChanged() override;
 
 	static MGAudioLayer* create(Sequence* sequence, var params) { return new MGAudioLayer(sequence, params); }
 };

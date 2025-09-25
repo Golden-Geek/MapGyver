@@ -16,7 +16,8 @@ juce_ImplementSingleton(AudioManager)
 AudioManager::AudioManager() :
 	ControllableContainer("Audio Manager"),
 	inputsCC("Inputs"),
-	outputsCC("Outputs")
+	outputsCC("Outputs"),
+	isFillingIO(false)
 {
 	favoriteTrigger = addTrigger("Set as Favorite", "Sets the current audio setup as favorite");
 	fillIOFromSetupTrigger = addTrigger("Fill IO from Setup", "Fills the audio inputs and outputs from the favorite setup");
@@ -60,6 +61,16 @@ AudioManager::~AudioManager()
 	graph.suspendProcessing(true);
 	player.setProcessor(nullptr);
 	am.closeAudioDevice();
+}
+
+void AudioManager::childStructureChanged(ControllableContainer* cc)
+{
+	ControllableContainer::childStructureChanged(cc);
+
+	if (cc == &inputsCC || cc == &outputsCC)
+	{
+		initAudio();
+	}
 }
 
 void AudioManager::createVolumeControl(ControllableContainer* parent)
@@ -108,6 +119,8 @@ void AudioManager::setAsFavoriteSetup()
 
 void AudioManager::fillIOFromSetup()
 {
+	isFillingIO = true;
+
 	AudioDeviceManager::AudioDeviceSetup setup;
 	am.getAudioDeviceSetup(setup);
 
@@ -130,6 +143,8 @@ void AudioManager::fillIOFromSetup()
 		((FloatParameter*)outputsCC.controllables.getLast())->setNiceName(outputNames[i]);
 	}
 
+	isFillingIO = false;
+	initAudio();
 }
 
 int AudioManager::getNumUserInputs()
@@ -176,6 +191,8 @@ void AudioManager::changeListenerCallback(ChangeBroadcaster* source)
 void AudioManager::initAudio()
 {
 
+	if (isFillingIO || isCurrentlyLoadingData) return;
+
 	graph.suspendProcessing(true);
 
 	AudioDeviceManager::AudioDeviceSetup setup;
@@ -185,26 +202,32 @@ void AudioManager::initAudio()
 	int numInputChannels = setup.inputChannels.countNumberOfSetBits();
 	int numOutputChannels = setup.outputChannels.countNumberOfSetBits();
 
-	graph.setPlayConfigDetails(numInputChannels,  numOutputChannels, setup.sampleRate, setup.bufferSize);
+	graph.setPlayConfigDetails(numInputChannels, numOutputChannels, setup.sampleRate, setup.bufferSize);
 	graph.prepareToPlay(setup.sampleRate, setup.bufferSize);
 
-	graph.disconnectNode(AUDIO_INPUTMIXER_GRAPH_ID);
-	inputMixer->setPlayConfigDetails(graph.getMainBusNumInputChannels(), graph.getMainBusNumInputChannels(), setup.sampleRate, setup.bufferSize);
+	inputMixer->setPlayConfigDetails(numInputChannels, getNumUserInputs()	, setup.sampleRate, setup.bufferSize);
 
 	graph.disconnectNode(AUDIO_OUTPUTMIXER_GRAPH_ID);
-	outputMixer->setPlayConfigDetails(graph.getMainBusNumOutputChannels(), graph.getMainBusNumOutputChannels(), setup.sampleRate, setup.bufferSize);
+	outputMixer->setPlayConfigDetails(getNumUserOutputs(), numOutputChannels, setup.sampleRate, setup.bufferSize);
 
-	for (int i = 0; i < getNumUserInputs(); ++i)
+	if (numOutputChannels > 0)
 	{
-		graph.addConnection(AudioProcessorGraph::Connection({ AUDIO_INPUT_GRAPH_ID, i }, { AUDIO_INPUTMIXER_GRAPH_ID, i % numInputChannels }));
+		for (int i = 0; i < getNumUserInputs(); ++i)
+		{
+			graph.addConnection(AudioProcessorGraph::Connection({ AUDIO_INPUT_GRAPH_ID, i }, { AUDIO_INPUTMIXER_GRAPH_ID, i % numInputChannels }));
+		}
+
+		for (int i = 0; i < getNumUserOutputs(); ++i)
+		{
+			graph.addConnection(AudioProcessorGraph::Connection({ AUDIO_OUTPUTMIXER_GRAPH_ID, i }, { AUDIO_OUTPUT_GRAPH_ID, i % numOutputChannels }));
+		}
 	}
 
-	for (int i = 0; i < getNumUserOutputs(); ++i)
-	{
-		graph.addConnection(AudioProcessorGraph::Connection({ AUDIO_OUTPUTMIXER_GRAPH_ID, i }, { AUDIO_OUTPUT_GRAPH_ID, i % numOutputChannels }));
-	}
+
+	amListeners.call(&AudioManagerListener::audioSetupChanged);
 
 	graph.suspendProcessing(false);
+
 }
 
 InspectableEditor* AudioManager::getEditorInternal(bool isRoot, Array<Inspectable*> inspectables)
@@ -312,6 +335,8 @@ void AudioManager::afterLoadJSONDataInternal()
 			p->userCanChangeName = true;
 		}
 	}
+
+	initAudio();
 }
 
 
@@ -343,7 +368,6 @@ void MixerProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMe
 
 	for (int i = 0; i < buffer.getNumChannels() && i < numGains; i++)
 	{
-		LOG("Applying gain " + String(((FloatParameter*)gainsCC->controllables[i])->floatValue()) + " to channel " + String(i)+", amplitude : "<< buffer.getRMSLevel(i, 0, buffer.getNumSamples()));
 		float newGain = ((FloatParameter*)gainsCC->controllables[i])->floatValue();
 		buffer.applyGainRamp(i, 0, buffer.getNumSamples(), prevGains[i], newGain);
 		prevGains.set(i, newGain);

@@ -13,10 +13,16 @@
 MGAudioLayer::MGAudioLayer(Sequence* sequence, var params) :
 	AudioLayer(sequence, params)
 {
+	AudioManager::getInstance()->addAudioManagerListener(this);
 	setAudioProcessorGraph(&AudioManager::getInstance()->graph, AUDIO_OUTPUTMIXER_GRAPH_ID);
 	if (!Engine::mainEngine->isLoadingFile) updateSelectedOutChannels();
 }
 
 MGAudioLayer::~MGAudioLayer()
 {
+	if(AudioManager::getInstanceWithoutCreating())
+		AudioManager::getInstance()->removeAudioManagerListener(this);
 }
+
+void MGAudioLayer::audioSetupChanged() { 
+	updateSelectedOutChannels(); }
