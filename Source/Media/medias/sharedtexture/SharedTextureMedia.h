@@ -31,7 +31,7 @@ public:
 
 	void renderGLInternal();
 
-	Point<int> getMediaSize();
+	Point<int> getDefaultMediaSize() override;
 
 	void afterLoadJSONDataInternal() override;
 

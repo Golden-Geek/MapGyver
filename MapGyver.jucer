@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="DMftGm" name="MapGyver" projectType="guiapp" useAppConfig="1"
-              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/vlc/include4&#10;../../EXternal/vlc/vlcpp&#10;../../External/NDI/include&#10;../../External/servus/include&#10;"
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/asiodriver&#10;../../External/vlc/include4&#10;../../EXternal/vlc/vlcpp&#10;../../External/NDI/include&#10;../../External/servus/include&#10;"
               defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1&#10;ORGANIC_REMOTE_CONTROL_PORT=46000"
               companyWebsite="https://benjamin.kuperberg.fr/mapgyver" companyName="GoldenGeek"
               bundleIdentifier="com.goldengeek.mapgyver" displaySplashScreen="1"
@@ -40,6 +40,17 @@
     </GROUP>
     <GROUP id="{1C2049A4-F05D-7C48-44EC-DD606A3617AC}" name="Source">
       <GROUP id="{B19EA5C3-367A-80C3-EC20-D9B7AA16E911}" name="Common">
+        <GROUP id="{CA42504B-E8C6-3344-B3DC-0A619E7C9058}" name="Audio">
+          <GROUP id="{ADF13E80-B50B-AD8F-B227-8CD69FB12A50}" name="ui">
+            <FILE id="auYp50" name="AudioManagerEditor.cpp" compile="0" resource="0"
+                  file="Source/Common/Audio/ui/AudioManagerEditor.cpp"/>
+            <FILE id="T8UjIr" name="AudioManagerEditor.h" compile="0" resource="0"
+                  file="Source/Common/Audio/ui/AudioManagerEditor.h"/>
+          </GROUP>
+          <FILE id="Wh9NO2" name="AudioManager.cpp" compile="0" resource="0"
+                file="Source/Common/Audio/AudioManager.cpp"/>
+          <FILE id="wyznRy" name="AudioManager.h" compile="0" resource="0" file="Source/Common/Audio/AudioManager.h"/>
+        </GROUP>
         <GROUP id="{47B9C4FE-5711-16C4-42E1-B7DC7C568799}" name="ContentExplorer">
           <FILE id="bB8Wvo" name="OnlineContentExplorer.cpp" compile="0" resource="0"
                 file="Source/Common/ContentExplorer/OnlineContentExplorer.cpp"/>
@@ -199,6 +210,9 @@
                   file="Source/Media/medias/sequence/MediaClipManager.h"/>
             <FILE id="KcWaJX" name="MediaLayer.cpp" compile="0" resource="0" file="Source/Media/medias/sequence/MediaLayer.cpp"/>
             <FILE id="DV3Q3Y" name="MediaLayer.h" compile="0" resource="0" file="Source/Media/medias/sequence/MediaLayer.h"/>
+            <FILE id="Dxs2TW" name="MGAudioLayer.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/sequence/MGAudioLayer.cpp"/>
+            <FILE id="Yj9X3K" name="MGAudioLayer.h" compile="0" resource="0" file="Source/Media/medias/sequence/MGAudioLayer.h"/>
             <FILE id="vVMCka" name="SequenceMedia.cpp" compile="0" resource="0"
                   file="Source/Media/medias/sequence/SequenceMedia.cpp"/>
             <FILE id="aeDsTI" name="SequenceMedia.h" compile="0" resource="0" file="Source/Media/medias/sequence/SequenceMedia.h"/>
@@ -467,7 +481,8 @@
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" ORGANICUI_USE_SHAREDTEXTURE="1"
                ORGANICUI_USE_WEBSERVER="1" ORGANICUI_USE_SERVUS="1" JUCE_ALLOW_SPECIAL_CHARS_IN_ADDRESS="1"
                JUCE_ENABLE_BROADCAST_BY_DEFAULT="1" JUCE_EXCLUSIVE_BINDING_BY_DEFAULT="1"
-               JUCE_IP_AND_PORT_DETECTION="1" JUCE_USE_CAMERA="1" SHAREDTEXTURE_USE_CPU_IMAGE="0"/>
+               JUCE_IP_AND_PORT_DETECTION="1" JUCE_USE_CAMERA="1" SHAREDTEXTURE_USE_CPU_IMAGE="0"
+               JUCE_USE_MP3AUDIOFORMAT="1" JUCE_USE_LAME_AUDIO_FORMAT="1" JUCE_ASIO="1"/>
   <EXPORTFORMATS>
     <VS2022 targetFolder="Builds/VisualStudio2022" smallIcon="AKcEsb" bigIcon="AKcEsb"
             externalLibraries="libvlc.lib&#10;libvlccore.lib&#10;Servus.lib"

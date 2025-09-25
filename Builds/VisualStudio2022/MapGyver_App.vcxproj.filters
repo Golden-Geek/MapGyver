@@ -8,6 +8,12 @@
     <Filter Include="MapGyver\Resources">
       <UniqueIdentifier>{5E97CF29-C0E4-A030-1719-44916A7B2D85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MapGyver\Source\Common\Audio\ui">
+      <UniqueIdentifier>{4A7F634B-6A57-211E-891D-D405DA3B8423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MapGyver\Source\Common\Audio">
+      <UniqueIdentifier>{372C355E-9DDA-F486-5449-2ED504A2CB95}</UniqueIdentifier>
+    </Filter>
     <Filter Include="MapGyver\Source\Common\ContentExplorer">
       <UniqueIdentifier>{F70F0E6B-DA04-4588-0FEF-57536511A411}</UniqueIdentifier>
     </Filter>
@@ -1243,6 +1249,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Common\Audio\ui\AudioManagerEditor.cpp">
+      <Filter>MapGyver\Source\Common\Audio\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Common\Audio\AudioManager.cpp">
+      <Filter>MapGyver\Source\Common\Audio</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Common\ContentExplorer\OnlineContentExplorer.cpp">
       <Filter>MapGyver\Source\Common\ContentExplorer</Filter>
     </ClCompile>
@@ -1364,6 +1376,9 @@
       <Filter>MapGyver\Source\Media\medias\sequence</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\sequence\MediaLayer.cpp">
+      <Filter>MapGyver\Source\Media\medias\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\sequence\MGAudioLayer.cpp">
       <Filter>MapGyver\Source\Media\medias\sequence</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\sequence\SequenceMedia.cpp">
@@ -5406,6 +5421,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Common\Audio\ui\AudioManagerEditor.h">
+      <Filter>MapGyver\Source\Common\Audio\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Common\Audio\AudioManager.h">
+      <Filter>MapGyver\Source\Common\Audio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Common\ContentExplorer\OnlineContentExplorer.h">
       <Filter>MapGyver\Source\Common\ContentExplorer</Filter>
     </ClInclude>
@@ -5530,6 +5551,9 @@
       <Filter>MapGyver\Source\Media\medias\sequence</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\sequence\MediaLayer.h">
+      <Filter>MapGyver\Source\Media\medias\sequence</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\sequence\MGAudioLayer.h">
       <Filter>MapGyver\Source\Media\medias\sequence</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\sequence\SequenceMedia.h">

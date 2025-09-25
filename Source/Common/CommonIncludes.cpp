@@ -21,3 +21,6 @@
 #include "MediaTarget.cpp"
 
 #include "ContentExplorer/OnlineContentExplorer.cpp"
+
+#include "Audio/AudioManager.cpp"
+#include "Audio/ui/AudioManagerEditor.cpp"

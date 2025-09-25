@@ -19,10 +19,14 @@ public:
 
 	ColorParameter* color;
 
+	OpenGLFrameBuffer checkFrameBuffer;
+
 	void clearItem() override;
 
+
+	void initFrameBuffer() override;
 	void renderGLInternal() override;
 
-	Point<int> getMediaSize();
+	Point<int> getDefaultMediaSize() override;
 	DECLARE_TYPE("Solid Color")
 };

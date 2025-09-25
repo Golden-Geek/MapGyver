@@ -30,6 +30,10 @@
 #include "NDI/ui/NDIDeviceChooser.h"
 #include "NDI/ui/NDIDeviceParameterUI.h"
 
+#include "Audio/AudioManager.h"
+#include "Audio/ui/AudioManagerEditor.h"
+
+
 #include "GLHelpers.h"
 #include "OpenGLManager.h"
 

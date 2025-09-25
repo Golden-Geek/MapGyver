@@ -11,6 +11,7 @@
 #include "Common/CommonIncludes.h"
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
+#include "Surface.h"
 
 #define SURFACE_TARGET_MEDIA_ID 0
 #define SURFACE_TARGET_MASK_ID 1
@@ -18,6 +19,7 @@
 
 Surface::Surface(var params) :
 	BaseItem(params.getProperty("name", "Surface")),
+	currentMedia(nullptr),
 	positionningCC("Positionning"),
 	bezierCC("Bezier"),
 	adjustmentsCC("Adjustments"),
@@ -36,9 +38,11 @@ Surface::Surface(var params) :
 
 	itemDataType = "Surface";
 
-	media = addTargetParameter("Media", "Media to read on this surface", MediaManager::getInstance());
-	media->maxDefaultSearchLevel = 0;
-	media->targetType = TargetParameter::CONTAINER;
+	mediaParam = addTargetParameter("Media", "Media to read on this surface", MediaManager::getInstance());
+	mediaParam->maxDefaultSearchLevel = 0;
+	mediaParam->targetType = TargetParameter::CONTAINER;
+	mediaTextureName = addEnumParameter("Media Texture", "If the media is a shader or a composition, you can specify which texture to use here");
+
 
 	topLeft = positionningCC.addPoint2DParameter("topLeft ", "");
 	topRight = positionningCC.addPoint2DParameter("topRight ", "");
@@ -179,7 +183,7 @@ Surface::Surface(var params) :
 
 	if (!Engine::mainEngine->isLoadingFile)
 	{
-		if (!MediaManager::getInstance()->items.isEmpty()) media->setValueFromTarget(MediaManager::getInstance()->items.getFirst());
+		if (!MediaManager::getInstance()->items.isEmpty()) mediaParam->setValueFromTarget(MediaManager::getInstance()->items.getFirst());
 	}
 
 
@@ -190,14 +194,47 @@ Surface::~Surface()
 {
 }
 
+void Surface::setupMedia()
+{
+	Media* newMedia = mediaParam->getTargetContainerAs<Media>();
+
+	if (currentMedia != nullptr)
+	{
+		if (currentMedia == newMedia) return;
+
+		unregisterUseMedia(SURFACE_TARGET_MEDIA_ID);
+		currentMedia->removeAsyncMediaListener(this);
+	}
+
+	currentMedia = newMedia;
+
+	if (currentMedia != nullptr)
+	{
+		registerUseMedia(SURFACE_TARGET_MEDIA_ID, currentMedia);
+		currentMedia->addAsyncMediaListener(this);
+	}
+
+
+	shouldUpdateVertices = true;
+	updateMediaTextureNames();
+
+}
+
+void Surface::updateMediaTextureNames()
+{
+	if (currentMedia != nullptr)
+	{
+		currentMedia->fillFrameBufferOptions(mediaTextureName);
+		if (mediaTextureName->getValueKey().isEmpty()) mediaTextureName->setValueWithData("");
+	}
+	else mediaTextureName->clearOptions();
+}
+
 void Surface::onContainerParameterChangedInternal(Parameter* p)
 {
-	if (p == media)
+	if (p == mediaParam)
 	{
-		if (Media* m = media->getTargetContainerAs<Media>()) registerUseMedia(SURFACE_TARGET_MEDIA_ID, m);
-		else unregisterUseMedia(SURFACE_TARGET_MEDIA_ID);
-
-		shouldUpdateVertices = true;
+		setupMedia();
 	}
 	if (p == isUILocked) {
 		bool e = !isUILocked->boolValue();
@@ -391,12 +428,12 @@ void Surface::resetBezierPoints()
 
 }
 
-Point<int> Surface::getMediaSize()
+void Surface::newMessage(const Media::MediaEvent& e)
 {
-	if (Media* m = media->getTargetContainerAs<Media>())
-		return m->getMediaSize();
-
-	return Point<int>();
+	if (e.type == Media::MediaEvent::SUB_FRAMEBUFFERS_CHANGED)
+	{
+		updateMediaTextureNames();
+	}
 }
 
 bool Surface::isUsingMedia(Media* m)
@@ -469,7 +506,7 @@ void Surface::updateVertices()
 	vertices.clear();
 	verticesElements.clear();
 
-	Media* med = media->getTargetContainerAs<Media>();
+	Media* med = mediaParam->getTargetContainerAs<Media>();
 
 	Point<float>tl = openGLPoint(topLeft);
 	Point<float>tr = openGLPoint(topRight);
@@ -497,7 +534,7 @@ void Surface::updateVertices()
 		if (hTex == 0) hTex = 0.0000001;
 
 		if (med != nullptr) {
-			Point<int> mediaSize = med->getMediaSize();
+			Point<int> mediaSize = med->getMediaSize(mediaTextureName->stringValue());
 			float mediaRatio = abs((wTex * mediaSize.x) / (hTex * (float)mediaSize.y));
 			if (mediaRatio != outputRatio) {
 				if (t == FIT) {
@@ -756,12 +793,13 @@ void Surface::draw(GLuint shaderID)
 
 
 	Media* media = getMedia();
+	String texName = media == currentMedia ? mediaTextureName->stringValue() : String();
 
 	{
 		GenericScopedLock lock(patternMediaLock);
 		if (patternMedia != nullptr)
 		{
-			Point<int> ms = media != nullptr ? media->getMediaSize() : Point<int>(512, 512);
+			Point<int> ms = media != nullptr ? media->getMediaSize(texName) : Point<int>(512, 512);
 			patternMedia->width->setValue(ms.x);
 			patternMedia->height->setValue(ms.y);
 			media = patternMedia.get();
@@ -802,7 +840,7 @@ void Surface::draw(GLuint shaderID)
 
 	if (media == nullptr) return;
 
-	glBindTexture(GL_TEXTURE_2D, media->getTextureID());
+	glBindTexture(GL_TEXTURE_2D, media->getTextureID(texName));
 
 	Colour tintColor = tint->getColor();
 
@@ -900,7 +938,7 @@ void Surface::draw(GLuint shaderID)
 
 Media* Surface::getMedia()
 {
-	return previewMedia != nullptr ? previewMedia : media->getTargetContainerAs<Media>();
+	return previewMedia != nullptr ? previewMedia : currentMedia;
 }
 
 

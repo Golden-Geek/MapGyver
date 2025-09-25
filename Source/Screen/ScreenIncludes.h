@@ -12,6 +12,8 @@
 
 #include "JuceHeader.h"
 
+#include "Media/MediaIncludes.h"
+
 #include "Surface/Pin.h"
 
 #include "Surface/Surface.h"

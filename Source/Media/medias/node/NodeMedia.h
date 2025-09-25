@@ -21,8 +21,8 @@ public:
 
 	std::unique_ptr<RootNodeManager> nodes;
 
-	void renderGLInternal();
-	Point<int> getMediaSize();
+	void renderGLInternal() override;
+	Point<int> getDefaultMediaSize() override;
 
 	DECLARE_TYPE("Node")
 };

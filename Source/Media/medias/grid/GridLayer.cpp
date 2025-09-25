@@ -17,7 +17,3 @@ GridLayer::GridLayer(const String& name, var params)
 GridLayer::~GridLayer()
 {
 }
-
-void GridLayer::clearItem()
-{
-}

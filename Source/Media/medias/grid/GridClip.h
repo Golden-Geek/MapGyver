@@ -77,7 +77,6 @@ class OwnedGridClip :
 {
 public:
 	OwnedGridClip(GridMedia* gridMedia = nullptr, var params = var());
-	OwnedGridClip(Media* m);
 	virtual ~OwnedGridClip();
 
 	std::unique_ptr<Media> ownedMedia;

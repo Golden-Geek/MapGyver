@@ -16,7 +16,6 @@ class GridLayer :
 public:
 	GridLayer(const String& name = "Grid Layer", var params = var());
 	virtual ~GridLayer();
-	void clearItem() override;
 
 
 	DECLARE_TYPE("Grid Layer");

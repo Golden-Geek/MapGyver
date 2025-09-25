@@ -40,6 +40,7 @@ MGEngine::MGEngine() :
 	addChildControllableContainer(ScreenManager::getInstance());
 
 	ProjectSettings::getInstance()->addChildControllableContainer(RMPSettings::getInstance());
+	ProjectSettings::getInstance()->addChildControllableContainer(AudioManager::getInstance());
 
 	// MIDIManager::getInstance(); //Trigger constructor, declare settings
 
@@ -66,6 +67,8 @@ MGEngine::~MGEngine()
 	CompositionLayerFactory::deleteInstance();
 	NodeFactory::deleteInstance();
 	MediaGridUIPreview::deleteInstance();
+
+	AudioManager::deleteInstance();
 }
 
 

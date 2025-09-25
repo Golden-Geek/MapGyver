@@ -10,24 +10,34 @@
 
 #pragma once
 
-class RMPSequence :
+#include "JuceHeader.h"
+
+class MGSequence :
 	public Sequence
 {
 public:
-	RMPSequence();
+	MGSequence();
 
 	String getPanelName() const override;
 };
 
 class SequenceMedia :
 	public Media,
-	public Sequence::SequenceListener
+	public Sequence::SequenceListener,
+	public SequenceLayerManager::ManagerListener
 {
 public:
 	SequenceMedia(var params = var());
 	~SequenceMedia();
 
-	RMPSequence sequence;
+	MGSequence sequence;
+
+	void itemAdded(SequenceLayer* layer) override;
+	void itemsAdded(Array<SequenceLayer*> layers) override { for (auto* l : layers) itemAdded(l); }
+	void itemRemoved(SequenceLayer* layer) override;
+	void itemsRemoved(Array<SequenceLayer*> layers) override { for (auto* l : layers) itemRemoved(l); }
+
+	void controllableContainerNameChanged(ControllableContainer* cc, const String& oldName) override;
 
 
 	void renderGLInternal() override;

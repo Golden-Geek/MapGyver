@@ -22,9 +22,9 @@ GridClip::GridClip(GridMedia* gridMedia, const String& name, var params) :
 
 	saveAndLoadRecursiveData = true;
 
-	layerTarget = addTargetParameter("Layer", "Layer to use for this clip", &gridMedia->layerGroupManager);
-	layerTarget->targetType = TargetParameter::CONTAINER;
-	layerTarget->typesFilter = { GridLayer::getTypeStringStatic() };
+	//layerTarget = addTargetParameter("Layer", "Layer to use for this clip", &gridMedia->layerGroupManager);
+	//layerTarget->targetType = TargetParameter::CONTAINER;
+	//layerTarget->typesFilter = { GridLayer::getTypeStringStatic() };
 
 	columnTarget = addTargetParameter("Column", "Column to use for this clip", &gridMedia->columnManager);
 	columnTarget->targetType = TargetParameter::CONTAINER;

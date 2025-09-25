@@ -159,14 +159,73 @@ void Media::renderOpenGLMedia(bool force)
 }
 
 
-OpenGLFrameBuffer* Media::getFrameBuffer()
+
+void Media::addFrameBuffer(const String& name, OpenGLFrameBuffer* f)
 {
-	return &frameBuffer;
+	jassert(f != &frameBuffer);
+	if (frameBufferMap.contains(name) && frameBufferMap[name] == f) return;
+
+	frameBufferMap.set(name, f);
+	mediaNotifier.addMessage(new MediaEvent(MediaEvent::SUB_FRAMEBUFFERS_CHANGED, this));
 }
 
-GLint Media::getTextureID()
+void Media::removeFrameBuffer(const String& name)
 {
-	return getFrameBuffer()->getTextureID();
+	if (!frameBufferMap.contains(name)) return;
+
+	frameBufferMap.remove(name);
+	mediaNotifier.addMessage(new MediaEvent(MediaEvent::SUB_FRAMEBUFFERS_CHANGED, this));
+}
+
+String Media::getNameForFrameBuffer(OpenGLFrameBuffer* f)
+{
+	HashMap<String, OpenGLFrameBuffer*>::Iterator it(frameBufferMap);
+	while (it.next())
+	{
+		if (it.getValue() == f) return it.getKey();
+	}
+
+	return "";
+}
+
+StringArray Media::getFrameBufferNames() {
+	StringArray result("Default", "");
+	HashMap<String, OpenGLFrameBuffer*>::Iterator it(frameBufferMap);
+	while (it.next()) result.add(it.getKey());
+	return result;
+}
+
+
+OpenGLFrameBuffer* Media::getFrameBuffer(const String& name)
+{
+	if (name.isEmpty()) return &frameBuffer;
+
+	if (frameBufferMap.contains(name)) return frameBufferMap[name];
+	return nullptr;
+}
+
+GLint Media::getTextureID(const String& name)
+{
+	if (name.isEmpty()) return frameBuffer.getTextureID();
+
+	if (auto* fb = getFrameBuffer(name)) return fb->getTextureID();
+	return 0;
+}
+
+void Media::fillFrameBufferOptions(EnumParameter* e)
+{
+	Array<EnumParameter::EnumValue> options;
+	options.add({ "Default", "" });
+	HashMap<String, OpenGLFrameBuffer*>::Iterator it(frameBufferMap);
+	while (it.next())
+	{
+		options.add({ it.getKey(), it.getKey() });
+	}
+	e->setOptions(options);
+}
+
+bool Media::hasSubFrameBuffers() {
+	return frameBufferMap.size() > 0;
 }
 
 void Media::generatePreviewImage()
@@ -265,11 +324,25 @@ void Media::initFrameBuffer()
 	shouldRedraw = true;
 }
 
-Point<int> Media::getMediaSize()
+Point<int> Media::getMediaSize(const String& name)
+{
+	if (name.isNotEmpty()) {
+		if (auto* fb = getFrameBuffer(name)) {
+			if (fb->isValid()) return Point<int>(fb->getWidth(), fb->getHeight());
+		}
+	}
+
+	return getDefaultMediaSize();
+}
+
+
+Point<int> Media::getDefaultMediaSize()
 {
 	if (width != nullptr && height != nullptr) return Point<int>(width->intValue(), height->intValue());
+	if (frameBuffer.isValid()) return Point<int>(frameBuffer.getWidth(), frameBuffer.getHeight());
 	return Point<int>(0, 0);
 }
+
 
 
 void Media::FPSTick()
@@ -388,7 +461,7 @@ void ImageMedia::initImage(const Image& newImage)
 	}
 }
 
-Point<int> ImageMedia::getMediaSize()
+Point<int> ImageMedia::getDefaultMediaSize()
 {
 	return Point<int>(image.getWidth(), image.getHeight());
 }
