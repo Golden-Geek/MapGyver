@@ -63,6 +63,13 @@ VideoMedia::VideoMedia(var params) :
 	addChildControllableContainer(&audioCC);
 
 
+	audioNodeID = AudioProcessorGraph::NodeID(AudioManager::getInstance()->getUniqueNodeGraphID());
+	std::unique_ptr<VideoMediaAudioProcessor> ap = std::make_unique<VideoMediaAudioProcessor>(this);
+	audioProcessor = ap.get();
+	AudioManager::getInstance()->graph.addNode(std::move(ap), audioNodeID);
+
+	AudioManager::getInstance()->addAudioManagerListener(this);
+
 	customFPSTick = true;
 }
 
@@ -70,6 +77,9 @@ VideoMedia::~VideoMedia()
 {
 	//stop();
 	//stopThread(100);
+
+	if (AudioManager::getInstanceWithoutCreating())
+		AudioManager::getInstance()->removeAudioManagerListener(this);
 }
 
 //void VideoMedia::clearItem()
@@ -117,6 +127,38 @@ void VideoMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc,
 		else if (c == tapTempoTrigger) tapTempo();
 
 	}
+}
+
+void VideoMedia::setupAudio()
+{
+	AudioManager::getInstance()->graph.disconnectNode(audioNodeID);
+
+	vlcPlayer->setAudioFormat("FL32", AudioManager::getInstance()->graph.getSampleRate(), AudioManager::getInstance()->getNumUserOutputs());
+
+	if (vlcMedia != nullptr)
+	{
+		//retrieve audio channels
+		std::vector<VLC::MediaTrack> tracks = vlcMedia->tracks(VLC::MediaTrack::Audio);
+		if (tracks.size() > 0)
+		{
+			VLC::MediaTrack track = tracks[0];
+			int numChannels = track.channels();
+
+			for (int i = 0; i < AudioManager::getInstance()->getNumUserOutputs(); ++i)
+			{
+				AudioManager::getInstance()->graph.addConnection({ { audioNodeID, i }, { AUDIO_OUTPUTMIXER_GRAPH_ID, i } });
+			}
+
+			audioProcessor->setPlayConfigDetails(0, numChannels, AudioManager::getInstance()->graph.getSampleRate(), AudioManager::getInstance()->graph.getBlockSize());
+			audioProcessor->prepareToPlay(AudioManager::getInstance()->graph.getSampleRate(), AudioManager::getInstance()->graph.getBlockSize());
+
+		}
+	}
+}
+
+void VideoMedia::audioSetupChanged()
+{
+	setupAudio();
 }
 
 
@@ -171,8 +213,9 @@ void VideoMedia::load()
 			return 1;
 		},
 		[this]() {
-		
+
 		});
+
 
 	vlcPlayer->setVideoCallbacks(
 		[this](void** data) -> void* {
@@ -203,7 +246,26 @@ void VideoMedia::load()
 
 		});
 
+	//set dummy output to control audio from app
+	//vlcPlayer->setAudioOutput("dummy");
+
+
 	state->setValueWithData(IDLE);
+
+	vlcPlayer->setAudioOutput("amem");
+	vlcPlayer->setAudioCallbacks(
+		[this](const void* data, unsigned int count, int64_t pts) {
+			audioProcessor->onAudioPlay(data, count, pts);
+		},
+		nullptr, nullptr, nullptr, nullptr);
+
+	//Parse before setup audio
+
+	libvlc_event_manager_t* em2 = libvlc_media_player_event_manager(vlcPlayer->get());
+	libvlc_event_attach(em2, libvlc_MediaPlayerPlaying,
+		[](const libvlc_event_t*, void* ud) {
+			((VideoMedia*)ud)->setupAudio();
+		}, this);
 
 	if (!isCurrentlyLoadingData && playAtLoad->boolValue()) vlcPlayer->play();
 }
@@ -337,4 +399,50 @@ void VideoMedia::afterLoadJSONDataInternal()
 {
 	Media::afterLoadJSONDataInternal();
 	if (playAtLoad->boolValue()) play();
+}
+
+VideoMediaAudioProcessor::VideoMediaAudioProcessor(VideoMedia* videoMedia) :
+	videoMedia(videoMedia)
+{
+}
+
+VideoMediaAudioProcessor::~VideoMediaAudioProcessor()
+{
+}
+
+void VideoMediaAudioProcessor::onAudioPlay(const void* data, unsigned int count, int64_t pts)
+{
+	//LOG("On audio play at pts: " << pts << " with count: " << count);
+
+
+	for (int i = 0; i < vlcBuffer.getNumChannels(); ++i)
+	{
+		int dataIndex = i * vlcBuffer.getNumSamples() * sizeof(float);
+		vlcBuffer.copyFrom(i, 0, (float*)((float*)data + dataIndex), vlcBuffer.getNumSamples());
+	}
+}
+
+void VideoMediaAudioProcessor::onAudioFlush(int64_t pts)
+{
+	//LOG("Audio flush at pts: " << pts);
+}
+
+void VideoMediaAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
+{
+	buffer.clear();
+
+	if (buffer.getNumChannels() == 0) return;
+
+	for (int i = 0; i < buffer.getNumChannels(); ++i)
+	{
+		if (vlcBuffer.getNumSamples() < buffer.getNumSamples()) break;
+		buffer.copyFrom(i, 0, vlcBuffer, i % vlcBuffer.getNumChannels(), 0, buffer.getNumSamples());
+	}
+
+	LOG(buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
+}
+
+void VideoMediaAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+{
+	vlcBuffer = AudioBuffer<float>(getTotalNumOutputChannels(), samplesPerBlock);
 }

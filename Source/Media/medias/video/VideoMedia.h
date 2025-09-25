@@ -10,8 +10,13 @@
 
 #pragma once
 
+#include "JuceHeader.h"
+
+class VideoMediaAudioProcessor;
+
 class VideoMedia :
-	public ImageMedia
+	public ImageMedia,
+	public AudioManager::AudioManagerListener
 	//public Thread
 {
 public:
@@ -60,9 +65,16 @@ public:
 	Trigger* tapTempoTrigger;
 	IntParameter* beatPerCycle;
 
+	//Audio
+	AudioProcessorGraph::NodeID audioNodeID;
+	VideoMediaAudioProcessor* audioProcessor;
+
 	void onContainerParameterChanged(Parameter* p) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
+	void setupAudio();
+
+	void audioSetupChanged() override;
 
 	void load();
 	void play();
@@ -78,7 +90,6 @@ public:
 	virtual void handleStop() override;
 	virtual void handleStart() override;
 
-
 	double getMediaLength() override;
 
 	void afterLoadJSONDataInternal() override;
@@ -86,4 +97,40 @@ public:
 	//void tapTempo();
 
 	DECLARE_TYPE("Video")
+};
+
+class VideoMediaAudioProcessor :
+	public AudioProcessor
+{
+public:
+	VideoMediaAudioProcessor(VideoMedia* videoMedia);
+	~VideoMediaAudioProcessor() override;
+
+	VideoMedia* videoMedia;
+
+	AudioSampleBuffer vlcBuffer;
+
+	void onAudioPlay(const void* data, unsigned int count, int64_t pts);
+	void onAudioFlush(int64_t pts);
+
+
+	void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
+
+	AudioProcessorEditor* createEditor() override { return nullptr; }
+	bool hasEditor() const override { return false; }
+
+	virtual void getStateInformation(MemoryBlock& destData) override {}
+	virtual void setStateInformation(const void* data, int sizeInBytes) override {}
+
+	const String getName() const override { return videoMedia->niceName +" Processor"; }
+	bool acceptsMidi() const override { return false; }
+	bool producesMidi() const override { return false; }
+	double getTailLengthSeconds() const override { return 0.0; }
+	int getNumPrograms() override { return 1; }
+	int getCurrentProgram() override { return 0; }
+	void setCurrentProgram(int index) override {}
+	const String getProgramName(int index) override { return {}; }
+	void changeProgramName(int index, const String& newName) override {}
+	void prepareToPlay(double sampleRate, int samplesPerBlock) override;
+	void releaseResources() override {}
 };
