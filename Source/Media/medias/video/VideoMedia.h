@@ -14,6 +14,42 @@
 
 class VideoMediaAudioProcessor;
 
+class AudioFIFO
+{
+public:
+	AudioFIFO(int numChannels, int size) :
+		channels(numChannels),
+		bufferSize(size)
+	{
+		fifoBuffer.setSize(channels, bufferSize);
+		fifoBuffer.clear();
+	}
+
+	void pushData(const void* data, int totalSamples);
+	void pullData(AudioBuffer<float>& buffer, int numSamples);
+
+	bool hasData() const
+	{
+		return readPos.load() != writePos.load();
+	}
+
+	int getFramesAvailable() const
+	{
+		const auto localWritePos = writePos.load(std::memory_order_acquire);
+		const auto localReadPos = readPos.load(std::memory_order_relaxed);
+		return (localWritePos - localReadPos + bufferSize) % bufferSize;
+	}
+
+private:
+	int channels;
+	int bufferSize;
+	AudioBuffer<float> fifoBuffer;
+
+	std::atomic<int> readPos{ 0 };
+	std::atomic<int> writePos{ 0 };
+};
+
+
 class VideoMedia :
 	public ImageMedia,
 	public AudioManager::AudioManagerListener
@@ -90,6 +126,8 @@ public:
 	virtual void handleStop() override;
 	virtual void handleStart() override;
 
+	bool isPlaying();
+
 	double getMediaLength() override;
 
 	void afterLoadJSONDataInternal() override;
@@ -107,8 +145,11 @@ public:
 	~VideoMediaAudioProcessor() override;
 
 	VideoMedia* videoMedia;
-
-	AudioSampleBuffer vlcBuffer;
+	std::unique_ptr<AudioFIFO> fifo;
+	
+	// NEW MEMBERS
+	std::atomic<bool> isBuffering{ true };
+	int bufferThreshold = 0;
 
 	void onAudioPlay(const void* data, unsigned int count, int64_t pts);
 	void onAudioFlush(int64_t pts);

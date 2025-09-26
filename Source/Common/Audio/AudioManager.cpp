@@ -56,8 +56,10 @@ AudioManager::AudioManager() :
 	graph.addNode(std::move(oProc), AUDIO_OUTPUTMIXER_GRAPH_ID);
 	player.setProcessor(&graph);
 
+
 	fillIOFromSetup();
 
+	if (!Engine::mainEngine->isLoadingFile) initAudio();
 }
 
 AudioManager::~AudioManager()
@@ -238,8 +240,10 @@ void AudioManager::initAudio()
 		}
 	}
 
+	graph.rebuild();
 
 	amListeners.call(&AudioManagerListener::audioSetupChanged);
+	
 
 	graph.suspendProcessing(false);
 
