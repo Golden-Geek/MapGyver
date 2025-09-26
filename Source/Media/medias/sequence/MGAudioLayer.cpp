@@ -1,14 +1,15 @@
 /*
   ==============================================================================
 
-    MGAudioLayer.cpp
-    Created: 24 Sep 2025 9:53:26pm
-    Author:  bkupe
+	MGAudioLayer.cpp
+	Created: 24 Sep 2025 9:53:26pm
+	Author:  bkupe
 
   ==============================================================================
 */
 
 #include "Media/MediaIncludes.h"
+#include "MGAudioLayer.h"
 
 MGAudioLayer::MGAudioLayer(Sequence* sequence, var params) :
 	AudioLayer(sequence, params)
@@ -20,9 +21,16 @@ MGAudioLayer::MGAudioLayer(Sequence* sequence, var params) :
 
 MGAudioLayer::~MGAudioLayer()
 {
-	if(AudioManager::getInstanceWithoutCreating())
+	if (AudioManager::getInstanceWithoutCreating())
 		AudioManager::getInstance()->removeAudioManagerListener(this);
 }
 
-void MGAudioLayer::audioSetupChanged() { 
-	updateSelectedOutChannels(); }
+void MGAudioLayer::audioSetupChanged()
+{
+	updateSelectedOutChannels();
+}
+
+int MGAudioLayer::getNodeGraphIDIncrement()
+{
+	return AudioManager::getInstance()->getUniqueNodeGraphID();
+}

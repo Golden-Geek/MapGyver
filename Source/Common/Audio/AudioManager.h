@@ -17,6 +17,8 @@
 #define AUDIO_INPUTMIXER_GRAPH_ID AudioProcessorGraph::NodeID(3)
 #define AUDIO_OUTPUTMIXER_GRAPH_ID AudioProcessorGraph::NodeID(4)
 
+#define GRAPH_UNIQUE_ID_START 10
+
 class AudioManager;
 
 class MixerProcessor :
@@ -63,6 +65,8 @@ public:
 	juce::AudioProcessorPlayer player;
 	juce::AudioProcessorGraph graph;
 
+	int graphIDIncrement;
+
 	juce::AudioDeviceManager::AudioDeviceSetup favoriteSetup;
 
 	Trigger* favoriteTrigger;
@@ -78,6 +82,8 @@ public:
 	ControllableContainer outputsCC;
 
 	bool isFillingIO;
+
+
 
 	void childStructureChanged(ControllableContainer* cc) override;
 
@@ -96,6 +102,8 @@ public:
 	void changeListenerCallback(juce::ChangeBroadcaster* source) override;
 
 	void initAudio();
+
+	int getUniqueNodeGraphID();
 
 	InspectableEditor* getEditorInternal(bool isRoot, juce::Array<Inspectable*> inspectables = juce::Array<Inspectable*>()) override;
 

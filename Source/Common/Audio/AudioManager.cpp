@@ -17,7 +17,8 @@ AudioManager::AudioManager() :
 	ControllableContainer("Audio Manager"),
 	inputsCC("Inputs"),
 	outputsCC("Outputs"),
-	isFillingIO(false)
+	isFillingIO(false),
+	graphIDIncrement(GRAPH_UNIQUE_ID_START)
 {
 	favoriteTrigger = addTrigger("Set as Favorite", "Sets the current audio setup as favorite");
 	fillIOFromSetupTrigger = addTrigger("Fill IO from Setup", "Fills the audio inputs and outputs from the favorite setup");
@@ -35,9 +36,10 @@ AudioManager::AudioManager() :
 
 	saveAndLoadRecursiveData = true;
 
-	am.addChangeListener(this);
 	am.initialiseWithDefaultDevices(0, 2);
+
 	am.addAudioCallback(&player);
+	am.addChangeListener(this);
 
 	std::unique_ptr<AudioProcessorGraph::AudioGraphIOProcessor> procIn(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode));
 	std::unique_ptr<AudioProcessorGraph::AudioGraphIOProcessor> procOut(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode));
@@ -54,6 +56,10 @@ AudioManager::AudioManager() :
 	graph.addNode(std::move(oProc), AUDIO_OUTPUTMIXER_GRAPH_ID);
 	player.setProcessor(&graph);
 
+
+	fillIOFromSetup();
+
+	if (!Engine::mainEngine->isLoadingFile) initAudio();
 }
 
 AudioManager::~AudioManager()
@@ -173,6 +179,9 @@ void AudioManager::changeListenerCallback(ChangeBroadcaster* source)
 	{
 		// Audio device changed
 
+		if(outputsCC.controllables.size() == 0 && inputsCC.controllables.size() == 0)
+			fillIOFromSetup();
+
 		//if favorite setup is empty, fill it
 		if (favoriteSetup.inputDeviceName.isEmpty() && favoriteSetup.outputDeviceName.isEmpty())
 		{
@@ -183,6 +192,7 @@ void AudioManager::changeListenerCallback(ChangeBroadcaster* source)
 			checkFavoriteSetupAndApplyIfNeeded();
 		}
 
+
 	}
 
 	initAudio();
@@ -192,6 +202,12 @@ void AudioManager::initAudio()
 {
 
 	if (isFillingIO || isCurrentlyLoadingData) return;
+
+	if( getNumUserInputs() == 0 && getNumUserOutputs() == 0)
+	{
+		NLOGWARNING(niceName, "No audio inputs or outputs defined, cannot init audio.");
+		return;
+	}
 
 	graph.suspendProcessing(true);
 
@@ -205,6 +221,7 @@ void AudioManager::initAudio()
 	graph.setPlayConfigDetails(numInputChannels, numOutputChannels, setup.sampleRate, setup.bufferSize);
 	graph.prepareToPlay(setup.sampleRate, setup.bufferSize);
 
+	
 	inputMixer->setPlayConfigDetails(numInputChannels, getNumUserInputs()	, setup.sampleRate, setup.bufferSize);
 
 	graph.disconnectNode(AUDIO_OUTPUTMIXER_GRAPH_ID);
@@ -223,11 +240,18 @@ void AudioManager::initAudio()
 		}
 	}
 
+	graph.rebuild();
 
 	amListeners.call(&AudioManagerListener::audioSetupChanged);
+	
 
 	graph.suspendProcessing(false);
 
+}
+
+int AudioManager::getUniqueNodeGraphID()
+{
+	return graphIDIncrement++;
 }
 
 InspectableEditor* AudioManager::getEditorInternal(bool isRoot, Array<Inspectable*> inspectables)

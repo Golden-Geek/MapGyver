@@ -63,6 +63,13 @@ VideoMedia::VideoMedia(var params) :
 	addChildControllableContainer(&audioCC);
 
 
+	audioNodeID = AudioProcessorGraph::NodeID(AudioManager::getInstance()->getUniqueNodeGraphID());
+	std::unique_ptr<VideoMediaAudioProcessor> ap = std::make_unique<VideoMediaAudioProcessor>(this);
+	audioProcessor = ap.get();
+	AudioManager::getInstance()->graph.addNode(std::move(ap), audioNodeID);
+
+	AudioManager::getInstance()->addAudioManagerListener(this);
+
 	customFPSTick = true;
 }
 
@@ -70,6 +77,9 @@ VideoMedia::~VideoMedia()
 {
 	//stop();
 	//stopThread(100);
+
+	if (AudioManager::getInstanceWithoutCreating())
+		AudioManager::getInstance()->removeAudioManagerListener(this);
 }
 
 //void VideoMedia::clearItem()
@@ -105,10 +115,10 @@ void VideoMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc,
 
 	if (cc == &controlsCC)
 	{
-		if (c == playTrigger) vlcPlayer->play();
-		else if (c == stopTrigger) vlcPlayer->stopAsync();
-		else if (c == pauseTrigger) vlcPlayer->pause();
-		else if (c == restartTrigger) vlcPlayer->setPosition(0, true);
+		if (c == playTrigger) play();
+		else if (c == stopTrigger) stop();
+		else if (c == pauseTrigger) pause();
+		else if (c == restartTrigger) restart();
 		else if (c == playSpeed) vlcPlayer->setRate(playSpeed->floatValue());
 	}
 	else if (cc == &audioCC)
@@ -117,6 +127,51 @@ void VideoMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc,
 		else if (c == tapTempoTrigger) tapTempo();
 
 	}
+}
+
+void VideoMedia::setupAudio()
+{
+	AudioManager::getInstance()->graph.disconnectNode(audioNodeID);
+
+	int sampleRate = AudioManager::getInstance()->graph.getSampleRate();
+	int bufferSize = AudioManager::getInstance()->graph.getBlockSize();
+
+	if (vlcMedia != nullptr)
+	{
+
+		//retrieve audio channels
+		std::vector<VLC::MediaTrack> tracks = vlcMedia->tracks(VLC::MediaTrack::Audio);
+		if (tracks.size() > 0)
+		{
+			VLC::MediaTrack track = tracks[0];
+			int numChannels = track.channels();
+
+			vlcPlayer->setAudioFormat("FL32", sampleRate, AudioManager::getInstance()->getNumUserOutputs());
+
+			audioProcessor->setPlayConfigDetails(0, numChannels, sampleRate, bufferSize);
+			audioProcessor->prepareToPlay(sampleRate, bufferSize);
+
+			int minChannels = jmin(numChannels, AudioManager::getInstance()->getNumUserOutputs());
+			for (int i = 0; i < minChannels; ++i)
+			{
+				bool canConnect = AudioManager::getInstance()->graph.canConnect({ { audioNodeID, i }, { AUDIO_OUTPUTMIXER_GRAPH_ID, i } });
+				if (canConnect)
+				{
+					AudioManager::getInstance()->graph.addConnection({ { audioNodeID, i }, { AUDIO_OUTPUTMIXER_GRAPH_ID, i } });
+					//NLOG(niceName, "Connected audio channel " << i);
+				}
+				else NLOGWARNING(niceName, "Could not connect audio channel " << i);
+
+			}
+
+		
+		}
+	}
+}
+
+void VideoMedia::audioSetupChanged()
+{
+	setupAudio();
 }
 
 
@@ -166,13 +221,18 @@ void VideoMedia::load()
 				totalFrames = floor(length->doubleValue() * frameRate);
 			}
 
+			//check audio here
+			setupAudio();
+
+
 			imageLock.exit();
 
 			return 1;
 		},
 		[this]() {
-		
+
 		});
+
 
 	vlcPlayer->setVideoCallbacks(
 		[this](void** data) -> void* {
@@ -203,7 +263,26 @@ void VideoMedia::load()
 
 		});
 
+	//set dummy output to control audio from app
+	//vlcPlayer->setAudioOutput("dummy");
+
+
 	state->setValueWithData(IDLE);
+
+	vlcPlayer->setAudioOutput("amem");
+	vlcPlayer->setAudioCallbacks(
+		[this](const void* data, unsigned int count, int64_t pts) {
+			audioProcessor->onAudioPlay(data, count, pts);
+		},
+		nullptr, nullptr, nullptr, nullptr);
+
+	//Parse before setup audio
+
+	//libvlc_event_manager_t* em2 = libvlc_media_player_event_manager(vlcPlayer->get());
+	//libvlc_event_attach(em2, libvlc_MediaPlayerPlaying,
+	//	[](const libvlc_event_t*, void* ud) {
+	//		((VideoMedia*)ud)->setupAudio();
+	//	}, this);
 
 	if (!isCurrentlyLoadingData && playAtLoad->boolValue()) vlcPlayer->play();
 }
@@ -326,6 +405,10 @@ void VideoMedia::handleStart()
 }
 
 
+bool VideoMedia::isPlaying()
+{
+	return state->getValueDataAsEnum<PlayerState>() == PLAYING;
+}
 
 
 double VideoMedia::getMediaLength()
@@ -337,4 +420,196 @@ void VideoMedia::afterLoadJSONDataInternal()
 {
 	Media::afterLoadJSONDataInternal();
 	if (playAtLoad->boolValue()) play();
+}
+
+VideoMediaAudioProcessor::VideoMediaAudioProcessor(VideoMedia* videoMedia) :
+	videoMedia(videoMedia)
+{
+}
+
+VideoMediaAudioProcessor::~VideoMediaAudioProcessor()
+{
+}
+
+void VideoMediaAudioProcessor::onAudioPlay(const void* data, unsigned int count, int64_t pts)
+{
+	if (!videoMedia->isPlaying()) return;
+
+	if (fifo != nullptr)
+	{
+		int numFrames = count / getTotalNumOutputChannels();
+		//LOG("Received " << numFrames << " frames from VLC");
+		fifo->pushData(data, count);
+
+		// If we are in a buffering state, check if we've crossed the threshold
+		if (isBuffering && fifo->getFramesAvailable() >= bufferThreshold)
+		{
+			isBuffering = false; // We have enough data, tell the consumer it's ok to start pulling.
+		}
+	}
+
+}
+
+void VideoMediaAudioProcessor::onAudioFlush(int64_t pts)
+{
+	//LOG("Audio flush at pts: " << pts);
+}
+
+void VideoMediaAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
+{
+
+	if (videoMedia->isClearing || !videoMedia->isPlaying()) return;
+	if (fifo == nullptr || buffer.getNumChannels() == 0)
+	{
+		buffer.clear();
+		return;
+	}
+
+	// If we are buffering, output silence and wait for the producer to catch up.
+	if (isBuffering)
+	{
+		//LOG("Buffering... Frames available: " << fifo->getFramesAvailable());
+		buffer.clear();
+		return;
+	}
+
+
+	fifo->pullData(buffer, buffer.getNumSamples());
+	float rms = buffer.getRMSLevel(0, 0, buffer.getNumSamples());
+	//LOG("Pulling " << buffer.getNumSamples() << " samples from FIFO, remaining " << fifo->getFramesAvailable() << ", RMS : " << rms);
+
+	// This is a new check inside pullData now, but as a safeguard,
+	// if the buffer is ever empty after a pull, it means we've underrun.
+	// Re-engage buffering to prevent crackles.
+	if (rms < 1e-5 && fifo->getFramesAvailable() < buffer.getNumSamples())
+	{
+		//LOG("Audio underrun detected, re-entering buffering state");
+		isBuffering = true;
+	}
+
+}
+
+void VideoMediaAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+{
+	fifo.reset(new AudioFIFO(getTotalNumOutputChannels(), sampleRate * 10)); // 10 seconds buffer
+
+	int numChannels = getTotalNumOutputChannels();
+	if (numChannels > 0)
+	{
+		fifo.reset(new AudioFIFO(numChannels, (int)(sampleRate * 10))); // 10-second buffer is plenty
+
+		// Set our low water mark. Let's wait for at least 4 blocks of audio.
+		// This gives the producer a good head start.
+		bufferThreshold = samplesPerBlock * 4;
+
+		// Start in a buffering state
+		isBuffering = true;
+	}
+}
+
+// Push audio data from VLC into the FIFO buffer (Producer Thread)
+void AudioFIFO::pushData(const void* data, int totalSamples)
+{
+	const float* inputData = static_cast<const float*>(data);
+
+	// =========================================================================
+	// THE FIX IS HERE:
+	// 'totalSamples' from the VLC callback is actually the number of frames.
+	// We must NOT divide it by the number of channels.
+	const int numFrames = totalSamples;
+	// =========================================================================
+
+	if (numFrames == 0)
+		return;
+
+	// Load the current read position to check for available space.
+	const auto localReadPos = readPos.load(std::memory_order_acquire);
+	const auto localWritePos = writePos.load(std::memory_order_relaxed);
+
+	// Check available space. -1 to leave one slot empty to distinguish full/empty.
+	int availableSpace = (localReadPos - localWritePos - 1 + bufferSize) % bufferSize;
+	if (numFrames > availableSpace)
+	{
+		// Buffer overflow, data will be lost.
+		return;
+	}
+
+	// De-interleave data, handling potential wrap-around in the circular buffer.
+	for (int ch = 0; ch < channels; ++ch)
+	{
+		if (localWritePos + numFrames > bufferSize)
+		{
+			// Data will wrap around the end of the buffer.
+			int framesToEnd = bufferSize - localWritePos;
+			int framesFromStart = numFrames - framesToEnd;
+
+			// First part: to the end of the buffer
+			for (int i = 0; i < framesToEnd; ++i)
+				fifoBuffer.getWritePointer(ch)[localWritePos + i] = inputData[i * channels + ch];
+
+			// Second part: from the start of the buffer
+			for (int i = 0; i < framesFromStart; ++i)
+				fifoBuffer.getWritePointer(ch)[i] = inputData[(i + framesToEnd) * channels + ch];
+		}
+		else
+		{
+			// Data fits in a contiguous block.
+			for (int i = 0; i < numFrames; ++i)
+				fifoBuffer.getWritePointer(ch)[localWritePos + i] = inputData[i * channels + ch];
+		}
+	}
+
+	// Atomically update the write position for the consumer thread to see.
+	writePos.store((localWritePos + numFrames) % bufferSize, std::memory_order_release);
+
+	//LOG("Pushed " << numFrames << " frames to FIFO");
+}
+
+// Pull data from the FIFO buffer for processing by JUCE (Consumer Thread)
+void AudioFIFO::pullData(AudioBuffer<float>& buffer, int numSamples)
+{
+	const int framesRequested = numSamples;
+
+	const auto localWritePos = writePos.load(std::memory_order_acquire);
+	const auto localReadPos = readPos.load(std::memory_order_relaxed);
+
+	const int dataAvailable = (localWritePos - localReadPos + bufferSize) % bufferSize;
+	const int framesToPull = std::min(dataAvailable, framesRequested);
+
+	if (framesToPull == 0)
+	{
+		buffer.clear(); // Ensure buffer is silent if we have no data
+		return;
+	}
+
+	// Copy data from our planar FIFO to the destination planar buffer.
+	for (int ch = 0; ch < channels; ++ch)
+	{
+		if (ch >= buffer.getNumChannels()) break; // Safety check
+
+		if (localReadPos + framesToPull > bufferSize)
+		{
+			// Data wraps around.
+			int framesToEnd = bufferSize - localReadPos;
+			int framesFromStart = framesToPull - framesToEnd;
+			buffer.copyFrom(ch, 0, fifoBuffer, ch, localReadPos, framesToEnd);
+			buffer.copyFrom(ch, framesToEnd, fifoBuffer, ch, 0, framesFromStart);
+		}
+		else
+		{
+			// Single contiguous block.
+			buffer.copyFrom(ch, 0, fifoBuffer, ch, localReadPos, framesToPull);
+		}
+	}
+
+	// Atomically update the read position.
+	readPos.store((localReadPos + framesToPull) % bufferSize, std::memory_order_release);
+
+	// If we couldn't provide all requested frames, clear the rest of the buffer.
+	if (framesToPull < framesRequested)
+	{
+		buffer.clear(framesToPull, framesRequested - framesToPull);
+	}
+
+	//LOG("Pulled " << framesToPull << " frames from FIFO");
 }

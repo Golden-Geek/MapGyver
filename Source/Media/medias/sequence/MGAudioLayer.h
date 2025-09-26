@@ -22,5 +22,7 @@ public:
 
 	void audioSetupChanged() override;
 
+    int getNodeGraphIDIncrement() override;
+
 	static MGAudioLayer* create(Sequence* sequence, var params) { return new MGAudioLayer(sequence, params); }
 };
