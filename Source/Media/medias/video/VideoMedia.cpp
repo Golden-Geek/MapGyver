@@ -131,7 +131,6 @@ void VideoMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc,
 
 void VideoMedia::setupAudio()
 {
-	NLOG(niceName, "Setup audio");
 	AudioManager::getInstance()->graph.disconnectNode(audioNodeID);
 
 	int sampleRate = AudioManager::getInstance()->graph.getSampleRate();
@@ -159,7 +158,7 @@ void VideoMedia::setupAudio()
 				if (canConnect)
 				{
 					AudioManager::getInstance()->graph.addConnection({ { audioNodeID, i }, { AUDIO_OUTPUTMIXER_GRAPH_ID, i } });
-					NLOG(niceName, "Connected audio channel " << i);
+					//NLOG(niceName, "Connected audio channel " << i);
 				}
 				else NLOGWARNING(niceName, "Could not connect audio channel " << i);
 
@@ -439,7 +438,7 @@ void VideoMediaAudioProcessor::onAudioPlay(const void* data, unsigned int count,
 	if (fifo != nullptr)
 	{
 		int numFrames = count / getTotalNumOutputChannels();
-		LOG("Received " << numFrames << " frames from VLC");
+		//LOG("Received " << numFrames << " frames from VLC");
 		fifo->pushData(data, count);
 
 		// If we are in a buffering state, check if we've crossed the threshold
@@ -469,7 +468,7 @@ void VideoMediaAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuff
 	// If we are buffering, output silence and wait for the producer to catch up.
 	if (isBuffering)
 	{
-		LOG("Buffering... Frames available: " << fifo->getFramesAvailable());
+		//LOG("Buffering... Frames available: " << fifo->getFramesAvailable());
 		buffer.clear();
 		return;
 	}
@@ -477,14 +476,14 @@ void VideoMediaAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuff
 
 	fifo->pullData(buffer, buffer.getNumSamples());
 	float rms = buffer.getRMSLevel(0, 0, buffer.getNumSamples());
-	LOG("Pulling " << buffer.getNumSamples() << " samples from FIFO, remaining " << fifo->getFramesAvailable() << ", RMS : " << rms);
+	//LOG("Pulling " << buffer.getNumSamples() << " samples from FIFO, remaining " << fifo->getFramesAvailable() << ", RMS : " << rms);
 
 	// This is a new check inside pullData now, but as a safeguard,
 	// if the buffer is ever empty after a pull, it means we've underrun.
 	// Re-engage buffering to prevent crackles.
 	if (rms < 1e-5 && fifo->getFramesAvailable() < buffer.getNumSamples())
 	{
-		LOG("Audio underrun detected, re-entering buffering state");
+		//LOG("Audio underrun detected, re-entering buffering state");
 		isBuffering = true;
 	}
 
@@ -563,7 +562,7 @@ void AudioFIFO::pushData(const void* data, int totalSamples)
 	// Atomically update the write position for the consumer thread to see.
 	writePos.store((localWritePos + numFrames) % bufferSize, std::memory_order_release);
 
-	LOG("Pushed " << numFrames << " frames to FIFO");
+	//LOG("Pushed " << numFrames << " frames to FIFO");
 }
 
 // Pull data from the FIFO buffer for processing by JUCE (Consumer Thread)
@@ -612,5 +611,5 @@ void AudioFIFO::pullData(AudioBuffer<float>& buffer, int numSamples)
 		buffer.clear(framesToPull, framesRequested - framesToPull);
 	}
 
-	LOG("Pulled " << framesToPull << " frames from FIFO");
+	//LOG("Pulled " << framesToPull << " frames from FIFO");
 }
