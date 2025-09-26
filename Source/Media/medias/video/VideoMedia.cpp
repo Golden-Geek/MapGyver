@@ -459,7 +459,7 @@ void VideoMediaAudioProcessor::onAudioFlush(int64_t pts)
 void VideoMediaAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
 
-	if (!videoMedia->isPlaying()) return;
+	if (videoMedia->isClearing || !videoMedia->isPlaying()) return;
 	if (fifo == nullptr || buffer.getNumChannels() == 0)
 	{
 		buffer.clear();
@@ -512,7 +512,16 @@ void VideoMediaAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBl
 void AudioFIFO::pushData(const void* data, int totalSamples)
 {
 	const float* inputData = static_cast<const float*>(data);
-	const int numFrames = totalSamples / channels;
+
+	// =========================================================================
+	// THE FIX IS HERE:
+	// 'totalSamples' from the VLC callback is actually the number of frames.
+	// We must NOT divide it by the number of channels.
+	const int numFrames = totalSamples;
+	// =========================================================================
+
+	if (numFrames == 0)
+		return;
 
 	// Load the current read position to check for available space.
 	const auto localReadPos = readPos.load(std::memory_order_acquire);
@@ -523,7 +532,6 @@ void AudioFIFO::pushData(const void* data, int totalSamples)
 	if (numFrames > availableSpace)
 	{
 		// Buffer overflow, data will be lost.
-		// In a real-world scenario, you might want to log this.
 		return;
 	}
 
