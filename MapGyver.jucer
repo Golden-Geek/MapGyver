@@ -186,6 +186,10 @@
                   file="Source/Media/medias/interactiveapp/InteractiveAppMedia.h"/>
           </GROUP>
           <GROUP id="{74028E00-52A0-D56B-3373-0305324DB36B}" name="sequence">
+            <GROUP id="{834BC9BD-D173-82E5-BC1D-BEF99C515D8D}" name="Cue">
+              <FILE id="WlyBlm" name="MGCue.cpp" compile="0" resource="0" file="Source/Media/medias/sequence/Cue/MGCue.cpp"/>
+              <FILE id="v2VlhC" name="MGCue.h" compile="0" resource="0" file="Source/Media/medias/sequence/Cue/MGCue.h"/>
+            </GROUP>
             <GROUP id="{075A33E0-67BA-6E57-7A86-FF46DD2CCC9B}" name="ui">
               <FILE id="KB0rmV" name="MediaClipManagerUI.cpp" compile="0" resource="0"
                     file="Source/Media/medias/sequence/ui/MediaClipManagerUI.cpp"/>
@@ -461,6 +465,8 @@
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors_headless" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="0"/>
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
@@ -516,6 +522,7 @@
         <MODULEPATH id="juce_audio_processors"/>
         <MODULEPATH id="juce_audio_utils"/>
         <MODULEPATH id="juce_javascript"/>
+        <MODULEPATH id="juce_audio_processors_headless"/>
       </MODULEPATHS>
     </VS2022>
     <VS2022 targetFolder="Builds/VisualStudio2022_CI" smallIcon="AKcEsb"
@@ -546,6 +553,7 @@
         <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
         <MODULEPATH id="juce_javascript" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="JUCE/modules"/>
       </MODULEPATHS>
     </VS2022>
     <XCODE_MAC targetFolder="Builds/MacOSX_CI" extraDefs="JUCE_COREGRAPHICS_DRAW_ASYNC=0"
@@ -582,6 +590,7 @@
         <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
         <MODULEPATH id="juce_javascript" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi"
@@ -613,6 +622,7 @@
         <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
         <MODULEPATH id="juce_javascript" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <LINUX_MAKE targetFolder="Builds/Raspberry" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed&#10;-lm"
@@ -647,6 +657,7 @@
         <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
         <MODULEPATH id="juce_javascript" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <LINUX_MAKE targetFolder="Builds/Raspberry64" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed"
@@ -679,6 +690,7 @@
         <MODULEPATH id="juce_audio_processors" path="JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
         <MODULEPATH id="juce_javascript" path="JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>

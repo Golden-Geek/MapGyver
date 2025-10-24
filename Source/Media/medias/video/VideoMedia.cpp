@@ -437,7 +437,7 @@ void VideoMediaAudioProcessor::onAudioPlay(const void* data, unsigned int count,
 
 	if (fifo != nullptr)
 	{
-		int numFrames = count / getTotalNumOutputChannels();
+		//int numFrames = count / getTotalNumOutputChannels();
 		//LOG("Received " << numFrames << " frames from VLC");
 		fifo->pushData(data, count);
 

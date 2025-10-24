@@ -15,6 +15,10 @@ MGSequence::MGSequence()
 	layerManager->factory.defs.add(SequenceLayerManager::LayerDefinition::createDef("", "Media", &MediaLayer::create, this));
 	layerManager->factory.defs.add(SequenceLayerManager::LayerDefinition::createDef("", "Audio", &MGAudioLayer::create, this, true));
 
+	std::function<TimeCue* (float, TimeCueManager*)> customCreateCueFunc = [](float t, TimeCueManager* m) { return new MGCue(t, m); };
+	cueManager->customCreateCueFunc = customCreateCueFunc;
+
+
 }
 
 String MGSequence::getPanelName() const

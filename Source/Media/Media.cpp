@@ -172,6 +172,7 @@ void Media::addFrameBuffer(const String& name, OpenGLFrameBuffer* f)
 void Media::removeFrameBuffer(const String& name)
 {
 	if (!frameBufferMap.contains(name)) return;
+	if (Engine::mainEngine->isClearing) return;
 
 	frameBufferMap.remove(name);
 	mediaNotifier.addMessage(new MediaEvent(MediaEvent::SUB_FRAMEBUFFERS_CHANGED, this));

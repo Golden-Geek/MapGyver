@@ -79,6 +79,7 @@
 #include "medias/sequence/ClipTransition.h"
 #include "medias/sequence/MediaClipManager.h"
 #include "medias/sequence/MediaLayer.h"
+#include "medias/sequence/Cue/MGCue.h"
 #include "medias/sequence/MGAudioLayer.h"
 #include "medias/sequence/SequenceMedia.h"
 #include "medias/sequence/ui/MediaClipUI.h"
