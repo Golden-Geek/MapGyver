@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "ColorMedia.h"
 
 ColorMedia::ColorMedia(var params) :
 	Media(getTypeString(), params)
