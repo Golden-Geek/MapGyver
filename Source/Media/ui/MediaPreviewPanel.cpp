@@ -9,7 +9,7 @@
 */
 
 #include "../MediaIncludes.h"
-#include "MediaPreviewPanel.h"
+
 using namespace juce::gl;
 
 MediaPreview::MediaPreview() :
@@ -37,10 +37,10 @@ void MediaPreview::setMedia(Media* m)
 
 	if (media != nullptr)
 	{
-		
+
 		media->addInspectableListener(this);
-		if(useMediaOnPreview) registerUseMedia(0, media);
-		
+		if (useMediaOnPreview) registerUseMedia(0, media);
+
 	}
 }
 
@@ -110,8 +110,13 @@ void MediaPreview::inspectableDestroyed(Inspectable* i)
 
 
 MediaPreviewPanel::MediaPreviewPanel() :
-	ShapeShifterContentComponent("Media Preview")
+	ShapeShifterContentComponent("Media Preview"),
+	lockPreview("Lock", "If enabled, the media preview will not change when selecting different media", false)
 {
+
+	lockPreviewUI.reset(lockPreview.createToggle(AssetManager::getInstance()->padlockImage));
+	addAndMakeVisible(lockPreviewUI.get());
+
 	preview.useMediaOnPreview = true;
 	addAndMakeVisible(preview);
 	InspectableSelectionManager::mainSelectionManager->addAsyncSelectionManagerListener(this);
@@ -126,22 +131,52 @@ MediaPreviewPanel::~MediaPreviewPanel()
 
 void MediaPreviewPanel::paint(Graphics& g)
 {
+	g.fillAll(BG_COLOR);
 }
 
 void MediaPreviewPanel::resized()
 {
-	preview.setBounds(getLocalBounds());
+	Rectangle<int> r = getLocalBounds();
+	Rectangle<int> hr = r.removeFromTop(20);
+	preview.setBounds(r);
+	lockPreviewUI->setBounds(hr.removeFromRight(20).reduced(2));
+}
+
+void MediaPreviewPanel::checkAndAssignPreview(InspectableSelectionManager* selectionManager)
+{
+	if (selectionManager == nullptr) selectionManager = InspectableSelectionManager::mainSelectionManager;
+
+	if (Media* m = selectionManager->getInspectableAs<Media>())
+	{
+		if (m->doNotPreview->boolValue())
+		{
+			preview.setMedia(nullptr);
+			setCustomName("Media Preview : (No Preview)");
+			return;
+		}
+
+		preview.setMedia(m);
+		setCustomName("Media Preview : " + m->niceName);
+	}
+}
+
+void MediaPreviewPanel::newMessage(const Parameter::ParameterEvent& e)
+{
+	//if lock changed, update preview lock state
+	if (e.parameter == &lockPreview)
+	{
+		if (!lockPreview.boolValue())
+		{
+			checkAndAssignPreview();
+		}
+	}
 }
 
 void MediaPreviewPanel::newMessage(const InspectableSelectionManager::SelectionEvent& e)
 {
+	if (lockPreview.boolValue()) return;
 	if (e.type == InspectableSelectionManager::SelectionEvent::SELECTION_CHANGED)
 	{
-		//if selection is media, then set media
-		if (Media* m = e.selectionManager->getInspectableAs<Media>())
-		{
-			preview.setMedia(m);
-			setCustomName("Media Preview : " + m->niceName);
-		}
+		checkAndAssignPreview(e.selectionManager);
 	}
 }

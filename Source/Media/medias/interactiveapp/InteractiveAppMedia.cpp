@@ -51,6 +51,8 @@ InteractiveAppMedia::InteractiveAppMedia(var params) :
 	isConnected = addBoolParameter("Is Connected", "Is Connected", false);
 	isConnected->setControllableFeedbackOnly(true);
 
+	doNotPreview->setDefaultValue(true);
+
 	sharingName->hideInEditor = true;
 
 	oscSender.connect("0.0.0.0", 0);

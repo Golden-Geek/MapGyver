@@ -21,6 +21,7 @@ public:
 	virtual ~Media();
 
 	BoolParameter* isBeingUsed;
+	BoolParameter* doNotPreview;
 
 	IntParameter* width;
 	IntParameter* height;

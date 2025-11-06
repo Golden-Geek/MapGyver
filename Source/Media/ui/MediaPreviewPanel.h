@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include "JuceHeader.h"
+
 class MediaPreview :
 	public Component,
 	public OpenGLSharedRenderer,
@@ -38,7 +40,8 @@ public:
 
 class MediaPreviewPanel :
 	public ShapeShifterContentComponent,
-	public InspectableSelectionManager::AsyncListener
+	public InspectableSelectionManager::AsyncListener,
+	public Parameter::AsyncListener
 {
 	public:
 
@@ -46,9 +49,16 @@ class MediaPreviewPanel :
 	virtual ~MediaPreviewPanel();
 
 	MediaPreview preview;
+	BoolParameter lockPreview;
+	std::unique_ptr<BoolToggleUI> lockPreviewUI;
+	
 
 	void paint(Graphics& g) override;
 	void resized() override;
+
+	void checkAndAssignPreview(InspectableSelectionManager* selectionManager = nullptr);
+
+	void newMessage(const Parameter::ParameterEvent& e) override;
 
 	void newMessage(const InspectableSelectionManager::SelectionEvent& e) override;
 

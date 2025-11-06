@@ -40,6 +40,8 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	isBeingUsed = addBoolParameter("isBeingUsed", "Is being used", false);
 	isBeingUsed->setControllableFeedbackOnly(true);
 
+	doNotPreview = addBoolParameter("Do Not Preview", "If enabled, no media preview will not automatically show this when selected", false);
+
 	if (hasCustomSize)
 	{
 		width = addIntParameter("Width", "Width of the media", 1920, 1, 10000);
