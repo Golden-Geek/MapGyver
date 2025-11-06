@@ -135,13 +135,14 @@ void Media::renderOpenGLMedia(bool force)
 		if (autoClearFrameBufferOnRender)
 		{
 			frameBuffer.makeCurrentAndClear();
-			Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
-			glColor4f(0, 0, 0, 1);
 		}
 		else
 		{
 			frameBuffer.makeCurrentRenderingTarget();
 		}
+
+		Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
+		glColor4f(0, 0, 0, 1);
 
 		if (shouldRenderContent)
 		{

@@ -111,7 +111,7 @@ MediaLayer::MediaLayer(Sequence* s, var params) :
 		->addOption("GL_ONE_MINUS_SRC_COLOR", (int)GL_ONE_MINUS_SRC_COLOR)
 		->addOption("GL_DST_COLOR", (int)GL_DST_COLOR)
 		->addOption("GL_ONE_MINUS_DST_COLOR", (int)GL_ONE_MINUS_DST_COLOR);
-	
+
 	transitionBlendFunction->setDefaultValue("Lighten");
 	//transitionBlendFunctionSourceFactor->setDefaultValue("GL_SRC_ALPHA");
 	//transitionBlendFunctionDestinationFactor->setDefaultValue("GL_ONE_MINUS_SRC_ALPHA");
@@ -181,19 +181,13 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 	if (frameBuffer.getWidth() != width || frameBuffer.getHeight() != height) initFrameBuffer(width, height);
 
 
-	//for (auto& clip : clipsToProcess)
-	//{
-		//if (clip->justActivated)
-		//{
-			//LOG("just activated, render openGl");
-			//clip->media->renderOpenGLMedia(true); //force render one frame on activation
-			//clip->justActivated = false;
-		//}
-
-		//LOG("Render GL layer");
-		//clip->media->renderOpenGLMedia(true);
+	for (auto& clip : clipsToProcess)
+	{
+		clip->media->renderOpenGLMedia(false);
+	}
 
 	frameBuffer.makeCurrentRenderingTarget();
+	Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
 
 	Colour c = backgroundColor->getColor();
 
@@ -213,8 +207,6 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 	int index = 0;
 	for (auto& clip : clipsToProcess)
 	{
-
-		//clip->media->renderOpenGLMedia(true);
 
 		glBlendFunc((GLenum)(int)transitionBlendFunctionSourceFactor->getValueData(), (GLenum)(int)transitionBlendFunctionDestinationFactor->getValueData());
 		glBindTexture(GL_TEXTURE_2D, clip->media->frameBuffer.getTextureID());
@@ -409,7 +401,8 @@ void MediaLayer::onContainerParameterChangedInternal(Parameter* p)
 
 			}
 		}
-	}else if (p == transitionBlendFunction) {
+	}
+	else if (p == transitionBlendFunction) {
 		BlendPreset preset = transitionBlendFunction->getValueDataAsEnum<BlendPreset>();
 		if (preset == CUSTOM) {
 			transitionBlendFunctionSourceFactor->setControllableFeedbackOnly(false);
