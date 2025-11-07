@@ -51,16 +51,16 @@ namespace BinaryData
     const int            default_smlayoutSize = 4212;
 
     extern const char*   fragmentShaderMainSurface_glsl;
-    const int            fragmentShaderMainSurface_glslSize = 1301;
+    const int            fragmentShaderMainSurface_glslSize = 1269;
 
     extern const char*   fragmentShaderTestGrid_glsl;
-    const int            fragmentShaderTestGrid_glslSize = 9164;
+    const int            fragmentShaderTestGrid_glslSize = 8811;
 
     extern const char*   icon_png;
     const int            icon_pngSize = 10023;
 
     extern const char*   VertexShaderMainSurface_glsl;
-    const int            VertexShaderMainSurface_glslSize = 381;
+    const int            VertexShaderMainSurface_glslSize = 366;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 18;

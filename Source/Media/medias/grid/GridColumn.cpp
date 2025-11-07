@@ -8,7 +8,7 @@
   ==============================================================================
 */
 
-#include "MediaIncludes.h"
+#include "Media/MediaIncludes.h"
 
 GridColumn::GridColumn(var params) :
 	BaseItem(getTypeString())
