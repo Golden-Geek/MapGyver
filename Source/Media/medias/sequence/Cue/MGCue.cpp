@@ -76,8 +76,21 @@ void MGCue::onContainerParameterChangedInternal(Parameter* p)
 		setLinkedBlock(linkedBlockTarget->getTargetContainerAs<LayerBlock>());
 	}
 
-	if(p == blockOffset || p == offsetFromEnd)
+	if (p == blockOffset || p == offsetFromEnd)
 	{
+		if (p == blockOffset && !isCurrentlyLoadingData)
+		{
+			if (Sequence* s = ControllableUtil::findParentAs<Sequence>(this))
+			{
+				float stepSnapTime = s->currentTime->getStepSnappedValueFor(blockOffset->floatValue());
+				if (stepSnapTime != blockOffset->floatValue())
+				{
+					blockOffset->setValue(stepSnapTime);
+					return;
+				}
+			}
+		}
+
 		updateTimeFromLinkedBlock();
 	}
 
@@ -99,6 +112,6 @@ void MGCue::updateTimeFromLinkedBlock()
 
 	float offset = blockOffset->floatValue();
 	float targetTime = linkedBlock->time->floatValue() + offset;
-	if (offsetFromEnd->boolValue()) targetTime =  linkedBlock->getEndTime() - offset;
+	if (offsetFromEnd->boolValue()) targetTime = linkedBlock->getEndTime() - offset;
 	time->setValue(targetTime);
 }
