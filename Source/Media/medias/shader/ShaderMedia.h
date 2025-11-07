@@ -95,6 +95,8 @@ public:
 	 1.0f,  1.0f, 0.0f
 		};
 
+	bool isUsingMedia(Media* m) override;
+
 	void onContainerParameterChangedInternal(Parameter* p) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
@@ -109,6 +111,7 @@ public:
 
 	void showUniformControllableMenu(ControllableContainer* cc);
 	void addUniformControllable(UniformInfo info);
+
 
 	void run() override;
 

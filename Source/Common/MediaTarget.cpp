@@ -1,4 +1,5 @@
 #include "Common/CommonIncludes.h"
+#include "Media/MediaIncludes.h"
 
 MediaTarget::~MediaTarget()
 {
@@ -20,6 +21,16 @@ bool MediaTarget::isUsingMedia(Media* m)
 	HashMap<int, WeakReference<Media>, DefaultHashFunctions, CriticalSection>::Iterator it(usedMedias);
 	while (it.next()) if (it.getValue() == m) return true;
 	return false;
+}
+
+void MediaTarget::updateUsedMedias()
+{
+	HashMap<int, WeakReference<Media>, DefaultHashFunctions, CriticalSection>::Iterator it(usedMedias);
+	while (it.next())
+	{
+		if (Media* m = it.getValue())
+			m->updateBeingUsed();
+	}
 }
 
 void MediaTarget::registerUseMedia(int id, Media* m)

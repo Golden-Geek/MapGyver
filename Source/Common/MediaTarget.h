@@ -23,6 +23,7 @@ public:
 	HashMap<int, WeakReference<Media>, DefaultHashFunctions, CriticalSection> usedMedias;
 
 	virtual bool isUsingMedia(Media* m);
+	virtual void updateUsedMedias();
 
 	void registerUseMedia(int id, Media* m);
 	void unregisterUseMedia(int id);

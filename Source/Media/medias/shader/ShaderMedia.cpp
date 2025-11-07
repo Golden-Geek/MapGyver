@@ -71,6 +71,12 @@ ShaderMedia::~ShaderMedia()
 	stopThread(1000);
 }
 
+bool ShaderMedia::isUsingMedia(Media* m)
+{
+	if (!isBeingUsed->boolValue()) return false;
+	return MediaTarget::isUsingMedia(m);
+}
+
 void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
 {
 	Media::onContainerParameterChangedInternal(p);
@@ -106,6 +112,11 @@ void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
 			forceRedraw = true;
 			shouldRedraw = true;
 		}
+	}
+
+	if (p == isBeingUsed)
+	{
+		updateUsedMedias();
 	}
 
 }
