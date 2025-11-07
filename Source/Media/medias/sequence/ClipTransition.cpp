@@ -25,6 +25,12 @@ ClipTransition::ClipTransition(var params) :
 	progressParam->isRemovableByUser = false;
 	progressParam->setControllableFeedbackOnly(true);
 
+	coreLength->clearRange();
+	coreLength->setControllableFeedbackOnly(true);
+
+	loopLength->setControllableFeedbackOnly(true);
+	loopLength->hideInEditor = true;
+
 	shaderMedia->backgroundColor->setDefaultValue(Colours::transparentBlack, true);
 
 	addChildControllableContainer(shaderMedia.get());

@@ -225,11 +225,8 @@ Path MediaClipUI::generatePath(bool isLoop)
 	const int margin = 20;
 	Path path;
 
-	float usableLeft = isLoop ? getCoreWidth() : 0;
-	float usableRight = isLoop ? getWidth() : getCoreWidth();
 
-	Rectangle<float>* usableBounds = isLoop ? &usableLoopBounds : &usableCoreBounds;
-	usableBounds->setBounds(usableLeft, 0, usableRight - usableLeft, getHeight());
+	usableCoreBounds.setBounds(0, 0, getWidth(), getHeight());
 
 	if (ClipTransition* t = dynamic_cast<ClipTransition*>(mediaClip))
 	{
@@ -237,8 +234,9 @@ Path MediaClipUI::generatePath(bool isLoop)
 		return path;
 	}
 
-	float tStart = isLoop ? mediaClip->getCoreEndTime() : mediaClip->time->floatValue();
-	float tEnd = isLoop ? mediaClip->getEndTime() : mediaClip->getEndTime();
+	float tStart = item->time->floatValue();
+	float tEnd = item->getEndTime();
+
 
 	bool inTransitionOverlap = mediaClip->inTransition != nullptr && mediaClip->inTransition->getEndTime() > tStart;
 	bool outTransitionOverlap = mediaClip->outTransition != nullptr && mediaClip->outTransition->time->floatValue() < tEnd;
@@ -253,44 +251,44 @@ Path MediaClipUI::generatePath(bool isLoop)
 		return path;
 	}
 
-	float xStart = mui->timeline->getXForTime(tStart);
-	float xEnd = mui->timeline->getXForTime(tEnd);
-
-	path.startNewSubPath(xStart, getHeight());
-
+	float h = getHeight();
+	float hLow = getHeight() - getHeight() * .3f;
+	float hHigh = getHeight() * .3f;
 
 
+	float startX = mui->timeline->getXForTime(tStart);
+	float endX = mui->timeline->getXForTime(tEnd);
+
+	int leftOffset = 0;
 	if (inTransitionOverlap)
 	{
-		usableLeft = mui->timeline->getXForTime(mediaClip->inTransition->getEndTime()) - xStart + 2;
-		path.lineTo(xStart, getHeight() - margin);
-		path.lineTo(usableLeft, getHeight() - margin);
-		path.lineTo(usableLeft, 0);
-	}
-	else
-	{
-		path.lineTo(0, 0);
+		int tEndX = mui->timeline->getXForTime(mediaClip->inTransition->getEndTime());
+		leftOffset = tEndX - startX + 2;
 	}
 
-	path.lineTo(getWidth(), 0);
-
+	int rightOffset = 0;
 	if (outTransitionOverlap)
 	{
-		usableRight = mui->timeline->getXForTime(mediaClip->outTransition->time->floatValue()) - xStart - 2;
-		path.lineTo(xStart, margin);
-		path.lineTo(usableRight, margin);
-		path.lineTo(usableRight, getHeight());
-	}
-	else
-	{
-		path.lineTo(xEnd, getHeight());
+		int tStartX = mui->timeline->getXForTime(mediaClip->outTransition->time->floatValue());
+		rightOffset = endX - tStartX + 2;
 	}
 
+	usableCoreBounds.setLeft(leftOffset);
+	usableCoreBounds.setRight(getWidth() - rightOffset);
 
-	path.lineTo(xStart, getHeight());
+
+	path.startNewSubPath(0, h);
+	path.lineTo(0, hLow);
+	path.lineTo(leftOffset, hLow);
+	path.lineTo(leftOffset, 0);
+	path.lineTo(getWidth(), 0);
+	path.lineTo(getWidth(), hHigh);
+	path.lineTo(getWidth() - rightOffset, hHigh);
+	path.lineTo(getWidth() - rightOffset, h);
 	path.closeSubPath();
 
-	usableBounds->setBounds(usableLeft, 0, usableRight - usableLeft, getHeight());
+
+
 
 	return path.createPathWithRoundedCorners(2);
 }
