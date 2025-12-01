@@ -71,7 +71,6 @@ void Media::onContainerTriggerTriggered(Trigger* t)
 	if (t == generatePreview)
 	{
 		shouldGeneratePreviewImage = true;
-		shouldRedraw = true;
 	}
 }
 
@@ -106,7 +105,7 @@ void Media::renderOpenGLMedia(bool force)
 		force = true;
 	}
 
-	bool shouldRenderContent = (enabled->boolValue() && isBeingUsed->boolValue()) || forceRedraw;
+	bool shouldRenderContent = (enabled->boolValue() && isBeingUsed->boolValue()) || forceRedraw || shouldGeneratePreviewImage;
 
 	forceRedraw = false;
 
@@ -123,7 +122,7 @@ void Media::renderOpenGLMedia(bool force)
 
 	if (!frameBuffer.isValid()) return;
 
-	if (shouldRedraw || alwaysRedraw || force)
+	if (shouldRedraw || shouldGeneratePreviewImage || alwaysRedraw || force)
 	{
 		if (dynamic_cast<SequenceMedia*>(this) == nullptr)
 		{
@@ -242,7 +241,7 @@ void Media::generatePreviewImage()
 
 		{
 			Image::BitmapData bitmapData(img, Image::BitmapData::writeOnly);
-			frameBuffer.readPixels(reinterpret_cast<juce::PixelARGB*> (bitmapData.data), Rectangle<int>(0, 0, width, height), OpenGLFrameBuffer::RowOrder::fromBottomUp);
+			frameBuffer.readPixels(reinterpret_cast<juce::PixelARGB*> (bitmapData.data), Rectangle<int>(0, 0, width, height), OpenGLFrameBuffer::RowOrder::fromTopDown);
 		}
 		if (width > 200 || height > 200)
 		{

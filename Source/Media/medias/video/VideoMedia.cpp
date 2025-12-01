@@ -53,8 +53,6 @@ VideoMedia::VideoMedia(var params) :
 	addChildControllableContainer(&controlsCC);
 	addChildControllableContainer(&audioCC);
 
-
-
 	audioNodeID = AudioProcessorGraph::NodeID(AudioManager::getInstance()->getUniqueNodeGraphID());
 
 	std::unique_ptr<VideoMediaAudioProcessor> ap(new VideoMediaAudioProcessor(this));
@@ -247,6 +245,7 @@ void VideoMedia::load()
 				position->setValue(0);
 				state->setValueWithData(READY);
 				updatingPosFromVLC = false;
+				shouldGeneratePreviewImage = true;
 				return;
 			}
 

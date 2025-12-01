@@ -32,8 +32,8 @@ MGEngine::MGEngine() :
 
 	GlobalSettings::getInstance()->altScaleFactor->setDefaultValue(0.05);
 
-	const char* argv[1] = { "-vvv" };
-	vlcInstance.reset(new VLC::Instance(1, argv));
+	const char* argv[4] = { "-vvv", "--file-caching=20", "--clock-jitter=100", "--clock-synchro=0"};
+	vlcInstance.reset(new VLC::Instance(2, argv));
 	jassert(vlcInstance != nullptr);
 
 	addChildControllableContainer(MediaManager::getInstance());
