@@ -59,6 +59,8 @@ public:
 	VideoMedia(var params = var());
 	~VideoMedia();
 
+	void clearItem() override;
+
 	enum VideoSource { Source_File, Source_URL };
 	EnumParameter* source;
 	FileParameter* filePath;

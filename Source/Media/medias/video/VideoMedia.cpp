@@ -17,7 +17,8 @@ VideoMedia::VideoMedia(var params) :
 	audioCC("Audio"),
 	updatingPosFromVLC(false),
 	manuallySeeking(false),
-	timeAtLastSeek(0)
+	timeAtLastSeek(0),
+	audioProcessor(nullptr)
 {
 
 	vlcInstance = dynamic_cast<MGEngine*>(Engine::mainEngine)->vlcInstance.get();
@@ -53,11 +54,13 @@ VideoMedia::VideoMedia(var params) :
 	addChildControllableContainer(&audioCC);
 
 
+
 	audioNodeID = AudioProcessorGraph::NodeID(AudioManager::getInstance()->getUniqueNodeGraphID());
-	std::unique_ptr<VideoMediaAudioProcessor> ap = std::make_unique<VideoMediaAudioProcessor>(this);
+
+	std::unique_ptr<VideoMediaAudioProcessor> ap(new VideoMediaAudioProcessor(this));
 	audioProcessor = ap.get();
 	AudioManager::getInstance()->graph.addNode(std::move(ap), audioNodeID);
-
+	
 	AudioManager::getInstance()->addAudioManagerListener(this);
 
 	customFPSTick = true;
@@ -67,6 +70,14 @@ VideoMedia::~VideoMedia()
 {
 	if (AudioManager::getInstanceWithoutCreating())
 		AudioManager::getInstance()->removeAudioManagerListener(this);
+
+	AudioManager::getInstance()->graph.removeNode(audioNodeID);
+}
+
+void VideoMedia::clearItem()
+{
+	ImageMedia::clearItem();
+
 }
 
 void VideoMedia::onContainerParameterChanged(Parameter* p)
@@ -119,7 +130,7 @@ void VideoMedia::setupAudio()
 {
 	AudioManager::getInstance()->graph.disconnectNode(audioNodeID);
 
-	if (vlcMedia == nullptr) return;
+	if (isCurrentlyLoadingData || vlcMedia == nullptr || isClearing || Engine::mainEngine->isClearing) return;
 
 	int sampleRate = AudioManager::getInstance()->graph.getSampleRate();
 	int bufferSize = AudioManager::getInstance()->graph.getBlockSize();
@@ -190,6 +201,8 @@ void VideoMedia::load()
 			(*lines) = imageHeight;
 
 			length->setValue(vlcPlayer->length() / 1000.0);
+			mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_LENGTH_CHANGED, this));
+
 			position->setValue(0);
 			position->setRange(0, length->doubleValue());
 
@@ -233,20 +246,23 @@ void VideoMedia::load()
 				vlcPlayer->setPause(true);
 				position->setValue(0);
 				state->setValueWithData(READY);
+				updatingPosFromVLC = false;
 				return;
 			}
 
 			uint32 time = Time::getMillisecondCounter();
 
-			if (manuallySeeking && time > timeAtLastSeek + 50)
+			if (manuallySeeking && time > timeAtLastSeek + 30)
 			{
-				if (s != PLAYING)
+				if (s != PLAYING && vlcPlayer->isPlaying())
 				{
+					vlcPlayer->setPosition(position->doubleValue() / length->doubleValue(), true);
+					//vlcPlayer->setRate(playSpeed->floatValue());
 					vlcPlayer->setPause(true);
-					vlcPlayer->setPosition(position->doubleValue() / length->doubleValue(), false);
-					vlcPlayer->setRate(playSpeed->floatValue());
 				}
 				manuallySeeking = false;
+				updatingPosFromVLC = false;
+				return;
 			}
 
 			if (!manuallySeeking)
@@ -258,7 +274,7 @@ void VideoMedia::load()
 				{
 					if (loop->boolValue())
 					{
-						vlcPlayer->setPosition(0, false);
+						vlcPlayer->setPosition(0, true);
 						position->setValue(0);
 					}
 				}
@@ -292,8 +308,10 @@ void VideoMedia::play() {
 	if (st == READY || st == PAUSED)
 	{
 		state->setValueWithData(PLAYING);
-		vlcPlayer->setRate(playSpeed->floatValue());
-		seek(position->doubleValue());
+		//vlcPlayer->setRate(playSpeed->floatValue());
+		//seek(position->doubleValue());
+		vlcPlayer->play();
+		vlcPlayer->setPosition(position->doubleValue() / length->doubleValue(), true);
 	}
 }
 
@@ -303,7 +321,7 @@ void VideoMedia::stop() {
 	if (st == PLAYING || st == PAUSED)
 	{
 
-		vlcPlayer->setPosition(0, false);
+		vlcPlayer->setPosition(0, true);
 		vlcPlayer->play();
 		state->setValueWithData(IDLE);
 	}
@@ -324,7 +342,7 @@ void VideoMedia::restart() {
 	PlayerState st = state->getValueDataAsEnum<PlayerState>();
 	if (st == PLAYING || st == PAUSED || st == IDLE)
 	{
-		vlcPlayer->setPosition(0, false);
+		vlcPlayer->setPosition(0, true);
 		vlcPlayer->play();
 		state->setValueWithData(PLAYING);
 	}
@@ -392,7 +410,7 @@ void VideoMedia::handleSeek(double time)
 
 void VideoMedia::handleStop()
 {
-	stop();
+	pause();
 }
 
 void VideoMedia::handleStart()
@@ -415,6 +433,7 @@ double VideoMedia::getMediaLength()
 void VideoMedia::afterLoadJSONDataInternal()
 {
 	Media::afterLoadJSONDataInternal();
+	setupAudio();
 	if (state->getValueDataAsEnum<PlayerState>() == IDLE && vlcPlayer != nullptr) vlcPlayer->play();
 }
 
@@ -428,10 +447,12 @@ void VideoMedia::afterLoadJSONDataInternal()
 VideoMediaAudioProcessor::VideoMediaAudioProcessor(VideoMedia* videoMedia) :
 	videoMedia(videoMedia)
 {
+	LOG("Created VideoMediaAudioProcessor for " << videoMedia->niceName);
 }
 
 VideoMediaAudioProcessor::~VideoMediaAudioProcessor()
 {
+	videoMedia = nullptr;
 }
 
 void VideoMediaAudioProcessor::onAudioPlay(const void* data, unsigned int count, int64_t pts)

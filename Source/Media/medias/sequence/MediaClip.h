@@ -60,6 +60,8 @@ public:
 
 	float getFadeMultiplier();
 
+	void updateCoreRangeFromMedia();
+
 	bool isUsingMedia(Media* m) override;
 
 	void newMessage(const Media::MediaEvent& e) override;

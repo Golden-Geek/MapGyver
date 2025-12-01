@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "MediaClip.h"
 
 MediaClip::MediaClip(const String& name, var params) :
 	LayerBlock(name),
@@ -74,6 +75,9 @@ void MediaClip::setMedia(Media* m)
 		media->addAsyncMediaListener(this);
 		registerUseMedia(CLIP_MEDIA_ID, media);
 		media->handleEnter(relativeTime);
+			
+		updateCoreRangeFromMedia();
+		
 		if (isPlaying) media->handleStart();
 	}
 
@@ -119,7 +123,7 @@ void MediaClip::onContainerParameterChangedInternal(Parameter* p)
 		if (media != nullptr)
 		{
 			activationChanged = true;
-		
+
 			if (active)
 			{
 				media->handleEnter(relativeTime, isPlaying);
@@ -204,6 +208,21 @@ float MediaClip::getFadeMultiplier()
 	return result;
 }
 
+void MediaClip::updateCoreRangeFromMedia()
+{
+	if (media != nullptr)
+	{
+		double mediaLength = media->getMediaLength();
+		if (mediaLength > .1f) coreLength->setRange(.1f, mediaLength);
+		else coreLength->setRange(.1f, INT32_MAX);
+
+		if (!coreLength->isOverriden)
+		{
+			coreLength->setDefaultValue(mediaLength, false);
+		}
+	}
+}
+
 bool MediaClip::isUsingMedia(Media* m)
 {
 	return enabled->boolValue() && isActive->boolValue() && media == m;
@@ -215,6 +234,10 @@ void MediaClip::newMessage(const Media::MediaEvent& e)
 	{
 	case Media::MediaEvent::PREVIEW_CHANGED:
 		mediaClipNotifier.addMessage(new MediaClipEvent(MediaClipEvent::PREVIEW_CHANGED, this));
+		break;
+
+	case Media::MediaEvent::MEDIA_LENGTH_CHANGED:
+		updateCoreRangeFromMedia();
 		break;
 
 	default:
@@ -287,5 +310,5 @@ void OwnedMediaClip::setMedia(Media* m)
 		ownedMedia.reset();
 	}
 
-	
+
 }
