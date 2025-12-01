@@ -64,8 +64,8 @@ public:
 	FileParameter* filePath;
 	StringParameter* url;
 
-	enum PlayerState { UNLOADED, IDLE, PLAYING, PAUSED, STATES_MAX };
-	const String playerStateNames[STATES_MAX] = { "Unloaded", "Idle", "Playing", "Paused" };
+	enum PlayerState { UNLOADED, IDLE, READY, PLAYING, PAUSED, STATES_MAX };
+	const String playerStateNames[STATES_MAX] = { "Unloaded", "Idle", "Ready", "Playing", "Paused" };
 	EnumParameter* state;
 	FloatParameter* position;
 	FloatParameter* length;
@@ -95,11 +95,8 @@ public:
 	double totalFrames;
 
 	bool updatingPosFromVLC;
-	bool isSeeking;
-
-	double lastTapTempo;
-	Trigger* tapTempoTrigger;
-	IntParameter* beatPerCycle;
+	bool manuallySeeking;
+	uint32 timeAtLastSeek;
 
 	//Audio
 	AudioProcessorGraph::NodeID audioNodeID;
@@ -118,7 +115,6 @@ public:
 	void pause();
 	void restart();
 	void seek(double time);
-	void tapTempo();
 
 	virtual void handleEnter(double time, bool play = false) override;
 	virtual void handleExit() override;

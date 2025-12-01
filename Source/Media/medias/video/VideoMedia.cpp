@@ -10,23 +10,18 @@
 
 #include "Media/MediaIncludes.h"
 #include "Engine/MGEngine.h"
-#include "VideoMedia.h"
 
 VideoMedia::VideoMedia(var params) :
 	ImageMedia(getTypeString(), params),
 	controlsCC("Controls"),
 	audioCC("Audio"),
 	updatingPosFromVLC(false),
-	isSeeking(false),
-	lastTapTempo(0)
-	//Thread("VLC frame checker")
+	manuallySeeking(false),
+	timeAtLastSeek(0)
 {
 
-	//init vlc
 	vlcInstance = dynamic_cast<MGEngine*>(Engine::mainEngine)->vlcInstance.get();
 	vlcPlayer.reset(new VLC::MediaPlayer(*vlcInstance));
-	//vlcPlayer->play();
-
 
 	source = addEnumParameter("Source", "Source");
 	source->addOption("File", Source_File)->addOption("URL", Source_URL);
@@ -52,12 +47,7 @@ VideoMedia::VideoMedia(var params) :
 	loop = controlsCC.addBoolParameter("Loop", "Loop video", false);
 	playSpeed = controlsCC.addFloatParameter("Speed", "Speed of video", 1, 0);
 
-
 	volume = audioCC.addFloatParameter("Volume", "Volume of video", 1, 0, 1);
-
-	beatPerCycle = audioCC.addIntParameter("Beat by cycles", "Number of tap tempo beats by cycle", 1, 1);
-	tapTempoTrigger = audioCC.addTrigger("Tap tempo", "");
-
 
 	addChildControllableContainer(&controlsCC);
 	addChildControllableContainer(&audioCC);
@@ -75,18 +65,10 @@ VideoMedia::VideoMedia(var params) :
 
 VideoMedia::~VideoMedia()
 {
-	//stop();
-	//stopThread(100);
-
 	if (AudioManager::getInstanceWithoutCreating())
 		AudioManager::getInstance()->removeAudioManagerListener(this);
 }
 
-//void VideoMedia::clearItem()
-//{
-//	BaseItem::clearItem();
-//}
-//
 void VideoMedia::onContainerParameterChanged(Parameter* p)
 {
 	if (p == source)
@@ -104,7 +86,8 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 
 	else if (p == position)
 	{
-		if (!updatingPosFromVLC) seek(position->doubleValue());
+		if (!updatingPosFromVLC)
+			seek(position->doubleValue());
 	}
 }
 
@@ -119,12 +102,15 @@ void VideoMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc,
 		else if (c == stopTrigger) stop();
 		else if (c == pauseTrigger) pause();
 		else if (c == restartTrigger) restart();
-		else if (c == playSpeed) vlcPlayer->setRate(playSpeed->floatValue());
+		else if (c == playSpeed)
+		{
+			vlcPlayer->setRate(playSpeed->floatValue());
+			seek(position->doubleValue());
+		}
 	}
 	else if (cc == &audioCC)
 	{
 		if (c == volume) vlcPlayer->setVolume(volume->floatValue());
-		else if (c == tapTempoTrigger) tapTempo();
 
 	}
 }
@@ -133,38 +119,34 @@ void VideoMedia::setupAudio()
 {
 	AudioManager::getInstance()->graph.disconnectNode(audioNodeID);
 
+	if (vlcMedia == nullptr) return;
+
 	int sampleRate = AudioManager::getInstance()->graph.getSampleRate();
 	int bufferSize = AudioManager::getInstance()->graph.getBlockSize();
 
-	if (vlcMedia != nullptr)
+	//retrieve audio channels
+	std::vector<VLC::MediaTrack> tracks = vlcMedia->tracks(VLC::MediaTrack::Audio);
+	if (tracks.size() > 0)
 	{
+		VLC::MediaTrack track = tracks[0];
+		int numChannels = track.channels();
 
-		//retrieve audio channels
-		std::vector<VLC::MediaTrack> tracks = vlcMedia->tracks(VLC::MediaTrack::Audio);
-		if (tracks.size() > 0)
+		vlcPlayer->setAudioFormat("FL32", sampleRate, AudioManager::getInstance()->getNumUserOutputs());
+
+		audioProcessor->setPlayConfigDetails(0, numChannels, sampleRate, bufferSize);
+		audioProcessor->prepareToPlay(sampleRate, bufferSize);
+
+		int minChannels = jmin(numChannels, AudioManager::getInstance()->getNumUserOutputs());
+		for (int i = 0; i < minChannels; ++i)
 		{
-			VLC::MediaTrack track = tracks[0];
-			int numChannels = track.channels();
-
-			vlcPlayer->setAudioFormat("FL32", sampleRate, AudioManager::getInstance()->getNumUserOutputs());
-
-			audioProcessor->setPlayConfigDetails(0, numChannels, sampleRate, bufferSize);
-			audioProcessor->prepareToPlay(sampleRate, bufferSize);
-
-			int minChannels = jmin(numChannels, AudioManager::getInstance()->getNumUserOutputs());
-			for (int i = 0; i < minChannels; ++i)
+			bool canConnect = AudioManager::getInstance()->graph.canConnect({ { audioNodeID, i }, { AUDIO_OUTPUTMIXER_GRAPH_ID, i } });
+			if (canConnect)
 			{
-				bool canConnect = AudioManager::getInstance()->graph.canConnect({ { audioNodeID, i }, { AUDIO_OUTPUTMIXER_GRAPH_ID, i } });
-				if (canConnect)
-				{
-					AudioManager::getInstance()->graph.addConnection({ { audioNodeID, i }, { AUDIO_OUTPUTMIXER_GRAPH_ID, i } });
-					//NLOG(niceName, "Connected audio channel " << i);
-				}
-				else NLOGWARNING(niceName, "Could not connect audio channel " << i);
-
+				AudioManager::getInstance()->graph.addConnection({ { audioNodeID, i }, { AUDIO_OUTPUTMIXER_GRAPH_ID, i } });
+				//NLOG(niceName, "Connected audio channel " << i);
 			}
+			else NLOGWARNING(niceName, "Could not connect audio channel " << i);
 
-		
 		}
 	}
 }
@@ -183,14 +165,14 @@ void VideoMedia::load()
 	if (!f.existsAsFile())
 	{
 		NLOGWARNING(niceName, "File not found : " << f.getFullPathName());
-		state->setValueWithData(IDLE);
+		vlcPlayer.reset();
+		vlcMedia.reset();
+		state->setValueWithData(UNLOADED);
 		return;
 	}
 
 	vlcMedia.reset(new VLC::Media(f.getFullPathName().toStdString(), VLC::Media::FromType::FromPath));
 	vlcPlayer.reset(new VLC::MediaPlayer(*vlcInstance, *vlcMedia));
-
-
 
 	vlcPlayer->setVideoFormatCallbacks(
 		[this](char* chroma, unsigned* width, unsigned* height, unsigned* pitches, unsigned* lines) -> unsigned {
@@ -203,11 +185,9 @@ void VideoMedia::load()
 
 			initImage(imageWidth, imageHeight);
 
-			//vlcDataIsValid = true;
 			memcpy(chroma, "BGRA", 4);
 			(*pitches) = imageWidth * 4;
 			(*lines) = imageHeight;
-
 
 			length->setValue(vlcPlayer->length() / 1000.0);
 			position->setValue(0);
@@ -224,7 +204,6 @@ void VideoMedia::load()
 			//check audio here
 			setupAudio();
 
-
 			imageLock.exit();
 
 			return 1;
@@ -236,36 +215,62 @@ void VideoMedia::load()
 
 	vlcPlayer->setVideoCallbacks(
 		[this](void** data) -> void* {
+
 			imageLock.enter();
 			data[0] = bitmapData->getLinePointer(0);
 			return nullptr;
 		},
+
 		[this](void* oldBuffer, void* const* pixels) {
 			imageLock.exit();
 
+
+			PlayerState s = state->getValueDataAsEnum<PlayerState>();
 			updatingPosFromVLC = true;
 
-			if (!isSeeking)
+			if (s == IDLE)
+			{
+				vlcPlayer->setPause(true);
+				position->setValue(0);
+				state->setValueWithData(READY);
+				return;
+			}
+
+			uint32 time = Time::getMillisecondCounter();
+
+			if (manuallySeeking && time > timeAtLastSeek + 50)
+			{
+				if (s != PLAYING)
+				{
+					vlcPlayer->setPause(true);
+					vlcPlayer->setPosition(position->doubleValue() / length->doubleValue(), false);
+					vlcPlayer->setRate(playSpeed->floatValue());
+				}
+				manuallySeeking = false;
+			}
+
+			if (!manuallySeeking)
 			{
 				position->setValue(vlcPlayer->time() / 1000.0);
 
 				double currentFrame = round(position->doubleValue() * frameRate);
 				if (currentFrame >= totalFrames - 2)
 				{
-					if (loop->boolValue()) vlcPlayer->setPosition(0, true);
+					if (loop->boolValue())
+					{
+						vlcPlayer->setPosition(0, false);
+						position->setValue(0);
+					}
 				}
-				updatingPosFromVLC = false;
 			}
+			updatingPosFromVLC = false;
+
 		},
 		[this](void* data) {
 			shouldRedraw = true;
 			FPSTick();
 
 		});
-
-	//set dummy output to control audio from app
-	//vlcPlayer->setAudioOutput("dummy");
-
 
 	state->setValueWithData(IDLE);
 
@@ -276,25 +281,19 @@ void VideoMedia::load()
 		},
 		nullptr, nullptr, nullptr, nullptr);
 
-	//Parse before setup audio
+	if (!isCurrentlyLoadingData) vlcPlayer->play();
 
-	//libvlc_event_manager_t* em2 = libvlc_media_player_event_manager(vlcPlayer->get());
-	//libvlc_event_attach(em2, libvlc_MediaPlayerPlaying,
-	//	[](const libvlc_event_t*, void* ud) {
-	//		((VideoMedia*)ud)->setupAudio();
-	//	}, this);
-
-	if (!isCurrentlyLoadingData && playAtLoad->boolValue()) vlcPlayer->play();
 }
 
 void VideoMedia::play() {
 	if (vlcPlayer == nullptr) return;
 	PlayerState st = state->getValueDataAsEnum<PlayerState>();
 
-	if (st == IDLE || st == PAUSED)
+	if (st == READY || st == PAUSED)
 	{
-		vlcPlayer->play();
-		state->setValueWithData(PlayerState::PLAYING);
+		state->setValueWithData(PLAYING);
+		vlcPlayer->setRate(playSpeed->floatValue());
+		seek(position->doubleValue());
 	}
 }
 
@@ -303,8 +302,10 @@ void VideoMedia::stop() {
 	PlayerState st = state->getValueDataAsEnum<PlayerState>();
 	if (st == PLAYING || st == PAUSED)
 	{
-		vlcPlayer->stopAsync();
-		state->setValueWithData(PlayerState::IDLE);
+
+		vlcPlayer->setPosition(0, false);
+		vlcPlayer->play();
+		state->setValueWithData(IDLE);
 	}
 }
 
@@ -314,7 +315,7 @@ void VideoMedia::pause() {
 	if (st == PLAYING)
 	{
 		vlcPlayer->pause();
-		state->setValueWithData(PlayerState::PAUSED);
+		state->setValueWithData(PAUSED);
 	}
 }
 
@@ -323,9 +324,9 @@ void VideoMedia::restart() {
 	PlayerState st = state->getValueDataAsEnum<PlayerState>();
 	if (st == PLAYING || st == PAUSED || st == IDLE)
 	{
-		vlcPlayer->setPosition(0, true);
+		vlcPlayer->setPosition(0, false);
 		vlcPlayer->play();
-		state->setValueWithData(PlayerState::PLAYING);
+		state->setValueWithData(PLAYING);
 	}
 }
 
@@ -333,39 +334,33 @@ void VideoMedia::seek(double time)
 {
 	if (vlcPlayer == nullptr) return;
 	PlayerState st = state->getValueDataAsEnum<PlayerState>();
-	if (st == PLAYING || st == PAUSED)
+	if (st == PLAYING || st == PAUSED || st == READY)
 	{
+
 		double targetTime = time;
 		bool isEnd = false;
+
 		if (loop->boolValue()) targetTime = fmod(targetTime, length->doubleValue());
+
 		double maxTime = length->doubleValue() - 1.0 / frameRate;
 		targetTime = jlimit(0., maxTime, targetTime);
-		if (targetTime >= maxTime) isEnd = true;
 
-		isSeeking = true;
-		vlcPlayer->setTime(targetTime * 1000, true);
-		isSeeking = false;
+		if (targetTime >= maxTime) isEnd = true;
+		{
+			timeAtLastSeek = Time::getMillisecondCounter();
+			manuallySeeking = true;
+			if (st != PLAYING && !vlcPlayer->isPlaying())
+			{
+				//vlcPlayer->setRate(0.00001);//can't put 0
+				vlcPlayer->play();
+			}
+			vlcPlayer->setTime(targetTime * 1000, true);
+
+		}
 
 		if (!isEnd && st == PLAYING && vlcPlayer->state() != libvlc_Playing) vlcPlayer->play();
 	}
 }
-
-void VideoMedia::tapTempo()
-{
-	double now = Time::getMillisecondCounterHiRes();
-	double delta = now - lastTapTempo;
-	lastTapTempo = now;
-	if (delta < 3000) {
-		delta = delta * (int)beatPerCycle->getValue();
-		if (length->doubleValue() > 0)
-		{
-			double rate = length->doubleValue() / delta;
-			playSpeed->setValue(rate);
-		}
-	}
-}
-
-
 
 
 void VideoMedia::handleEnter(double time, bool doPlay)
@@ -391,12 +386,13 @@ void VideoMedia::handleExit()
 void VideoMedia::handleSeek(double time)
 {
 	Media::handleSeek(time);
-	seek(time);
+	//seek(time);
+	position->setValue(time);
 }
 
 void VideoMedia::handleStop()
 {
-	pause();
+	stop();
 }
 
 void VideoMedia::handleStart()
@@ -419,9 +415,16 @@ double VideoMedia::getMediaLength()
 void VideoMedia::afterLoadJSONDataInternal()
 {
 	Media::afterLoadJSONDataInternal();
-	if (playAtLoad->boolValue()) play();
+	if (state->getValueDataAsEnum<PlayerState>() == IDLE && vlcPlayer != nullptr) vlcPlayer->play();
 }
 
+
+
+
+
+
+
+// AUDIO PROCESSOR
 VideoMediaAudioProcessor::VideoMediaAudioProcessor(VideoMedia* videoMedia) :
 	videoMedia(videoMedia)
 {
