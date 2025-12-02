@@ -12,48 +12,10 @@
 
 #include "JuceHeader.h"
 
-class VideoMediaAudioProcessor;
-
-class AudioFIFO
-{
-public:
-	AudioFIFO(int numChannels, int size) :
-		channels(numChannels),
-		bufferSize(size)
-	{
-		fifoBuffer.setSize(channels, bufferSize);
-		fifoBuffer.clear();
-	}
-
-	void pushData(const void* data, int totalSamples);
-	void pullData(AudioBuffer<float>& buffer, int numSamples);
-
-	bool hasData() const
-	{
-		return readPos.load() != writePos.load();
-	}
-
-	int getFramesAvailable() const
-	{
-		const auto localWritePos = writePos.load(std::memory_order_acquire);
-		const auto localReadPos = readPos.load(std::memory_order_relaxed);
-		return (localWritePos - localReadPos + bufferSize) % bufferSize;
-	}
-
-private:
-	int channels;
-	int bufferSize;
-	AudioBuffer<float> fifoBuffer;
-
-	std::atomic<int> readPos{ 0 };
-	std::atomic<int> writePos{ 0 };
-};
-
-
 class VideoMedia :
-	public ImageMedia,
-	public AudioManager::AudioManagerListener
-	//public Thread
+	public Media,
+	public AudioManager::AudioManagerListener,
+	public Timer
 {
 public:
 	VideoMedia(var params = var());
@@ -65,9 +27,6 @@ public:
 	EnumParameter* source;
 	FileParameter* filePath;
 	StringParameter* url;
-	
-	enum VideoEngine { Engine_VLC, Engine_MPV };
-	EnumParameter* engine;
 
 	enum PlayerState { UNLOADED, IDLE, READY, PLAYING, PAUSED, STATES_MAX };
 	const String playerStateNames[STATES_MAX] = { "Unloaded", "Idle", "Ready", "Playing", "Paused" };
@@ -88,30 +47,15 @@ public:
 	ControllableContainer audioCC;
 	FloatParameter* volume;
 
-#if USE_VLC
-	VLC::Instance* vlcInstance;
-	std::unique_ptr<VLC::MediaPlayer> vlcPlayer;
-	std::unique_ptr<VLC::Media> vlcMedia;
-#endif
-
-#if USE_MPV
 	mpv_handle* mpv = nullptr;
 	mpv_render_context* mpv_gl = nullptr;
-	bool mpvIsInitialized = false;
-#endif
-
-
-	int imageWidth = 0;
-	int imageHeight = 0;
-	int imagePitches = 0;
-	int imageLines = 0;
-
-	double frameRate;
-	double totalFrames;
 
 	bool updatingPosFromVLC;
 	bool manuallySeeking;
 	uint32 timeAtLastSeek;
+
+	int videoWidth = 0;
+	int videoHeight = 0;
 
 	//Audio
 	AudioProcessorGraph::NodeID audioNodeID;
@@ -125,6 +69,20 @@ public:
 	void audioSetupChanged() override;
 
 	void load();
+
+	void initGLInternal() override;
+	void renderGLInternal() override;
+	void closeGLInternal() override;
+
+	//MPV Stuff
+	void onMPVUpdate();
+	void onMPVWakeup();
+	void pullEvents();
+
+	int getMPVIntProperty(const char* name);
+	double getMPVDoubleProperty(const char* name);
+	String getMPVStringProperty(const char* name);
+
 	void play();
 	void stop();
 	void pause();
@@ -138,59 +96,14 @@ public:
 	virtual void handleStart() override;
 
 	bool isPlaying();
-
 	double getMediaLength() override;
-
+	Point<int> getMediaSize(const String& texName = String()) override;
 	String getMediaContentName() const override;
 
 	void afterLoadJSONDataInternal() override;
 
-	//void tapTempo();
+	void timerCallback() override;
 
-#ifdef USE_MPV
-	static void on_mpv_render_update(void* ctx);
-	static void* get_proc_address_mpv(void* fn_ctx, const char* name);
-	void handleMpvEvent(mpv_event* e);
-#endif
 
 	DECLARE_TYPE("Video")
-};
-
-class VideoMediaAudioProcessor :
-	public AudioProcessor
-{
-public:
-	VideoMediaAudioProcessor(VideoMedia* videoMedia);
-	~VideoMediaAudioProcessor() override;
-
-	VideoMedia* videoMedia;
-	std::unique_ptr<AudioFIFO> fifo;
-	
-	// NEW MEMBERS
-	std::atomic<bool> isBuffering{ true };
-	int bufferThreshold = 0;
-
-	void onAudioPlay(const void* data, unsigned int count, int64_t pts);
-	void onAudioFlush(int64_t pts);
-
-
-	void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
-
-	AudioProcessorEditor* createEditor() override { return nullptr; }
-	bool hasEditor() const override { return false; }
-
-	virtual void getStateInformation(MemoryBlock& destData) override {}
-	virtual void setStateInformation(const void* data, int sizeInBytes) override {}
-
-	const String getName() const override { return videoMedia->niceName +" Processor"; }
-	bool acceptsMidi() const override { return false; }
-	bool producesMidi() const override { return false; }
-	double getTailLengthSeconds() const override { return 0.0; }
-	int getNumPrograms() override { return 1; }
-	int getCurrentProgram() override { return 0; }
-	void setCurrentProgram(int index) override {}
-	const String getProgramName(int index) override { return {}; }
-	void changeProgramName(int index, const String& newName) override {}
-	void prepareToPlay(double sampleRate, int samplesPerBlock) override;
-	void releaseResources() override {}
 };

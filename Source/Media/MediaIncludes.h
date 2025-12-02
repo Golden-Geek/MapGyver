@@ -61,7 +61,10 @@
 
 #include "medias/color/ColorMedia.h"
 
-#include "vlcpp/vlc.hpp"
+#include "mpv/client.h"
+#include "mpv/render_gl.h"
+
+#include "medias/video/VideoAudioProcessor.h"
 #include "medias/video/VideoMedia.h"
 
 #if !JUCE_LINUX

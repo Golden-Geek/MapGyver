@@ -28,6 +28,7 @@
 
 #include "medias/color/ColorMedia.cpp"
 
+#include "medias/video/VideoAudioProcessor.cpp"
 #include "medias/video/VideoMedia.cpp"
 
 #if !JUCE_LINUX

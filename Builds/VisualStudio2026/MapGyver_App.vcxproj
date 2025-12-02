@@ -47,7 +47,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MapGyver</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/debug;..\..\Modules\juce_sharedtexture\libs\VisualStudio2026\$(Platform)\MDd;..\..\Modules\juce_simpleweb\libs\VisualStudio2026\$(Platform)\MDd</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/debug;../../External/mpv/lib;..\..\Modules\juce_sharedtexture\libs\VisualStudio2026\$(Platform)\MDd;..\..\Modules\juce_simpleweb\libs\VisualStudio2026\$(Platform)\MDd</LibraryPath>
     <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</PreBuildEventUseInBuild>
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</PostBuildEventUseInBuild>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\Binaries\Release\App\</OutDir>
@@ -69,8 +69,8 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;D:\Projects\Dev\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../EXternal/vlc/vlcpp;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;JUCER_VS2026_78A5042=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;D:\Projects\Dev\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../External/vlc/vlcpp;../../External/mpv/include;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;MPV_ENABLE_DLL;JUCER_VS2026_78A5042=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -84,8 +84,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;D:\Projects\Dev\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../EXternal/vlc/vlcpp;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;JUCER_VS2026_78A5042=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;D:\Projects\Dev\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../External/vlc/vlcpp;../../External/mpv/include;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;MPV_ENABLE_DLL;JUCER_VS2026_78A5042=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <OutputFile>$(OutDir)\MapGyver.exe</OutputFile>
@@ -94,17 +94,17 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)\MapGyver.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/debug;..\..\Modules\juce_sharedtexture\libs\VisualStudio2026\$(Platform)\MDd;..\..\Modules\juce_simpleweb\libs\VisualStudio2026\$(Platform)\MDd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/debug;../../External/mpv/lib;..\..\Modules\juce_sharedtexture\libs\VisualStudio2026\$(Platform)\MDd;..\..\Modules\juce_simpleweb\libs\VisualStudio2026\$(Platform)\MDd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>libvlc.lib;libvlccore.lib;Servus.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libvlc.lib;libvlccore.lib;Servus.lib;libmpv.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\MapGyver.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>libvlc.lib;libvlccore.lib;Servus.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/debug;..\..\Modules\juce_sharedtexture\libs\VisualStudio2026\$(Platform)\MDd;..\..\Modules\juce_simpleweb\libs\VisualStudio2026\$(Platform)\MDd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libvlc.lib;libvlccore.lib;Servus.lib;libmpv.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/debug;../../External/mpv/lib;..\..\Modules\juce_sharedtexture\libs\VisualStudio2026\$(Platform)\MDd;..\..\Modules\juce_simpleweb\libs\VisualStudio2026\$(Platform)\MDd;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -118,8 +118,8 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;D:\Projects\Dev\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../EXternal/vlc/vlcpp;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;JUCER_VS2026_78A5042=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;D:\Projects\Dev\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../External/vlc/vlcpp;../../External/mpv/include;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;MPV_ENABLE_DLL;JUCER_VS2026_78A5042=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -133,8 +133,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;D:\Projects\Dev\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../EXternal/vlc/vlcpp;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;JUCER_VS2026_78A5042=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;D:\Projects\Dev\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../External/vlc/vlcpp;../../External/mpv/include;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;MPV_ENABLE_DLL;JUCER_VS2026_78A5042=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <OutputFile>$(OutDir)\MapGyver.exe</OutputFile>
@@ -148,14 +148,14 @@
       <AdditionalLibraryDirectories>../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;..\..\Modules\juce_sharedtexture\libs\VisualStudio2026\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2026\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <AdditionalDependencies>libvlc.lib;libvlccore.lib;Servus.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libvlc.lib;libvlccore.lib;Servus.lib;libmpv.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\MapGyver.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>libvlc.lib;libvlccore.lib;Servus.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libvlc.lib;libvlccore.lib;Servus.lib;libmpv.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;..\..\Modules\juce_sharedtexture\libs\VisualStudio2026\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2026\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -322,6 +322,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\video\VideoAudioProcessor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\video\VideoMedia.cpp">
@@ -4177,6 +4180,7 @@
     <ClInclude Include="..\..\Source\Media\medias\picture\PictureMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\shader\ShaderMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\VideoAudioProcessor.h"/>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceParameterUI.h"/>

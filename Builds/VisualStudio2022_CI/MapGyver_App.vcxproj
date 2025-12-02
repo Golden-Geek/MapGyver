@@ -50,8 +50,8 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../EXternal/vlc/vlcpp;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;JUCER_VS2022_78B14C07=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../External/vlc/vlcpp;../../External/mpv/include;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;MPV_ENABLE_DLL;JUCER_VS2022_78B14C07=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -65,8 +65,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../EXternal/vlc/vlcpp;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;JUCER_VS2022_78B14C07=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/vlc/include4;../../External/vlc/vlcpp;../../External/mpv/include;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;MPV_ENABLE_DLL;JUCER_VS2022_78B14C07=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
       <OutputFile>$(OutDir)\MapGyver.exe</OutputFile>
@@ -254,6 +254,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\video\VideoAudioProcessor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\video\VideoMedia.cpp">
@@ -4109,6 +4112,7 @@
     <ClInclude Include="..\..\Source\Media\medias\picture\PictureMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\shader\ShaderMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\VideoAudioProcessor.h"/>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceParameterUI.h"/>

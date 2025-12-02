@@ -220,6 +220,7 @@
 		6E0A004814F0581C2995EE84 /* NodeManager.h */ /* NodeManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeManager.h; path = ../../Source/Node/NodeManager.h; sourceTree = SOURCE_ROOT; };
 		6E1E1FC10BC9A62BAD3054EF /* MediaManagerUI.h */ /* MediaManagerUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaManagerUI.h; path = ../../Source/Media/ui/MediaManagerUI.h; sourceTree = SOURCE_ROOT; };
 		6ED33267E8E4C3FDC4A2704E /* include_juce_audio_processors_headless.mm */ /* include_juce_audio_processors_headless.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_processors_headless.mm; path = ../../JuceLibraryCode/include_juce_audio_processors_headless.mm; sourceTree = SOURCE_ROOT; };
+		6EE93E2EB756CD136C545127 /* VideoAudioProcessor.h */ /* VideoAudioProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VideoAudioProcessor.h; path = ../../Source/Media/medias/video/VideoAudioProcessor.h; sourceTree = SOURCE_ROOT; };
 		70731DDFB3C9D31456B5D02E /* GridClipManager.h */ /* GridClipManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridClipManager.h; path = ../../Source/Media/medias/grid/GridClipManager.h; sourceTree = SOURCE_ROOT; };
 		70C459AD219BDC7880D0E5DF /* NDIDevice.h */ /* NDIDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIDevice.h; path = ../../Source/Common/NDI/NDIDevice.h; sourceTree = SOURCE_ROOT; };
 		71C68E983AF1136C51D77D28 /* ClipTransition.h */ /* ClipTransition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ClipTransition.h; path = ../../Source/Media/medias/sequence/ClipTransition.h; sourceTree = SOURCE_ROOT; };
@@ -328,6 +329,7 @@
 		C538E2025F0461E4153F5114 /* InteractiveAppMedia.cpp */ /* InteractiveAppMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InteractiveAppMedia.cpp; path = ../../Source/Media/medias/interactiveapp/InteractiveAppMedia.cpp; sourceTree = SOURCE_ROOT; };
 		C578B110C7CB0B82B89E7671 /* GridColumnManager.cpp */ /* GridColumnManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridColumnManager.cpp; path = ../../Source/Media/medias/grid/GridColumnManager.cpp; sourceTree = SOURCE_ROOT; };
 		C6C69B5FAA9B2514D86B4E91 /* JuceHeader.h */ /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
+		C78FB252E2381E3294813F69 /* VideoAudioProcessor.cpp */ /* VideoAudioProcessor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VideoAudioProcessor.cpp; path = ../../Source/Media/medias/video/VideoAudioProcessor.cpp; sourceTree = SOURCE_ROOT; };
 		C7BC78C832016CCD4D5BAD17 /* composition.png */ /* composition.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = composition.png; path = ../../Resources/media/composition.png; sourceTree = SOURCE_ROOT; };
 		C7BDA8F8A21ABC4625ACA470 /* node.png */ /* node.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = node.png; path = ../../Resources/media/node.png; sourceTree = SOURCE_ROOT; };
 		C88E1CE00E9C351BC930CA82 /* include_juce_organicui3.cpp */ /* include_juce_organicui3.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_organicui3.cpp; path = ../../JuceLibraryCode/include_juce_organicui3.cpp; sourceTree = SOURCE_ROOT; };
@@ -547,6 +549,8 @@
 		2EC22ADD1C7C4BA622FFF235 /* video */ = {
 			isa = PBXGroup;
 			children = (
+				C78FB252E2381E3294813F69,
+				6EE93E2EB756CD136C545127,
 				252151FBA71A7FEDACC06D3F,
 				088714EC6F652895CF37ABAB,
 			);
@@ -1348,6 +1352,7 @@
 					"NDEBUG=1",
 					"JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1",
 					"ORGANIC_REMOTE_CONTROL_PORT=46000",
+					"MPV_ENABLE_DLL",
 					"JUCE_COREGRAPHICS_DRAW_ASYNC=0",
 					"JUCER_XCODE_MAC_2F3811D6=1",
 					"JUCE_APP_VERSION=1.0.0b1",
@@ -1374,7 +1379,8 @@
 					"$(SRCROOT)/../../Source",
 					"$(SRCROOT)/../../External/asiodriver",
 					"$(SRCROOT)/../../External/vlc/include4",
-					"$(SRCROOT)/../../EXternal/vlc/vlcpp",
+					"$(SRCROOT)/../../External/vlc/vlcpp",
+					"$(SRCROOT)/../../External/mpv/include",
 					"$(SRCROOT)/../../External/NDI/include",
 					"$(SRCROOT)/../../External/servus/include",
 					"$(inherited)",
@@ -1393,7 +1399,7 @@
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/vlc/include4 $(SRCROOT)/../../EXternal/vlc/vlcpp $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/vlc/include4 $(SRCROOT)/../../External/vlc/vlcpp $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
 				OTHER_LDFLAGS = "-lServus -lvlc -lvlccore -lndi -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.mapgyver;
 				PRODUCT_NAME = "MapGyver";
@@ -1469,6 +1475,7 @@
 					"NDEBUG=1",
 					"JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1",
 					"ORGANIC_REMOTE_CONTROL_PORT=46000",
+					"MPV_ENABLE_DLL",
 					"JUCE_COREGRAPHICS_DRAW_ASYNC=0",
 					"JUCER_XCODE_MAC_2F3811D6=1",
 					"JUCE_APP_VERSION=1.0.0b1",
@@ -1495,7 +1502,8 @@
 					"$(SRCROOT)/../../Source",
 					"$(SRCROOT)/../../External/asiodriver",
 					"$(SRCROOT)/../../External/vlc/include4",
-					"$(SRCROOT)/../../EXternal/vlc/vlcpp",
+					"$(SRCROOT)/../../External/vlc/vlcpp",
+					"$(SRCROOT)/../../External/mpv/include",
 					"$(SRCROOT)/../../External/NDI/include",
 					"$(SRCROOT)/../../External/servus/include",
 					"$(inherited)",
@@ -1514,7 +1522,7 @@
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/vlc/include4 $(SRCROOT)/../../EXternal/vlc/vlcpp $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/vlc/include4 $(SRCROOT)/../../External/vlc/vlcpp $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
 				OTHER_LDFLAGS = "-lServus -lvlc -lvlccore -lndi -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.mapgyver;
 				PRODUCT_NAME = "MapGyver";

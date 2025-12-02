@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="DMftGm" name="MapGyver" projectType="guiapp" useAppConfig="1"
-              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/asiodriver&#10;../../External/vlc/include4&#10;../../EXternal/vlc/vlcpp&#10;../../External/NDI/include&#10;../../External/servus/include&#10;"
-              defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1&#10;ORGANIC_REMOTE_CONTROL_PORT=46000"
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/asiodriver&#10;../../External/vlc/include4&#10;../../External/vlc/vlcpp&#10;../../External/mpv/include&#10;../../External/NDI/include&#10;../../External/servus/include&#10;"
+              defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1&#10;ORGANIC_REMOTE_CONTROL_PORT=46000&#10;MPV_ENABLE_DLL"
               companyWebsite="https://benjamin.kuperberg.fr/mapgyver" companyName="GoldenGeek"
               bundleIdentifier="com.goldengeek.mapgyver" displaySplashScreen="1"
               version="1.0.0b1" projectLineFeed="&#10;">
@@ -272,6 +272,10 @@
                   file="Source/Media/medias/sharedtexture/SharedTextureMedia.h"/>
           </GROUP>
           <GROUP id="{789B912B-C9EF-806B-BBB4-78AE0DD44723}" name="video">
+            <FILE id="LDNvBj" name="VideoAudioProcessor.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/video/VideoAudioProcessor.cpp"/>
+            <FILE id="EQilJj" name="VideoAudioProcessor.h" compile="0" resource="0"
+                  file="Source/Media/medias/video/VideoAudioProcessor.h"/>
             <FILE id="J1IVz4" name="VideoMedia.cpp" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.cpp"/>
             <FILE id="HIszRg" name="VideoMedia.h" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.h"/>
           </GROUP>
@@ -490,11 +494,11 @@
                JUCE_IP_AND_PORT_DETECTION="1" JUCE_USE_CAMERA="1" SHAREDTEXTURE_USE_CPU_IMAGE="0"
                JUCE_USE_MP3AUDIOFORMAT="1" JUCE_USE_LAME_AUDIO_FORMAT="1" JUCE_ASIO="1"/>
   <EXPORTFORMATS>
-    <VS2026 targetFolder="Builds/VisualStudio2026" externalLibraries="libvlc.lib&#10;libvlccore.lib&#10;Servus.lib"
+    <VS2026 targetFolder="Builds/VisualStudio2026" externalLibraries="libvlc.lib&#10;libvlccore.lib&#10;Servus.lib&#10;libmpv.lib"
             extraCompilerFlags="/bigobj">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;"
+                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;../../External/mpv/lib&#10;"
                        binaryPath="Binaries/Debug"/>
         <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
                        libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;"

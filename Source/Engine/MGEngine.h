@@ -31,8 +31,6 @@ public:
 	MGEngine();
 	~MGEngine();
 
-	std::unique_ptr<VLC::Instance> vlcInstance = nullptr;
-
 	void clearInternal() override;
 
 	var getJSONData(bool includeNonOverriden = false) override;

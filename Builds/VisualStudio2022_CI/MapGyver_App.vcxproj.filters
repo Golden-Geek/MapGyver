@@ -1441,6 +1441,9 @@
     <ClCompile Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.cpp">
       <Filter>MapGyver\Source\Media\medias\sharedtexture</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\video\VideoAudioProcessor.cpp">
+      <Filter>MapGyver\Source\Media\medias\video</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\video\VideoMedia.cpp">
       <Filter>MapGyver\Source\Media\medias\video</Filter>
     </ClCompile>
@@ -5672,6 +5675,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.h">
       <Filter>MapGyver\Source\Media\medias\sharedtexture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\video\VideoAudioProcessor.h">
+      <Filter>MapGyver\Source\Media\medias\video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoMedia.h">
       <Filter>MapGyver\Source\Media\medias\video</Filter>

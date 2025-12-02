@@ -10,9 +10,44 @@
 
 #include "Media/MediaIncludes.h"
 #include "Engine/MGEngine.h"
+#include "VideoMedia.h"
+
+void* get_proc_address(void* ctx, const char* name) {
+
+#if JUCE_WINDOWS
+	static HMODULE glModule = GetModuleHandleA("opengl32.dll");
+
+	// 1. Get the pointer to wglGetProcAddress itself
+	using wglProc = void* (__stdcall*)(const char*);
+	static wglProc wgl_get_proc_address = (wglProc)GetProcAddress(glModule, "wglGetProcAddress");
+
+	// 2. Try to use it
+	void* p = nullptr;
+	if (wgl_get_proc_address) {
+		p = wgl_get_proc_address(name);
+	}
+
+	// 3. Fallback for standard functions
+	if (p == nullptr || p == (void*)0x1 || p == (void*)0x2 || p == (void*)0x3 || p == (void*)-1) {
+		p = (void*)GetProcAddress(glModule, name);
+	}
+
+	return p;
+#endif
+}
+
+void mpv_update(void* ctx)
+{
+	((VideoMedia*)ctx)->onMPVUpdate();
+}
+
+void mpv_wakeup(void* ctx)
+{
+	((VideoMedia*)ctx)->onMPVWakeup();
+}
 
 VideoMedia::VideoMedia(var params) :
-	ImageMedia(getTypeString(), params),
+	Media(getTypeString(), params),
 	controlsCC("Controls"),
 	audioCC("Audio"),
 	updatingPosFromVLC(false),
@@ -20,9 +55,7 @@ VideoMedia::VideoMedia(var params) :
 	timeAtLastSeek(0),
 	audioProcessor(nullptr)
 {
-
-	vlcInstance = dynamic_cast<MGEngine*>(Engine::mainEngine)->vlcInstance.get();
-	vlcPlayer.reset(new VLC::MediaPlayer(*vlcInstance));
+	// --- Parameters ---
 
 	source = addEnumParameter("Source", "Source");
 	source->addOption("File", Source_File)->addOption("URL", Source_URL);
@@ -40,6 +73,8 @@ VideoMedia::VideoMedia(var params) :
 	length = addFloatParameter("Length", "Length of video", 10, 0);
 	length->setControllableFeedbackOnly(true);
 
+	// --- Controls ---
+
 	playTrigger = controlsCC.addTrigger("Play", "Play video");
 	stopTrigger = controlsCC.addTrigger("Stop", "Stop video");
 	pauseTrigger = controlsCC.addTrigger("Pause", "Pause video");
@@ -53,6 +88,8 @@ VideoMedia::VideoMedia(var params) :
 	addChildControllableContainer(&controlsCC);
 	addChildControllableContainer(&audioCC);
 
+	// --- Audio Processor Setup ---
+
 	audioNodeID = AudioProcessorGraph::NodeID(AudioManager::getInstance()->getUniqueNodeGraphID());
 
 	std::unique_ptr<VideoMediaAudioProcessor> ap(new VideoMediaAudioProcessor(this));
@@ -62,10 +99,47 @@ VideoMedia::VideoMedia(var params) :
 	AudioManager::getInstance()->addAudioManagerListener(this);
 
 	customFPSTick = true;
+
+
+	//Init MPV
+	mpv = mpv_create();
+	if (!mpv)
+	{
+		NLOGERROR(niceName, "Could not create mpv context");
+		return;
+	}
+
+	mpv_set_option_string(mpv, "terminal", "yes");
+	mpv_set_option_string(mpv, "msg-level", "all=v");
+	mpv_set_option_string(mpv, "vo", "libmpv");
+	mpv_set_option_string(mpv, "force-window", "yes");
+	// Allow MPV to be slightly imprecise with audio to get instant video response
+	mpv_set_option_string(mpv, "hr-seek", "no");
+	// Optional: If you are scrubbing, prevent MPV from waiting for audio to catch up
+	mpv_set_option_string(mpv, "hr-seek-framedrop", "yes");
+	int result = mpv_initialize(mpv);
+
+	if (result != MPV_ERROR_SUCCESS)
+	{
+		NLOGERROR(niceName, "could not initialize mpv context : " << result << " (" << mpv_error_string(result) << ")");
+		return;
+	}
+
+	// Request hw decoding, just for testing.
+	mpv_set_option_string(mpv, "hwdec", "auto");
+
+	//register events
+
+	mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
+	mpv_observe_property(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE);
+	mpv_set_wakeup_callback(mpv, mpv_wakeup, this);
+
 }
 
 VideoMedia::~VideoMedia()
 {
+
+
 	if (AudioManager::getInstanceWithoutCreating())
 		AudioManager::getInstance()->removeAudioManagerListener(this);
 
@@ -74,7 +148,7 @@ VideoMedia::~VideoMedia()
 
 void VideoMedia::clearItem()
 {
-	ImageMedia::clearItem();
+	Media::clearItem();
 
 }
 
@@ -85,14 +159,11 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 		bool isFile = source->getValueDataAsEnum<VideoSource>() == Source_File;
 		filePath->setEnabled(isFile);
 		url->setEnabled(!isFile);
-		//stop();
 	}
-
 	else if (p == source || p == filePath || p == url)
 	{
 		load();
 	}
-
 	else if (p == position)
 	{
 		if (!updatingPosFromVLC)
@@ -113,50 +184,81 @@ void VideoMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc,
 		else if (c == restartTrigger) restart();
 		else if (c == playSpeed)
 		{
-			vlcPlayer->setRate(playSpeed->floatValue());
-			seek(position->doubleValue());
+			// Update speed
+			double speed = playSpeed->doubleValue();
+			mpv_set_property(mpv, "speed", MPV_FORMAT_DOUBLE, &speed);
 		}
 	}
 	else if (cc == &audioCC)
 	{
-		if (c == volume) vlcPlayer->setVolume(volume->floatValue());
-
+		if (c == volume)
+		{
+			double vol = volume->doubleValue() * 100.0;
+			mpv_set_property(mpv, "volume", MPV_FORMAT_DOUBLE, &vol);
+		}
 	}
 }
 
 void VideoMedia::setupAudio()
 {
+	// Existing audio setup logic (mostly for VLC / Graph connections)
 	AudioManager::getInstance()->graph.disconnectNode(audioNodeID);
 
-	if (isCurrentlyLoadingData || vlcMedia == nullptr || isClearing || Engine::mainEngine->isClearing) return;
+	if (isCurrentlyLoadingData || isClearing || Engine::mainEngine->isClearing) return;
 
-	int sampleRate = AudioManager::getInstance()->graph.getSampleRate();
-	int bufferSize = AudioManager::getInstance()->graph.getBlockSize();
+	//retrieve track info from mpv 
 
-	//retrieve audio channels
-	std::vector<VLC::MediaTrack> tracks = vlcMedia->tracks(VLC::MediaTrack::Audio);
-	if (tracks.size() > 0)
+
+	mpv_node result;
+	if (mpv_get_property(mpv, "track-list", MPV_FORMAT_NODE, &result) == MPV_ERROR_SUCCESS)
 	{
-		VLC::MediaTrack track = tracks[0];
-		int numChannels = track.channels();
-
-		vlcPlayer->setAudioFormat("FL32", sampleRate, AudioManager::getInstance()->getNumUserOutputs());
-
-		audioProcessor->setPlayConfigDetails(0, numChannels, sampleRate, bufferSize);
-		audioProcessor->prepareToPlay(sampleRate, bufferSize);
-
-		int minChannels = jmin(numChannels, AudioManager::getInstance()->getNumUserOutputs());
-		for (int i = 0; i < minChannels; ++i)
+		if (result.format == MPV_FORMAT_NODE_ARRAY)
 		{
-			bool canConnect = AudioManager::getInstance()->graph.canConnect({ { audioNodeID, i }, { AUDIO_OUTPUTMIXER_GRAPH_ID, i } });
-			if (canConnect)
+			mpv_node_list* list = result.u.list;
+			for (int i = 0; i < list->num; i++)
 			{
-				AudioManager::getInstance()->graph.addConnection({ { audioNodeID, i }, { AUDIO_OUTPUTMIXER_GRAPH_ID, i } });
-				//NLOG(niceName, "Connected audio channel " << i);
-			}
-			else NLOGWARNING(niceName, "Could not connect audio channel " << i);
+				if (list->values[i].format == MPV_FORMAT_NODE_MAP)
+				{
+					mpv_node_list* track_props = list->values[i].u.list;
+					const char* type = nullptr;
+					long long channels = 0;
 
+					for (int j = 0; j < track_props->num; j++)
+					{
+						if (strcmp(track_props->keys[j], "type") == 0 && track_props->values[j].format == MPV_FORMAT_STRING)
+						{
+							type = track_props->values[j].u.string;
+						}
+						if (strcmp(track_props->keys[j], "demux-channels") == 0 && track_props->values[j].format == MPV_FORMAT_INT64)
+						{
+							channels = track_props->values[j].u.int64;
+						}
+					}
+
+					if (type && strcmp(type, "audio") == 0 && channels > 0)
+					{
+						int sampleRate = AudioManager::getInstance()->graph.getSampleRate();
+						int bufferSize = AudioManager::getInstance()->graph.getBlockSize();
+						int numChannels = (int)channels;
+
+						audioProcessor->setPlayConfigDetails(0, numChannels, sampleRate, bufferSize);
+						audioProcessor->prepareToPlay(sampleRate, bufferSize);
+
+						int minChannels = jmin(numChannels, AudioManager::getInstance()->getNumUserOutputs());
+						for (int ch = 0; ch < minChannels; ++ch)
+						{
+							if (AudioManager::getInstance()->graph.canConnect({ { audioNodeID, ch }, { AUDIO_OUTPUTMIXER_GRAPH_ID, ch } }))
+							{
+								AudioManager::getInstance()->graph.addConnection({ { audioNodeID, ch }, { AUDIO_OUTPUTMIXER_GRAPH_ID, ch } });
+							}
+						}
+						// Found and configured the first audio track, so we can stop.
+						break;
+					}
+				}
+			}
 		}
+		mpv_free_node_contents(&result);
 	}
 }
 
@@ -165,239 +267,337 @@ void VideoMedia::audioSetupChanged()
 	setupAudio();
 }
 
-
 void VideoMedia::load()
 {
-	//stop();
-
-	File f = filePath->getFile();
-	if (!f.existsAsFile())
+	// --- Get Path ---
+	String path;
+	if (source->getValueDataAsEnum<VideoSource>() == Source_File)
 	{
-		NLOGWARNING(niceName, "File not found : " << f.getFullPathName());
-		vlcPlayer.reset();
-		vlcMedia.reset();
-		state->setValueWithData(UNLOADED);
+		File f = filePath->getFile();
+		if (!f.existsAsFile())
+		{
+			NLOGWARNING(niceName, "File not found : " << f.getFullPathName());
+			state->setValueWithData(UNLOADED);
+			return;
+		}
+		path = f.getFullPathName();
+	}
+	else
+	{
+		path = url->stringValue();
+	}
+
+	jassert(mpv != nullptr);
+
+	stopTimer();
+
+	if (mpv_gl == nullptr)
+	{
+		NLOGWARNING(niceName, "Not loading now, needs GL to be initialized");
+		return;
+	}
+	// 2. Load File
+
+
+	startTimerHz(50);
+	NLOG(niceName, "Loading video: " << path);
+
+
+	const char* cmd[] = { "loadfile", path.toRawUTF8(), NULL };
+	mpv_command_async(mpv, 0, cmd);
+
+	int is_paused = 0;
+	mpv_set_property(mpv, "pause", MPV_FORMAT_FLAG, &is_paused);
+
+	state->setValueWithData(IDLE); // Will switch to PLAYING/READY when MPV event arrives
+
+	// Reset Length/Position (will be updated via timer)
+	length->setValue(0);
+	position->setValue(0);
+
+	if (playAtLoad->boolValue()) play();
+
+
+	mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_CONTENT_CHANGED, this));
+}
+
+
+void VideoMedia::initGLInternal()
+{
+	mpv_opengl_init_params gl_init_params[1] = { get_proc_address, nullptr };
+	mpv_render_param params[]{
+		{MPV_RENDER_PARAM_API_TYPE, const_cast<char*>(MPV_RENDER_API_TYPE_OPENGL)},
+		{MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
+		{MPV_RENDER_PARAM_INVALID, nullptr}
+	};
+
+	int result = mpv_render_context_create(&mpv_gl, mpv, params);
+
+	if (result != MPV_ERROR_SUCCESS)
+	{
+		NLOGERROR(niceName, "failed to initialize mpv GL context : " << result << " (" << mpv_error_string(result) << ")");
 		return;
 	}
 
+	mpv_render_context_set_update_callback(mpv_gl, mpv_update, this);
 
-
-	vlcMedia.reset(new VLC::Media(f.getFullPathName().toStdString(), VLC::Media::FromType::FromPath));
-	vlcPlayer.reset(new VLC::MediaPlayer(*vlcInstance, *vlcMedia));
-
-	vlcPlayer->setVideoFormatCallbacks(
-		[this](char* chroma, unsigned* width, unsigned* height, unsigned* pitches, unsigned* lines) -> unsigned {
-
-			GenericScopedLock lock(imageLock);
-			imageWidth = *width;
-			imageHeight = *height;
-			imagePitches = *pitches;
-			imageLines = *lines;
-
-			initImage(imageWidth, imageHeight);
-
-			memcpy(chroma, "BGRA", 4);
-			(*pitches) = imageWidth * 4;
-			(*lines) = imageHeight;
-
-			length->setValue(vlcPlayer->length() / 1000.0);
-			mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_LENGTH_CHANGED, this));
-
-			position->setValue(0);
-			position->setRange(0, length->doubleValue());
-
-			std::vector<VLC::MediaTrack> tracks = vlcPlayer->tracks(VLC::MediaTrack::Video, false);
-			if (tracks.size() > 0)
-			{
-				VLC::MediaTrack track = tracks[0];
-				frameRate = track.fpsNum() * 1.0 / track.fpsDen();
-				totalFrames = floor(length->doubleValue() * frameRate);
-			}
-
-			//check audio here
-			setupAudio();
-
-			imageLock.exit();
-
-			return 1;
-		},
-		[this]() {
-
-		});
-
-
-	vlcPlayer->setVideoCallbacks(
-		[this](void** data) -> void* {
-
-			imageLock.enter();
-			data[0] = bitmapData->getLinePointer(0);
-			return nullptr;
-		},
-
-		[this](void* oldBuffer, void* const* pixels) {
-			imageLock.exit();
-
-
-			PlayerState s = state->getValueDataAsEnum<PlayerState>();
-			updatingPosFromVLC = true;
-
-			if (s == IDLE)
-			{
-				vlcPlayer->setPause(true);
-				position->setValue(0);
-				state->setValueWithData(READY);
-				updatingPosFromVLC = false;
-
-				if (!previewImage.isValid()) shouldGeneratePreviewImage = true;
-				return;
-			}
-
-
-			uint32 time = Time::getMillisecondCounter();
-
-			if (manuallySeeking && time > timeAtLastSeek + 30)
-			{
-				if (s != PLAYING && vlcPlayer->isPlaying())
-				{
-					vlcPlayer->setPosition(position->doubleValue() / length->doubleValue(), false);
-					//vlcPlayer->setRate(playSpeed->floatValue());
-					vlcPlayer->setPause(true);
-				}
-				manuallySeeking = false;
-				updatingPosFromVLC = false;
-				return;
-			}
-
-			if (!manuallySeeking)
-			{
-				position->setValue(vlcPlayer->time() / 1000.0);
-
-				double currentFrame = round(position->doubleValue() * frameRate);
-				if (currentFrame >= totalFrames - 2)
-				{
-					if (loop->boolValue())
-					{
-						vlcPlayer->setPosition(0, false);
-						position->setValue(0);
-					}
-				}
-			}
-			updatingPosFromVLC = false;
-
-		},
-		[this](void* data) {
-			shouldRedraw = true;
-			FPSTick();
-
-		});
-
-	state->setValueWithData(IDLE);
-
-	vlcPlayer->setAudioOutput("amem");
-	vlcPlayer->setAudioCallbacks(
-		[this](const void* data, unsigned int count, int64_t pts) {
-			audioProcessor->onAudioPlay(data, count, pts);
-		},
-		nullptr, nullptr, nullptr, nullptr);
-
-	if (!isCurrentlyLoadingData) vlcPlayer->play();
-
-	mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_CONTENT_CHANGED, this));
+	LOG("MPV GL created");
+	load();
 
 }
 
-void VideoMedia::play() {
-	if (vlcPlayer == nullptr) return;
-	PlayerState st = state->getValueDataAsEnum<PlayerState>();
+void VideoMedia::renderGLInternal()
+{
+	// Use MPV to render directly to the current OpenGL FBO
+	// Note: We need to flip Y because JUCE and MPV might disagree on coords depending on setup
 
-	if (st == READY || st == PAUSED)
+	Init2DViewport(frameBuffer.getWidth(), frameBuffer.getHeight());
+	glClearColor(.5f, 0, 1, 1);
+	glClear(GL_COLOR_BUFFER_BIT);
+	int frameBufferToPasstoMPV = static_cast<int>(frameBuffer.getFrameBufferID()); //pass our framebuffer
+	mpv_opengl_fbo mpfbo{
+		frameBufferToPasstoMPV,
+		frameBuffer.getWidth(),
+		frameBuffer.getHeight(),
+		0 // internal format unknown
+	};
+
+	int flip_y = 1;
+	mpv_render_param params[] = {
+		// {MPV_RENDER_PARAM_FLIP_Y, &flip_y}, // Optional
+		{MPV_RENDER_PARAM_OPENGL_FBO, &mpfbo},
+		{MPV_RENDER_PARAM_FLIP_Y, &flip_y},
+		{ MPV_RENDER_PARAM_INVALID, nullptr }
+	};
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
+	// 2. Ensure MPV draws to the whole FBO (JUCE might have clipped the region)
+	glDisable(GL_SCISSOR_TEST);
+
+	// 3. Ensure the video is opaque (Disable blending so it overwrites the background)
+	glDisable(GL_BLEND);
+
+	int result = mpv_render_context_render(mpv_gl, params);
+
+	if (result != MPV_ERROR_SUCCESS)
 	{
-		state->setValueWithData(PLAYING);
-		//vlcPlayer->setRate(playSpeed->floatValue());
-		//seek(position->doubleValue());
-		vlcPlayer->play();
-		vlcPlayer->setPosition(position->doubleValue() / length->doubleValue(), false);
+		NLOGERROR(niceName, "mpv rendering error : " << result << " (" << mpv_error_string(result) << ")");
 	}
+}
+
+void VideoMedia::closeGLInternal()
+{
+	if (mpv_gl)
+		mpv_render_context_free(mpv_gl);
+
+	if (mpv)
+	{
+		mpv_terminate_destroy(mpv);
+	}
+
+	mpv = nullptr;
+	mpv_gl = nullptr;
+}
+
+void VideoMedia::onMPVUpdate()
+{
+	shouldRedraw = true;
+}
+
+void VideoMedia::onMPVWakeup()
+{
+}
+
+void VideoMedia::pullEvents()
+{
+	if (mpv == nullptr) return;
+
+	mpv_event* e = mpv_wait_event(mpv, 0);
+	while (e->event_id != MPV_EVENT_NONE && e->event_id != MPV_EVENT_IDLE)
+	{
+
+		switch (e->event_id)
+		{
+		case MPV_EVENT_FILE_LOADED:
+		{
+			videoWidth = getMPVIntProperty("width");
+			videoHeight = getMPVIntProperty("height");
+			length->setValue(getMPVDoubleProperty("duration"));
+			position->setRange(0, length->doubleValue());
+
+			NLOG(niceName, "Video loaded: " << videoWidth << "x" << videoHeight << ", Length: " << length->doubleValue());
+
+			state->setValueWithData(READY);
+			//pause here
+			pause();
+
+			mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_CONTENT_CHANGED, this));
+		}
+		break;
+
+		case MPV_EVENT_PROPERTY_CHANGE:
+		{
+			mpv_event_property* prop = (mpv_event_property*)e->data;
+
+			String propName = String(prop->name);
+			//NLOG(niceName, "MPV Property Change Event : " << propName);
+
+			if (propName == "duration")
+			{
+				if (prop->format == MPV_FORMAT_DOUBLE)
+				{
+					double dur = *(double*)prop->data;
+					length->setValue(dur);
+					mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_LENGTH_CHANGED, this));
+				}
+			}
+			else if (propName == "time-pos")
+			{
+				if (prop->format == MPV_FORMAT_DOUBLE)
+				{
+					double pos = *(double*)prop->data;
+					updatingPosFromVLC = true;
+					position->setValue(pos);
+					updatingPosFromVLC = false;
+				}
+			}
+		}
+		break;
+
+		case MPV_EVENT_START_FILE:
+		{
+			//NLOG(niceName, "MPV Start File Event");
+		}
+		break;
+
+		case MPV_EVENT_END_FILE:
+		{
+			//NLOG(niceName, "MPV End File Event");
+			if (loop->boolValue())
+			{
+				seek(0);
+				play();
+			}
+			else
+			{
+				state->setValueWithData(IDLE);
+			}
+		}
+		break;
+
+		case MPV_EVENT_COMMAND_REPLY:
+		{
+			// Handle command replies if needed
+			//NLOG(niceName, "MPV Command Reply Event: ");
+		}
+		break;
+
+		default:
+			//NLOG(niceName, "MPV Unhandled Event: " << String(mpv_event_name(e->event_id)) << "(" << e->event_id << ")");
+			break;
+		}
+
+		e = mpv_wait_event(mpv, 0);
+
+	}
+}
+
+int VideoMedia::getMPVIntProperty(const char* name)
+{
+	int result{};
+	mpv_get_property(mpv, name, MPV_FORMAT_INT64, &result);
+	return result;
+}
+
+inline double VideoMedia::getMPVDoubleProperty(const char* name)
+{
+	double result{};
+	mpv_get_property(mpv, name, MPV_FORMAT_DOUBLE, &result);
+	return result;
+}
+
+inline String VideoMedia::getMPVStringProperty(const char* name)
+{
+	char* result = nullptr;
+	mpv_get_property(mpv, name, MPV_FORMAT_STRING, &result);
+	String strResult = String(result);
+	mpv_free(result);
+	return strResult;
+}
+
+
+// CONTROL
+
+
+void VideoMedia::play() {
+	int paused = 0;
+	mpv_set_property(mpv, "pause", MPV_FORMAT_FLAG, &paused);
+	state->setValueWithData(PLAYING);
 }
 
 void VideoMedia::stop() {
-	if (vlcPlayer == nullptr) return;
-	PlayerState st = state->getValueDataAsEnum<PlayerState>();
-	if (st == PLAYING || st == PAUSED)
-	{
-
-		vlcPlayer->setPosition(0, false);
-		vlcPlayer->play();
-		state->setValueWithData(IDLE);
-	}
+	pause();
+	state->setValueWithData(READY);
 }
 
 void VideoMedia::pause() {
-	if (vlcPlayer == nullptr) return;
-	PlayerState st = state->getValueDataAsEnum<PlayerState>();
-	if (st == PLAYING)
-	{
-		vlcPlayer->pause();
-		state->setValueWithData(PAUSED);
-	}
+	int paused = 1;
+	mpv_set_property(mpv, "pause", MPV_FORMAT_FLAG, &paused);
+	state->setValueWithData(PAUSED);
 }
 
 void VideoMedia::restart() {
-	if (vlcPlayer == nullptr) return;
-	PlayerState st = state->getValueDataAsEnum<PlayerState>();
-	if (st == PLAYING || st == PAUSED || st == IDLE)
-	{
-		vlcPlayer->setPosition(0, false);
-		vlcPlayer->play();
-		state->setValueWithData(PLAYING);
-	}
+	seek(0);
+	play();
 }
 
 void VideoMedia::seek(double time)
 {
-	if (vlcPlayer == nullptr) return;
-	PlayerState st = state->getValueDataAsEnum<PlayerState>();
-	if (st == PLAYING || st == PAUSED || st == READY)
-	{
+	double target = jlimit(0.0, length->doubleValue(), time);
+	//// "absolute" seeking
+	//NLOG(niceName, "Seek to " << target);
+	//// 2. Set the property directly
+	//// This is equivalent to "seek <target> absolute"
+	//int result = mpv_set_property_async(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE, &target);
 
-		double targetTime = time;
-		bool isEnd = false;
+	//if (result < 0) {
+	//	NLOGERROR(niceName, "Seek failed: " << mpv_error_string(result));
+	//}
+	//position->setValue(target);
 
-		if (loop->boolValue()) targetTime = fmod(targetTime, length->doubleValue());
 
-		double maxTime = length->doubleValue() - 1.0 / frameRate;
-		targetTime = jlimit(0., maxTime, targetTime);
+	mpv_node args[3];
 
-		if (targetTime >= maxTime) isEnd = true;
-		{
-			timeAtLastSeek = Time::getMillisecondCounter();
-			manuallySeeking = true;
-			if (st != PLAYING && !vlcPlayer->isPlaying())
-			{
-				//vlcPlayer->setRate(0.00001);//can't put 0
-				vlcPlayer->play();
-			}
-			vlcPlayer->setTime(targetTime * 1000, true);
+	// Arg 0: Command
+	args[0].format = MPV_FORMAT_STRING;
+	args[0].u.string = "seek";
 
-		}
+	// Arg 1: Time (Pass the number directly!)
+	args[1].format = MPV_FORMAT_DOUBLE;
+	args[1].u.double_ = target;
 
-		if (!isEnd && st == PLAYING && vlcPlayer->state() != libvlc_Playing) vlcPlayer->play();
-	}
+	// Arg 2: Flags
+	args[2].format = MPV_FORMAT_STRING;
+	args[2].u.string = "absolute";
+
+	mpv_node command;
+	mpv_node_list list{ 3, args };
+	command.format = MPV_FORMAT_NODE_ARRAY;
+	command.u.list = &list;
+
+	int result = mpv_command_node_async(mpv, 0, &command);
 }
 
+// =========================================================================================
+// STANDARD MEDIA HANDLERS
+// =========================================================================================
 
 void VideoMedia::handleEnter(double time, bool doPlay)
 {
 	Media::handleEnter(time, doPlay);
-
-	if (vlcPlayer == nullptr) return;
-
 	seek(time);
-
-	bool isEnd = false;
-	if (position->doubleValue() >= length->doubleValue() - 1.0 / frameRate) isEnd = true;
-
-	if (doPlay && !isEnd) play();
+	if (doPlay) play();
 }
 
 void VideoMedia::handleExit()
@@ -409,8 +609,7 @@ void VideoMedia::handleExit()
 void VideoMedia::handleSeek(double time)
 {
 	Media::handleSeek(time);
-	//seek(time);
-	position->setValue(time);
+	seek(time);
 }
 
 void VideoMedia::handleStop()
@@ -435,6 +634,11 @@ double VideoMedia::getMediaLength()
 	return length->doubleValue();
 }
 
+Point<int> VideoMedia::getMediaSize(const String& texName)
+{
+	return { videoWidth, videoHeight };
+}
+
 String VideoMedia::getMediaContentName() const
 {
 	if (filePath != nullptr && source->getValueDataAsEnum<VideoSource>() == Source_File)
@@ -449,206 +653,12 @@ void VideoMedia::afterLoadJSONDataInternal()
 {
 	Media::afterLoadJSONDataInternal();
 	setupAudio();
-	if (state->getValueDataAsEnum<PlayerState>() == IDLE && vlcPlayer != nullptr) vlcPlayer->play();
+	if (state->getValueDataAsEnum<PlayerState>() == PLAYING) play();
 }
 
-
-
-
-
-
-
-// AUDIO PROCESSOR
-VideoMediaAudioProcessor::VideoMediaAudioProcessor(VideoMedia* videoMedia) :
-	videoMedia(videoMedia)
+void VideoMedia::timerCallback()
 {
-	LOG("Created VideoMediaAudioProcessor for " << videoMedia->niceName);
-}
-
-VideoMediaAudioProcessor::~VideoMediaAudioProcessor()
-{
-	videoMedia = nullptr;
-}
-
-void VideoMediaAudioProcessor::onAudioPlay(const void* data, unsigned int count, int64_t pts)
-{
-	if (!videoMedia->isPlaying()) return;
-
-	if (fifo != nullptr)
-	{
-		//int numFrames = count / getTotalNumOutputChannels();
-		//LOG("Received " << numFrames << " frames from VLC");
-		fifo->pushData(data, count);
-
-		// If we are in a buffering state, check if we've crossed the threshold
-		if (isBuffering && fifo->getFramesAvailable() >= bufferThreshold)
-		{
-			isBuffering = false; // We have enough data, tell the consumer it's ok to start pulling.
-		}
-	}
+	pullEvents();
 
 }
 
-void VideoMediaAudioProcessor::onAudioFlush(int64_t pts)
-{
-	//LOG("Audio flush at pts: " << pts);
-}
-
-void VideoMediaAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
-{
-
-	if (videoMedia->isClearing || !videoMedia->isPlaying()) return;
-	if (fifo == nullptr || buffer.getNumChannels() == 0)
-	{
-		buffer.clear();
-		return;
-	}
-
-	// If we are buffering, output silence and wait for the producer to catch up.
-	if (isBuffering)
-	{
-		//LOG("Buffering... Frames available: " << fifo->getFramesAvailable());
-		buffer.clear();
-		return;
-	}
-
-
-	fifo->pullData(buffer, buffer.getNumSamples());
-	float rms = buffer.getRMSLevel(0, 0, buffer.getNumSamples());
-	//LOG("Pulling " << buffer.getNumSamples() << " samples from FIFO, remaining " << fifo->getFramesAvailable() << ", RMS : " << rms);
-
-	// This is a new check inside pullData now, but as a safeguard,
-	// if the buffer is ever empty after a pull, it means we've underrun.
-	// Re-engage buffering to prevent crackles.
-	if (rms < 1e-5 && fifo->getFramesAvailable() < buffer.getNumSamples())
-	{
-		//LOG("Audio underrun detected, re-entering buffering state");
-		isBuffering = true;
-	}
-
-}
-
-void VideoMediaAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
-{
-	fifo.reset(new AudioFIFO(getTotalNumOutputChannels(), sampleRate * 10)); // 10 seconds buffer
-
-	int numChannels = getTotalNumOutputChannels();
-	if (numChannels > 0)
-	{
-		fifo.reset(new AudioFIFO(numChannels, (int)(sampleRate * 10))); // 10-second buffer is plenty
-
-		// Set our low water mark. Let's wait for at least 4 blocks of audio.
-		// This gives the producer a good head start.
-		bufferThreshold = samplesPerBlock * 4;
-
-		// Start in a buffering state
-		isBuffering = true;
-	}
-}
-
-// Push audio data from VLC into the FIFO buffer (Producer Thread)
-void AudioFIFO::pushData(const void* data, int totalSamples)
-{
-	const float* inputData = static_cast<const float*>(data);
-
-	// =========================================================================
-	// THE FIX IS HERE:
-	// 'totalSamples' from the VLC callback is actually the number of frames.
-	// We must NOT divide it by the number of channels.
-	const int numFrames = totalSamples;
-	// =========================================================================
-
-	if (numFrames == 0)
-		return;
-
-	// Load the current read position to check for available space.
-	const auto localReadPos = readPos.load(std::memory_order_acquire);
-	const auto localWritePos = writePos.load(std::memory_order_relaxed);
-
-	// Check available space. -1 to leave one slot empty to distinguish full/empty.
-	int availableSpace = (localReadPos - localWritePos - 1 + bufferSize) % bufferSize;
-	if (numFrames > availableSpace)
-	{
-		// Buffer overflow, data will be lost.
-		return;
-	}
-
-	// De-interleave data, handling potential wrap-around in the circular buffer.
-	for (int ch = 0; ch < channels; ++ch)
-	{
-		if (localWritePos + numFrames > bufferSize)
-		{
-			// Data will wrap around the end of the buffer.
-			int framesToEnd = bufferSize - localWritePos;
-			int framesFromStart = numFrames - framesToEnd;
-
-			// First part: to the end of the buffer
-			for (int i = 0; i < framesToEnd; ++i)
-				fifoBuffer.getWritePointer(ch)[localWritePos + i] = inputData[i * channels + ch];
-
-			// Second part: from the start of the buffer
-			for (int i = 0; i < framesFromStart; ++i)
-				fifoBuffer.getWritePointer(ch)[i] = inputData[(i + framesToEnd) * channels + ch];
-		}
-		else
-		{
-			// Data fits in a contiguous block.
-			for (int i = 0; i < numFrames; ++i)
-				fifoBuffer.getWritePointer(ch)[localWritePos + i] = inputData[i * channels + ch];
-		}
-	}
-
-	// Atomically update the write position for the consumer thread to see.
-	writePos.store((localWritePos + numFrames) % bufferSize, std::memory_order_release);
-
-	//LOG("Pushed " << numFrames << " frames to FIFO");
-}
-
-// Pull data from the FIFO buffer for processing by JUCE (Consumer Thread)
-void AudioFIFO::pullData(AudioBuffer<float>& buffer, int numSamples)
-{
-	const int framesRequested = numSamples;
-
-	const auto localWritePos = writePos.load(std::memory_order_acquire);
-	const auto localReadPos = readPos.load(std::memory_order_relaxed);
-
-	const int dataAvailable = (localWritePos - localReadPos + bufferSize) % bufferSize;
-	const int framesToPull = std::min(dataAvailable, framesRequested);
-
-	if (framesToPull == 0)
-	{
-		buffer.clear(); // Ensure buffer is silent if we have no data
-		return;
-	}
-
-	// Copy data from our planar FIFO to the destination planar buffer.
-	for (int ch = 0; ch < channels; ++ch)
-	{
-		if (ch >= buffer.getNumChannels()) break; // Safety check
-
-		if (localReadPos + framesToPull > bufferSize)
-		{
-			// Data wraps around.
-			int framesToEnd = bufferSize - localReadPos;
-			int framesFromStart = framesToPull - framesToEnd;
-			buffer.copyFrom(ch, 0, fifoBuffer, ch, localReadPos, framesToEnd);
-			buffer.copyFrom(ch, framesToEnd, fifoBuffer, ch, 0, framesFromStart);
-		}
-		else
-		{
-			// Single contiguous block.
-			buffer.copyFrom(ch, 0, fifoBuffer, ch, localReadPos, framesToPull);
-		}
-	}
-
-	// Atomically update the read position.
-	readPos.store((localReadPos + framesToPull) % bufferSize, std::memory_order_release);
-
-	// If we couldn't provide all requested frames, clear the rest of the buffer.
-	if (framesToPull < framesRequested)
-	{
-		buffer.clear(framesToPull, framesRequested - framesToPull);
-	}
-
-	//LOG("Pulled " << framesToPull << " frames from FIFO");
-}

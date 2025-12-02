@@ -19,12 +19,8 @@ public:
 
 	ColorParameter* color;
 
-	OpenGLFrameBuffer checkFrameBuffer;
-
 	void clearItem() override;
 
-
-	void initFrameBuffer() override;
 	void renderGLInternal() override;
 
 	Point<int> getDefaultMediaSize() override;
