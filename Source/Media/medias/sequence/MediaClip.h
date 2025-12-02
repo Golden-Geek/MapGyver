@@ -108,6 +108,7 @@ public:
 
 	void setMedia(Media* m) override;
 
+
 	String getTypeString() const override { return media != nullptr ? media->getTypeString() : ""; }
 	static OwnedMediaClip* create(var params = var()) { return new OwnedMediaClip(params); }
 };

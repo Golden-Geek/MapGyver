@@ -128,6 +128,8 @@ public:
 
 	double getMediaLength() override;
 
+	String getMediaContentName() const override;
+
 	void afterLoadJSONDataInternal() override;
 
 	//void tapTempo();

@@ -25,6 +25,9 @@ public:
 
 	IntParameter* width;
 	IntParameter* height;
+
+	enum StretchMode { STRETCH, FIT, FILL };
+	EnumParameter* stretchMode;
 	Trigger* generatePreview;
 
 	ControllableContainer mediaParams;
@@ -102,10 +105,13 @@ public:
 
 	virtual Point<int> getMediaSize(const String& name = String()); //default to main fbo size
 	virtual Point<int> getDefaultMediaSize(); //default size when no media is loaded
-
+	
+	Rectangle<int> getMediaRect(Rectangle<int> targetRect);
+ 
 	virtual double getMediaLength() { return -1; } //for video and other time-based media
+	virtual String getMediaContentName() const { return getTypeString(); }
 
-	DECLARE_ASYNC_EVENT(Media, Media, media, ENUM_LIST(EDITING_CHANGED, PREVIEW_CHANGED, SUB_FRAMEBUFFERS_CHANGED, MEDIA_LENGTH_CHANGED), EVENT_ITEM_CHECK);
+	DECLARE_ASYNC_EVENT(Media, Media, media, ENUM_LIST(EDITING_CHANGED, PREVIEW_CHANGED, SUB_FRAMEBUFFERS_CHANGED, MEDIA_LENGTH_CHANGED, MEDIA_CONTENT_CHANGED), EVENT_ITEM_CHECK);
 
 
 	JUCE_DECLARE_WEAK_REFERENCEABLE(Media);

@@ -115,6 +115,8 @@ public:
 
 	void run() override;
 
+	String getMediaContentName() const override;
+
 	var getJSONData(bool includeNonOverriden = false) override;
 	void loadJSONDataItemInternal(var data) override;
 

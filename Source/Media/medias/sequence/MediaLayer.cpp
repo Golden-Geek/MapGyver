@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "MediaLayer.h"
 
 MediaLayer::MediaLayer(Sequence* s, var params) :
 	SequenceLayer(s, "Media"),
@@ -207,7 +206,6 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 	int index = 0;
 	for (auto& clip : clipsToProcess)
 	{
-
 		glBlendFunc((GLenum)(int)transitionBlendFunctionSourceFactor->getValueData(), (GLenum)(int)transitionBlendFunctionDestinationFactor->getValueData());
 		glBindTexture(GL_TEXTURE_2D, clip->media->frameBuffer.getTextureID());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -218,15 +216,13 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 		double fadeMultiplier = clip->getFadeMultiplier();
 		glColor4f(1, 1, 1, fadeMultiplier);
 
-
+		Rectangle<int> layerBounds = Rectangle<int>(0, 0, width, height);
 		if (positionningCC.enabled->boolValue())
-		{
-			Draw2DTexRect(xParam->intValue(), yParam->intValue(), widthParam->intValue(), heightParam->intValue());
-		}
-		else
-		{
-			Draw2DTexRect(0, 0, width, height);
-		}
+			layerBounds.setBounds(xParam->intValue(), yParam->intValue(), widthParam->intValue(), heightParam->intValue());
+
+		Rectangle<int> clipBounds = clip->media->getMediaRect(layerBounds);
+
+		Draw2DTexRect(clipBounds.getX(), clipBounds.getY(), clipBounds.getWidth(), clipBounds.getHeight());
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -241,7 +237,7 @@ bool MediaLayer::renderFrameBuffer(int width, int height)
 void MediaLayer::renderGL(int depth)
 {
 	glBlendFunc((GLenum)(int)blendFunctionSourceFactor->getValueData(), (GLenum)(int)blendFunctionDestinationFactor->getValueData());
-	//BlendMode bm = blendMode->getValueDataAsEnum<BlendMode>();
+	//BlendMode bm = blendMode->getValueData<BlendMode>();
 
 	//switch (bm)
 	//{

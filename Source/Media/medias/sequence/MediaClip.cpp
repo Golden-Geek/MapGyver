@@ -240,6 +240,10 @@ void MediaClip::newMessage(const Media::MediaEvent& e)
 		updateCoreRangeFromMedia();
 		break;
 
+	case Media::MediaEvent::MEDIA_CONTENT_CHANGED:
+		if(media != nullptr) setNiceName(media->getMediaContentName());
+		break;
+
 	default:
 		break;
 	}
@@ -309,6 +313,4 @@ void OwnedMediaClip::setMedia(Media* m)
 	{
 		ownedMedia.reset();
 	}
-
-
 }

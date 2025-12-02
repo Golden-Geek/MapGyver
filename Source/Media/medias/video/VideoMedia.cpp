@@ -58,7 +58,7 @@ VideoMedia::VideoMedia(var params) :
 	std::unique_ptr<VideoMediaAudioProcessor> ap(new VideoMediaAudioProcessor(this));
 	audioProcessor = ap.get();
 	AudioManager::getInstance()->graph.addNode(std::move(ap), audioNodeID);
-	
+
 	AudioManager::getInstance()->addAudioManagerListener(this);
 
 	customFPSTick = true;
@@ -180,6 +180,8 @@ void VideoMedia::load()
 		return;
 	}
 
+
+
 	vlcMedia.reset(new VLC::Media(f.getFullPathName().toStdString(), VLC::Media::FromType::FromPath));
 	vlcPlayer.reset(new VLC::MediaPlayer(*vlcInstance, *vlcMedia));
 
@@ -245,9 +247,11 @@ void VideoMedia::load()
 				position->setValue(0);
 				state->setValueWithData(READY);
 				updatingPosFromVLC = false;
-				shouldGeneratePreviewImage = true;
+
+				if (!previewImage.isValid()) shouldGeneratePreviewImage = true;
 				return;
 			}
+
 
 			uint32 time = Time::getMillisecondCounter();
 
@@ -297,6 +301,8 @@ void VideoMedia::load()
 		nullptr, nullptr, nullptr, nullptr);
 
 	if (!isCurrentlyLoadingData) vlcPlayer->play();
+
+	mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_CONTENT_CHANGED, this));
 
 }
 
@@ -427,6 +433,16 @@ bool VideoMedia::isPlaying()
 double VideoMedia::getMediaLength()
 {
 	return length->doubleValue();
+}
+
+String VideoMedia::getMediaContentName() const
+{
+	if (filePath != nullptr && source->getValueDataAsEnum<VideoSource>() == Source_File)
+		return filePath->getFile().getFileNameWithoutExtension();
+	else if (url != nullptr && source->getValueDataAsEnum<VideoSource>() == Source_URL)
+		return url->stringValue().substring(url->stringValue().lastIndexOf("/") + 1);
+
+	return Media::getMediaContentName();
 }
 
 void VideoMedia::afterLoadJSONDataInternal()

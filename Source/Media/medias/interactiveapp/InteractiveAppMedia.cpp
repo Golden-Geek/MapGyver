@@ -78,7 +78,11 @@ void InteractiveAppMedia::onContainerParameterChangedInternal(Parameter* p)
 {
 	BaseSharedTextureMedia::onContainerParameterChangedInternal(p);
 
-	if (p == appRunning)
+	if (p == appParam)
+	{
+		mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_CONTENT_CHANGED, this));
+	}
+	else if (p == appRunning)
 	{
 		if (!checkingProcess)
 		{
@@ -736,6 +740,12 @@ void InteractiveAppMedia::run()
 		}
 	}
 #endif
+}
+
+String InteractiveAppMedia::getMediaContentName() const
+{
+	File f = appParam->getFile();	
+	return f.existsAsFile() ? f.getFileNameWithoutExtension() : Media::getMediaContentName();
 }
 
 var InteractiveAppMedia::getJSONData(bool includeNonOverriden)

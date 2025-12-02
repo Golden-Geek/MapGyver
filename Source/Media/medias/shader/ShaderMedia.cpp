@@ -300,7 +300,7 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 {
 	//GenericScopedLock lock(shader);
 
-	LOG("load fragment shader");
+	//LOG("load fragment shader");
 
 	isLoadingShader = true;
 	shaderLoaded->setValue(false);
@@ -537,6 +537,8 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 		}
 
 	}
+
+	mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_CONTENT_CHANGED, this));
 }
 
 String ShaderMedia::insertShaderIncludes(const String& fragmentShader)
@@ -964,6 +966,13 @@ void ShaderMedia::run()
 		shouldRedraw = true;
 		forceRedraw = true;
 	}
+}
+
+String ShaderMedia::getMediaContentName() const
+{
+	File f = shaderFile->getFile();
+	if (f.existsAsFile()) return f.getFileNameWithoutExtension();
+	return Media::getMediaContentName();
 }
 
 var ShaderMedia::getJSONData(bool includeNonOverriden)

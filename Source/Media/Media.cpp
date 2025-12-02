@@ -17,6 +17,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 	BaseItem(name),
 	width(nullptr),
 	height(nullptr),
+	stretchMode(nullptr),
 	customTime(-1),
 	mediaParams("Media Parameters"),
 	alwaysRedraw(true),
@@ -47,6 +48,9 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 		width = addIntParameter("Width", "Width of the media", 1920, 1, 10000);
 		height = addIntParameter("Height", "Height of the media", 1080, 1, 10000);
 	}
+
+	stretchMode = addEnumParameter("Stretch Mode", "Stretch Mode");
+	stretchMode->addOption("Stretch", STRETCH)->addOption("Fit", FIT)->addOption("Fill", FILL);
 
 	currentFPS = addFloatParameter("current FPS", "", 0, 0, 60);
 	currentFPS->isSavable = false;
@@ -344,6 +348,47 @@ Point<int> Media::getDefaultMediaSize()
 	if (width != nullptr && height != nullptr) return Point<int>(width->intValue(), height->intValue());
 	if (frameBuffer.isValid()) return Point<int>(frameBuffer.getWidth(), frameBuffer.getHeight());
 	return Point<int>(0, 0);
+}
+
+Rectangle<int> Media::getMediaRect(Rectangle<int> targetRect)
+{
+	StretchMode sm = stretchMode->getValueDataAsEnum<StretchMode>();
+
+	Point<int> mediaSize = getMediaSize();
+
+	switch (sm)
+	{
+	case STRETCH:
+		targetRect.setBounds(0, 0, targetRect.getWidth(), targetRect.getHeight());
+		break;
+	case FIT:
+	case FILL:
+
+		//fit mediaSize ratio inside targetRect
+	{
+		float targetRatio = (float)targetRect.getWidth() / (float)targetRect.getHeight();
+		float mediaRatio = (float)mediaSize.x / (float)mediaSize.y;
+
+		bool adaptWidth = (sm == FIT) ? (mediaRatio > targetRatio) : (mediaRatio < targetRatio);
+		if (adaptWidth)
+		{
+			//media is wider than target
+			int newHeight = (int)(targetRect.getWidth() / mediaRatio);
+			int yOffset = (targetRect.getHeight() - newHeight) / 2;
+			targetRect.setBounds(0, yOffset, targetRect.getWidth(), newHeight);
+		}
+		else
+		{
+			//media is taller than target
+			int newWidth = (int)(targetRect.getHeight() * mediaRatio);
+			int xOffset = (targetRect.getWidth() - newWidth) / 2;
+			targetRect.setBounds(xOffset, 0, newWidth, targetRect.getHeight());
+		}
+	}
+	break;
+	}
+
+	return targetRect;
 }
 
 
