@@ -12,6 +12,9 @@
 
 #include "JuceHeader.h"
 
+// Forward declaration
+class VideoMediaAudioProcessor;
+
 class VideoMedia :
 	public Media,
 	public AudioManager::AudioManagerListener,
@@ -33,7 +36,6 @@ public:
 	EnumParameter* state;
 	FloatParameter* position;
 	FloatParameter* length;
-
 
 	ControllableContainer controlsCC;
 	Trigger* playTrigger;
@@ -57,15 +59,34 @@ public:
 	int videoWidth = 0;
 	int videoHeight = 0;
 
-	//Audio
+	// Audio Processor Graph
 	AudioProcessorGraph::NodeID audioNodeID;
 	VideoMediaAudioProcessor* audioProcessor;
+	int numAudioTracks = 0;
+
+	class PipeThread : public Thread
+	{
+	public:
+		PipeThread(VideoMedia* owner, String pipePath);
+		~PipeThread() override;
+		void run() override;
+		void shutdown();
+
+	private:
+		VideoMedia* owner;
+		String pipePath;
+		HANDLE pipeHandle = INVALID_HANDLE_VALUE;
+		std::vector<float> readBuffer;
+	};
+
+	std::unique_ptr<PipeThread> pipeThread;
+	String uniquePipePath;
+	// ==============================================================================
 
 	void onContainerParameterChanged(Parameter* p) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 	void setupAudio();
-
 	void audioSetupChanged() override;
 
 	void load();
@@ -74,7 +95,7 @@ public:
 	void renderGLInternal() override;
 	void closeGLInternal() override;
 
-	//MPV Stuff
+	// MPV Stuff
 	void onMPVUpdate();
 	void onMPVWakeup();
 	void pullEvents();
@@ -103,7 +124,6 @@ public:
 	void afterLoadJSONDataInternal() override;
 
 	void timerCallback() override;
-
 
 	DECLARE_TYPE("Video")
 };

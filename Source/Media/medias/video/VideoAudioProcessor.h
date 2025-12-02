@@ -1,4 +1,7 @@
+#pragma once
+
 class VideoMedia;
+
 
 class AudioFIFO
 {
@@ -45,6 +48,8 @@ public:
 	VideoMedia* videoMedia;
 	std::unique_ptr<AudioFIFO> fifo;
 
+	
+
 	// NEW MEMBERS
 	std::atomic<bool> isBuffering{ true };
 	int bufferThreshold = 0;
@@ -61,7 +66,7 @@ public:
 	virtual void getStateInformation(MemoryBlock& destData) override {}
 	virtual void setStateInformation(const void* data, int sizeInBytes) override {}
 
-	const String getName() const override { return videoMedia->niceName + " Processor"; }
+	const String getName() const override;
 	bool acceptsMidi() const override { return false; }
 	bool producesMidi() const override { return false; }
 	double getTailLengthSeconds() const override { return 0.0; }

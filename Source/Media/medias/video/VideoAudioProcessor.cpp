@@ -3,7 +3,7 @@
 VideoMediaAudioProcessor::VideoMediaAudioProcessor(VideoMedia* videoMedia) :
 	videoMedia(videoMedia)
 {
-	LOG("Created VideoMediaAudioProcessor for " << videoMedia->niceName);
+	//LOG("Created VideoMediaAudioProcessor for " << videoMedia->niceName);
 }
 
 VideoMediaAudioProcessor::~VideoMediaAudioProcessor()
@@ -32,7 +32,12 @@ void VideoMediaAudioProcessor::onAudioFlush(int64_t pts)
 
 void VideoMediaAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-	if (videoMedia->isClearing || !videoMedia->isPlaying()) return;
+	if (videoMedia->isClearing || !videoMedia->isPlaying())
+	{
+		buffer.clear();
+		return;
+	}
+
 	if (fifo == nullptr || buffer.getNumChannels() == 0)
 	{
 		buffer.clear();
@@ -52,6 +57,10 @@ void VideoMediaAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuff
 	{
 		isBuffering = true;
 	}
+}
+
+const String VideoMediaAudioProcessor::getName() const { 
+	return videoMedia->niceName + " Processor"; 
 }
 
 void VideoMediaAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
@@ -118,16 +127,18 @@ void AudioFIFO::pullData(AudioBuffer<float>& buffer, int numSamples)
 	{
 		if (ch >= buffer.getNumChannels()) break;
 
+		int invertChannel = channels - ch - 1;
+
 		if (localReadPos + framesToPull > bufferSize)
 		{
 			int framesToEnd = bufferSize - localReadPos;
 			int framesFromStart = framesToPull - framesToEnd;
-			buffer.copyFrom(ch, 0, fifoBuffer, ch, localReadPos, framesToEnd);
-			buffer.copyFrom(ch, framesToEnd, fifoBuffer, ch, 0, framesFromStart);
+			buffer.copyFrom(invertChannel, 0, fifoBuffer, ch, localReadPos, framesToEnd);
+			buffer.copyFrom(invertChannel, framesToEnd, fifoBuffer, ch, 0, framesFromStart);
 		}
 		else
 		{
-			buffer.copyFrom(ch, 0, fifoBuffer, ch, localReadPos, framesToPull);
+			buffer.copyFrom(invertChannel, 0, fifoBuffer, ch, localReadPos, framesToPull);
 		}
 	}
 
