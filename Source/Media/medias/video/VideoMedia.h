@@ -65,12 +65,16 @@ public:
 	EnumParameter* source;
 	FileParameter* filePath;
 	StringParameter* url;
+	
+	enum VideoEngine { Engine_VLC, Engine_MPV };
+	EnumParameter* engine;
 
 	enum PlayerState { UNLOADED, IDLE, READY, PLAYING, PAUSED, STATES_MAX };
 	const String playerStateNames[STATES_MAX] = { "Unloaded", "Idle", "Ready", "Playing", "Paused" };
 	EnumParameter* state;
 	FloatParameter* position;
 	FloatParameter* length;
+
 
 	ControllableContainer controlsCC;
 	Trigger* playTrigger;
@@ -84,9 +88,18 @@ public:
 	ControllableContainer audioCC;
 	FloatParameter* volume;
 
+#if USE_VLC
 	VLC::Instance* vlcInstance;
 	std::unique_ptr<VLC::MediaPlayer> vlcPlayer;
 	std::unique_ptr<VLC::Media> vlcMedia;
+#endif
+
+#if USE_MPV
+	mpv_handle* mpv = nullptr;
+	mpv_render_context* mpv_gl = nullptr;
+	bool mpvIsInitialized = false;
+#endif
+
 
 	int imageWidth = 0;
 	int imageHeight = 0;
@@ -133,6 +146,12 @@ public:
 	void afterLoadJSONDataInternal() override;
 
 	//void tapTempo();
+
+#ifdef USE_MPV
+	static void on_mpv_render_update(void* ctx);
+	static void* get_proc_address_mpv(void* fn_ctx, const char* name);
+	void handleMpvEvent(mpv_event* e);
+#endif
 
 	DECLARE_TYPE("Video")
 };

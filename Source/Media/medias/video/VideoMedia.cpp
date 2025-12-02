@@ -259,7 +259,7 @@ void VideoMedia::load()
 			{
 				if (s != PLAYING && vlcPlayer->isPlaying())
 				{
-					vlcPlayer->setPosition(position->doubleValue() / length->doubleValue(), true);
+					vlcPlayer->setPosition(position->doubleValue() / length->doubleValue(), false);
 					//vlcPlayer->setRate(playSpeed->floatValue());
 					vlcPlayer->setPause(true);
 				}
@@ -277,7 +277,7 @@ void VideoMedia::load()
 				{
 					if (loop->boolValue())
 					{
-						vlcPlayer->setPosition(0, true);
+						vlcPlayer->setPosition(0, false);
 						position->setValue(0);
 					}
 				}
@@ -316,7 +316,7 @@ void VideoMedia::play() {
 		//vlcPlayer->setRate(playSpeed->floatValue());
 		//seek(position->doubleValue());
 		vlcPlayer->play();
-		vlcPlayer->setPosition(position->doubleValue() / length->doubleValue(), true);
+		vlcPlayer->setPosition(position->doubleValue() / length->doubleValue(), false);
 	}
 }
 
@@ -326,7 +326,7 @@ void VideoMedia::stop() {
 	if (st == PLAYING || st == PAUSED)
 	{
 
-		vlcPlayer->setPosition(0, true);
+		vlcPlayer->setPosition(0, false);
 		vlcPlayer->play();
 		state->setValueWithData(IDLE);
 	}
@@ -347,7 +347,7 @@ void VideoMedia::restart() {
 	PlayerState st = state->getValueDataAsEnum<PlayerState>();
 	if (st == PLAYING || st == PAUSED || st == IDLE)
 	{
-		vlcPlayer->setPosition(0, true);
+		vlcPlayer->setPosition(0, false);
 		vlcPlayer->play();
 		state->setValueWithData(PLAYING);
 	}
