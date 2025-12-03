@@ -46,4 +46,5 @@ public:
 	void computeFadesForBlock(MediaClip* block, bool propagate);
 
 	static int compareTimeAndType(LayerBlock* a, LayerBlock* b);
+
 };

@@ -275,22 +275,19 @@ void MediaLayer::sequenceCurrentTimeChanged(Sequence* s, float prevTime, bool ev
 		{
 			clip->setTime(t, s->isSeeking || !s->isPlaying->boolValue());
 
-			bool isActive = t >= clip->time->floatValue() - clip->preStart->floatValue() && t <= clip->getEndTime() + clip->postEnd->floatValue();
+			bool hasPreTransition = clip->inTransition != nullptr;
+			bool hasPostTransition = clip->outTransition != nullptr;
+			float preTimeRef = hasPreTransition ? clip->inTransition->time->floatValue() : clip->time->floatValue();
+			float postTimeRef = hasPostTransition ? clip->outTransition->getEndTime() : clip->getEndTime();
+
+			float enterTime = preTimeRef - clip->preStart->floatValue();
+			float leaveTime = postTimeRef + clip->postEnd->floatValue();
+
+			bool isActive = t >= enterTime && t <= leaveTime;
 
 			if (isActive != clip->isActive->boolValue())
 			{
-				//LOG("Set active " << (int)isActive);
-				//GenericScopedLock lock(renderLock);
 				clip->isActive->setValue(isActive);
-				if (isActive && s->isPlaying->boolValue())
-				{
-					if (VideoMedia* vm = dynamic_cast<VideoMedia*>(clip->media))
-					{
-						{
-							//vm->play();
-						}
-					}
-				}
 			}
 
 			clip->setTime(t, s->isSeeking || !s->isPlaying->boolValue());

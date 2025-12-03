@@ -210,17 +210,22 @@ float MediaClip::getFadeMultiplier()
 
 void MediaClip::updateCoreRangeFromMedia()
 {
+	if (isCurrentlyLoadingData || Engine::mainEngine->isLoadingFile) return;
+
 	if (media != nullptr)
 	{
 		bool isOverriden = coreLength->isOverriden;
 
 		double mediaLength = media->getMediaLength();
-		if (mediaLength > .1f) coreLength->setRange(.1f, mediaLength);
-		else coreLength->setRange(.1f, INT32_MAX);
-
-		if (!isOverriden)
+		if (mediaLength != -1)
 		{
-			coreLength->setDefaultValue(mediaLength, true);
+			if (mediaLength > .1f) coreLength->setRange(.1f, mediaLength);
+			else coreLength->setRange(.1f, INT32_MAX);
+
+			if (!isOverriden)
+			{
+				coreLength->setDefaultValue(mediaLength, true);
+			}
 		}
 	}
 }
@@ -243,7 +248,7 @@ void MediaClip::newMessage(const Media::MediaEvent& e)
 		break;
 
 	case Media::MediaEvent::MEDIA_CONTENT_CHANGED:
-		if(media != nullptr) setNiceName(media->getMediaContentName());
+		if (media != nullptr && !Engine::mainEngine->isLoadingFile) setNiceName(parentContainer->getUniqueNameInContainer(media->getMediaContentName()));
 		break;
 
 	default:

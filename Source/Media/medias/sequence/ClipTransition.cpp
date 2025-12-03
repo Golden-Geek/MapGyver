@@ -96,7 +96,10 @@ void ClipTransition::setInClip(MediaClip* in)
 		inClip->loopLength->addParameterListener(this);
 		if (auto r = dynamic_cast<ReferenceMediaClip*>(inClip)) r->mediaTarget->addParameterListener(this);
 		mediaInParam->setValueFromTarget(inClip->media);
+
+		computeTimes(inClip);
 	}
+
 }
 
 void ClipTransition::setOutClip(MediaClip* out)
@@ -125,11 +128,14 @@ void ClipTransition::setOutClip(MediaClip* out)
 		outClip->loopLength->addParameterListener(this);
 		if (auto r = dynamic_cast<ReferenceMediaClip*>(outClip)) r->mediaTarget->addParameterListener(this);
 		mediaOutParam->setValueFromTarget(outClip->media);
+		computeTimes(outClip);
 	}
 }
 
 void ClipTransition::computeTimes(MediaClip* origin)
 {
+	if (isCurrentlyLoadingData) return;
+
 	if (inClip != nullptr && outClip != nullptr)
 	{
 		float inTime = inClip->getEndTime();

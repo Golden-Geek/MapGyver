@@ -26,6 +26,8 @@ public:
     void paintOverChildren(Graphics& g) override;
     LayerBlockUI* createUIForItem(LayerBlock* b) override;
 
+	void placeBlockUI(LayerBlockUI* bui) override;
+
     bool isInterestedInDragSource(const SourceDetails& source) override;
     void itemDragEnter(const SourceDetails& source) override;
     void itemDragExit(const SourceDetails& source) override;

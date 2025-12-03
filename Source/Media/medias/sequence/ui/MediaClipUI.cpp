@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "MediaClipUI.h"
 
 MediaClipUI::MediaClipUI(MediaClip* b) :
 	LayerBlockUI(b),

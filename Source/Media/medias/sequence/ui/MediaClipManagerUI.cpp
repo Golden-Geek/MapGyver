@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "MediaClipManagerUI.h"
 
 MediaClipManagerUI::MediaClipManagerUI(MediaLayerTimeline* timeline) :
 	LayerBlockManagerUI(timeline, &timeline->mediaLayer->blockManager),
@@ -38,6 +39,17 @@ void MediaClipManagerUI::paintOverChildren(Graphics& g)
 LayerBlockUI* MediaClipManagerUI::createUIForItem(LayerBlock* b)
 {
 	return new MediaClipUI((MediaClip*)b);
+}
+
+void MediaClipManagerUI::placeBlockUI(LayerBlockUI* bui)
+{
+	LayerBlockManagerUI::placeBlockUI(bui);
+
+	MediaClipUI* mcu = dynamic_cast<MediaClipUI*>(bui);
+	if (mcu != nullptr)
+	{
+		mcu->resizedBlockInternal();
+	}
 }
 
 bool MediaClipManagerUI::isInterestedInDragSource(const SourceDetails& source)

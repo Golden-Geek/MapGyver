@@ -24,7 +24,8 @@ public:
 	StringParameter* launchArguments;
 	EnumParameter* availableTextures;
 
-	BoolParameter* appRunning;
+	enum AppState { CLOSED, LAUNCHING, RUNNING, CLOSING };
+	EnumParameter* appState;
 	BoolParameter* autoStartOnPreUse;
 	BoolParameter* autoStartOnUse;
 	BoolParameter* autoStopOnUse;
@@ -51,15 +52,18 @@ public:
 
 	Array<Controllable*> noFeedbackList;
 
+
 	void clearItem() override;
 
 	void onContainerParameterChangedInternal(Parameter* p) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 	void checkAppRunning();
+	bool isAppRunning();
 	void updateTextureList();
 
 	void updateBeingUsed() override;
+
 
 	void syncOSCQuery();
 	void requestHostInfo();

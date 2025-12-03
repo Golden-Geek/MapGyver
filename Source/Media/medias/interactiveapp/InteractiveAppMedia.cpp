@@ -32,8 +32,9 @@ InteractiveAppMedia::InteractiveAppMedia(var params) :
 	availableTextures = addEnumParameter("Available Textures", "Available Textures");
 	availableTextures->saveValueOnly = false;
 
-	appRunning = addBoolParameter("App Is Running", "App Running", false);
-	appRunning->isSavable = false;
+	appState = addEnumParameter("App State", "App State");
+	appState->addOption("Closed", CLOSED)->addOption("Launching", LAUNCHING)->addOption("Running", RUNNING)->addOption("Closing", CLOSING);
+	appState->setControllableFeedbackOnly(true);
 
 	autoStartOnPreUse = addBoolParameter("Auto Start On Pre Use", "Auto Start On Pre Use", false);
 	autoStartOnUse = addBoolParameter("Auto Start On Use", "Auto Start On Use", false);
@@ -82,13 +83,13 @@ void InteractiveAppMedia::onContainerParameterChangedInternal(Parameter* p)
 	{
 		mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_CONTENT_CHANGED, this));
 	}
-	else if (p == appRunning)
+	else if (p == appState)
 	{
-		if (!checkingProcess)
-		{
-			if (appRunning->boolValue()) launchProcess();
-			else killProcess();
-		}
+		//if (!checkingProcess)
+		//{
+		//	if (appState->getValueDataAsEnum<AppState>() == AppState::RUNNING) launchProcess();
+		//	else killProcess();
+		//}
 	}
 	else if (p == availableTextures)
 	{
@@ -125,6 +126,7 @@ void InteractiveAppMedia::onControllableFeedbackUpdateInternal(ControllableConta
 
 void InteractiveAppMedia::checkAppRunning()
 {
+
 	StringArray processes;
 
 #if JUCE_WINDOWS
@@ -157,14 +159,20 @@ void InteractiveAppMedia::checkAppRunning()
 #endif
 	}
 
+
 	checkingProcess = true;
-	appRunning->setValue(isRunning);
+	appState->setValueWithData(isRunning ? AppState::RUNNING : AppState::CLOSED);
 	checkingProcess = false;
+}
+
+bool InteractiveAppMedia::isAppRunning()
+{
+	return appState->getValueDataAsEnum<AppState>() == AppState::RUNNING;
 }
 
 void InteractiveAppMedia::updateTextureList()
 {
-	if (!appRunning->boolValue()) return; //only update when app is running
+	if (!isAppRunning()) return; //only update when app is running
 
 	StringArray senders = SharedTextureManager::getInstance()->getAvailableSenders();
 	StringArray keys = availableTextures->getAllKeys();
@@ -173,7 +181,7 @@ void InteractiveAppMedia::updateTextureList()
 	StringArray goodSenders;
 	for (auto& s : senders)
 	{
-		if (s.contains(niceName)) goodSenders.add(s);
+		if (s.contains(serverName->stringValue())) goodSenders.add(s);
 	}
 
 	if (goodSenders.isEmpty()) return; //if something went bad, don't destroy the detected list
@@ -222,11 +230,11 @@ void InteractiveAppMedia::updateBeingUsed()
 
 	if (shouldLaunch)
 	{
-		if (!appRunning->boolValue()) launchProcess();
+		launchProcess();
 	}
 	else if (shouldKill)
 	{
-		if (appRunning->boolValue()) killProcess();
+		killProcess();
 	}
 }
 
@@ -630,12 +638,19 @@ void InteractiveAppMedia::messageReceived(const String& message)
 void InteractiveAppMedia::launchProcess()
 {
 	if (checkingProcess || isClearing) return;
+	
+	AppState state = appState->getValueDataAsEnum<AppState>();
+	if (state == LAUNCHING || state == RUNNING) return;
+
 
 	File f = appParam->getFile();
 	if (!f.exists())
 	{
 		NLOGWARNING(niceName, "File does not exist : " + f.getFullPathName());
+		appState->setValueWithData(CLOSED);
+		return;
 	}
+
 
 	String args = launchArguments->stringValue();
 
@@ -646,7 +661,14 @@ void InteractiveAppMedia::launchProcess()
 	wDir.setAsCurrentWorkingDirectory();
 
 
-	if (!result) LOGERROR("Could not launch application " << f.getFullPathName() << " with arguments : " << launchArguments->stringValue());
+	if (!result)
+	{
+		LOGERROR("Could not launch application " << f.getFullPathName() << " with arguments : " << launchArguments->stringValue());
+		appState->setValueWithData(CLOSED);
+		return;
+	}
+
+	appState->setValueWithData(LAUNCHING);
 
 	shouldMinimize = result && launchMinimized->boolValue();
 	shouldSynchronize = result;
@@ -657,6 +679,11 @@ void InteractiveAppMedia::killProcess()
 {
 	File f = appParam->getFile();
 	if (checkingProcess || !f.existsAsFile()) return;
+
+	AppState state = appState->getValueDataAsEnum<AppState>();
+	if (state == CLOSING || state == CLOSED) return;
+
+	appState->setValueWithData(CLOSING);
 
 	if (wsClient != nullptr) wsClient->stop();
 
@@ -744,7 +771,7 @@ void InteractiveAppMedia::run()
 
 String InteractiveAppMedia::getMediaContentName() const
 {
-	File f = appParam->getFile();	
+	File f = appParam->getFile();
 	return f.existsAsFile() ? f.getFileNameWithoutExtension() : Media::getMediaContentName();
 }
 
