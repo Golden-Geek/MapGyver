@@ -1,19 +1,19 @@
 #include "Media/MediaIncludes.h"
 
-VideoMediaAudioProcessor::VideoMediaAudioProcessor(VideoMedia* videoMedia) :
-	videoMedia(videoMedia)
+MPVAudioProcessor::MPVAudioProcessor(MPVPlayer* player) :
+	player(player)
 {
-	//LOG("Created VideoMediaAudioProcessor for " << videoMedia->niceName);
+	//LOG("Created MPVAudioProcessor for " << player->niceName);
 }
 
-VideoMediaAudioProcessor::~VideoMediaAudioProcessor()
+MPVAudioProcessor::~MPVAudioProcessor()
 {
-	videoMedia = nullptr;
+	player = nullptr;
 }
 
-void VideoMediaAudioProcessor::onAudioPlay(const void* data, unsigned int count, int64_t pts)
+void MPVAudioProcessor::onAudioPlay(const void* data, unsigned int count, int64_t pts)
 {
-	if (!videoMedia->isPlaying()) return;
+	//if (!player->isPlaying()) return;
 
 	if (fifo != nullptr)
 	{
@@ -25,18 +25,18 @@ void VideoMediaAudioProcessor::onAudioPlay(const void* data, unsigned int count,
 	}
 }
 
-void VideoMediaAudioProcessor::onAudioFlush(int64_t pts)
+void MPVAudioProcessor::onAudioFlush(int64_t pts)
 {
 	// Optional flush logic
 }
 
-void VideoMediaAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
+void MPVAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-	if (videoMedia->isClearing || !videoMedia->isPlaying())
-	{
-		buffer.clear();
-		return;
-	}
+	//if (player->isClearing || !player->isPlaying())
+	//{
+	//	buffer.clear();
+	//	return;
+	//}
 
 	if (fifo == nullptr || buffer.getNumChannels() == 0)
 	{
@@ -59,11 +59,11 @@ void VideoMediaAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuff
 	}
 }
 
-const String VideoMediaAudioProcessor::getName() const { 
-	return videoMedia->niceName + " Processor"; 
+const String MPVAudioProcessor::getName() const {
+	return "MPV Audio Processor";
 }
 
-void VideoMediaAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+void MPVAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
 	int numChannels = getTotalNumOutputChannels();
 	if (numChannels > 0)

@@ -1,7 +1,5 @@
 #pragma once
 
-class VideoMedia;
-
 
 class AudioFIFO
 {
@@ -38,14 +36,16 @@ private:
 	std::atomic<int> writePos{ 0 };
 };
 
-class VideoMediaAudioProcessor :
+class MPVPlayer;
+
+class MPVAudioProcessor :
 	public AudioProcessor
 {
 public:
-	VideoMediaAudioProcessor(VideoMedia* videoMedia);
-	~VideoMediaAudioProcessor() override;
+	MPVAudioProcessor(MPVPlayer* player);
+	~MPVAudioProcessor() override;
 
-	VideoMedia* videoMedia;
+	MPVPlayer* player;
 	std::unique_ptr<AudioFIFO> fifo;
 
 	

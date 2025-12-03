@@ -52,6 +52,8 @@ MGEngine::~MGEngine()
 
 	isClearing = true;
 
+	MPVTimers::deleteInstance();
+
 	MediaManager::deleteInstance();
 	ScreenManager::deleteInstance();
 	NDIManager::deleteInstance();

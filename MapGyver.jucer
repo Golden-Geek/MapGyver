@@ -272,6 +272,8 @@
                   file="Source/Media/medias/sharedtexture/SharedTextureMedia.h"/>
           </GROUP>
           <GROUP id="{789B912B-C9EF-806B-BBB4-78AE0DD44723}" name="video">
+            <FILE id="w7ebSI" name="MPVPlayer.cpp" compile="0" resource="0" file="Source/Media/medias/video/MPVPlayer.cpp"/>
+            <FILE id="YrhEWR" name="MPVPlayer.h" compile="0" resource="0" file="Source/Media/medias/video/MPVPlayer.h"/>
             <FILE id="LDNvBj" name="VideoAudioProcessor.cpp" compile="0" resource="0"
                   file="Source/Media/medias/video/VideoAudioProcessor.cpp"/>
             <FILE id="EQilJj" name="VideoAudioProcessor.h" compile="0" resource="0"

@@ -173,6 +173,7 @@
 		4DE81665A1EC868211C9E16D /* juce_graphics */ /* juce_graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_graphics; path = ../../JUCE/modules/juce_graphics; sourceTree = SOURCE_ROOT; };
 		4E84CE5D77C4631041014FA6 /* OutputNode.cpp */ /* OutputNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OutputNode.cpp; path = ../../Source/Node/nodes/Output/OutputNode.cpp; sourceTree = SOURCE_ROOT; };
 		4F1C2351622926FF65B12A56 /* MediaPreviewPanel.h */ /* MediaPreviewPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaPreviewPanel.h; path = ../../Source/Media/ui/MediaPreviewPanel.h; sourceTree = SOURCE_ROOT; };
+		5065DF9926F78AEAA19D8EE0 /* MPVPlayer.h */ /* MPVPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MPVPlayer.h; path = ../../Source/Media/medias/video/MPVPlayer.h; sourceTree = SOURCE_ROOT; };
 		50703B35BD28458EA4EF5E0E /* GridLayerPanel.h */ /* GridLayerPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridLayerPanel.h; path = ../../Source/Media/medias/grid/ui/GridLayerPanel.h; sourceTree = SOURCE_ROOT; };
 		530C2E5FACB1B66468D0D03B /* include_juce_graphics.mm */ /* include_juce_graphics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_graphics.mm; path = ../../JuceLibraryCode/include_juce_graphics.mm; sourceTree = SOURCE_ROOT; };
 		53BB2A026EAD5EC34AE09269 /* GridLayerManager.cpp */ /* GridLayerManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridLayerManager.cpp; path = ../../Source/Media/medias/grid/GridLayerManager.cpp; sourceTree = SOURCE_ROOT; };
@@ -234,6 +235,7 @@
 		756929EBB293531A1DC0C951 /* include_juce_audio_processors_headless_lv2_libs.cpp */ /* include_juce_audio_processors_headless_lv2_libs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_headless_lv2_libs.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_headless_lv2_libs.cpp; sourceTree = SOURCE_ROOT; };
 		75A08A18DB31BF990EE335D0 /* grid.png */ /* grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grid.png; path = ../../Resources/media/grid.png; sourceTree = SOURCE_ROOT; };
 		75C65143D898EE85FD3BD8CE /* GridClipUI.h */ /* GridClipUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridClipUI.h; path = ../../Source/Media/medias/grid/ui/GridClipUI.h; sourceTree = SOURCE_ROOT; };
+		7701D5E4D3FE402A54B67085 /* MPVPlayer.cpp */ /* MPVPlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MPVPlayer.cpp; path = ../../Source/Media/medias/video/MPVPlayer.cpp; sourceTree = SOURCE_ROOT; };
 		7766CB83931B00FCC4FB075C /* include_juce_audio_basics.mm */ /* include_juce_audio_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_basics.mm; path = ../../JuceLibraryCode/include_juce_audio_basics.mm; sourceTree = SOURCE_ROOT; };
 		77951BA97EAAFDB9ED15EC1A /* OpenGLManager.cpp */ /* OpenGLManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OpenGLManager.cpp; path = ../../Source/Common/OpenGLManager.cpp; sourceTree = SOURCE_ROOT; };
 		77ADB0014F436BDA6FF8E309 /* NodeViewUI.cpp */ /* NodeViewUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeViewUI.cpp; path = ../../Source/Node/ui/NodeViewUI.cpp; sourceTree = SOURCE_ROOT; };
@@ -549,6 +551,8 @@
 		2EC22ADD1C7C4BA622FFF235 /* video */ = {
 			isa = PBXGroup;
 			children = (
+				7701D5E4D3FE402A54B67085,
+				5065DF9926F78AEAA19D8EE0,
 				C78FB252E2381E3294813F69,
 				6EE93E2EB756CD136C545127,
 				252151FBA71A7FEDACC06D3F,

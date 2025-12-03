@@ -212,13 +212,15 @@ void MediaClip::updateCoreRangeFromMedia()
 {
 	if (media != nullptr)
 	{
+		bool isOverriden = coreLength->isOverriden;
+
 		double mediaLength = media->getMediaLength();
 		if (mediaLength > .1f) coreLength->setRange(.1f, mediaLength);
 		else coreLength->setRange(.1f, INT32_MAX);
 
-		if (!coreLength->isOverriden)
+		if (!isOverriden)
 		{
-			coreLength->setDefaultValue(mediaLength, false);
+			coreLength->setDefaultValue(mediaLength, true);
 		}
 	}
 }

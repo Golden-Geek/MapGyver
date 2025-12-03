@@ -63,7 +63,7 @@ public:
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 	void newOpenGLContextCreated() override;
-	void renderOpenGL() override;
+	virtual void renderOpenGL() override;
 	void renderOpenGLMedia(bool force = false);
 	void openGLContextClosing() override;
 

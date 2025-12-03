@@ -324,6 +324,9 @@
     <ClCompile Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\video\MPVPlayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\video\VideoAudioProcessor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4180,6 +4183,7 @@
     <ClInclude Include="..\..\Source\Media\medias\picture\PictureMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\shader\ShaderMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\sharedtexture\SharedTextureMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\video\MPVPlayer.h"/>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoAudioProcessor.h"/>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.h"/>

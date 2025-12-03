@@ -65,6 +65,7 @@
 #include "mpv/render_gl.h"
 
 #include "medias/video/VideoAudioProcessor.h"
+#include "medias/video/MPVPlayer.h"
 #include "medias/video/VideoMedia.h"
 
 #if !JUCE_LINUX
