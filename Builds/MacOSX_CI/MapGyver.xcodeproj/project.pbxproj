@@ -1385,6 +1385,7 @@
 					"$(SRCROOT)/../../External/mpv/include",
 					"$(SRCROOT)/../../External/NDI/include",
 					"$(SRCROOT)/../../External/servus/include",
+					"$(SRCROOT)/../../External/ultralight/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-App.plist;
@@ -1401,7 +1402,7 @@
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/ultralight/include";
 				OTHER_LDFLAGS = "-lServus -lvlc -lvlccore -lndi -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.mapgyver;
 				PRODUCT_NAME = "MapGyver";
@@ -1506,6 +1507,7 @@
 					"$(SRCROOT)/../../External/mpv/include",
 					"$(SRCROOT)/../../External/NDI/include",
 					"$(SRCROOT)/../../External/servus/include",
+					"$(SRCROOT)/../../External/ultralight/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-App.plist;
@@ -1522,7 +1524,7 @@
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/ultralight/include";
 				OTHER_LDFLAGS = "-lServus -lvlc -lvlccore -lndi -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.mapgyver;
 				PRODUCT_NAME = "MapGyver";

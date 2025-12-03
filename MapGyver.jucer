@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="DMftGm" name="MapGyver" projectType="guiapp" useAppConfig="1"
-              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/asiodriver&#10;../../External/mpv/include&#10;../../External/NDI/include&#10;../../External/servus/include&#10;"
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/asiodriver&#10;../../External/mpv/include&#10;../../External/NDI/include&#10;../../External/servus/include&#10;../../External/ultralight/include&#10;"
               defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1&#10;ORGANIC_REMOTE_CONTROL_PORT=46000&#10;MPV_ENABLE_DLL"
               companyWebsite="https://benjamin.kuperberg.fr/mapgyver" companyName="GoldenGeek"
               bundleIdentifier="com.goldengeek.mapgyver" displaySplashScreen="1"
@@ -496,14 +496,14 @@
                JUCE_IP_AND_PORT_DETECTION="1" JUCE_USE_CAMERA="1" SHAREDTEXTURE_USE_CPU_IMAGE="0"
                JUCE_USE_MP3AUDIOFORMAT="1" JUCE_USE_LAME_AUDIO_FORMAT="1" JUCE_ASIO="1"/>
   <EXPORTFORMATS>
-    <VS2026 targetFolder="Builds/VisualStudio2026" externalLibraries="Servus.lib&#10;libmpv.lib"
+    <VS2026 targetFolder="Builds/VisualStudio2026" externalLibraries="Servus.lib&#10;libmpv.lib&#10;AppCore.lib&#10;Ultralight.lib&#10;WebCore.lib&#10;UltralightCore.lib"
             extraCompilerFlags="/bigobj">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;../../External/mpv/lib&#10;"
+                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;../../External/mpv/lib&#10;../../External/ultralight/lib/win&#10;"
                        binaryPath="Binaries/Debug"/>
         <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib"
+                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib&#10;../../External/ultralight/lib/win"
                        binaryPath="Binaries/Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

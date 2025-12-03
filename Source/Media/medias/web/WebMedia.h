@@ -10,12 +10,49 @@
 
 #pragma once
 
+#include <Ultralight/Ultralight.h>
+
 class WebMedia :
-    public Media
+    public ImageMedia,
+    public ultralight::LoadListener,
+    public ultralight::ViewListener,
+    public ultralight::Logger
 {
 public:
     WebMedia(var params = var());
-    ~WebMedia();
+    virtual ~WebMedia();
 
-	DECLARE_TYPE("Web")
+    // Parameters
+    StringParameter* urlParam;
+    FloatParameter* zoomParam;
+    BoolParameter* transparentParam;
+    Trigger* reloadTrigger;
+
+    // Ultralight
+    ultralight::RefPtr<ultralight::View> view;
+
+    // Overrides
+    void onContainerParameterChangedInternal(Parameter* p) override;
+    void onContainerTriggerTriggered(Trigger* t) override;
+
+    void initGLInternal() override;
+    // We override preRenderGLInternal to update the CPU image before ImageMedia uploads it
+    void preRenderGLInternal() override;
+
+    // Manage resizing
+    void initFrameBuffer() override;
+
+    // Ultralight Listeners
+    void OnFinishLoading(ultralight::View* caller, uint64_t frame_id, bool is_main_frame, const ultralight::String& url) override;
+    void OnDOMReady(ultralight::View* caller, uint64_t frame_id, bool is_main_frame, const ultralight::String& url) override;
+    void OnChangeCursor(ultralight::View* caller, ultralight::Cursor cursor) override;
+    void OnChangeTitle(ultralight::View* caller, const ultralight::String& title) override;
+
+    void EnsureRenderer();
+
+    void LogMessage(ultralight::LogLevel log_level, const ultralight::String& message) override;
+
+    DECLARE_TYPE("Web")
+
+    // Inherited via Logger
 };
