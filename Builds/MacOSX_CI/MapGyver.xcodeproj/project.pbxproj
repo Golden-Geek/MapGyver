@@ -1382,8 +1382,6 @@
 					"$(SRCROOT)/../../External/NDI/include/",
 					"$(SRCROOT)/../../Source",
 					"$(SRCROOT)/../../External/asiodriver",
-					"$(SRCROOT)/../../External/vlc/include4",
-					"$(SRCROOT)/../../External/vlc/vlcpp",
 					"$(SRCROOT)/../../External/mpv/include",
 					"$(SRCROOT)/../../External/NDI/include",
 					"$(SRCROOT)/../../External/servus/include",
@@ -1403,7 +1401,7 @@
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/vlc/include4 $(SRCROOT)/../../External/vlc/vlcpp $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
 				OTHER_LDFLAGS = "-lServus -lvlc -lvlccore -lndi -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.mapgyver;
 				PRODUCT_NAME = "MapGyver";
@@ -1505,8 +1503,6 @@
 					"$(SRCROOT)/../../External/NDI/include/",
 					"$(SRCROOT)/../../Source",
 					"$(SRCROOT)/../../External/asiodriver",
-					"$(SRCROOT)/../../External/vlc/include4",
-					"$(SRCROOT)/../../External/vlc/vlcpp",
 					"$(SRCROOT)/../../External/mpv/include",
 					"$(SRCROOT)/../../External/NDI/include",
 					"$(SRCROOT)/../../External/servus/include",
@@ -1526,7 +1522,7 @@
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/vlc/include4 $(SRCROOT)/../../External/vlc/vlcpp $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
 				OTHER_LDFLAGS = "-lServus -lvlc -lvlccore -lndi -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.mapgyver;
 				PRODUCT_NAME = "MapGyver";
