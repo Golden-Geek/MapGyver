@@ -81,7 +81,8 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 		filePath->setEnabled(isFile);
 		url->setEnabled(!isFile);
 	}
-	else if (p == source || p == filePath || p == url)
+
+	if (p == source || p == filePath || p == url)
 	{
 		load();
 	}
