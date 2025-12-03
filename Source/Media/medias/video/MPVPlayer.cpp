@@ -102,7 +102,24 @@ void MPVPlayer::setupMPV()
 	mpv_set_option_string(mpv, "force-window", "yes");
 	mpv_set_option_string(mpv, "hr-seek", "yes");
 	mpv_set_option_string(mpv, "hr-seek-framedrop", "yes");
-	mpv_set_option_string(mpv, "hwdec", "auto");
+
+	// "auto" is good, but sometimes picks copy-back methods.
+	// "nvdec" (Nvidia) or "vaapi" (Intel/Linux) are strictly keep-in-VRAM.
+	// "auto-safe" defaults to the best available hardware method.
+	mpv_set_option_string(mpv, "hwdec", "auto-safe");
+
+	// 2. GPU CONTEXT
+	// Explicitly tell MPV we are in an OpenGL environment so it attempts 
+	// to map the HW surface directly to a GL Texture.
+	mpv_set_option_string(mpv, "gpu-api", "opengl");
+
+#if JUCE_WINDOWS
+	mpv_set_option_string(mpv, "gpu-context", "wgl"); // Use "cocoa" on Mac, "x11" on Linux
+#endif
+
+	// 3. DIRECT RENDERING (Crucial for CPU offload)
+	// Allows the decoder to write directly into video memory allocated by the renderer
+	mpv_set_option_string(mpv, "vd-lavc-dr", "yes");
 
 	// --- AUDIO ROUTING CONFIGURATION ---
 	double sampleRate = AudioManager::getInstance()->graph.getSampleRate();
@@ -132,6 +149,8 @@ void MPVPlayer::setupMPV()
 	//mpv_observe_property(mpv, 0, "height", MPV_FORMAT_INT64);
 	//mpv_observe_property(mpv, 0, "pause", MPV_FORMAT_FLAG);
 	mpv_set_wakeup_callback(mpv, mpv_wakeup, this);
+
+
 }
 
 void MPVPlayer::loadFile()
@@ -177,7 +196,7 @@ void MPVPlayer::renderGL(OpenGLFrameBuffer* frameBuffer)
 		return;
 	}
 
-	if(!fileInfo.fileLoaded)
+	if (!fileInfo.fileLoaded)
 	{
 		return;
 	}
@@ -264,6 +283,15 @@ void MPVPlayer::setVolume(float volume)
 	mpv_set_property(mpv, "volume", MPV_FORMAT_DOUBLE, &vol);
 }
 
+void MPVPlayer::setLoop(bool loop)
+{
+	if (mpv == nullptr) return;
+
+	// "inf" = infinite loop, "no" = play once
+	const char* value = loop ? "inf" : "no";
+	mpv_set_property_string(mpv, "loop-file", value);
+}
+
 
 void MPVPlayer::setupAudio()
 {
@@ -329,6 +357,7 @@ void MPVPlayer::pullEvents()
 		switch (e->event_id)
 		{
 		case MPV_EVENT_FILE_LOADED:
+		{
 			//check actual number of tracks
 
 			//retrieve width/height/duration/channels
@@ -339,9 +368,17 @@ void MPVPlayer::pullEvents()
 			setupAudio();
 			mpvListeners.call(&MPVListener::mpvFileLoaded);
 			fileInfo.fileLoaded = true;
-			LOG("MPV File Loaded");
 
-			break;
+			String activeHwdec = getMPVStringProperty("hwdec-current");
+			// Expect: "nvdec", "d3d11va", "videotoolbox" (Mac)
+			// Bad: "no" (Software)
+
+			// Check the Interop format
+			String interop = getMPVStringProperty("hwdec-interop");
+
+			LOG("MPV File Loaded, Active HW Decoder : " << activeHwdec << ", Interop : " << interop);
+		}
+		break;
 
 		case MPV_EVENT_END_FILE:
 			mpvListeners.call(&MPVListener::mpvFileEnd);

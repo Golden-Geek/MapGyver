@@ -96,6 +96,13 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 		position->setRange(0, length->doubleValue());
 		mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_LENGTH_CHANGED, this));
 	}
+	else if (p == loop)
+	{
+		if (mpv != nullptr)
+		{
+			mpv->setLoop(loop->boolValue());
+		}
+	}
 }
 
 
@@ -266,6 +273,7 @@ void VideoMedia::mpvFileLoaded()
 
 	mpv->setVolume(volume->floatValue());
 	mpv->setPlaySpeed(playSpeed->doubleValue());
+	mpv->setLoop(loop->boolValue());
 
 	shouldGeneratePreviewImage = true;
 
@@ -287,15 +295,7 @@ void VideoMedia::mpvFrameUpdate()
 
 void VideoMedia::mpvFileEnd()
 {
-	if (loop->boolValue())
-	{
-		seek(0);
-		play();
-
-	}
-	else {
-		state->setValueWithData(PAUSED);
-	}
+	state->setValueWithData(PAUSED);
 }
 
 bool VideoMedia::isPlaying()

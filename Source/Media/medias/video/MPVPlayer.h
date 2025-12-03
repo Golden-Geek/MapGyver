@@ -63,6 +63,7 @@ public:
 	void setPosition(double pos);
 	void setPlaySpeed(double speed);
 	void setVolume(float volume);
+	void setLoop(bool loop);
 
 
 	//Audio

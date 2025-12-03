@@ -68,6 +68,7 @@ public:
 	void restart();
 	void seek(double time);
 
+
 	void onContainerParameterChanged(Parameter* p) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
