@@ -12,11 +12,38 @@
 
 #include <Ultralight/Ultralight.h>
 
+class WebMedia;
+
+
+class UltralightManager :
+    public ultralight::Logger
+{
+public:
+
+	juce_DeclareSingleton(UltralightManager, true);
+    
+    UltralightManager();
+    ~UltralightManager() {}
+
+	Array<WebMedia*, CriticalSection> clients;
+
+	void registerClient(WebMedia* client);
+	void unregisterClient(WebMedia* client);
+
+    void setupRenderer();
+    void clear();
+
+    void update();
+
+    void LogMessage(ultralight::LogLevel log_level, const ultralight::String& message) override;
+
+    ultralight::RefPtr<ultralight::Renderer> renderer;
+};
+
 class WebMedia :
     public ImageMedia,
     public ultralight::LoadListener,
-    public ultralight::ViewListener,
-    public ultralight::Logger
+    public ultralight::ViewListener
 {
 public:
     WebMedia(var params = var());
@@ -30,10 +57,15 @@ public:
 
     // Ultralight
     ultralight::RefPtr<ultralight::View> view;
+    static ultralight::RefPtr<ultralight::Renderer> ultralightRenderer;
+
+    static bool platformInitialized;
+
+    // Static management for multiple instances
+    //static int instanceCount;
+    static uint32 lastUpdateTime; // To prevent double-ticking the engine
 
     bool glCleared = false;
-
-    void clearItem() override;
 
     // Overrides
     void onContainerParameterChangedInternal(Parameter* p) override;
@@ -41,12 +73,12 @@ public:
 
 
     void initGLInternal() override;
-    
+
     void renderOpenGL() override;
 
     void preRenderGLInternal() override;
 
-	void closeGLInternal() override;
+    void closeGLInternal() override;
 
     // Manage resizing
     void initFrameBuffer() override;
@@ -56,10 +88,6 @@ public:
     void OnDOMReady(ultralight::View* caller, uint64_t frame_id, bool is_main_frame, const ultralight::String& url) override;
     void OnChangeCursor(ultralight::View* caller, ultralight::Cursor cursor) override;
     void OnChangeTitle(ultralight::View* caller, const ultralight::String& title) override;
-
-    void EnsureRenderer();
-
-    void LogMessage(ultralight::LogLevel log_level, const ultralight::String& message) override;
 
     DECLARE_TYPE("Web")
 

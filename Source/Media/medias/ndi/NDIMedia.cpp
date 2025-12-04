@@ -26,10 +26,6 @@ NDIMedia::~NDIMedia()
 
 }
 
-void NDIMedia::clearItem()
-{
-	BaseItem::clearItem();
-}
 
 void NDIMedia::onContainerParameterChangedInternal(Parameter* p)
 {

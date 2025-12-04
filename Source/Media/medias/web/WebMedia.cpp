@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-    WebMedia.cpp
-    Created: 11 Feb 2025 3:03:12pm
-    Author:  bkupe
+	WebMedia.cpp
+	Created: 11 Feb 2025 3:03:12pm
+	Author:  bkupe
 
   ==============================================================================
 */
@@ -14,228 +14,261 @@
 #include <AppCore/Platform.h>
 #include "WebMedia.h"
 
+uint32 WebMedia::lastUpdateTime = 0;
 
-// Static Global Renderer
-static ultralight::RefPtr<ultralight::Renderer> globalRenderer = nullptr;
+
+
 
 WebMedia::WebMedia(var params) :
-    ImageMedia(getTypeString(), params)
+	ImageMedia(getTypeString(), params)
 {
-    // Parameters
-    urlParam = addStringParameter("URL", "The website address", "https://ultralig.ht/");
-    zoomParam = addFloatParameter("Zoom", "Zoom level", 1.0f, 0.1f, 5.0f);
-    transparentParam = addBoolParameter("Transparent", "Transparent Background", false);
-    reloadTrigger = addTrigger("Reload", "Reload Page");
+	// Parameters
+	urlParam = addStringParameter("URL", "The website address", "https://ultralig.ht/");
+	zoomParam = addFloatParameter("Zoom", "Zoom level", 1.0f, 0.1f, 5.0f);
+	transparentParam = addBoolParameter("Transparent", "Transparent Background", false);
+	reloadTrigger = addTrigger("Reload", "Reload Page");
 
-   
 
-    // Use default size from parameters (inherited from Media)
-    int w = width != nullptr ? width->intValue() : 1920;
-    int h = height != nullptr ? height->intValue() : 1080;
+	// Use default size from parameters (inherited from Media)
+	int w = width != nullptr ? width->intValue() : 1920;
+	int h = height != nullptr ? height->intValue() : 1080;
 
-  
-    // Initialize the base ImageMedia container
-    initImage(w, h);
+	// Initialize the base ImageMedia container
+	initImage(w, h);
+
+	UltralightManager::getInstance()->registerClient(this);
 }
 
 WebMedia::~WebMedia()
 {
-    
-}
-
-void WebMedia::EnsureRenderer()
-{
-    if (globalRenderer) return;
-
-    ultralight::Config config;
-
-    File f = File::getSpecialLocation(File::currentExecutableFile);
-    
-#if JUCE_MAC
-    f = f.getParentDirectory().getChildFile("Resources");
-#endif
-    
-    String path = f.getParentDirectory().getFullPathName().toStdString();
-    
-    
-    ultralight::Platform::instance().set_config(config);
-    ultralight::Platform::instance().set_font_loader(ultralight::GetPlatformFontLoader());
-    ultralight::Platform::instance().set_file_system(ultralight::GetPlatformFileSystem(path.toRawUTF8()));
-    ultralight::Platform::instance().set_logger(this);
-
-    globalRenderer = ultralight::Renderer::Create();
-
-    // Create View
-    ultralight::ViewConfig viewConfig;
-    viewConfig.is_accelerated = false; // CPU rendering
-    viewConfig.is_transparent = false;
-    if (globalRenderer)
-    {
-        view = globalRenderer->CreateView(image.getWidth(), image.getHeight(), viewConfig, nullptr);
-        if (view)
-        {
-            view->set_load_listener(this);
-            view->set_view_listener(this);
-            view->LoadURL(urlParam->stringValue().toRawUTF8());
-        }
-    }
+	UltralightManager::getInstance()->unregisterClient(this);
 }
 
 
-void WebMedia::LogMessage(ultralight::LogLevel log_level, const ultralight::String& message)
+void WebMedia::initGLInternal()
 {
-	LOG("From Ultralight : " << String(message.utf8().data()) << " ( " << (int)log_level << " )" );
-}
+	UltralightManager::getInstance()->registerClient(this);
 
-void WebMedia::clearItem()
-{
-    ImageMedia::clearItem();
-    while (!glCleared)
-    {
-		Thread::sleep(2);
-    }
+	if (!image.isValid())
+	{
+		LOGERROR("WebMedia::initGLInternal: Image is not valid!");
+		return;
+	}
+
+
+	// Create View specific to THIS instance
+	ultralight::ViewConfig viewConfig;
+	viewConfig.is_accelerated = false; // CPU rendering
+	viewConfig.is_transparent = false;
+
+	auto ultralightRenderer = UltralightManager::getInstance()->renderer;
+	if (ultralightRenderer)
+	{
+		// Re-create view if it doesn't exist
+		if (!view)
+		{
+			view = ultralightRenderer->CreateView(image.getWidth(), image.getHeight(), viewConfig, nullptr);
+			if (view)
+			{
+				view->set_load_listener(this);
+				view->set_view_listener(this);
+				view->LoadURL(urlParam->stringValue().toRawUTF8());
+			}
+		}
+	}
 }
 
 void WebMedia::onContainerParameterChangedInternal(Parameter* p)
 {
-    Media::onContainerParameterChangedInternal(p); // Call base
+	Media::onContainerParameterChangedInternal(p); // Call base
 
-    if (!view) return;
+	if (!view) return;
 
-    if (p == urlParam)
-    {
-        view->LoadURL(urlParam->stringValue().toRawUTF8());
-    }
-    else if (p == zoomParam)
-    {
-        //view->set_zoom(zoomParam->floatValue());
-    }
-    else if (p == transparentParam)
-    {
-        //view->set_is_transparent(transparentParam->boolValue());
-    }
-    else if (p == width || p == height)
-    {
-        // Media base class handles the parameter storage, we just need to react
-        // initFrameBuffer() is usually called by Media when size changes, so we handle resize there
-    }
+	if (p == urlParam)
+	{
+		view->LoadURL(urlParam->stringValue().toRawUTF8());
+	}
+	else if (p == zoomParam)
+	{
+		//view->set_zoom(zoomParam->floatValue());
+	}
+	else if (p == transparentParam)
+	{
+		//view->set_is_transparent(transparentParam->boolValue());
+	}
+	else if (p == width || p == height)
+	{
+		// Media base class handles parameter storage
+	}
 }
 
 void WebMedia::onContainerTriggerTriggered(Trigger* t)
 {
-    Media::onContainerTriggerTriggered(t);
-    if (t == reloadTrigger && view)
-    {
-        view->Reload();
-    }
+	Media::onContainerTriggerTriggered(t);
+	if (t == reloadTrigger && view)
+	{
+		view->Reload();
+	}
 }
 
-void WebMedia::initGLInternal()
-{
-    EnsureRenderer();
-
-}
 
 void WebMedia::renderOpenGL()
 {
-    if (isClearing)
-    {
-        if (!glCleared) closeGLInternal();
-        glCleared = true;
-        return;
-    }
+	if (isClearing || isCurrentlyLoadingData) return;
 
-    ImageMedia::renderOpenGL();
+	if (!view)
+	{
+		initGLInternal();
+		return;
+	}
+
+	ImageMedia::renderOpenGL();
 }
 
 void WebMedia::initFrameBuffer()
 {
-    // Call base to setup the main FrameBuffer
-    ImageMedia::initFrameBuffer();
+	// Call base to setup the main FrameBuffer
+	ImageMedia::initFrameBuffer();
 
-    // Resize Ultralight View
-    if (view)
-    {
-        view->Resize(frameBuffer.getWidth(), frameBuffer.getHeight());
-    }
+	// Resize Ultralight View
+	if (view)
+	{
+		view->Resize(frameBuffer.getWidth(), frameBuffer.getHeight());
+	}
 
-    // Resize the CPU Image container in ImageMedia
-    initImage(frameBuffer.getWidth(), frameBuffer.getHeight());
+	// Resize the CPU Image container in ImageMedia
+	initImage(frameBuffer.getWidth(), frameBuffer.getHeight());
 }
 
 void WebMedia::preRenderGLInternal()
 {
-   
 
-    // 1. Tick Ultralight
-    if (globalRenderer)
-    {
-        globalRenderer->Update();
-        globalRenderer->Render();
-    }
+	// 2. Sync Pixels from Ultralight -> ImageMedia::image
+	if (!view) return;
 
-    // 2. Sync Pixels from Ultralight -> ImageMedia::image
-    if (view)
-    {
-        ultralight::BitmapSurface* surface = (ultralight::BitmapSurface*)view->surface();
-        if (surface && surface->dirty_bounds().IsValid())
-        {
-            ultralight::RefPtr<ultralight::Bitmap> bitmap = surface->bitmap();
+	ultralight::BitmapSurface* surface = (ultralight::BitmapSurface*)view->surface();
+	if (surface && surface->dirty_bounds().IsValid())
+	{
+		ultralight::RefPtr<ultralight::Bitmap> bitmap = surface->bitmap();
 
-            // Lock ImageMedia's critical section (inherited)
-            GenericScopedLock lock(imageLock);
+		// Lock ImageMedia's critical section (inherited)
+		GenericScopedLock lock(imageLock);
 
-            void* rawPixels = bitmap->LockPixels();
+		void* rawPixels = bitmap->LockPixels();
 
-            // Ensure sizes match before copying
-            if (image.getWidth() == bitmap->width() && image.getHeight() == bitmap->height())
-            {
-                // Get write pointer to JUCE Image
+		// Ensure sizes match before copying
+		if (image.getWidth() == (int)bitmap->width() && image.getHeight() == (int)bitmap->height())
+		{
+			// Copy logic: Ultralight BGRA -> JUCE ARGB
+			const int bytesPerRow = bitmap->row_bytes();
+			const int height = bitmap->height();
 
-                // Copy logic: Ultralight BGRA -> JUCE ARGB (often compatible layout in memory)
-                // We use the stride (rowBytes) to copy safely row by row
-                const int bytesPerRow = bitmap->row_bytes();
-                const int height = bitmap->height();
+			for (int y = 0; y < height; ++y)
+			{
+				uint8* srcRow = (uint8*)rawPixels + (y * bytesPerRow);
+				uint8* destRow = bitmapData->getLinePointer(y);
+				memcpy(destRow, srcRow, bytesPerRow);
+			}
+		}
 
-                for (int y = 0; y < height; ++y)
-                {
-                    uint8* srcRow = (uint8*)rawPixels + (y * bytesPerRow);
-                    uint8* destRow = bitmapData->getLinePointer(y);
-                    memcpy(destRow, srcRow, bytesPerRow);
-                }
-            }
+		bitmap->UnlockPixels();
+		surface->ClearDirtyBounds();
+	}
 
-            bitmap->UnlockPixels();
-            surface->ClearDirtyBounds();
-        }
-    }
 
-    // 3. Call ImageMedia to upload 'image' to 'imageFBO'
-    // This handles the GL context locking, texture binding, and glTexSubImage2D
-    ImageMedia::preRenderGLInternal();
+	// 3. Call ImageMedia to upload 'image' to 'imageFBO'
+	ImageMedia::preRenderGLInternal();
 }
 
 void WebMedia::closeGLInternal()
 {
-    if (view)
-    {
-        view->set_load_listener(nullptr);
-        view->set_view_listener(nullptr);
-        view = nullptr;
-    }
+	if (view)
+	{
+		view->set_load_listener(nullptr);
+		view->set_view_listener(nullptr);
+		view = nullptr;
+	}
+
+	//instanceCount--;
+
+	//// If this was the last web media, release the global renderer.
+	//// This ensures that if we create a new one later, we get a fresh Renderer/Platform setup.
+	//if (instanceCount <= 0)
+	//{
+	//    instanceCount = 0; // safety
+	//    ultralightRenderer = nullptr;
+	//}
+
+	// Note: We DO NOT destroy ultralightRenderer here. 
+	// It is destroyed in the Destructor when instanceCount hits 0.
 }
 
 // -- Listeners --
 
 void WebMedia::OnFinishLoading(ultralight::View* caller, uint64_t frame_id, bool is_main_frame, const ultralight::String& url)
 {
-    shouldRedraw = true;
+	shouldRedraw = true;
 }
 
 void WebMedia::OnDOMReady(ultralight::View* caller, uint64_t frame_id, bool is_main_frame, const ultralight::String& url)
 {
-    shouldRedraw = true;
+	shouldRedraw = true;
 }
 
 void WebMedia::OnChangeCursor(ultralight::View* caller, ultralight::Cursor cursor) {}
 void WebMedia::OnChangeTitle(ultralight::View* caller, const ultralight::String& title) {}
+
+
+
+
+//MANAGER
+
+juce_ImplementSingleton(UltralightManager)
+
+UltralightManager::UltralightManager() {
+	setupRenderer();
+}
+
+void UltralightManager::registerClient(WebMedia* client) {
+	clients.addIfNotAlreadyThere(client);
+}
+
+void UltralightManager::unregisterClient(WebMedia* client) {
+	clients.removeFirstMatchingValue(client);
+}
+
+void UltralightManager::setupRenderer() {
+	LOG("Init Ultralight Platform");
+	ultralight::Config config;
+
+	File f = File::getSpecialLocation(File::currentExecutableFile);
+#if JUCE_MAC
+	f = f.getParentDirectory().getChildFile("Resources");
+#endif
+	String path = f.getParentDirectory().getFullPathName().toStdString();
+
+	ultralight::Platform::instance().set_config(config);
+	ultralight::Platform::instance().set_font_loader(ultralight::GetPlatformFontLoader());
+
+	ultralight::Platform::instance().set_file_system(ultralight::GetPlatformFileSystem(path.toRawUTF8()));
+	ultralight::Platform::instance().set_logger(this);
+
+	LOG("Init Ultralight Renderer");
+	renderer = ultralight::Renderer::Create();
+}
+
+void UltralightManager::clear()
+{
+	renderer = nullptr;
+}
+
+void UltralightManager::update()
+{
+	if (!renderer || clients.isEmpty()) return;
+	renderer->Update();
+	renderer->Render();
+}
+
+void UltralightManager::LogMessage(ultralight::LogLevel log_level, const ultralight::String& message) {
+	LOG("From Ultralight : " << String(message.utf8().data()) << " ( " << (int)log_level << " )");
+}

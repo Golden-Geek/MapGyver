@@ -52,12 +52,13 @@ public:
 	double lastFPSHistory[10]{};
 	int lastFPSIndex;
 	bool customFPSTick;
-	void FPSTick();
 
 	bool isEditing;
 
 	Image previewImage;
 	bool shouldGeneratePreviewImage;
+
+	void clearItem() override;
 
 	void onContainerTriggerTriggered(Trigger* t) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
@@ -98,6 +99,8 @@ public:
 	virtual void handleSeek(double time) {}
 	virtual void handleStop() {}
 	virtual void handleStart() {}
+	
+	void FPSTick();
 
 
 	void setIsEditing(bool editing);

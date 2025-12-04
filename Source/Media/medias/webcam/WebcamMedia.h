@@ -21,7 +21,6 @@ public:
     WebcamDeviceParameter* WebcamParam;
     WebcamInputDevice* WebcamDevice = nullptr;
 
-    void clearItem() override;
     void onContainerParameterChangedInternal(Parameter* p) override;
 
     void updateDevice();

@@ -63,15 +63,19 @@ void MainContentComponent::paint(Graphics& g)
 
 void MainContentComponent::SharedTextureDispatcher::newOpenGLContextCreated()
 {
+	UltralightManager::getInstance(); //setup
 	if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->initGL();
 }
 
 void MainContentComponent::SharedTextureDispatcher::renderOpenGL()
 {
+	UltralightManager::getInstance()->update();
 	if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->renderGL();
 }
 
 void MainContentComponent::SharedTextureDispatcher::openGLContextClosing()
 {
 	if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->clearGL();
+	UltralightManager::deleteInstance();
+
 }

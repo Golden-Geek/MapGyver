@@ -23,7 +23,6 @@ public:
     NDIInputDevice* ndiDevice = nullptr;
     ColorParameter* color;
 
-    void clearItem() override;
     void onContainerParameterChangedInternal(Parameter* p) override;
 
     void updateDevice();

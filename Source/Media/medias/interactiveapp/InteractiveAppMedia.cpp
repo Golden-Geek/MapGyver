@@ -73,6 +73,8 @@ void InteractiveAppMedia::clearItem()
 	if (stopOnClear->boolValue()) killProcess();
 
 	if (wsClient != nullptr) wsClient->stop();
+
+	Media::clearItem();
 }
 
 void InteractiveAppMedia::onContainerParameterChangedInternal(Parameter* p)
