@@ -79,7 +79,10 @@ public:
 		bool connected;
 		MPVPlayer* owner;
 		String pipePath;
+#if JUCE_WINDOWS
 		HANDLE pipeHandle = INVALID_HANDLE_VALUE;
+#else
+#endif
 		std::vector<float> readBuffer;
 	};
 

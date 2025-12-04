@@ -55,7 +55,14 @@ void WebMedia::EnsureRenderer()
     ultralight::Config config;
 
     File f = File::getSpecialLocation(File::currentExecutableFile);
+    
+#if JUCE_MAC
+    f = f.getParentDirectory().getChildFile("Resources");
+#endif
+    
     String path = f.getParentDirectory().getFullPathName().toStdString();
+    
+    
     ultralight::Platform::instance().set_config(config);
     ultralight::Platform::instance().set_font_loader(ultralight::GetPlatformFontLoader());
     ultralight::Platform::instance().set_file_system(ultralight::GetPlatformFileSystem(path.toRawUTF8()));

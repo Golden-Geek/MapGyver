@@ -30,6 +30,10 @@ void GlContextHolder::setup(juce::Component* topLevelComponent)
 {
 	topLevelComponent->addAndMakeVisible(offScreenRenderComponent);
 	parent = topLevelComponent;
+    
+#if JUCE_MAC
+    context.setOpenGLVersionRequired(juce::OpenGLContext::openGL3_2);
+#endif
 	//context.setOpenGLVersionRequired(juce::OpenGLContext::OpenGLVersion::openGL4_1);
 
 	//if (OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(offScreenRenderComponent)) registerOpenGlRenderer(r);
@@ -328,6 +332,13 @@ OpenGLSharedRenderer::~OpenGLSharedRenderer()
 
 void OpenGLSharedRenderer::newOpenGLContextCreated()
 {
-	juce::gl::glDebugMessageControl(juce::gl::GL_DEBUG_SOURCE_API, juce::gl::GL_DEBUG_TYPE_OTHER, juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, juce::gl::GL_FALSE);
+    if (juce::gl::glDebugMessageControl != nullptr)
+    {
+        juce::gl::glDebugMessageControl(juce::gl::GL_DEBUG_SOURCE_API,
+                                        juce::gl::GL_DEBUG_TYPE_OTHER,
+                                        juce::gl::GL_DEBUG_SEVERITY_NOTIFICATION,
+                                        0, 0,
+                                        juce::gl::GL_FALSE);
+    }
 	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
 }
