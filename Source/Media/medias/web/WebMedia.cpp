@@ -12,18 +12,13 @@
 #include <Ultralight/platform/Platform.h>
 #include <Ultralight/Renderer.h>
 #include <AppCore/Platform.h>
-#include "WebMedia.h"
-
-uint32 WebMedia::lastUpdateTime = 0;
-
-
 
 
 WebMedia::WebMedia(var params) :
 	ImageMedia(getTypeString(), params)
 {
 	// Parameters
-	urlParam = addStringParameter("URL", "The website address", "https://ultralig.ht/");
+	urlParam = addStringParameter("URL", "The website address", "https://goldengeek.org/");
 	zoomParam = addFloatParameter("Zoom", "Zoom level", 1.0f, 0.1f, 5.0f);
 	transparentParam = addBoolParameter("Transparent", "Transparent Background", false);
 	reloadTrigger = addTrigger("Reload", "Reload Page");
@@ -32,8 +27,6 @@ WebMedia::WebMedia(var params) :
 	// Use default size from parameters (inherited from Media)
 	int w = width != nullptr ? width->intValue() : 1920;
 	int h = height != nullptr ? height->intValue() : 1080;
-
-	// Initialize the base ImageMedia container
 	initImage(w, h);
 
 	UltralightManager::getInstance()->registerClient(this);
@@ -41,27 +34,20 @@ WebMedia::WebMedia(var params) :
 
 WebMedia::~WebMedia()
 {
-	UltralightManager::getInstance()->unregisterClient(this);
+	if (UltralightManager::getInstanceWithoutCreating())
+		UltralightManager::getInstance()->unregisterClient(this);
 }
 
 
-void WebMedia::initGLInternal()
+void WebMedia::setupView()
 {
-	UltralightManager::getInstance()->registerClient(this);
-
-	if (!image.isValid())
-	{
-		LOGERROR("WebMedia::initGLInternal: Image is not valid!");
-		return;
-	}
-
 
 	// Create View specific to THIS instance
 	ultralight::ViewConfig viewConfig;
 	viewConfig.is_accelerated = false; // CPU rendering
 	viewConfig.is_transparent = false;
 
-	auto ultralightRenderer = UltralightManager::getInstance()->renderer;
+	auto ultralightRenderer = UltralightManager::getInstance()->getRenderer();
 	if (ultralightRenderer)
 	{
 		// Re-create view if it doesn't exist
@@ -78,6 +64,12 @@ void WebMedia::initGLInternal()
 	}
 }
 
+void WebMedia::initGLInternal()
+{
+	UltralightManager::getInstance()->registerClient(this);
+	setupView();
+}
+
 void WebMedia::onContainerParameterChangedInternal(Parameter* p)
 {
 	Media::onContainerParameterChangedInternal(p); // Call base
@@ -86,7 +78,15 @@ void WebMedia::onContainerParameterChangedInternal(Parameter* p)
 
 	if (p == urlParam)
 	{
-		view->LoadURL(urlParam->stringValue().toRawUTF8());
+		if (!isCurrentlyLoadingData)
+		{
+			GlContextHolder::getInstance()->callOnGLThread(
+				[=]()
+				{
+					view->LoadURL(urlParam->stringValue().toRawUTF8());
+				}
+			);
+		}
 	}
 	else if (p == zoomParam)
 	{
@@ -182,28 +182,14 @@ void WebMedia::preRenderGLInternal()
 
 void WebMedia::closeGLInternal()
 {
-	if (view)
-	{
-		view->set_load_listener(nullptr);
-		view->set_view_listener(nullptr);
-		view = nullptr;
-	}
+	if (!view) return;
 
-	//instanceCount--;
+	view->set_load_listener(nullptr);
+	view->set_view_listener(nullptr);
+	view = nullptr;
 
-	//// If this was the last web media, release the global renderer.
-	//// This ensures that if we create a new one later, we get a fresh Renderer/Platform setup.
-	//if (instanceCount <= 0)
-	//{
-	//    instanceCount = 0; // safety
-	//    ultralightRenderer = nullptr;
-	//}
 
-	// Note: We DO NOT destroy ultralightRenderer here. 
-	// It is destroyed in the Destructor when instanceCount hits 0.
 }
-
-// -- Listeners --
 
 void WebMedia::OnFinishLoading(ultralight::View* caller, uint64_t frame_id, bool is_main_frame, const ultralight::String& url)
 {
@@ -227,6 +213,12 @@ juce_ImplementSingleton(UltralightManager)
 
 UltralightManager::UltralightManager() {
 	setupRenderer();
+}
+
+UltralightManager::~UltralightManager()
+{
+	LOG("DESTROY");
+	renderer = nullptr;
 }
 
 void UltralightManager::registerClient(WebMedia* client) {
@@ -259,7 +251,19 @@ void UltralightManager::setupRenderer() {
 
 void UltralightManager::clear()
 {
-	renderer = nullptr;
+	GlContextHolder::getInstance()->callOnGLThread(
+		[=]()
+		{
+			for (auto& client : clients)
+			{
+				client->closeGLInternal();
+			}
+
+			renderer = nullptr;
+
+		}, true
+	);
+
 }
 
 void UltralightManager::update()
@@ -267,6 +271,12 @@ void UltralightManager::update()
 	if (!renderer || clients.isEmpty()) return;
 	renderer->Update();
 	renderer->Render();
+}
+
+ultralight::RefPtr<ultralight::Renderer> UltralightManager::getRenderer()
+{
+	jassert(renderer);
+	return renderer;
 }
 
 void UltralightManager::LogMessage(ultralight::LogLevel log_level, const ultralight::String& message) {

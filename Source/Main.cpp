@@ -44,6 +44,7 @@ void MapGyverApplication::afterInit()
 
 void MapGyverApplication::shutdown()
 {
+	UltralightManager::getInstance()->clear();
 	OrganicApplication::shutdown();
 	AppUpdater::deleteInstance();
 }

@@ -23,7 +23,7 @@ public:
 	juce_DeclareSingleton(UltralightManager, true);
     
     UltralightManager();
-    ~UltralightManager() {}
+    ~UltralightManager();
 
 	Array<WebMedia*, CriticalSection> clients;
 
@@ -35,6 +35,7 @@ public:
 
     void update();
 
+	ultralight::RefPtr<ultralight::Renderer> getRenderer();
     void LogMessage(ultralight::LogLevel log_level, const ultralight::String& message) override;
 
     ultralight::RefPtr<ultralight::Renderer> renderer;
@@ -61,17 +62,13 @@ public:
 
     static bool platformInitialized;
 
-    // Static management for multiple instances
-    //static int instanceCount;
-    static uint32 lastUpdateTime; // To prevent double-ticking the engine
-
     bool glCleared = false;
 
     // Overrides
     void onContainerParameterChangedInternal(Parameter* p) override;
     void onContainerTriggerTriggered(Trigger* t) override;
 
-
+    void setupView();
     void initGLInternal() override;
 
     void renderOpenGL() override;

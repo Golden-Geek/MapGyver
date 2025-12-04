@@ -244,6 +244,9 @@ void GlContextHolder::newOpenGLContextCreated()
 	gl::glDebugMessageControl(gl::GL_DEBUG_SOURCE_API, gl::GL_DEBUG_TYPE_OTHER, gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, gl::GL_FALSE);
 	glDisable(GL_DEBUG_OUTPUT);
 #endif
+
+	UltralightManager::getInstance();
+
 	checkComponents(false, false);
 }
 
@@ -260,6 +263,9 @@ void GlContextHolder::renderOpenGL()
 	//LOG("*** Render Main GL >>");
 
 	juce::OpenGLHelpers::clear(Colours::black);
+
+	UltralightManager::getInstance()->update();
+
 	checkComponents(false, true);
 
 	for (auto& c : sharedRenderers) c->context.triggerRepaint();
@@ -267,7 +273,11 @@ void GlContextHolder::renderOpenGL()
 
 void GlContextHolder::openGLContextClosing()
 {
+
 	checkComponents(true, false);
+
+	UltralightManager::getInstance()->deleteInstance();
+
 }
 
 //==============================================================================
@@ -341,4 +351,5 @@ void OpenGLSharedRenderer::newOpenGLContextCreated()
                                         juce::gl::GL_FALSE);
     }
 	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
+
 }
