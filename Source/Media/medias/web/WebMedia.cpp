@@ -40,12 +40,7 @@ WebMedia::WebMedia(var params) :
 
 WebMedia::~WebMedia()
 {
-    if (view)
-    {
-        view->set_load_listener(nullptr);
-        view->set_view_listener(nullptr);
-        view = nullptr;
-    }
+    
 }
 
 void WebMedia::EnsureRenderer()
@@ -92,6 +87,15 @@ void WebMedia::LogMessage(ultralight::LogLevel log_level, const ultralight::Stri
 	LOG("From Ultralight : " << String(message.utf8().data()) << " ( " << (int)log_level << " )" );
 }
 
+void WebMedia::clearItem()
+{
+    ImageMedia::clearItem();
+    while (!glCleared)
+    {
+		Thread::sleep(2);
+    }
+}
+
 void WebMedia::onContainerParameterChangedInternal(Parameter* p)
 {
     Media::onContainerParameterChangedInternal(p); // Call base
@@ -132,6 +136,18 @@ void WebMedia::initGLInternal()
 
 }
 
+void WebMedia::renderOpenGL()
+{
+    if (isClearing)
+    {
+        if (!glCleared) closeGLInternal();
+        glCleared = true;
+        return;
+    }
+
+    ImageMedia::renderOpenGL();
+}
+
 void WebMedia::initFrameBuffer()
 {
     // Call base to setup the main FrameBuffer
@@ -149,6 +165,8 @@ void WebMedia::initFrameBuffer()
 
 void WebMedia::preRenderGLInternal()
 {
+   
+
     // 1. Tick Ultralight
     if (globalRenderer)
     {
@@ -195,6 +213,16 @@ void WebMedia::preRenderGLInternal()
     // 3. Call ImageMedia to upload 'image' to 'imageFBO'
     // This handles the GL context locking, texture binding, and glTexSubImage2D
     ImageMedia::preRenderGLInternal();
+}
+
+void WebMedia::closeGLInternal()
+{
+    if (view)
+    {
+        view->set_load_listener(nullptr);
+        view->set_view_listener(nullptr);
+        view = nullptr;
+    }
 }
 
 // -- Listeners --

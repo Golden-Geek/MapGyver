@@ -31,13 +31,22 @@ public:
     // Ultralight
     ultralight::RefPtr<ultralight::View> view;
 
+    bool glCleared = false;
+
+    void clearItem() override;
+
     // Overrides
     void onContainerParameterChangedInternal(Parameter* p) override;
     void onContainerTriggerTriggered(Trigger* t) override;
 
+
     void initGLInternal() override;
-    // We override preRenderGLInternal to update the CPU image before ImageMedia uploads it
+    
+    void renderOpenGL() override;
+
     void preRenderGLInternal() override;
+
+	void closeGLInternal() override;
 
     // Manage resizing
     void initFrameBuffer() override;

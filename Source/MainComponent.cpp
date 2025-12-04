@@ -13,6 +13,7 @@ MainContentComponent::MainContentComponent()
 	// setSize (800, 600);
 
 	//getCommandManager().registerAllCommandsForTarget(this);
+	GlContextHolder::getInstance()->setup(this);
 	ScreenOutputWatcher::getInstance(); // triggers the creation of the singleton
 }
 
@@ -46,12 +47,6 @@ void MainContentComponent::init()
 
 	//getLookAndFeel().setColour(juce::TextButton::textColourOffId, Colour(127,127,127));
 	getLookAndFeel().setColour(juce::TextButton::buttonColourId, Colour(64, 64, 64));
-}
-
-void MainContentComponent::afterInit()
-{
-    OrganicMainContentComponent::afterInit();
-    GlContextHolder::getInstance()->setup(this);
 }
 
 void MainContentComponent::setupOpenGL()

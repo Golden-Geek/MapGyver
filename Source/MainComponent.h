@@ -23,7 +23,6 @@ public:
 	Component renderComp;
 
 	void init() override;
-    void afterInit() override;
 	void setupOpenGL() override;
 	void paint(Graphics& g) override;
 
