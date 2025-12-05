@@ -518,7 +518,7 @@
                JUCE_USE_MP3AUDIOFORMAT="1" JUCE_USE_LAME_AUDIO_FORMAT="1" JUCE_ASIO="1"/>
   <EXPORTFORMATS>
     <VS2026 targetFolder="Builds/VisualStudio2026" externalLibraries="Servus.lib&#10;libmpv.lib&#10;AppCore.lib&#10;Ultralight.lib&#10;WebCore.lib&#10;UltralightCore.lib"
-            extraCompilerFlags="/bigobj">
+            extraCompilerFlags="/bigobj" smallIcon="AKcEsb" bigIcon="AKcEsb">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;../../External/mpv/lib/win&#10;../../External/ultralight/lib/win&#10;"
                        binaryPath="Binaries/Debug"/>
@@ -552,7 +552,8 @@
     <XCODE_MAC targetFolder="Builds/MacOSX" xcodeValidArchs="arm64" externalLibraries="Servus&#10;ndi&#10;mpv.2&#10;AppCore&#10;Ultralight&#10;UltralightCore&#10;WebCore"
                customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;&#9;&lt;dict&gt;&#10;&#9;&#9;&lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;&#9;&#9;&lt;true/&gt;&#10;&#9;&lt;/dict&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
                frameworkSearchPaths="../../External/syphon" embeddedFrameworks="../../External/syphon/Syphon.framework"
-               postbuildCommand="# 1. Define variables for clarity&#10;APP_PATH=&quot;$TARGET_BUILD_DIR/$PRODUCT_NAME.app&quot;&#10;EXECUTABLE=&quot;$APP_PATH/Contents/MacOS/$PRODUCT_NAME&quot;&#10;LIB_PATH=&quot;$APP_PATH/Contents/Resources/libmpv.2.dylib&quot;&#10;&#10;install_name_tool -add_rpath &quot;@executable_path/../Resources&quot; &quot;$EXECUTABLE&quot;&#10;install_name_tool -id &quot;@rpath/libmpv.2.dylib&quot; &quot;$LIB_PATH&quot;&#10;install_name_tool -change &quot;/opt/local/lib/libmpv.2.dylib&quot; &quot;@rpath/libmpv.2.dylib&quot; &quot;$EXECUTABLE&quot;&#10;&#10;#ultra light copy resources&#10;cd &quot;$APP_PATH/Contents/Resources&quot;&#10;mkdir ultralight&#10;mkdir ultralight/resources&#10;cp cacert.pem icudt67l.dat ultralight/resources">
+               postbuildCommand="# 1. Define variables for clarity&#10;APP_PATH=&quot;$TARGET_BUILD_DIR/$PRODUCT_NAME.app&quot;&#10;EXECUTABLE=&quot;$APP_PATH/Contents/MacOS/$PRODUCT_NAME&quot;&#10;LIB_PATH=&quot;$APP_PATH/Contents/Resources/libmpv.2.dylib&quot;&#10;&#10;install_name_tool -add_rpath &quot;@executable_path/../Resources&quot; &quot;$EXECUTABLE&quot;&#10;install_name_tool -id &quot;@rpath/libmpv.2.dylib&quot; &quot;$LIB_PATH&quot;&#10;install_name_tool -change &quot;/opt/local/lib/libmpv.2.dylib&quot; &quot;@rpath/libmpv.2.dylib&quot; &quot;$EXECUTABLE&quot;&#10;&#10;#ultra light copy resources&#10;cd &quot;$APP_PATH/Contents/Resources&quot;&#10;mkdir ultralight&#10;mkdir ultralight/resources&#10;cp cacert.pem icudt67l.dat ultralight/resources"
+               smallIcon="AKcEsb" bigIcon="AKcEsb">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" libraryPath="../../External/servus/lib/silicon/debug&#10;../../External/NDI/lib/osx&#10;../../External/mpv/lib/osx&#10;../../External/ultralight/lib/osx/silicon"/>
         <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/servus/lib/silicon/release&#10;../../External/NDI/lib/osx&#10;../../External/mpv/lib/osx&#10;../../External/ultralight/lib/osx/silicon"/>
@@ -582,9 +583,9 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2022 targetFolder="Builds/VisualStudio2022_CI" smallIcon="AKcEsb"
-            bigIcon="AKcEsb" extraCompilerFlags="/bigobj" externalLibraries="Servus.lib&#10;libmpv.lib">
+            bigIcon="AKcEsb" extraCompilerFlags="/bigobj" externalLibraries="Servus.lib&#10;libmpv.lib&#10;AppCore.lib&#10;Ultralight.lib&#10;WebCore.lib&#10;UltralightCore.lib">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib"
+        <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib/win&#10;../../External/ultralight/lib/win"
                        binaryPath="Binaries/CI"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

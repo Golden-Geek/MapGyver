@@ -35,7 +35,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MapGyver</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib/win;../../External/ultralight/lib/win;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD</LibraryPath>
     <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</PreBuildEventUseInBuild>
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</PostBuildEventUseInBuild>
   </PropertyGroup>
@@ -77,18 +77,18 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalLibraryDirectories>../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib/win;../../External/ultralight/lib/win;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <AdditionalDependencies>Servus.lib;libmpv.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Servus.lib;libmpv.lib;AppCore.lib;Ultralight.lib;WebCore.lib;UltralightCore.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\MapGyver.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>Servus.lib;libmpv.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Servus.lib;libmpv.lib;AppCore.lib;Ultralight.lib;WebCore.lib;UltralightCore.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib/win;../../External/ultralight/lib/win;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
