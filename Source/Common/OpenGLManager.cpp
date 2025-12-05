@@ -252,6 +252,7 @@ void GlContextHolder::newOpenGLContextCreated()
 
 void GlContextHolder::renderOpenGL()
 {
+
 	double lastRenderTime = timeAtRender;
 
 	double t = Time::getMillisecondCounterHiRes();

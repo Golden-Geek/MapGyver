@@ -30,6 +30,8 @@ WebMedia::WebMedia(var params) :
 	int h = height != nullptr ? height->intValue() : 1080;
 	initImage(w, h);
 
+	alwaysRedraw = true;	
+
 	UltralightManager::getInstance()->registerClient(this);
 }
 
@@ -146,7 +148,6 @@ void WebMedia::preRenderGLInternal()
 
 	// 2. Sync Pixels from Ultralight -> ImageMedia::image
 	if (!view) return;
-
 	ultralight::BitmapSurface* surface = (ultralight::BitmapSurface*)view->surface();
 	if (surface && surface->dirty_bounds().IsValid())
 	{
@@ -413,6 +414,7 @@ void UltralightManager::update()
 {
 	if (!renderer || clients.isEmpty()) return;
 	renderer->Update();
+	renderer->RefreshDisplay(0);
 	renderer->Render();
 }
 
