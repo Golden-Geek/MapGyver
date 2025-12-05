@@ -99,9 +99,9 @@ jobs:
     strategy:
       matrix:
         include:
-        - arch: x86_64
-          suffix: intel
-          config: Release
+        # - arch: x86_64
+        #   suffix: intel
+        #   config: Release
 
         - arch: arm64
           suffix: silicon
