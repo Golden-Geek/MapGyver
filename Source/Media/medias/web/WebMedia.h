@@ -90,6 +90,8 @@ public:
 
 	//Interactions
 
+	Point<int> getMediaMousePosition(const MouseEvent& e, Rectangle<int> canvasRect);
+
 	void sendMouseDown(const MouseEvent& e, Rectangle<int> canvasRect) override;
 	void sendMouseUp(const MouseEvent& e, Rectangle<int> canvasRect) override;
 	void sendMouseDrag(const MouseEvent& e, Rectangle<int> canvasRect) override;

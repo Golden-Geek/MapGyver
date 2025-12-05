@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "ShaderMedia.h"
 
 ShaderMedia::ShaderMedia(var params) :
 	Media(getTypeString(), params, true),
@@ -879,7 +880,13 @@ void ShaderMedia::addUniformControllable(UniformInfo info)
 	}
 }
 
+Point<float> ShaderMedia::getMediaShaderPosition(const MouseEvent& e, Rectangle<int> canvasRect)
+{
 
+	Point<float> p = (e.getPosition() - canvasRect.getPosition()).toFloat() / Point<float>(canvasRect.getWidth(), canvasRect.getHeight());
+	p.y = 1.0f - p.y;
+	return p;
+}
 
 
 void ShaderMedia::sendMouseDown(const MouseEvent& e, Rectangle<int> canvasRect)
@@ -895,15 +902,13 @@ void ShaderMedia::sendMouseUp(const MouseEvent& e, Rectangle<int> canvasRect)
 
 void ShaderMedia::sendMouseDrag(const MouseEvent& e, Rectangle<int> canvasRect)
 {
-	Point<int> relPoint = getMediaMousePosition(e, canvasRect);
-	mouseInputPos->setPoint(relPoint.toFloat() / Point<float>(canvasRect.getWidth(), canvasRect.getHeight()));
+	mouseInputPos->setPoint(getMediaShaderPosition(e,canvasRect));
 
 }
 
 void ShaderMedia::sendMouseMove(const MouseEvent& e, Rectangle<int> canvasRect)
 {
-	Point<int> relPoint = getMediaMousePosition(e, canvasRect);
-	mouseInputPos->setPoint(relPoint.toFloat() / Point<float>(canvasRect.getWidth(), canvasRect.getHeight()));
+	mouseInputPos->setPoint(getMediaShaderPosition(e, canvasRect));
 
 }
 

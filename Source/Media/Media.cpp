@@ -518,11 +518,3 @@ Point<int> ImageMedia::getDefaultMediaSize()
 {
 	return Point<int>(image.getWidth(), image.getHeight());
 }
-
-Point<int> IInteractableMedia::getMediaMousePosition(const MouseEvent& e, Rectangle<int> canvasRect)
-{
-	Media* m = (Media*)this;
-	int tx = (e.getPosition().x - canvasRect.getX()) * m->frameBuffer.getWidth() / canvasRect.getWidth();
-	int ty = (e.getPosition().y - canvasRect.getY()) * m->frameBuffer.getHeight() / canvasRect.getHeight();
-	return Point<int>(tx, ty);
-}

@@ -124,7 +124,6 @@ class IInteractableMedia
 {
 public:
 
-	Point<int> getMediaMousePosition(const MouseEvent& e, Rectangle<int> canvasRect);
 
 	virtual void sendMouseDown(const MouseEvent& e, Rectangle<int> canvasRect) = 0;
 	virtual void sendMouseUp(const MouseEvent& e, Rectangle<int> canvasRect) = 0;
