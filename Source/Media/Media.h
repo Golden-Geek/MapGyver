@@ -120,6 +120,20 @@ public:
 	JUCE_DECLARE_WEAK_REFERENCEABLE(Media);
 };
 
+class IInteractableMedia
+{
+public:
+
+	Point<int> getMediaMousePosition(const MouseEvent& e, Rectangle<int> canvasRect);
+
+	virtual void sendMouseDown(const MouseEvent& e, Rectangle<int> canvasRect) = 0;
+	virtual void sendMouseUp(const MouseEvent& e, Rectangle<int> canvasRect) = 0;
+	virtual void sendMouseDrag(const MouseEvent& e, Rectangle<int> canvasRect) = 0;
+	virtual void sendMouseMove(const MouseEvent& e, Rectangle<int> canvasRect) = 0;
+	virtual void sendMouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) = 0;
+	virtual void sendKeyPressed(const KeyPress& key) = 0;
+};
+
 
 class ImageMedia :
 	public Media

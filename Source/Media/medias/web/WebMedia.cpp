@@ -220,12 +220,7 @@ static ultralight::MouseEvent::Button getUltralightButton(const MouseEvent& e)
 }
 
 
-Point<int> WebMedia::getMediaMousePosition(const MouseEvent& e, Rectangle<int> canvasRect)
-{
-	int tx = (e.getPosition().x - canvasRect.getX()) * frameBuffer.getWidth() / canvasRect.getWidth();
-	int ty = (e.getPosition().y - canvasRect.getY()) * frameBuffer.getHeight() / canvasRect.getHeight();
-	return Point<int>(tx, ty);
-}
+
 
 void WebMedia::sendMouseDown(const MouseEvent& e, Rectangle<int> canvasRect)
 {

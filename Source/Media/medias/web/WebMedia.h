@@ -43,6 +43,7 @@ public:
 
 class WebMedia :
 	public ImageMedia,
+	public IInteractableMedia,
 	public ultralight::LoadListener,
 	public ultralight::ViewListener
 {
@@ -89,14 +90,12 @@ public:
 
 	//Interactions
 
-	Point<int> getMediaMousePosition(const MouseEvent& e, Rectangle<int> canvasRect);
-
-	void sendMouseDown(const MouseEvent& e, Rectangle<int> canvasRect);
-	void sendMouseUp(const MouseEvent& e, Rectangle<int> canvasRect);
-	void sendMouseDrag(const MouseEvent& e, Rectangle<int> canvasRect);
-	void sendMouseMove(const MouseEvent& e, Rectangle<int> canvasRect);
-	void sendMouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel);
-	void sendKeyPressed(const KeyPress& key);
+	void sendMouseDown(const MouseEvent& e, Rectangle<int> canvasRect) override;
+	void sendMouseUp(const MouseEvent& e, Rectangle<int> canvasRect) override;
+	void sendMouseDrag(const MouseEvent& e, Rectangle<int> canvasRect) override;
+	void sendMouseMove(const MouseEvent& e, Rectangle<int> canvasRect) override;
+	void sendMouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
+	void sendKeyPressed(const KeyPress& key) override;
 
 	void sendMouseEventToUltralight(const ultralight::MouseEvent& event);
 	void sendScrollEventToUltralight(const ultralight::ScrollEvent& event);

@@ -28,7 +28,7 @@ public:
 	bool useMediaOnPreview;
 	Media* media;
 
-	WebMedia* webMedia; //if media is webmedia
+	IInteractableMedia* iMedia; //if media is webmedia
 
 	Rectangle<int> mediaRect;
 

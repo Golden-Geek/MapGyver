@@ -16,7 +16,7 @@ MediaPreview::MediaPreview() :
 	OpenGLSharedRenderer(this),
 	useMediaOnPreview(false),
 	media(nullptr),
-	webMedia(nullptr)
+	iMedia(nullptr)
 {
 
 	getTopLevelComponent()->addKeyListener(this);
@@ -48,13 +48,13 @@ void MediaPreview::setMedia(Media* m)
 
 	computeMediaRect();
 
-	if (WebMedia* wm = dynamic_cast<WebMedia*>(media))
+	if (IInteractableMedia* wm = dynamic_cast<IInteractableMedia*>(media))
 	{
-		webMedia = wm;
+		iMedia = wm;
 	}
 	else
 	{
-		webMedia = nullptr;
+		iMedia = nullptr;
 	}
 
 
@@ -141,39 +141,39 @@ void MediaPreview::inspectableDestroyed(Inspectable* i)
 
 void MediaPreview::mouseDown(const MouseEvent& e)
 {
-	if (webMedia == nullptr) return;
-	webMedia->sendMouseDown(e, mediaRect);
+	if (iMedia == nullptr) return;
+	iMedia->sendMouseDown(e, mediaRect);
 }
 
 void MediaPreview::mouseUp(const MouseEvent& e)
 {
-	if (webMedia == nullptr) return;
-	webMedia->sendMouseUp(e, mediaRect);
+	if (iMedia == nullptr) return;
+	iMedia->sendMouseUp(e, mediaRect);
 }
 
 void MediaPreview::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
 {
-	if (webMedia == nullptr) return;
-	webMedia->sendMouseWheelMove(e, wheel);
+	if (iMedia == nullptr) return;
+	iMedia->sendMouseWheelMove(e, wheel);
 }
 
 void MediaPreview::mouseMove(const MouseEvent& e)
 {
-	if (webMedia == nullptr) return;
-	webMedia->sendMouseMove(e, mediaRect);
+	if (iMedia == nullptr) return;
+	iMedia->sendMouseMove(e, mediaRect);
 }
 
 void MediaPreview::mouseDrag(const MouseEvent& e)
 {
-	if (webMedia == nullptr) return;
-	webMedia->sendMouseDrag(e, mediaRect);
+	if (iMedia == nullptr) return;
+	iMedia->sendMouseDrag(e, mediaRect);
 }
 
 bool MediaPreview::keyPressed(const KeyPress& key, Component* originatingComponent)
 {
-	if (webMedia == nullptr) return false;
+	if (iMedia == nullptr) return false;
 
-	webMedia->sendKeyPressed(key);
+	iMedia->sendKeyPressed(key);
 
 	return false;
 }

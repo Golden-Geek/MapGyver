@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "ShaderMedia.h"
 
 ShaderMedia::ShaderMedia(var params) :
 	Media(getTypeString(), params, true),
@@ -44,6 +43,8 @@ ShaderMedia::ShaderMedia(var params) :
 	fps = addIntParameter("FPS", "FPS", 60, 1, 1000);
 
 	backgroundColor = addColorParameter("Background Color", "Background Color", Colours::black);
+	speed = addFloatParameter("Speed", "Speed Multiplier", 1.0f);
+	resetTime = addTrigger("Reset Time", "Reset Time to 0");
 	mouseClick = addBoolParameter("Mouse Click", "Simulates mouse click, for shader toy", false);
 	mouseInputPos = addPoint2DParameter("Mouse Input Pos", "Mouse Input Pos");
 	mouseInputPos->setBounds(0, 0, 1, 1);
@@ -75,6 +76,14 @@ bool ShaderMedia::isUsingMedia(Media* m)
 {
 	if (!isBeingUsed->boolValue()) return false;
 	return MediaTarget::isUsingMedia(m);
+}
+
+void ShaderMedia::onContainerTriggerTriggered(Trigger* t)
+{
+	if (t == resetTime)
+	{
+		currentTime = 0;
+	}
 }
 
 void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
@@ -145,6 +154,8 @@ void ShaderMedia::initGLInternal()
 
 	glGenBuffers(1, &VBO);
 	glGenVertexArrays(1, &VAO);
+
+	timeAtLastFrame = Time::getMillisecondCounter();
 }
 
 void ShaderMedia::preRenderGLInternal()
@@ -156,7 +167,13 @@ void ShaderMedia::preRenderGLInternal()
 void ShaderMedia::renderGLInternal()
 {
 	//LOG("Render GL");
-	double t = customTime >= 0 ? customTime : Time::getMillisecondCounter() / 1000.0;
+
+	double curT = Time::getMillisecondCounter();
+	double  realDeltaTime = (curT - timeAtLastFrame) / 1000.0;
+	currentTime += realDeltaTime * speed->floatValue();
+	timeAtLastFrame = curT;
+
+	double t = customTime >= 0 ? customTime * speed->floatValue() : currentTime;
 	if (customTime >= 0) firstFrameTime = 0;
 	else if (firstFrameTime == 0) firstFrameTime = t;
 	t = t - firstFrameTime;
@@ -860,6 +877,43 @@ void ShaderMedia::addUniformControllable(UniformInfo info)
 		c->isCustomizableByUser = true;
 		c->saveValueOnly = false;
 	}
+}
+
+
+
+
+void ShaderMedia::sendMouseDown(const MouseEvent& e, Rectangle<int> canvasRect)
+{
+	mouseClick->setValue(true);
+
+}
+
+void ShaderMedia::sendMouseUp(const MouseEvent& e, Rectangle<int> canvasRect)
+{
+	mouseClick->setValue(false);
+}
+
+void ShaderMedia::sendMouseDrag(const MouseEvent& e, Rectangle<int> canvasRect)
+{
+	Point<int> relPoint = getMediaMousePosition(e, canvasRect);
+	mouseInputPos->setPoint(relPoint.toFloat() / Point<float>(canvasRect.getWidth(), canvasRect.getHeight()));
+
+}
+
+void ShaderMedia::sendMouseMove(const MouseEvent& e, Rectangle<int> canvasRect)
+{
+	Point<int> relPoint = getMediaMousePosition(e, canvasRect);
+	mouseInputPos->setPoint(relPoint.toFloat() / Point<float>(canvasRect.getWidth(), canvasRect.getHeight()));
+
+}
+
+void ShaderMedia::sendMouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
+{
+
+}
+
+void ShaderMedia::sendKeyPressed(const KeyPress& key)
+{
 }
 
 void ShaderMedia::run()

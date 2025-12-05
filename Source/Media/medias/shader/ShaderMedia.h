@@ -13,6 +13,7 @@
 
 class ShaderMedia :
 	public Media,
+	public IInteractableMedia,
 	public MediaTarget,
 	public Thread
 {
@@ -55,6 +56,8 @@ public:
 
 	ControllableContainer sourceMedias;
 
+	FloatParameter* speed;
+	Trigger* resetTime;
 	bool useMouse4D;
 	int useResolution3D;
 	BoolParameter* mouseClick;
@@ -65,6 +68,9 @@ public:
 	int currentFrame;
 	double lastFrameTime;
 	double firstFrameTime = 0;
+
+	long timeAtLastFrame = 0;
+	double currentTime = 0;
 
 	//SpinLock shaderLock;
 	std::unique_ptr<OpenGLShaderProgram> shader;
@@ -97,6 +103,7 @@ public:
 
 	bool isUsingMedia(Media* m) override;
 
+	void onContainerTriggerTriggered(Trigger* t) override;
 	void onContainerParameterChangedInternal(Parameter* p) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
@@ -111,6 +118,13 @@ public:
 
 	void showUniformControllableMenu(ControllableContainer* cc);
 	void addUniformControllable(UniformInfo info);
+
+	void sendMouseDown(const MouseEvent& e, Rectangle<int> canvasRect) override;
+	void sendMouseUp(const MouseEvent& e, Rectangle<int> canvasRect) override;
+	void sendMouseDrag(const MouseEvent& e, Rectangle<int> canvasRect) override;
+	void sendMouseMove(const MouseEvent& e, Rectangle<int> canvasRect) override;
+	void sendMouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
+	void sendKeyPressed(const KeyPress& key) override;
 
 
 	void run() override;
