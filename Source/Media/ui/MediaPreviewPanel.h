@@ -16,7 +16,8 @@ class MediaPreview :
 	public Component,
 	public OpenGLSharedRenderer,
 	public Inspectable::InspectableListener,
-	public MediaTarget
+	public MediaTarget,
+	public KeyListener
 
 {
 public:
@@ -47,7 +48,7 @@ public:
 	void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
 	void mouseMove(const MouseEvent& e) override;
 	void mouseDrag(const MouseEvent& e) override;
-	bool keyPressed(const KeyPress& key) override;
+	bool keyPressed(const KeyPress& key, Component* originatingComponent) override;
 
 };
 

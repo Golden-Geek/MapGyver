@@ -8,8 +8,7 @@
   ==============================================================================
 */
 
-#include "../MediaIncludes.h"
-#include "MediaPreviewPanel.h"
+#include "Media/MediaIncludes.h"
 
 using namespace juce::gl;
 
@@ -20,11 +19,13 @@ MediaPreview::MediaPreview() :
 	webMedia(nullptr)
 {
 
+	getTopLevelComponent()->addKeyListener(this);
 	setSize(200, 200);
 }
 
 MediaPreview::~MediaPreview()
 {
+	getTopLevelComponent()->removeKeyListener(this);
 	setMedia(nullptr);
 }
 
@@ -168,7 +169,7 @@ void MediaPreview::mouseDrag(const MouseEvent& e)
 	webMedia->sendMouseDrag(e, mediaRect);
 }
 
-bool MediaPreview::keyPressed(const KeyPress& key)
+bool MediaPreview::keyPressed(const KeyPress& key, Component* originatingComponent)
 {
 	if (webMedia == nullptr) return false;
 
