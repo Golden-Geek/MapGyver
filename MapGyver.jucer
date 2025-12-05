@@ -613,14 +613,15 @@
       </MODULEPATHS>
     </VS2022>
     <XCODE_MAC targetFolder="Builds/MacOSX_CI" extraDefs="JUCE_COREGRAPHICS_DRAW_ASYNC=0"
-               externalLibraries="Servus&#10;ndi&#10;mpv" smallIcon="AKcEsb"
-               bigIcon="AKcEsb" xcodeValidArchs="arm64,x86_64" customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;&#9;&lt;dict&gt;&#10;&#9;&#9;&lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;&#9;&#9;&lt;true/&gt;&#10;&#9;&lt;/dict&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
-               postbuildCommand="cd $TARGET_BUILD_DIR&#10;install_name_tool -add_rpath @executable_path/../Resources MapGyver.app/Contents/MacOS/MapGyver&#10;install_name_tool -add_rpath @executable_path/../Resources/plugins MapGyver.app/Contents/MacOS/MapGyver"
+               externalLibraries="Servus&#10;ndi&#10;mpv.2&#10;AppCore&#10;Ultralight&#10;UltralightCore&#10;WebCore"
+               smallIcon="AKcEsb" bigIcon="AKcEsb" xcodeValidArchs="arm64,x86_64"
+               customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;&#9;&lt;dict&gt;&#10;&#9;&#9;&lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;&#9;&#9;&lt;true/&gt;&#10;&#9;&lt;/dict&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
+               postbuildCommand="# 1. Define variables for clarity&#10;APP_PATH=&quot;$TARGET_BUILD_DIR/$PRODUCT_NAME.app&quot;&#10;EXECUTABLE=&quot;$APP_PATH/Contents/MacOS/$PRODUCT_NAME&quot;&#10;LIB_PATH=&quot;$APP_PATH/Contents/Resources/libmpv.2.dylib&quot;&#10;&#10;install_name_tool -add_rpath &quot;@executable_path/../Resources&quot; &quot;$EXECUTABLE&quot;&#10;install_name_tool -id &quot;@rpath/libmpv.2.dylib&quot; &quot;$LIB_PATH&quot;&#10;install_name_tool -change &quot;/opt/local/lib/libmpv.2.dylib&quot; &quot;@rpath/libmpv.2.dylib&quot; &quot;$EXECUTABLE&quot;&#10;&#10;#ultra light copy resources&#10;cd &quot;$APP_PATH/Contents/Resources&quot;&#10;mkdir ultralight&#10;mkdir ultralight/resources&#10;cp cacert.pem icudt67l.dat ultralight/resources"
                frameworkSearchPaths="../../External/syphon" embeddedFrameworks="../../External/syphon/Syphon.framework">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="0" name="Release" binaryPath="Release" libraryPath="../../External/servus/lib/intel/release&#10;../../External/NDI/lib/osx&#10;../../External/mpv/lib/osx"
+        <CONFIGURATION isDebug="0" name="Release" binaryPath="Release" libraryPath="../../External/servus/lib/intel/release&#10;../../External/NDI/lib/osx&#10;../../External/mpv/lib/osx&#10;../../External/ultralight/lib/osx/silicon"
                        macOSDeploymentTarget="10.11" osxCompatibility="10.11 SDK"/>
-        <CONFIGURATION isDebug="0" name="ReleaseSilicon" binaryPath="Release" libraryPath="../../External/servus/lib/silicon/release&#10;../../External/NDI/lib/osx&#10;../../External/mpv/lib/osx"
+        <CONFIGURATION isDebug="0" name="ReleaseSilicon" binaryPath="Release" libraryPath="../../External/servus/lib/silicon/release&#10;../../External/NDI/lib/osx&#10;../../External/mpv/lib/osx&#10;../../External/ultralight/lib/osx/silicon"
                        macOSDeploymentTarget="10.11" osxCompatibility="10.11 SDK"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

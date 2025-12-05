@@ -1316,7 +1316,7 @@
 			name = "Post-build script";
 			alwaysOutOfDate = 1;
 			shellPath = /bin/sh;
-			shellScript = "cd $TARGET_BUILD_DIR\ninstall_name_tool -add_rpath @executable_path/../Resources MapGyver.app/Contents/MacOS/MapGyver\ninstall_name_tool -add_rpath @executable_path/../Resources/plugins MapGyver.app/Contents/MacOS/MapGyver";
+			shellScript = "# 1. Define variables for clarity\nAPP_PATH=\"$TARGET_BUILD_DIR/$PRODUCT_NAME.app\"\nEXECUTABLE=\"$APP_PATH/Contents/MacOS/$PRODUCT_NAME\"\nLIB_PATH=\"$APP_PATH/Contents/Resources/libmpv.2.dylib\"\n\ninstall_name_tool -add_rpath \"@executable_path/../Resources\" \"$EXECUTABLE\"\ninstall_name_tool -id \"@rpath/libmpv.2.dylib\" \"$LIB_PATH\"\ninstall_name_tool -change \"/opt/local/lib/libmpv.2.dylib\" \"@rpath/libmpv.2.dylib\" \"$EXECUTABLE\"\n\n#ultra light copy resources\ncd \"$APP_PATH/Contents/Resources\"\nmkdir ultralight\nmkdir ultralight/resources\ncp cacert.pem icudt67l.dat ultralight/resources";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1424,13 +1424,14 @@
 					"\"../../External/servus/lib/silicon/release\"",
 					"\"../../External/NDI/lib/osx\"",
 					"\"../../External/mpv/lib/osx\"",
+					"\"../../External/ultralight/lib/osx/silicon\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX/${CURRENT_ARCH}\"",
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/ultralight/include";
-				OTHER_LDFLAGS = "-lServus -lndi -lmpv -lssl -lcrypto -lz";
+				OTHER_LDFLAGS = "-lServus -lndi -lmpv.2 -lAppCore -lUltralight -lUltralightCore -lWebCore -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.mapgyver;
 				PRODUCT_NAME = "MapGyver";
 				USE_HEADERMAP = NO;
@@ -1541,13 +1542,14 @@
 					"\"../../External/servus/lib/intel/release\"",
 					"\"../../External/NDI/lib/osx\"",
 					"\"../../External/mpv/lib/osx\"",
+					"\"../../External/ultralight/lib/osx/silicon\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX/${CURRENT_ARCH}\"",
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/ultralight/include";
-				OTHER_LDFLAGS = "-lServus -lndi -lmpv -lssl -lcrypto -lz";
+				OTHER_LDFLAGS = "-lServus -lndi -lmpv.2 -lAppCore -lUltralight -lUltralightCore -lWebCore -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.mapgyver;
 				PRODUCT_NAME = "MapGyver";
 				USE_HEADERMAP = NO;
