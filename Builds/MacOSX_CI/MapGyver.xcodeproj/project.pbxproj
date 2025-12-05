@@ -189,6 +189,7 @@
 		53BB2A026EAD5EC34AE09269 /* GridLayerManager.cpp */ /* GridLayerManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridLayerManager.cpp; path = ../../Source/Media/medias/grid/GridLayerManager.cpp; sourceTree = SOURCE_ROOT; };
 		5471E6E4DC31E4693E58A9E3 /* include_juce_organicui.cpp */ /* include_juce_organicui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_organicui.cpp; path = ../../JuceLibraryCode/include_juce_organicui.cpp; sourceTree = SOURCE_ROOT; };
 		54B76D598CEE5D7D3A486C5F /* CoreMIDI.framework */ /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
+		5564C31D7B193FF9CE2F44A8 /* WebMediaPanel.cpp */ /* WebMediaPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = WebMediaPanel.cpp; path = ../../Source/Media/medias/web/WebMediaPanel.cpp; sourceTree = SOURCE_ROOT; };
 		56496F85887CE23A3F761A62 /* include_juce_gui_basics.mm */ /* include_juce_gui_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_basics.mm; path = ../../JuceLibraryCode/include_juce_gui_basics.mm; sourceTree = SOURCE_ROOT; };
 		585B3635C903E213012732E4 /* ColorMedia.h */ /* ColorMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColorMedia.h; path = ../../Source/Media/medias/color/ColorMedia.h; sourceTree = SOURCE_ROOT; };
 		5B6A9DA1917D79850504D61C /* sharedTexture.png */ /* sharedTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sharedTexture.png; path = ../../Resources/media/sharedTexture.png; sourceTree = SOURCE_ROOT; };
@@ -320,6 +321,7 @@
 		AF882763241B734884F9DA01 /* juce_cryptography */ /* juce_cryptography */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_cryptography; path = ../../JUCE/modules/juce_cryptography; sourceTree = SOURCE_ROOT; };
 		AFA067CE1221C65AC0C8DB81 /* GridClipUI.cpp */ /* GridClipUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridClipUI.cpp; path = ../../Source/Media/medias/grid/ui/GridClipUI.cpp; sourceTree = SOURCE_ROOT; };
 		B161E296E962B16F20ECC4E4 /* MediaEditor.cpp */ /* MediaEditor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaEditor.cpp; path = ../../Source/Media/ui/MediaEditor.cpp; sourceTree = SOURCE_ROOT; };
+		B2FDAD3DB04E95A79AA27284 /* WebMediaPanel.h */ /* WebMediaPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WebMediaPanel.h; path = ../../Source/Media/medias/web/WebMediaPanel.h; sourceTree = SOURCE_ROOT; };
 		B3E6FEAA5CC7D67264C53864 /* NDIDeviceChooser.h */ /* NDIDeviceChooser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIDeviceChooser.h; path = ../../Source/Common/NDI/ui/NDIDeviceChooser.h; sourceTree = SOURCE_ROOT; };
 		B4145949B5B45A9E8D862E3C /* AudioManager.h */ /* AudioManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AudioManager.h; path = ../../Source/Common/Audio/AudioManager.h; sourceTree = SOURCE_ROOT; };
 		B53215E9D2E0EB0FB5B1ACB4 /* juce_events */ /* juce_events */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_events; path = ../../JUCE/modules/juce_events; sourceTree = SOURCE_ROOT; };
@@ -696,7 +698,6 @@
 			isa = PBXGroup;
 			children = (
 				684ABC779D1065F13921E52D,
-				6CF3B73084702B0D6EB91177,
 				B8DEBA77D1922E9D3E6FF29C,
 				05823E07FEDEAA1204F6A4A2,
 				C573056682D5663DA99EDCD3,
@@ -709,6 +710,7 @@
 				D7008069D80BF6EE2E49FE9F,
 				D2336A10CAAF91BF71E42519,
 				2EC22ADD1C7C4BA622FFF235,
+				6CF3B73084702B0D6EB91177,
 				2678D85C7025A22CEB43D4FA,
 			);
 			name = medias;
@@ -774,6 +776,8 @@
 			children = (
 				229C3B5E477BC8DA47AFE691,
 				BF5DB2BB2B9C32EC40BA160C,
+				5564C31D7B193FF9CE2F44A8,
+				B2FDAD3DB04E95A79AA27284,
 			);
 			name = web;
 			sourceTree = "<group>";

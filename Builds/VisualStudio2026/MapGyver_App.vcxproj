@@ -195,9 +195,6 @@
     <ClCompile Include="..\..\Source\Media\medias\medialist\MediaListMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\web\WebMedia.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\canvas\CanvasMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -331,6 +328,12 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\video\VideoMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\web\WebMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\web\WebMediaPanel.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.cpp">
@@ -4140,7 +4143,6 @@
     <ClInclude Include="..\..\Source\Common\OpenGLManager.h"/>
     <ClInclude Include="..\..\Source\Engine\MGEngine.h"/>
     <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListMedia.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\canvas\CanvasMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridBoard.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridClipManagerUI.h"/>
@@ -4186,6 +4188,8 @@
     <ClInclude Include="..\..\Source\Media\medias\video\MPVPlayer.h"/>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoAudioProcessor.h"/>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\web\WebMediaPanel.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceParameterUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\webcamDevice.h"/>

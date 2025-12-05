@@ -118,10 +118,6 @@
             <FILE id="ix9ELY" name="MediaListMedia.h" compile="0" resource="0"
                   file="Source/Media/medias/medialist/MediaListMedia.h"/>
           </GROUP>
-          <GROUP id="{B66DF542-4193-4078-8115-073DF5EE8816}" name="web">
-            <FILE id="gUgDE5" name="WebMedia.cpp" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.cpp"/>
-            <FILE id="J0Hcrn" name="WebMedia.h" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.h"/>
-          </GROUP>
           <GROUP id="{477FB961-CBA6-A8B6-E44C-CB14FF111F6E}" name="canvas">
             <FILE id="TUdw4Y" name="CanvasMedia.cpp" compile="0" resource="0" file="Source/Media/medias/canvas/CanvasMedia.cpp"/>
             <FILE id="anTbqo" name="CanvasMedia.h" compile="0" resource="0" file="Source/Media/medias/canvas/CanvasMedia.h"/>
@@ -298,6 +294,13 @@
                   file="Source/Media/medias/video/VideoAudioProcessor.h"/>
             <FILE id="J1IVz4" name="VideoMedia.cpp" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.cpp"/>
             <FILE id="HIszRg" name="VideoMedia.h" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.h"/>
+          </GROUP>
+          <GROUP id="{B66DF542-4193-4078-8115-073DF5EE8816}" name="web">
+            <FILE id="gUgDE5" name="WebMedia.cpp" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.cpp"/>
+            <FILE id="J0Hcrn" name="WebMedia.h" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.h"/>
+            <FILE id="mi8XD9" name="WebMediaPanel.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/web/WebMediaPanel.cpp"/>
+            <FILE id="xdeG3L" name="WebMediaPanel.h" compile="0" resource="0" file="Source/Media/medias/web/WebMediaPanel.h"/>
           </GROUP>
           <GROUP id="{29E5A0E5-283C-5D87-478F-76221EEB97B9}" name="webcam">
             <GROUP id="{3C37978B-3D67-185C-B209-94D40418B3D7}" name="ui">

@@ -26,15 +26,28 @@ public:
 	
 	bool useMediaOnPreview;
 	Media* media;
-	Image image;
+
+	WebMedia* webMedia; //if media is webmedia
+
+	Rectangle<int> mediaRect;
 
 	void setMedia(Media* m);
 
 	void paint(Graphics& g) override;
+	void resized() override;
+
+	void computeMediaRect();
 
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
 	void inspectableDestroyed(Inspectable* i) override;
+
+	void mouseDown(const MouseEvent& e) override;
+	void mouseUp(const MouseEvent& e) override;
+	void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
+	void mouseMove(const MouseEvent& e) override;
+	void mouseDrag(const MouseEvent& e) override;
+	bool keyPressed(const KeyPress& key) override;
 
 };
 

@@ -44,7 +44,10 @@
 #include "medias/node/NodeMedia.cpp"
 
 #include "medias/canvas/CanvasMedia.cpp"
+
 #include "medias/web/WebMedia.cpp"
+#include "medias/web//WebMediaPanel.cpp"
+
 #include "medias/grid/GridMedia.cpp"
 
 #include "medias/grid/GridClip.cpp"

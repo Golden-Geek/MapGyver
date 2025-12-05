@@ -32,9 +32,6 @@
     <Filter Include="MapGyver\Source\Media\medias\medialist">
       <UniqueIdentifier>{FA4B6358-0746-9044-EB70-399869B1FBC7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MapGyver\Source\Media\medias\web">
-      <UniqueIdentifier>{7285CEDF-B1B0-D074-5CA7-0515B7E2C01A}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MapGyver\Source\Media\medias\canvas">
       <UniqueIdentifier>{6FD222FE-0AB6-738F-9E48-4A90B3713203}</UniqueIdentifier>
     </Filter>
@@ -85,6 +82,9 @@
     </Filter>
     <Filter Include="MapGyver\Source\Media\medias\video">
       <UniqueIdentifier>{1FA30FD4-41FD-0C00-6E55-B8079831E2D5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MapGyver\Source\Media\medias\web">
+      <UniqueIdentifier>{7285CEDF-B1B0-D074-5CA7-0515B7E2C01A}</UniqueIdentifier>
     </Filter>
     <Filter Include="MapGyver\Source\Media\medias\webcam\ui">
       <UniqueIdentifier>{6E611C67-3A45-A0F8-D459-D091B59DE0D0}</UniqueIdentifier>
@@ -1312,9 +1312,6 @@
     <ClCompile Include="..\..\Source\Media\medias\medialist\MediaListMedia.cpp">
       <Filter>MapGyver\Source\Media\medias\medialist</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\web\WebMedia.cpp">
-      <Filter>MapGyver\Source\Media\medias\web</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\canvas\CanvasMedia.cpp">
       <Filter>MapGyver\Source\Media\medias\canvas</Filter>
     </ClCompile>
@@ -1449,6 +1446,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\video\VideoMedia.cpp">
       <Filter>MapGyver\Source\Media\medias\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\web\WebMedia.cpp">
+      <Filter>MapGyver\Source\Media\medias\web</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\web\WebMediaPanel.cpp">
+      <Filter>MapGyver\Source\Media\medias\web</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.cpp">
       <Filter>MapGyver\Source\Media\medias\webcam\ui</Filter>
@@ -5550,9 +5553,6 @@
     <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListMedia.h">
       <Filter>MapGyver\Source\Media\medias\medialist</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h">
-      <Filter>MapGyver\Source\Media\medias\web</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\canvas\CanvasMedia.h">
       <Filter>MapGyver\Source\Media\medias\canvas</Filter>
     </ClInclude>
@@ -5687,6 +5687,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoMedia.h">
       <Filter>MapGyver\Source\Media\medias\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h">
+      <Filter>MapGyver\Source\Media\medias\web</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\web\WebMediaPanel.h">
+      <Filter>MapGyver\Source\Media\medias\web</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.h">
       <Filter>MapGyver\Source\Media\medias\webcam\ui</Filter>

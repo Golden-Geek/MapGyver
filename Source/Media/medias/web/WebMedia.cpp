@@ -12,6 +12,7 @@
 #include <Ultralight/platform/Platform.h>
 #include <Ultralight/Renderer.h>
 #include <AppCore/Platform.h>
+#include "WebMedia.h"
 
 
 WebMedia::WebMedia(var params) :
@@ -193,17 +194,159 @@ void WebMedia::closeGLInternal()
 
 void WebMedia::OnFinishLoading(ultralight::View* caller, uint64_t frame_id, bool is_main_frame, const ultralight::String& url)
 {
+	NLOG(niceName, "Finished loading");
 	shouldRedraw = true;
 }
 
 void WebMedia::OnDOMReady(ultralight::View* caller, uint64_t frame_id, bool is_main_frame, const ultralight::String& url)
 {
+	NLOG(niceName, "DOM is ready");
 	shouldRedraw = true;
 }
 
 void WebMedia::OnChangeCursor(ultralight::View* caller, ultralight::Cursor cursor) {}
 void WebMedia::OnChangeTitle(ultralight::View* caller, const ultralight::String& title) {}
 
+
+// Interaction
+
+static ultralight::MouseEvent::Button getUltralightButton(const MouseEvent& e)
+{
+	if (e.mods.isLeftButtonDown()) return ultralight::MouseEvent::kButton_Left;
+	if (e.mods.isRightButtonDown()) return ultralight::MouseEvent::kButton_Right;
+	if (e.mods.isMiddleButtonDown()) return ultralight::MouseEvent::kButton_Middle;
+	return ultralight::MouseEvent::kButton_None;
+}
+
+
+Point<int> WebMedia::getMediaMousePosition(const MouseEvent& e, Rectangle<int> canvasRect)
+{
+	int tx = (e.getPosition().x - canvasRect.getX()) * frameBuffer.getWidth() / canvasRect.getWidth();
+	int ty = (e.getPosition().y - canvasRect.getY()) * frameBuffer.getHeight() / canvasRect.getHeight();
+	return Point<int>(tx, ty);
+}
+
+void WebMedia::sendMouseDown(const MouseEvent& e, Rectangle<int> canvasRect)
+{
+	if (!view) return;
+	ultralight::MouseEvent evt;
+	evt.type = ultralight::MouseEvent::kType_MouseDown;
+	Point<int> relPoint = getMediaMousePosition(e, canvasRect);
+	evt.x = relPoint.x;
+	evt.y = relPoint.y;
+	evt.button = getUltralightButton(e);
+	sendMouseEventToUltralight(evt);
+}
+
+void WebMedia::sendMouseUp(const MouseEvent& e, Rectangle<int> canvasRect)
+{
+	if (!view) return;
+	ultralight::MouseEvent evt;
+	evt.type = ultralight::MouseEvent::kType_MouseUp;
+
+	Point<int> relPoint = getMediaMousePosition(e, canvasRect);
+	evt.x = relPoint.x;
+	evt.y = relPoint.y;
+	evt.button = getUltralightButton(e);
+	sendMouseEventToUltralight(evt);
+}
+
+void WebMedia::sendMouseDrag(const MouseEvent& e, Rectangle<int> canvasRect)
+{
+	if (!view) return;
+	ultralight::MouseEvent evt;
+	evt.type = ultralight::MouseEvent::kType_MouseMoved;
+
+	Point<int> relPoint = getMediaMousePosition(e, canvasRect);
+	evt.x = relPoint.x;
+	evt.y = relPoint.y;
+	evt.button = getUltralightButton(e);
+	sendMouseEventToUltralight(evt);
+}
+
+void WebMedia::sendMouseMove(const MouseEvent& e, Rectangle<int> canvasRect)
+{
+	if (!view) return;
+	ultralight::MouseEvent evt;
+	evt.type = ultralight::MouseEvent::kType_MouseMoved;
+	Point<int> relPoint = getMediaMousePosition(e, canvasRect);
+	evt.x = relPoint.x;
+	evt.y = relPoint.y;
+	evt.button = ultralight::MouseEvent::kButton_None;
+	sendMouseEventToUltralight(evt);
+}
+
+void WebMedia::sendMouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
+{
+	if (!view) return;
+	ultralight::ScrollEvent evt;
+	evt.type = ultralight::ScrollEvent::kType_ScrollByPixel;
+	evt.delta_x = (int)(wheel.deltaX * 100.0f); // Scale factor for smoother scroll
+	evt.delta_y = (int)(wheel.deltaY * 100.0f);
+	sendScrollEventToUltralight(evt);
+}
+
+void WebMedia::sendKeyPressed(const KeyPress& key)
+{
+	if (!view) return;
+
+	// 1. Fire RawKeyDown
+	ultralight::KeyEvent rawEvt;
+	rawEvt.type = ultralight::KeyEvent::kType_RawKeyDown;
+	rawEvt.virtual_key_code = key.getKeyCode();
+	rawEvt.native_key_code = key.getKeyCode();
+	sendKeyEventToUltralight(rawEvt);
+
+	// 2. Fire Char (if it's a printable character)
+	juce::juce_wchar charCode = key.getTextCharacter();
+	if (charCode >= 32)
+	{
+		ultralight::KeyEvent charEvt;
+		charEvt.type = ultralight::KeyEvent::kType_Char;
+		charEvt.text = ultralight::String(String::charToString(charCode).toRawUTF8());
+		charEvt.unmodified_text = charEvt.text;
+		sendKeyEventToUltralight(charEvt);
+	}
+}
+
+void WebMedia::sendMouseEventToUltralight(const ultralight::MouseEvent& event)
+{
+	GlContextHolder::getInstance()->callOnGLThread(
+		[=]()
+		{
+			if (view)
+			{
+				view->FireMouseEvent(event);
+			}
+		}
+	);
+}
+
+void WebMedia::sendScrollEventToUltralight(const ultralight::ScrollEvent& event)
+{
+	GlContextHolder::getInstance()->callOnGLThread(
+		[=]()
+		{
+			if (view)
+			{
+				view->FireScrollEvent(event);
+			}
+		}
+	);
+}
+
+void WebMedia::sendKeyEventToUltralight(const ultralight::KeyEvent& event)
+{
+	GlContextHolder::getInstance()->callOnGLThread(
+		[=]()
+		{
+			if (view)
+			{
+				view->FireKeyEvent(event);
+			}
+		}
+	);
+}
 
 
 
