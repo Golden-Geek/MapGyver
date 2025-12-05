@@ -26,7 +26,6 @@ public:
 	void setupOpenGL() override;
 	void paint(Graphics& g) override;
 
-
 	void getAllCommands(Array<CommandID>& commands) override;
 	virtual void getCommandInfo(CommandID commandID, ApplicationCommandInfo& result) override;
 	virtual bool perform(const InvocationInfo& info) override;

@@ -8,21 +8,24 @@
   ==============================================================================
 */
 
-#include "../MediaIncludes.h"
+#include "Media/MediaIncludes.h"
 
 using namespace juce::gl;
 
 MediaPreview::MediaPreview() :
 	OpenGLSharedRenderer(this),
 	useMediaOnPreview(false),
-	media(nullptr)
+	media(nullptr),
+	webMedia(nullptr)
 {
 
+	getTopLevelComponent()->addKeyListener(this);
 	setSize(200, 200);
 }
 
 MediaPreview::~MediaPreview()
 {
+	getTopLevelComponent()->removeKeyListener(this);
 	setMedia(nullptr);
 }
 
@@ -38,10 +41,23 @@ void MediaPreview::setMedia(Media* m)
 	if (media != nullptr)
 	{
 
+
 		media->addInspectableListener(this);
 		if (useMediaOnPreview) registerUseMedia(0, media);
-
 	}
+
+	computeMediaRect();
+
+	if (WebMedia* wm = dynamic_cast<WebMedia*>(media))
+	{
+		webMedia = wm;
+	}
+	else
+	{
+		webMedia = nullptr;
+	}
+
+
 }
 
 void MediaPreview::paint(Graphics& g)
@@ -53,23 +69,18 @@ void MediaPreview::paint(Graphics& g)
 	}
 }
 
-void MediaPreview::renderOpenGL()
+void MediaPreview::resized()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	computeMediaRect();
+}
 
-	Init2DMatrix(getWidth(), getHeight());
-
-	//draw BG
-	glColor4f(0, 0, 0, .3f);
-	Draw2DRect(0, 0, getWidth(), getHeight());
-
-
-	if (media == nullptr) return;
-	////draw frameBuffer
-	glColor3f(1, 1, 1);
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, media->getTextureID());
-
+void MediaPreview::computeMediaRect()
+{
+	if (media == nullptr)
+	{
+		mediaRect = Rectangle<int>();
+		return;
+	}
 
 	Point<int> size = media->getMediaSize();
 
@@ -90,8 +101,28 @@ void MediaPreview::renderOpenGL()
 	int tx = (w - tw) / 2;
 	int ty = (h - th) / 2;
 
+	mediaRect = Rectangle<int>(tx, ty, tw, th);
+}
 
-	Draw2DTexRect(tx, ty, tw, th);
+void MediaPreview::renderOpenGL()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	Init2DMatrix(getWidth(), getHeight());
+
+	//draw BG
+	glColor4f(0, 0, 0, .3f);
+	Draw2DRect(0, 0, getWidth(), getHeight());
+
+
+	if (media == nullptr || mediaRect.isEmpty()) return;
+
+	////draw frameBuffer
+	glColor3f(1, 1, 1);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, media->getTextureID());
+
+	Draw2DTexRect(mediaRect.getX(), mediaRect.getY(), mediaRect.getWidth(), mediaRect.getHeight());
 
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
@@ -106,6 +137,45 @@ void MediaPreview::openGLContextClosing()
 void MediaPreview::inspectableDestroyed(Inspectable* i)
 {
 	if (i == media) setMedia(nullptr);
+}
+
+void MediaPreview::mouseDown(const MouseEvent& e)
+{
+	if (webMedia == nullptr) return;
+	webMedia->sendMouseDown(e, mediaRect);
+}
+
+void MediaPreview::mouseUp(const MouseEvent& e)
+{
+	if (webMedia == nullptr) return;
+	webMedia->sendMouseUp(e, mediaRect);
+}
+
+void MediaPreview::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
+{
+	if (webMedia == nullptr) return;
+	webMedia->sendMouseWheelMove(e, wheel);
+}
+
+void MediaPreview::mouseMove(const MouseEvent& e)
+{
+	if (webMedia == nullptr) return;
+	webMedia->sendMouseMove(e, mediaRect);
+}
+
+void MediaPreview::mouseDrag(const MouseEvent& e)
+{
+	if (webMedia == nullptr) return;
+	webMedia->sendMouseDrag(e, mediaRect);
+}
+
+bool MediaPreview::keyPressed(const KeyPress& key, Component* originatingComponent)
+{
+	if (webMedia == nullptr) return false;
+
+	webMedia->sendKeyPressed(key);
+
+	return false;
 }
 
 

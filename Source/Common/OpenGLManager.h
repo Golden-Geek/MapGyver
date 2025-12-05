@@ -58,6 +58,13 @@ public:
 	void registerSharedRenderer(OpenGLSharedRenderer* r);
 	void unregisterSharedRenderer(OpenGLSharedRenderer* r);
 
+	void callOnGLThread(std::function<void()> func, bool waitUntilDone = false)
+	{
+		context.executeOnGLThread([func](juce::OpenGLContext& ctx)
+			{
+				func();
+			}, waitUntilDone);
+	}
 	class RenderTimerListener
 	{
 	public:

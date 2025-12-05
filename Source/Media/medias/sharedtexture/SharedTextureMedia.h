@@ -29,7 +29,7 @@ public:
 	void onContainerParameterChangedInternal(Parameter* p) override;
 	void textureUpdated(SharedTextureReceiver* receiver) override;
 
-	void renderGLInternal();
+	void renderGLInternal() override;
 
 	Point<int> getDefaultMediaSize() override;
 

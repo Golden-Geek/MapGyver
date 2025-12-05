@@ -20,10 +20,6 @@ ColorMedia::~ColorMedia()
 {
 }
 
-void ColorMedia::clearItem()
-{
-	BaseItem::clearItem();
-}
 
 
 void ColorMedia::renderGLInternal()

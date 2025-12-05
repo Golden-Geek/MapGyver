@@ -30,6 +30,7 @@
 
 #include "medias/canvas/CanvasMedia.h"
 #include "medias/web/WebMedia.h"
+#include "medias/web/WebMediaPanel.h"
 
 #include "medias/grid/GridClip.h"
 #include "medias/grid/GridClipManager.h"

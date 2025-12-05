@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "GridLayerGroup.h"
 
 GridLayerGroup::GridLayerGroup(var params) :
     BaseItem(getTypeString())
@@ -19,9 +18,5 @@ GridLayerGroup::GridLayerGroup(var params) :
 }
 
 GridLayerGroup::~GridLayerGroup()
-{
-}
-
-void GridLayerGroup::clearItem()
 {
 }

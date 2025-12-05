@@ -47,7 +47,7 @@ public:
 	void exportSelection();
 	void importCraft(var data);
 
-	void parameterValueChanged(Parameter* p);
+	void parameterValueChanged(Parameter* p) override;
 
 };
 

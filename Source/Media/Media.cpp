@@ -66,9 +66,14 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 
 Media::~Media()
 {
-	if (!manualRender && GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+	
 }
 
+
+void Media::clearItem()
+{
+	if (!manualRender && GlContextHolder::getInstanceWithoutCreating() != nullptr) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
+}
 
 void Media::onContainerTriggerTriggered(Trigger* t)
 {

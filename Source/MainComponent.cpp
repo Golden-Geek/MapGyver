@@ -74,4 +74,5 @@ void MainContentComponent::SharedTextureDispatcher::renderOpenGL()
 void MainContentComponent::SharedTextureDispatcher::openGLContextClosing()
 {
 	if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->clearGL();
+
 }

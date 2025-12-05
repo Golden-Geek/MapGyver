@@ -463,6 +463,7 @@ bool MPVPlayer::isPlaying()
 MPVPlayer::AudioPipeThread::AudioPipeThread(MPVPlayer* owner, String path)
 	: Thread("MPV Audio Pipe"), owner(owner), pipePath(path)
 {
+#if JUCE_WINDOWS
 	// 1. Create the Named Pipe immediately so it exists when MPV tries to open it
 	pipeHandle = CreateNamedPipeA(
 		pipePath.toRawUTF8(),
@@ -473,6 +474,8 @@ MPVPlayer::AudioPipeThread::AudioPipeThread(MPVPlayer* owner, String path)
 		0,
 		NULL
 	);
+#else
+#endif
 
 	readBuffer.resize(4096); // 4k buffer for reading chunks
 }
@@ -485,15 +488,20 @@ MPVPlayer::AudioPipeThread::~AudioPipeThread()
 void MPVPlayer::AudioPipeThread::shutdown()
 {
 	stopThread(1000);
+#if JUCE_WINDOWS
 	if (pipeHandle != INVALID_HANDLE_VALUE) {
 		DisconnectNamedPipe(pipeHandle);
 		CloseHandle(pipeHandle);
 		pipeHandle = INVALID_HANDLE_VALUE;
 	}
+#else
+    
+#endif
 }
 
 void MPVPlayer::AudioPipeThread::run()
 {
+#if JUCE_WINDOWS
 	if (pipeHandle == INVALID_HANDLE_VALUE) return;
 
 	// Wait for MPV to connect
@@ -545,6 +553,8 @@ void MPVPlayer::AudioPipeThread::run()
 			}
 		}
 	}
+#else
+#endif
 }
 
 

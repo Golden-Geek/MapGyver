@@ -21,8 +21,6 @@ public:
 
     CompositionLayerManager layers;
 
-    void clearItem() override;
-
     void renderGLInternal() override;
 
     std::shared_ptr<Graphics> myGraphics = nullptr;

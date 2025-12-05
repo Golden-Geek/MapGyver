@@ -23,10 +23,6 @@ CompositionMedia::~CompositionMedia()
 {
 }
 
-void CompositionMedia::clearItem()
-{
-	BaseItem::clearItem();
-}
 
 
 void CompositionMedia::renderGLInternal()

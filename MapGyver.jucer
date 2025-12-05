@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="DMftGm" name="MapGyver" projectType="guiapp" useAppConfig="1"
-              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/asiodriver&#10;../../External/mpv/include&#10;../../External/NDI/include&#10;../../External/servus/include&#10;"
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/asiodriver&#10;../../External/mpv/include&#10;../../External/NDI/include&#10;../../External/servus/include&#10;../../External/ultralight/include&#10;"
               defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1&#10;ORGANIC_REMOTE_CONTROL_PORT=46000&#10;MPV_ENABLE_DLL"
               companyWebsite="https://benjamin.kuperberg.fr/mapgyver" companyName="GoldenGeek"
               bundleIdentifier="com.goldengeek.mapgyver" displaySplashScreen="1"
@@ -25,8 +25,26 @@
         <FILE id="IVmIP8" name="webcam.png" compile="0" resource="1" file="Resources/media/webcam.png"/>
       </GROUP>
       <GROUP id="{2197F95F-2563-5673-95CA-08F7626CAAB1}" name="osx">
+        <GROUP id="{88D8C316-EDE3-37D2-138F-25068545F9C2}" name="resources">
+          <FILE id="udUmES" name="cacert.pem" compile="0" resource="0" file="Resources/ultralight/resources/cacert.pem"
+                xcodeResource="1"/>
+          <FILE id="nWhg3i" name="icudt67l.dat" compile="0" resource="0" file="Resources/ultralight/resources/icudt67l.dat"
+                xcodeResource="1"/>
+        </GROUP>
+        <FILE id="XI4FqI" name="libAppCore.dylib" compile="0" resource="0"
+              file="External/ultralight/lib/osx/silicon/libAppCore.dylib" xcodeResource="1"/>
+        <FILE id="Jek1Hz" name="libmpv.2.dylib" compile="0" resource="0" file="External/mpv/lib/osx/libmpv.2.dylib"
+              xcodeResource="1"/>
         <FILE id="RBLLda" name="libndi.dylib" compile="0" resource="0" file="External/NDI/lib/osx/libndi.dylib"
               xcodeResource="1"/>
+        <FILE id="Xnp6TM" name="libUltralight.dylib" compile="0" resource="0"
+              file="External/ultralight/lib/osx/silicon/libUltralight.dylib"
+              xcodeResource="1"/>
+        <FILE id="r2jGcq" name="libUltralightCore.dylib" compile="0" resource="0"
+              file="External/ultralight/lib/osx/silicon/libUltralightCore.dylib"
+              xcodeResource="1"/>
+        <FILE id="zKzn3Q" name="libWebCore.dylib" compile="0" resource="0"
+              file="External/ultralight/lib/osx/silicon/libWebCore.dylib" xcodeResource="1"/>
       </GROUP>
       <FILE id="Khku9M" name="default.smlayout" compile="0" resource="1"
             file="Resources/default.smlayout"/>
@@ -99,10 +117,6 @@
                   file="Source/Media/medias/medialist/MediaListMedia.cpp"/>
             <FILE id="ix9ELY" name="MediaListMedia.h" compile="0" resource="0"
                   file="Source/Media/medias/medialist/MediaListMedia.h"/>
-          </GROUP>
-          <GROUP id="{B66DF542-4193-4078-8115-073DF5EE8816}" name="web">
-            <FILE id="gUgDE5" name="WebMedia.cpp" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.cpp"/>
-            <FILE id="J0Hcrn" name="WebMedia.h" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.h"/>
           </GROUP>
           <GROUP id="{477FB961-CBA6-A8B6-E44C-CB14FF111F6E}" name="canvas">
             <FILE id="TUdw4Y" name="CanvasMedia.cpp" compile="0" resource="0" file="Source/Media/medias/canvas/CanvasMedia.cpp"/>
@@ -280,6 +294,13 @@
                   file="Source/Media/medias/video/VideoAudioProcessor.h"/>
             <FILE id="J1IVz4" name="VideoMedia.cpp" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.cpp"/>
             <FILE id="HIszRg" name="VideoMedia.h" compile="0" resource="0" file="Source/Media/medias/video/VideoMedia.h"/>
+          </GROUP>
+          <GROUP id="{B66DF542-4193-4078-8115-073DF5EE8816}" name="web">
+            <FILE id="gUgDE5" name="WebMedia.cpp" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.cpp"/>
+            <FILE id="J0Hcrn" name="WebMedia.h" compile="0" resource="0" file="Source/Media/medias/web/WebMedia.h"/>
+            <FILE id="mi8XD9" name="WebMediaPanel.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/web/WebMediaPanel.cpp"/>
+            <FILE id="xdeG3L" name="WebMediaPanel.h" compile="0" resource="0" file="Source/Media/medias/web/WebMediaPanel.h"/>
           </GROUP>
           <GROUP id="{29E5A0E5-283C-5D87-478F-76221EEB97B9}" name="webcam">
             <GROUP id="{3C37978B-3D67-185C-B209-94D40418B3D7}" name="ui">
@@ -496,14 +517,12 @@
                JUCE_IP_AND_PORT_DETECTION="1" JUCE_USE_CAMERA="1" SHAREDTEXTURE_USE_CPU_IMAGE="0"
                JUCE_USE_MP3AUDIOFORMAT="1" JUCE_USE_LAME_AUDIO_FORMAT="1" JUCE_ASIO="1"/>
   <EXPORTFORMATS>
-    <VS2026 targetFolder="Builds/VisualStudio2026" externalLibraries="Servus.lib&#10;libmpv.lib"
-            extraCompilerFlags="/bigobj">
+    <VS2026 targetFolder="Builds/VisualStudio2026" externalLibraries="Servus.lib&#10;libmpv.lib&#10;AppCore.lib&#10;Ultralight.lib&#10;WebCore.lib&#10;UltralightCore.lib"
+            extraCompilerFlags="/bigobj" smallIcon="AKcEsb" bigIcon="AKcEsb">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;../../External/mpv/lib&#10;"
+        <CONFIGURATION isDebug="1" name="Debug" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;../../External/mpv/lib/win&#10;../../External/ultralight/lib/win&#10;"
                        binaryPath="Binaries/Debug"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib"
+        <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib/win&#10;../../External/ultralight/lib/win"
                        binaryPath="Binaries/Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -530,15 +549,14 @@
         <MODULEPATH id="juce_graphics"/>
       </MODULEPATHS>
     </VS2026>
-    <XCODE_MAC targetFolder="Builds/MacOSX" xcodeValidArchs="arm64" externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi"
+    <XCODE_MAC targetFolder="Builds/MacOSX" xcodeValidArchs="arm64" externalLibraries="Servus&#10;ndi&#10;mpv.2&#10;AppCore&#10;Ultralight&#10;UltralightCore&#10;WebCore"
                customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;&#9;&lt;dict&gt;&#10;&#9;&#9;&lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;&#9;&#9;&lt;true/&gt;&#10;&#9;&lt;/dict&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
                frameworkSearchPaths="../../External/syphon" embeddedFrameworks="../../External/syphon/Syphon.framework"
-               postbuildCommand="cd $TARGET_BUILD_DIR&#10;install_name_tool -add_rpath @executable_path/../Resources MapGyver.app/Contents/MacOS/MapGyver&#10;install_name_tool -add_rpath @executable_path/../Resources/plugins MapGyver.app/Contents/MacOS/MapGyver">
+               postbuildCommand="# 1. Define variables for clarity&#10;APP_PATH=&quot;$TARGET_BUILD_DIR/$PRODUCT_NAME.app&quot;&#10;EXECUTABLE=&quot;$APP_PATH/Contents/MacOS/$PRODUCT_NAME&quot;&#10;LIB_PATH=&quot;$APP_PATH/Contents/Resources/libmpv.2.dylib&quot;&#10;&#10;install_name_tool -add_rpath &quot;@executable_path/../Resources&quot; &quot;$EXECUTABLE&quot;&#10;install_name_tool -id &quot;@rpath/libmpv.2.dylib&quot; &quot;$LIB_PATH&quot;&#10;install_name_tool -change &quot;/opt/local/lib/libmpv.2.dylib&quot; &quot;@rpath/libmpv.2.dylib&quot; &quot;$EXECUTABLE&quot;&#10;&#10;#ultra light copy resources&#10;cd &quot;$APP_PATH/Contents/Resources&quot;&#10;mkdir ultralight&#10;mkdir ultralight/resources&#10;cp cacert.pem icudt67l.dat ultralight/resources"
+               smallIcon="AKcEsb" bigIcon="AKcEsb">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/servus/lib/silicon/release&#10;../../External/vlc/lib/osx/silicon&#10;../../External/NDI/lib/osx"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/servus/lib/silicon/release&#10;../../External/vlc/lib/osx/silicon&#10;../../External/NDI/lib/osx"/>
+        <CONFIGURATION isDebug="1" name="Debug" libraryPath="../../External/servus/lib/silicon/debug&#10;../../External/NDI/lib/osx&#10;../../External/mpv/lib/osx&#10;../../External/ultralight/lib/osx/silicon"/>
+        <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/servus/lib/silicon/release&#10;../../External/NDI/lib/osx&#10;../../External/mpv/lib/osx&#10;../../External/ultralight/lib/osx/silicon"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics"/>
@@ -565,10 +583,9 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2022 targetFolder="Builds/VisualStudio2022_CI" smallIcon="AKcEsb"
-            bigIcon="AKcEsb" extraCompilerFlags="/bigobj" externalLibraries="Servus.lib&#10;libmpv.lib">
+            bigIcon="AKcEsb" extraCompilerFlags="/bigobj" externalLibraries="Servus.lib&#10;libmpv.lib&#10;AppCore.lib&#10;Ultralight.lib&#10;WebCore.lib&#10;UltralightCore.lib">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/vlc/lib/win&#10;../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib"
+        <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib/win&#10;../../External/ultralight/lib/win"
                        binaryPath="Binaries/CI"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -596,16 +613,15 @@
       </MODULEPATHS>
     </VS2022>
     <XCODE_MAC targetFolder="Builds/MacOSX_CI" extraDefs="JUCE_COREGRAPHICS_DRAW_ASYNC=0"
-               externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi" smallIcon="AKcEsb"
-               bigIcon="AKcEsb" xcodeValidArchs="arm64,x86_64" customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;&#9;&lt;dict&gt;&#10;&#9;&#9;&lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;&#9;&#9;&lt;true/&gt;&#10;&#9;&lt;/dict&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
-               postbuildCommand="cd $TARGET_BUILD_DIR&#10;install_name_tool -add_rpath @executable_path/../Resources MapGyver.app/Contents/MacOS/MapGyver&#10;install_name_tool -add_rpath @executable_path/../Resources/plugins MapGyver.app/Contents/MacOS/MapGyver"
+               externalLibraries="Servus&#10;ndi&#10;mpv.2&#10;AppCore&#10;Ultralight&#10;UltralightCore&#10;WebCore"
+               smallIcon="AKcEsb" bigIcon="AKcEsb" xcodeValidArchs="arm64,x86_64"
+               customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;&#9;&lt;dict&gt;&#10;&#9;&#9;&lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;&#9;&#9;&lt;true/&gt;&#10;&#9;&lt;/dict&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
+               postbuildCommand="# 1. Define variables for clarity&#10;APP_PATH=&quot;$TARGET_BUILD_DIR/$PRODUCT_NAME.app&quot;&#10;EXECUTABLE=&quot;$APP_PATH/Contents/MacOS/$PRODUCT_NAME&quot;&#10;LIB_PATH=&quot;$APP_PATH/Contents/Resources/libmpv.2.dylib&quot;&#10;&#10;install_name_tool -add_rpath &quot;@executable_path/../Resources&quot; &quot;$EXECUTABLE&quot;&#10;install_name_tool -id &quot;@rpath/libmpv.2.dylib&quot; &quot;$LIB_PATH&quot;&#10;install_name_tool -change &quot;/opt/local/lib/libmpv.2.dylib&quot; &quot;@rpath/libmpv.2.dylib&quot; &quot;$EXECUTABLE&quot;&#10;&#10;#ultra light copy resources&#10;cd &quot;$APP_PATH/Contents/Resources&quot;&#10;mkdir ultralight&#10;mkdir ultralight/resources&#10;cp cacert.pem icudt67l.dat ultralight/resources"
                frameworkSearchPaths="../../External/syphon" embeddedFrameworks="../../External/syphon/Syphon.framework">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="0" name="Release" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/servus/lib/osx/release&#10;../../External/vlc/lib/osx/intel&#10;../../External/NDI/lib/osx"
+        <CONFIGURATION isDebug="0" name="Release" binaryPath="Release" libraryPath="../../External/servus/lib/intel/release&#10;../../External/NDI/lib/osx&#10;../../External/mpv/lib/osx&#10;../../External/ultralight/lib/osx/silicon"
                        macOSDeploymentTarget="10.11" osxCompatibility="10.11 SDK"/>
-        <CONFIGURATION isDebug="0" name="ReleaseSilicon" binaryPath="Release" headerPath="../../External/servus/include&#10;../../External/dnssd/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/NDI/include/"
-                       libraryPath="../../External/servus/lib/silicon/release&#10;../../External/vlc/lib/osx/silicon&#10;../../External/NDI/lib/osx"
+        <CONFIGURATION isDebug="0" name="ReleaseSilicon" binaryPath="Release" libraryPath="../../External/servus/lib/silicon/release&#10;../../External/NDI/lib/osx&#10;../../External/mpv/lib/osx&#10;../../External/ultralight/lib/osx/silicon"
                        macOSDeploymentTarget="10.11" osxCompatibility="10.11 SDK"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -632,13 +648,11 @@
         <MODULEPATH id="juce_graphics" path="JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi"
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" externalLibraries="Servus&#10;ndi"
                 smallIcon="AKcEsb" bigIcon="AKcEsb" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"
-                       libraryPath="../../External/servus/lib/linux&#10;../../External/vlc/lib/linux&#10;/usr/lib/x86_64-linux-gnu/"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"
-                       libraryPath="../../External/servus/lib/linux&#10;../../External/vlc/lib/linux&#10;/usr/lib/x86_64-linux-gnu/"/>
+        <CONFIGURATION isDebug="1" name="Debug" libraryPath="../../External/servus/lib/linux&#10;/usr/lib/x86_64-linux-gnu/"/>
+        <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/servus/lib/linux&#10;/usr/lib/x86_64-linux-gnu/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="JUCE/modules"/>
@@ -665,14 +679,12 @@
       </MODULEPATHS>
     </LINUX_MAKE>
     <LINUX_MAKE targetFolder="Builds/Raspberry" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed&#10;-lm"
-                externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi&#10;curl&#10;pthread&#10;atomic&#10;stdc++"
+                externalLibraries="Servus&#10;ndi&#10;curl&#10;pthread&#10;atomic&#10;stdc++"
                 smallIcon="AKcEsb" bigIcon="AKcEsb">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"
-                       libraryPath="../../External/servus/lib/raspberry&#10;/usr/lib/arm-linux-gnueabihf"
+        <CONFIGURATION isDebug="1" name="Debug" libraryPath="../../External/servus/lib/raspberry&#10;/usr/lib/arm-linux-gnueabihf"
                        linuxArchitecture="-march=armv8-a"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"
-                       libraryPath="../../External/servus/lib/raspberry&#10;/usr/lib/arm-linux-gnueabihf"
+        <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/servus/lib/raspberry&#10;/usr/lib/arm-linux-gnueabihf"
                        linuxArchitecture="-march=armv8-a"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -700,13 +712,11 @@
       </MODULEPATHS>
     </LINUX_MAKE>
     <LINUX_MAKE targetFolder="Builds/Raspberry64" extraLinkerFlags="-Wl,-rpath,&quot;lib&quot;&#10;-Wl,--as-needed"
-                externalLibraries="Servus&#10;vlc&#10;vlccore&#10;ndi&#10;curl&#10;pthread&#10;atomic&#10;stdc++"
+                externalLibraries="Servus&#10;ndi&#10;curl&#10;pthread&#10;atomic&#10;stdc++"
                 smallIcon="AKcEsb" bigIcon="AKcEsb">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"
-                       libraryPath="../../External/servus/lib/raspberry64"/>
-        <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/servus/lib/raspberry64"
-                       headerPath="../../External/servus/include&#10;../../External/vlc/include&#10;../../External/vlc/include/vlc/plugins&#10;../../External/vlc/vlcpp&#10;../../External/NDI/Include/"/>
+        <CONFIGURATION isDebug="1" name="Debug" libraryPath="../../External/servus/lib/raspberry64"/>
+        <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/servus/lib/raspberry64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="JUCE/modules"/>

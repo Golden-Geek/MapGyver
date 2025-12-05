@@ -19,8 +19,6 @@ public:
 
 	ColorParameter* color;
 
-	void clearItem() override;
-
 	void renderGLInternal() override;
 
 	Point<int> getDefaultMediaSize() override;

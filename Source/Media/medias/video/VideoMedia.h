@@ -84,10 +84,10 @@ public:
 	virtual void handleStart() override;
 
 	//MPVEvents
-	void mpvFileLoaded();
-	void mpvTimeChanged(double time);
-	void mpvFrameUpdate();
-	void mpvFileEnd();
+	void mpvFileLoaded() override;
+	void mpvTimeChanged(double time) override;
+	void mpvFrameUpdate() override;
+	void mpvFileEnd() override;
 
 	bool isPlaying();
 	double getMediaLength() override;

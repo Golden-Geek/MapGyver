@@ -16,7 +16,6 @@ class GridLayerGroup :
     public:
     GridLayerGroup(var params = var());
     virtual ~GridLayerGroup();
-    void clearItem() override;
     GridLayerManager layerManager;
 
 	DECLARE_TYPE("Grid Layer Group");

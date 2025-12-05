@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "WebcamMedia.h"
 
 WebcamMedia::WebcamMedia(var params) :
 	ImageMedia(getTypeString(), params)
@@ -23,11 +22,6 @@ WebcamMedia::WebcamMedia(var params) :
 WebcamMedia::~WebcamMedia()
 {
 	if (WebcamDevice != nullptr) WebcamDevice->removeWebcamInputListener(this);
-}
-
-void WebcamMedia::clearItem()
-{
-	BaseItem::clearItem();
 }
 
 void WebcamMedia::onContainerParameterChangedInternal(Parameter* p)

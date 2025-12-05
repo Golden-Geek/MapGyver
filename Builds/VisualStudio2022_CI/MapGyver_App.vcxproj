@@ -35,7 +35,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MapGyver</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib/win;../../External/ultralight/lib/win;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD</LibraryPath>
     <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</PreBuildEventUseInBuild>
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</PostBuildEventUseInBuild>
   </PropertyGroup>
@@ -50,7 +50,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/mpv/include;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JUCE\modules;..\..\Modules;../../Source;../../External/asiodriver;../../External/mpv/include;../../External/NDI/include;../../External/servus/include;../../External/ultralight/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;MPV_ENABLE_DLL;JUCER_VS2022_78B14C07=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -65,7 +65,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JUCE\modules;..\..\Modules;../../External/vlc/include;../../External/vlc/include/vlc/plugins;../../External/NDI/include/;../../Source;../../External/asiodriver;../../External/mpv/include;../../External/NDI/include;../../External/servus/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JUCE\modules;..\..\Modules;../../Source;../../External/asiodriver;../../External/mpv/include;../../External/NDI/include;../../External/servus/include;../../External/ultralight/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1;ORGANIC_REMOTE_CONTROL_PORT=46000;MPV_ENABLE_DLL;JUCER_VS2022_78B14C07=1;JUCE_APP_VERSION=1.0.0b1;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;JucePlugin_Build_LV2=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
@@ -77,18 +77,18 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalLibraryDirectories>../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib/win;../../External/ultralight/lib/win;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <AdditionalDependencies>Servus.lib;libmpv.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Servus.lib;libmpv.lib;AppCore.lib;Ultralight.lib;WebCore.lib;UltralightCore.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\MapGyver.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>Servus.lib;libmpv.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../External/vlc/lib/win;../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Servus.lib;libmpv.lib;AppCore.lib;Ultralight.lib;WebCore.lib;UltralightCore.lib;SpoutLibrary.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../External/NDI/lib/x64;../../External/servus/lib/win/x64/release;../../External/mpv/lib/win;../../External/ultralight/lib/win;..\..\Modules\juce_sharedtexture\libs\VisualStudio2022\$(Platform)\MD;..\..\Modules\juce_simpleweb\libs\VisualStudio2022\$(Platform)\MD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -125,9 +125,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Engine\MGEngine.cpp"/>
     <ClCompile Include="..\..\Source\Media\medias\medialist\MediaListMedia.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\web\WebMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\canvas\CanvasMedia.cpp">
@@ -263,6 +260,12 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\video\VideoMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\web\WebMedia.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\web\WebMediaPanel.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.cpp">
@@ -4072,7 +4075,6 @@
     <ClInclude Include="..\..\Source\Common\OpenGLManager.h"/>
     <ClInclude Include="..\..\Source\Engine\MGEngine.h"/>
     <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListMedia.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\canvas\CanvasMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridBoard.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridClipManagerUI.h"/>
@@ -4118,6 +4120,8 @@
     <ClInclude Include="..\..\Source\Media\medias\video\MPVPlayer.h"/>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoAudioProcessor.h"/>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\web\WebMediaPanel.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceParameterUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\webcamDevice.h"/>

@@ -13,6 +13,7 @@
 		13FE8BF96C30E65F6AB28BDB /* include_juce_core_CompilationTime.cpp */ = {isa = PBXBuildFile; fileRef = 088778231E33DBEA8224D933; };
 		145DBCDC19CE1AE3A7941224 /* include_juce_graphics_Sheenbidi.c */ = {isa = PBXBuildFile; fileRef = 25F5AD6AFC9E340BDDCCA117; };
 		15C7FE4231598BFFD0D2E2F8 /* MainIncludes.cpp */ = {isa = PBXBuildFile; fileRef = C958EF713E08F7E1800B7E12; };
+		1E4BB965475F3EE0AFDA0DE8 /* libmpv.2.dylib */ = {isa = PBXBuildFile; fileRef = 646980E47F7B656C9BFC7FBC; };
 		2032ADA6A0C130063B0D1E7D /* AudioToolbox.framework */ = {isa = PBXBuildFile; fileRef = AB2C87F4EB29584225BA0FA8; };
 		2167EAA14B79E37EC87EEEBD /* include_juce_events.mm */ = {isa = PBXBuildFile; fileRef = F7755054FC08E05372EBE65F; };
 		240C594E90432D6EC28174F3 /* include_juce_timeline2.cpp */ = {isa = PBXBuildFile; fileRef = D323B02DD96155B72DAA9179; };
@@ -36,11 +37,14 @@
 		62141715F816F29328ADC577 /* include_juce_organicui.cpp */ = {isa = PBXBuildFile; fileRef = 5471E6E4DC31E4693E58A9E3; };
 		675F10B20F4F2B512CBFF47E /* OpenGL.framework */ = {isa = PBXBuildFile; fileRef = F633F0B7401E9D55CB431D4F; };
 		6EAFAE85D795837A435A1727 /* DiscRecording.framework */ = {isa = PBXBuildFile; fileRef = 231F1BF80A3A8CDFE87FE810; };
+		7128B8356B9EFA753823A2D9 /* libWebCore.dylib */ = {isa = PBXBuildFile; fileRef = 7E7071467B532F9B7BA911AC; };
 		750C1B7A3D4763E1AE857396 /* include_juce_gui_basics.mm */ = {isa = PBXBuildFile; fileRef = 56496F85887CE23A3F761A62; };
+		79D48C35073A3D73F764850C /* icudt67l.dat */ = {isa = PBXBuildFile; fileRef = 1478FEF773E8B9336E447B0D; };
 		7C8D336DCCDCC58E1479A018 /* include_juce_core.mm */ = {isa = PBXBuildFile; fileRef = 975E420793DDB7D324796960; };
 		7E7C3DAF3BCF3C48B561204B /* include_juce_audio_processors.mm */ = {isa = PBXBuildFile; fileRef = D30E31D089FED25960545DAA; };
 		7ECC0DF0A88AA4086B33D46F /* include_juce_timeline.cpp */ = {isa = PBXBuildFile; fileRef = BE80634A3EF2491B2091D6C6; };
 		8C9AC2248E1F0C4BB8C69F71 /* include_juce_simpleweb.cpp */ = {isa = PBXBuildFile; fileRef = 5FD84472CBF008500C037D53; };
+		926BEB684851CBC1DBA6FC37 /* libUltralightCore.dylib */ = {isa = PBXBuildFile; fileRef = 179B6F26487D342ACE71C128; };
 		93D29A09C558C216FE8BFE07 /* CoreMIDI.framework */ = {isa = PBXBuildFile; fileRef = 54B76D598CEE5D7D3A486C5F; };
 		93D589FCF220AFA9262015D1 /* include_juce_audio_basics.mm */ = {isa = PBXBuildFile; fileRef = 7766CB83931B00FCC4FB075C; };
 		998C82A3387B4961F54930C1 /* App */ = {isa = PBXBuildFile; fileRef = A4B021A8788CEB43B6F55810; };
@@ -48,11 +52,13 @@
 		A9760A2C0E5C4F265F8356C1 /* include_juce_organicui2.cpp */ = {isa = PBXBuildFile; fileRef = 72B993C2D698814B3C31FE2F; };
 		AC61B568D3788BFFA01664F3 /* include_juce_organicui4.cpp */ = {isa = PBXBuildFile; fileRef = 2217BF767413530B5A45BC7F; };
 		AD3297F1FF7517AE72D20064 /* RecentFilesMenuTemplate.nib */ = {isa = PBXBuildFile; fileRef = FAD60D310B79F00B85399328; };
+		AF910ADAE5FE28A404EC086C /* libAppCore.dylib */ = {isa = PBXBuildFile; fileRef = C2E067C3D18B771A8C525417; };
 		BC23D5FFBE18BDC93AFE2159 /* include_juce_graphics_Harfbuzz.cpp */ = {isa = PBXBuildFile; fileRef = 6A0D072CB7F7808AE8D217B8; };
 		C26C2B9EA1C118D5B45F64BC /* include_juce_audio_processors_headless.mm */ = {isa = PBXBuildFile; fileRef = 6ED33267E8E4C3FDC4A2704E; };
 		C54A97F18B1B16DFC3FBCBEB /* MediaIncludes.cpp */ = {isa = PBXBuildFile; fileRef = 4CA5D3BF6753A36D1CD72D33; };
 		C82F2995B8165ED0751C594F /* include_juce_gui_extra.mm */ = {isa = PBXBuildFile; fileRef = 6BD749992FC12D51E1B1F436; };
 		C9EBE4D28288E704C73598F3 /* Cocoa.framework */ = {isa = PBXBuildFile; fileRef = 185B784B15D32476C9A05651; };
+		CE6CCC5FF52DA60B565A1C6F /* cacert.pem */ = {isa = PBXBuildFile; fileRef = D5C0000C402A32A746E32C53; };
 		CEB1617933A8BB8B4A089969 /* Icon.icns */ = {isa = PBXBuildFile; fileRef = 1DE7D7218F031CDF73ACF4AB; };
 		D371A9697D8CE4070C9AC2E4 /* include_juce_osc.cpp */ = {isa = PBXBuildFile; fileRef = F465803ADDFFB86379AF981C; };
 		DCD03A7B8442EC73A545FA6B /* include_juce_audio_devices.mm */ = {isa = PBXBuildFile; fileRef = F51E365AB20D001D535602A1; };
@@ -62,6 +68,7 @@
 		E5F44AA7A551FCCE3AA71EC4 /* include_juce_data_structures.mm */ = {isa = PBXBuildFile; fileRef = 3DDDF83BCEB53C649DC8147E; };
 		E8090C8BA62272AD91310E8F /* include_juce_simpleweb2.cpp */ = {isa = PBXBuildFile; fileRef = 1B5D79576A494981FEE963EE; };
 		E81D4CC1E90BD3BF6D5FFE2F /* CoreMedia.framework */ = {isa = PBXBuildFile; fileRef = CE85E6B722CF2AD3F8D10777; };
+		E9A280B04205758E860BCC12 /* libUltralight.dylib */ = {isa = PBXBuildFile; fileRef = 033CB00FB1A875DD8D4B104A; };
 		E9B394F38047E6A5138BC84B /* CoreAudio.framework */ = {isa = PBXBuildFile; fileRef = E420C3C62CD12E7A6E516479; };
 		EAB2F1D5A6FE647A38E59D54 /* MetalKit.framework */ = {isa = PBXBuildFile; fileRef = 03F081A282FDA78557D8056B; settings = { ATTRIBUTES = (Weak, ); }; };
 		EF478CDEA22BDA7F8568E360 /* include_juce_audio_processors_headless_ara.cpp */ = {isa = PBXBuildFile; fileRef = 131482B58FD97E9F4D3ACF24; };
@@ -90,6 +97,7 @@
 		01D00A6F0EDD06FAAA2B9BD7 /* juce_video */ /* juce_video */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_video; path = ../../JUCE/modules/juce_video; sourceTree = SOURCE_ROOT; };
 		0290AC746B36233ACA0C2661 /* NodeManagerViewUI.cpp */ /* NodeManagerViewUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeManagerViewUI.cpp; path = ../../Source/Node/ui/NodeManagerViewUI.cpp; sourceTree = SOURCE_ROOT; };
 		030E0702DDCEDB157C38758E /* Pin.cpp */ /* Pin.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Pin.cpp; path = ../../Source/Screen/Surface/Pin.cpp; sourceTree = SOURCE_ROOT; };
+		033CB00FB1A875DD8D4B104A /* libUltralight.dylib */ /* libUltralight.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libUltralight.dylib; path = ../../External/ultralight/lib/osx/silicon/libUltralight.dylib; sourceTree = SOURCE_ROOT; };
 		03F081A282FDA78557D8056B /* MetalKit.framework */ /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		04E8FBC7E5D66A2AA619313C /* CanvasMedia.h */ /* CanvasMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CanvasMedia.h; path = ../../Source/Media/medias/canvas/CanvasMedia.h; sourceTree = SOURCE_ROOT; };
 		065BC3F4B146682332DD8F92 /* InteractiveAppMedia.h */ /* InteractiveAppMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InteractiveAppMedia.h; path = ../../Source/Media/medias/interactiveapp/InteractiveAppMedia.h; sourceTree = SOURCE_ROOT; };
@@ -113,10 +121,12 @@
 		1278284E6FFB63AA9C3EAA62 /* NodeConnectionViewUI.h */ /* NodeConnectionViewUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnectionViewUI.h; path = ../../Source/Node/Connection/ui/NodeConnectionViewUI.h; sourceTree = SOURCE_ROOT; };
 		131482B58FD97E9F4D3ACF24 /* include_juce_audio_processors_headless_ara.cpp */ /* include_juce_audio_processors_headless_ara.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_headless_ara.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_headless_ara.cpp; sourceTree = SOURCE_ROOT; };
 		13A5F9B687F273BE343A6BD3 /* GridClipManagerUI.h */ /* GridClipManagerUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridClipManagerUI.h; path = ../../Source/Media/medias/grid/ui/GridClipManagerUI.h; sourceTree = SOURCE_ROOT; };
+		1478FEF773E8B9336E447B0D /* icudt67l.dat */ /* icudt67l.dat */ = {isa = PBXFileReference; lastKnownFileType = file.dat; name = icudt67l.dat; path = ../../Resources/ultralight/resources/icudt67l.dat; sourceTree = SOURCE_ROOT; };
 		16C9718D7ACE14A91A291FC3 /* webcamMedia.cpp */ /* webcamMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamMedia.cpp; path = ../../Source/Media/medias/webcam/webcamMedia.cpp; sourceTree = SOURCE_ROOT; };
 		16FD2BB5CF7CE115E3D1F1F2 /* GridColumn.cpp */ /* GridColumn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridColumn.cpp; path = ../../Source/Media/medias/grid/GridColumn.cpp; sourceTree = SOURCE_ROOT; };
 		1716875BAD35E43C29152CC8 /* juce_organicui */ /* juce_organicui */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_organicui; path = ../../Modules/juce_organicui; sourceTree = SOURCE_ROOT; };
 		1753BAE9B5E1AFF2F4E32D45 /* MediaClipUI.h */ /* MediaClipUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaClipUI.h; path = ../../Source/Media/medias/sequence/ui/MediaClipUI.h; sourceTree = SOURCE_ROOT; };
+		179B6F26487D342ACE71C128 /* libUltralightCore.dylib */ /* libUltralightCore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libUltralightCore.dylib; path = ../../External/ultralight/lib/osx/silicon/libUltralightCore.dylib; sourceTree = SOURCE_ROOT; };
 		185B784B15D32476C9A05651 /* Cocoa.framework */ /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		191B0F2FA86F31DE09193DA1 /* Metal.framework */ /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		198947CBBEE6A348D91EF9FE /* QuartzCore.framework */ /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -179,6 +189,7 @@
 		53BB2A026EAD5EC34AE09269 /* GridLayerManager.cpp */ /* GridLayerManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridLayerManager.cpp; path = ../../Source/Media/medias/grid/GridLayerManager.cpp; sourceTree = SOURCE_ROOT; };
 		5471E6E4DC31E4693E58A9E3 /* include_juce_organicui.cpp */ /* include_juce_organicui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_organicui.cpp; path = ../../JuceLibraryCode/include_juce_organicui.cpp; sourceTree = SOURCE_ROOT; };
 		54B76D598CEE5D7D3A486C5F /* CoreMIDI.framework */ /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
+		5564C31D7B193FF9CE2F44A8 /* WebMediaPanel.cpp */ /* WebMediaPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = WebMediaPanel.cpp; path = ../../Source/Media/medias/web/WebMediaPanel.cpp; sourceTree = SOURCE_ROOT; };
 		56496F85887CE23A3F761A62 /* include_juce_gui_basics.mm */ /* include_juce_gui_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_basics.mm; path = ../../JuceLibraryCode/include_juce_gui_basics.mm; sourceTree = SOURCE_ROOT; };
 		585B3635C903E213012732E4 /* ColorMedia.h */ /* ColorMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColorMedia.h; path = ../../Source/Media/medias/color/ColorMedia.h; sourceTree = SOURCE_ROOT; };
 		5B6A9DA1917D79850504D61C /* sharedTexture.png */ /* sharedTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sharedTexture.png; path = ../../Resources/media/sharedTexture.png; sourceTree = SOURCE_ROOT; };
@@ -192,6 +203,7 @@
 		61058676EDDC022BC30C27AB /* MediaManager.h */ /* MediaManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaManager.h; path = ../../Source/Media/MediaManager.h; sourceTree = SOURCE_ROOT; };
 		61C42A3D431CF4336A8D7231 /* MediaLayerTimeline.cpp */ /* MediaLayerTimeline.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaLayerTimeline.cpp; path = ../../Source/Media/medias/sequence/ui/MediaLayerTimeline.cpp; sourceTree = SOURCE_ROOT; };
 		61C4E8B7450CABFFEB98B500 /* NDIDeviceParameter.cpp */ /* NDIDeviceParameter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NDIDeviceParameter.cpp; path = ../../Source/Common/NDI/NDIDeviceParameter.cpp; sourceTree = SOURCE_ROOT; };
+		646980E47F7B656C9BFC7FBC /* libmpv.2.dylib */ /* libmpv.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpv.2.dylib; path = ../../External/mpv/lib/osx/libmpv.2.dylib; sourceTree = SOURCE_ROOT; };
 		646F1E0D929CAD95D6071976 /* PictureMedia.h */ /* PictureMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PictureMedia.h; path = ../../Source/Media/medias/picture/PictureMedia.h; sourceTree = SOURCE_ROOT; };
 		658D59919E4391940593BCF7 /* ClipTransition.cpp */ /* ClipTransition.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ClipTransition.cpp; path = ../../Source/Media/medias/sequence/ClipTransition.cpp; sourceTree = SOURCE_ROOT; };
 		66A47B068289318E7D2C36A1 /* ShaderMedia.cpp */ /* ShaderMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ShaderMedia.cpp; path = ../../Source/Media/medias/shader/ShaderMedia.cpp; sourceTree = SOURCE_ROOT; };
@@ -251,6 +263,7 @@
 		7C79E2CD3664791F986EF4AA /* webcamDevice.cpp */ /* webcamDevice.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamDevice.cpp; path = ../../Source/Media/medias/webcam/webcamDevice.cpp; sourceTree = SOURCE_ROOT; };
 		7CE565E90FD5CA60F7143FB4 /* GridBoard.h */ /* GridBoard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridBoard.h; path = ../../Source/Media/medias/grid/ui/GridBoard.h; sourceTree = SOURCE_ROOT; };
 		7DA25AF9AB5840B1B9F5D676 /* MediaManager.cpp */ /* MediaManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaManager.cpp; path = ../../Source/Media/MediaManager.cpp; sourceTree = SOURCE_ROOT; };
+		7E7071467B532F9B7BA911AC /* libWebCore.dylib */ /* libWebCore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libWebCore.dylib; path = ../../External/ultralight/lib/osx/silicon/libWebCore.dylib; sourceTree = SOURCE_ROOT; };
 		7F6FC88CF39B5F6AB0395A58 /* NodeIncludes.h */ /* NodeIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeIncludes.h; path = ../../Source/Node/NodeIncludes.h; sourceTree = SOURCE_ROOT; };
 		7FBD3116FE14ED4E88109D55 /* Security.framework */ /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		7FC6932988483C3087682DB7 /* default.smlayout */ /* default.smlayout */ = {isa = PBXFileReference; lastKnownFileType = file.smlayout; name = default.smlayout; path = ../../Resources/default.smlayout; sourceTree = SOURCE_ROOT; };
@@ -308,6 +321,7 @@
 		AF882763241B734884F9DA01 /* juce_cryptography */ /* juce_cryptography */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_cryptography; path = ../../JUCE/modules/juce_cryptography; sourceTree = SOURCE_ROOT; };
 		AFA067CE1221C65AC0C8DB81 /* GridClipUI.cpp */ /* GridClipUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridClipUI.cpp; path = ../../Source/Media/medias/grid/ui/GridClipUI.cpp; sourceTree = SOURCE_ROOT; };
 		B161E296E962B16F20ECC4E4 /* MediaEditor.cpp */ /* MediaEditor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaEditor.cpp; path = ../../Source/Media/ui/MediaEditor.cpp; sourceTree = SOURCE_ROOT; };
+		B2FDAD3DB04E95A79AA27284 /* WebMediaPanel.h */ /* WebMediaPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WebMediaPanel.h; path = ../../Source/Media/medias/web/WebMediaPanel.h; sourceTree = SOURCE_ROOT; };
 		B3E6FEAA5CC7D67264C53864 /* NDIDeviceChooser.h */ /* NDIDeviceChooser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NDIDeviceChooser.h; path = ../../Source/Common/NDI/ui/NDIDeviceChooser.h; sourceTree = SOURCE_ROOT; };
 		B4145949B5B45A9E8D862E3C /* AudioManager.h */ /* AudioManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AudioManager.h; path = ../../Source/Common/Audio/AudioManager.h; sourceTree = SOURCE_ROOT; };
 		B53215E9D2E0EB0FB5B1ACB4 /* juce_events */ /* juce_events */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_events; path = ../../JUCE/modules/juce_events; sourceTree = SOURCE_ROOT; };
@@ -327,6 +341,7 @@
 		BEBD9D4F96604EED790FB26B /* PictureMedia.cpp */ /* PictureMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PictureMedia.cpp; path = ../../Source/Media/medias/picture/PictureMedia.cpp; sourceTree = SOURCE_ROOT; };
 		BF5DB2BB2B9C32EC40BA160C /* WebMedia.h */ /* WebMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WebMedia.h; path = ../../Source/Media/medias/web/WebMedia.h; sourceTree = SOURCE_ROOT; };
 		C052F251EC349D63E56C6B0B /* BinaryData.cpp */ /* BinaryData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BinaryData.cpp; path = ../../JuceLibraryCode/BinaryData.cpp; sourceTree = SOURCE_ROOT; };
+		C2E067C3D18B771A8C525417 /* libAppCore.dylib */ /* libAppCore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libAppCore.dylib; path = ../../External/ultralight/lib/osx/silicon/libAppCore.dylib; sourceTree = SOURCE_ROOT; };
 		C3B14B7F0C4EC742B1BD9CE1 /* GridLayerGroupManager.h */ /* GridLayerGroupManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridLayerGroupManager.h; path = ../../Source/Media/medias/grid/GridLayerGroupManager.h; sourceTree = SOURCE_ROOT; };
 		C538E2025F0461E4153F5114 /* InteractiveAppMedia.cpp */ /* InteractiveAppMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InteractiveAppMedia.cpp; path = ../../Source/Media/medias/interactiveapp/InteractiveAppMedia.cpp; sourceTree = SOURCE_ROOT; };
 		C578B110C7CB0B82B89E7671 /* GridColumnManager.cpp */ /* GridColumnManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridColumnManager.cpp; path = ../../Source/Media/medias/grid/GridColumnManager.cpp; sourceTree = SOURCE_ROOT; };
@@ -349,6 +364,7 @@
 		D3183C58F2CF9338D634AF53 /* GridMedia.h */ /* GridMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridMedia.h; path = ../../Source/Media/medias/grid/GridMedia.h; sourceTree = SOURCE_ROOT; };
 		D323B02DD96155B72DAA9179 /* include_juce_timeline2.cpp */ /* include_juce_timeline2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_timeline2.cpp; path = ../../JuceLibraryCode/include_juce_timeline2.cpp; sourceTree = SOURCE_ROOT; };
 		D46D53FB00B0CC0681539473 /* canvas.png */ /* canvas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = canvas.png; path = ../../Resources/media/canvas.png; sourceTree = SOURCE_ROOT; };
+		D5C0000C402A32A746E32C53 /* cacert.pem */ /* cacert.pem */ = {isa = PBXFileReference; lastKnownFileType = file.pem; name = cacert.pem; path = ../../Resources/ultralight/resources/cacert.pem; sourceTree = SOURCE_ROOT; };
 		D5D87A0441414C08682662E8 /* ViewStatsTimer.h */ /* ViewStatsTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ViewStatsTimer.h; path = ../../Source/Node/ui/ViewStatsTimer.h; sourceTree = SOURCE_ROOT; };
 		D63934237EA061ACD2F416A0 /* MainComponentCommands.cpp */ /* MainComponentCommands.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MainComponentCommands.cpp; path = ../../Source/MainComponentCommands.cpp; sourceTree = SOURCE_ROOT; };
 		D745775D55D94287CF562055 /* GridLayer.cpp */ /* GridLayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridLayer.cpp; path = ../../Source/Media/medias/grid/GridLayer.cpp; sourceTree = SOURCE_ROOT; };
@@ -585,7 +601,14 @@
 				7FF7C3D0A6219998E3BF28B3,
 				FAD60D310B79F00B85399328,
 				1DE7D7218F031CDF73ACF4AB,
+				D5C0000C402A32A746E32C53,
+				1478FEF773E8B9336E447B0D,
+				C2E067C3D18B771A8C525417,
+				646980E47F7B656C9BFC7FBC,
 				EEC32EC811117A6F7AD6774D,
+				033CB00FB1A875DD8D4B104A,
+				179B6F26487D342ACE71C128,
+				7E7071467B532F9B7BA911AC,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -675,7 +698,6 @@
 			isa = PBXGroup;
 			children = (
 				684ABC779D1065F13921E52D,
-				6CF3B73084702B0D6EB91177,
 				B8DEBA77D1922E9D3E6FF29C,
 				05823E07FEDEAA1204F6A4A2,
 				C573056682D5663DA99EDCD3,
@@ -688,6 +710,7 @@
 				D7008069D80BF6EE2E49FE9F,
 				D2336A10CAAF91BF71E42519,
 				2EC22ADD1C7C4BA622FFF235,
+				6CF3B73084702B0D6EB91177,
 				2678D85C7025A22CEB43D4FA,
 			);
 			name = medias;
@@ -753,6 +776,8 @@
 			children = (
 				229C3B5E477BC8DA47AFE691,
 				BF5DB2BB2B9C32EC40BA160C,
+				5564C31D7B193FF9CE2F44A8,
+				B2FDAD3DB04E95A79AA27284,
 			);
 			name = web;
 			sourceTree = "<group>";
@@ -1268,7 +1293,14 @@
 			files = (
 				AD3297F1FF7517AE72D20064,
 				CEB1617933A8BB8B4A089969,
+				CE6CCC5FF52DA60B565A1C6F,
+				79D48C35073A3D73F764850C,
+				AF910ADAE5FE28A404EC086C,
+				1E4BB965475F3EE0AFDA0DE8,
 				449C7E106415900823474787,
+				E9A280B04205758E860BCC12,
+				926BEB684851CBC1DBA6FC37,
+				7128B8356B9EFA753823A2D9,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1284,7 +1316,7 @@
 			name = "Post-build script";
 			alwaysOutOfDate = 1;
 			shellPath = /bin/sh;
-			shellScript = "cd $TARGET_BUILD_DIR\ninstall_name_tool -add_rpath @executable_path/../Resources MapGyver.app/Contents/MacOS/MapGyver\ninstall_name_tool -add_rpath @executable_path/../Resources/plugins MapGyver.app/Contents/MacOS/MapGyver";
+			shellScript = "# 1. Define variables for clarity\nAPP_PATH=\"$TARGET_BUILD_DIR/$PRODUCT_NAME.app\"\nEXECUTABLE=\"$APP_PATH/Contents/MacOS/$PRODUCT_NAME\"\nLIB_PATH=\"$APP_PATH/Contents/Resources/libmpv.2.dylib\"\n\ninstall_name_tool -add_rpath \"@executable_path/../Resources\" \"$EXECUTABLE\"\ninstall_name_tool -id \"@rpath/libmpv.2.dylib\" \"$LIB_PATH\"\ninstall_name_tool -change \"/opt/local/lib/libmpv.2.dylib\" \"@rpath/libmpv.2.dylib\" \"$EXECUTABLE\"\n\n#ultra light copy resources\ncd \"$APP_PATH/Contents/Resources\"\nmkdir ultralight\nmkdir ultralight/resources\ncp cacert.pem icudt67l.dat ultralight/resources";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1375,16 +1407,12 @@
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../JUCE/modules",
 					"$(SRCROOT)/../../Modules",
-					"$(SRCROOT)/../../External/servus/include",
-					"$(SRCROOT)/../../External/dnssd/include",
-					"$(SRCROOT)/../../External/vlc/include",
-					"$(SRCROOT)/../../External/vlc/include/vlc/plugins",
-					"$(SRCROOT)/../../External/NDI/include/",
 					"$(SRCROOT)/../../Source",
 					"$(SRCROOT)/../../External/asiodriver",
 					"$(SRCROOT)/../../External/mpv/include",
 					"$(SRCROOT)/../../External/NDI/include",
 					"$(SRCROOT)/../../External/servus/include",
+					"$(SRCROOT)/../../External/ultralight/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-App.plist;
@@ -1394,15 +1422,16 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"../../External/servus/lib/silicon/release\"",
-					"\"../../External/vlc/lib/osx/silicon\"",
 					"\"../../External/NDI/lib/osx\"",
+					"\"../../External/mpv/lib/osx\"",
+					"\"../../External/ultralight/lib/osx/silicon\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX/${CURRENT_ARCH}\"",
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
-				OTHER_LDFLAGS = "-lServus -lvlc -lvlccore -lndi -lssl -lcrypto -lz";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/ultralight/include";
+				OTHER_LDFLAGS = "-lServus -lndi -lmpv.2 -lAppCore -lUltralight -lUltralightCore -lWebCore -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.mapgyver;
 				PRODUCT_NAME = "MapGyver";
 				USE_HEADERMAP = NO;
@@ -1496,16 +1525,12 @@
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../JUCE/modules",
 					"$(SRCROOT)/../../Modules",
-					"$(SRCROOT)/../../External/servus/include",
-					"$(SRCROOT)/../../External/dnssd/include",
-					"$(SRCROOT)/../../External/vlc/include",
-					"$(SRCROOT)/../../External/vlc/include/vlc/plugins",
-					"$(SRCROOT)/../../External/NDI/include/",
 					"$(SRCROOT)/../../Source",
 					"$(SRCROOT)/../../External/asiodriver",
 					"$(SRCROOT)/../../External/mpv/include",
 					"$(SRCROOT)/../../External/NDI/include",
 					"$(SRCROOT)/../../External/servus/include",
+					"$(SRCROOT)/../../External/ultralight/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-App.plist;
@@ -1514,16 +1539,17 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"../../External/servus/lib/osx/release\"",
-					"\"../../External/vlc/lib/osx/intel\"",
+					"\"../../External/servus/lib/intel/release\"",
 					"\"../../External/NDI/lib/osx\"",
+					"\"../../External/mpv/lib/osx\"",
+					"\"../../External/ultralight/lib/osx/silicon\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX\"",
 					"\"../../Modules/juce_simpleweb/libs/MacOSX/${CURRENT_ARCH}\"",
 				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/dnssd/include $(SRCROOT)/../../External/vlc/include $(SRCROOT)/../../External/vlc/include/vlc/plugins $(SRCROOT)/../../External/NDI/include/ $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include";
-				OTHER_LDFLAGS = "-lServus -lvlc -lvlccore -lndi -lssl -lcrypto -lz";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../JUCE/modules $(SRCROOT)/../../Modules $(SRCROOT)/../../Source $(SRCROOT)/../../External/asiodriver $(SRCROOT)/../../External/mpv/include $(SRCROOT)/../../External/NDI/include $(SRCROOT)/../../External/servus/include $(SRCROOT)/../../External/ultralight/include";
+				OTHER_LDFLAGS = "-lServus -lndi -lmpv.2 -lAppCore -lUltralight -lUltralightCore -lWebCore -lssl -lcrypto -lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.goldengeek.mapgyver;
 				PRODUCT_NAME = "MapGyver";
 				USE_HEADERMAP = NO;
