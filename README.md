@@ -17,9 +17,9 @@ Features :
 
 ## Downloads
 
-- Windows : https://benjamin.kuperberg.fr/mapgyver/download/app/MapGyver-win-x64-bleedingedge.exe
-- MacOS Intel : https://benjamin.kuperberg.fr/mapgyver/download/app/MapGyver-osx-intel-bleedingedge.pkg
-- MacOS Silicon : https://benjamin.kuperberg.fr/mapgyver/download/app/MapGyver-osx-silicon-bleedingedge.pkg
+- Windows : https://www.goldengeek.org/mapgyver/download/app/MapGyver-win-x64-bleedingedge.exe
+- MacOS Intel :Not ready yet (you can contribute by compiling and testing it yourself)
+- MacOS Silicon : https://www.goldengeek.org/mapgyver/download/app/MapGyver-osx-silicon-bleedingedge.pkg
 - Linux x64 : Not ready yet (you can contribute by compiling and testing it yourself with the instructions below)
 - Raspberry 32 bit : Not ready yet (you can contribute by compiling and testing it yourself)
 - Raspberry 64 bit : Not ready yet (you can contribute by compiling and testing it yourself)
