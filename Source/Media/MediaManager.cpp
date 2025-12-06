@@ -35,8 +35,9 @@ MediaManager::MediaManager() :
 	factory.defs.add(Factory<Media>::Definition::createDef<CanvasMedia>(""));
 	factory.defs.add(Factory<Media>::Definition::createDef<GridMedia>(""));
 	factory.defs.add(Factory<Media>::Definition::createDef<InteractiveAppMedia>(""));
-	factory.defs.add(Factory<Media>::Definition::createDef<WebMedia>(""));
 
+	factory.defs.add(Factory<Media>::Definition::createDef<WebMedia>(""));
+	factory.defs.add(Factory<Media>::Definition::createDef<WebViewMedia>(""));
 
 	itemDataType = "Media";
 	selectItemWhenCreated = true;

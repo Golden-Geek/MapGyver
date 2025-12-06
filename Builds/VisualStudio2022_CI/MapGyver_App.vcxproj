@@ -265,7 +265,7 @@
     <ClCompile Include="..\..\Source\Media\medias\web\WebMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\web\WebMediaPanel.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\web\WebViewMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.cpp">
@@ -4124,7 +4124,7 @@
     <ClInclude Include="..\..\Source\Media\medias\video\VideoAudioProcessor.h"/>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h"/>
-    <ClInclude Include="..\..\Source\Media\medias\web\WebMediaPanel.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\web\WebViewMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceParameterUI.h"/>
     <ClInclude Include="..\..\Source\Media\medias\webcam\webcamDevice.h"/>
@@ -6844,9 +6844,17 @@
     <None Include="..\..\Modules\juce_simpleweb\README.md"/>
     <None Include="..\..\Modules\juce_timeline\README.md"/>
     <None Include=".\icon.ico"/>
+    <None Include="packages.config"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc"/>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\Microsoft.Web.WebView2.1.0.3650-prerelease\build\native\Microsoft.Web.WebView2.targets"
+            Condition="Exists('packages\Microsoft.Web.WebView2.1.0.3650-prerelease\build\native\Microsoft.Web.WebView2.targets')"/>
+  </ImportGroup>
+  <PropertyGroup>
+    <WebView2LoaderPreference>Static</WebView2LoaderPreference>
+  </PropertyGroup>
 </Project>

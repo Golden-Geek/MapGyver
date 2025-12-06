@@ -10,6 +10,9 @@
 
 #pragma once
 
+
+
+
 #define Init2DViewport(w, h) glViewport(0, 0, w, h); \
 Init2DMatrix(w, h);
 

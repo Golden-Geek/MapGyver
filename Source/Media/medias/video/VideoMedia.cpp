@@ -11,6 +11,8 @@
 #include "Media/MediaIncludes.h"
 #include "Engine/MGEngine.h"
 
+
+
 VideoMedia::VideoMedia(var params) :
 	Media(getTypeString(), params),
 	controlsCC("Controls"),

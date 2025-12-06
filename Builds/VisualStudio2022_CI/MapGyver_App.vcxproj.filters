@@ -1450,7 +1450,7 @@
     <ClCompile Include="..\..\Source\Media\medias\web\WebMedia.cpp">
       <Filter>MapGyver\Source\Media\medias\web</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Media\medias\web\WebMediaPanel.cpp">
+    <ClCompile Include="..\..\Source\Media\medias\web\WebViewMedia.cpp">
       <Filter>MapGyver\Source\Media\medias\web</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.cpp">
@@ -5694,7 +5694,7 @@
     <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h">
       <Filter>MapGyver\Source\Media\medias\web</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Media\medias\web\WebMediaPanel.h">
+    <ClInclude Include="..\..\Source\Media\medias\web\WebViewMedia.h">
       <Filter>MapGyver\Source\Media\medias\web</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\webcam\ui\webcamDeviceChooser.h">
@@ -13850,6 +13850,7 @@
     <None Include=".\icon.ico">
       <Filter>JUCE Library Code</Filter>
     </None>
+    <None Include="packages.config"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc">

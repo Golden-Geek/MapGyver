@@ -45,8 +45,8 @@
 
 #include "medias/canvas/CanvasMedia.cpp"
 
+#include "medias/web/WebViewMedia.cpp"
 #include "medias/web/WebMedia.cpp"
-#include "medias/web//WebMediaPanel.cpp"
 
 #include "medias/grid/GridMedia.cpp"
 

@@ -14,7 +14,8 @@
 // ==============================================================================
 // HELPER: Windows OpenGL Loading
 // ==============================================================================
-void* get_proc_address(void* ctx, const char* name) {
+void* get_gl_proc_address(void* ctx, const char* name) {
+
 #if JUCE_WINDOWS
 	static HMODULE glModule = GetModuleHandleA("opengl32.dll");
 	using wglProc = void* (__stdcall*)(const char*);
@@ -30,6 +31,7 @@ void* get_proc_address(void* ctx, const char* name) {
 	return nullptr;
 #endif
 }
+
 
 void mpv_update(void* ctx) { ((MPVPlayer*)ctx)->onMPVUpdate(); }
 void mpv_wakeup(void* ctx) { ((MPVPlayer*)ctx)->onMPVWakeup(); }
@@ -168,7 +170,7 @@ void MPVPlayer::loadFile()
 
 void MPVPlayer::setupGL()
 {
-	mpv_opengl_init_params gl_init_params[1] = { get_proc_address, nullptr };
+	mpv_opengl_init_params gl_init_params[1] = { get_gl_proc_address, nullptr };
 	mpv_render_param params[]{
 		{MPV_RENDER_PARAM_API_TYPE, const_cast<char*>(MPV_RENDER_API_TYPE_OPENGL)},
 		{MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
