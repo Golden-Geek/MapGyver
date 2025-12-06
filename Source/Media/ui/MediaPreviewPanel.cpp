@@ -19,7 +19,8 @@ MediaPreview::MediaPreview() :
 	iMedia(nullptr)
 {
 
-	getTopLevelComponent()->addKeyListener(this);
+	setWantsKeyboardFocus(true); // Permet au composant de recevoir le focus clavier.
+	addKeyListener(this);
 	setSize(200, 200);
 }
 
@@ -175,7 +176,7 @@ bool MediaPreview::keyPressed(const KeyPress& key, Component* originatingCompone
 
 	iMedia->sendKeyPressed(key);
 
-	return false;
+	return true;
 }
 
 
@@ -250,3 +251,4 @@ void MediaPreviewPanel::newMessage(const InspectableSelectionManager::SelectionE
 		checkAndAssignPreview(e.selectionManager);
 	}
 }
+
