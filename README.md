@@ -17,9 +17,9 @@ Features :
 
 ## Downloads
 
-- Windows : https://benjamin.kuperberg.fr/mapgyver/download/app/MapGyver-win-x64-bleedingedge.exe
-- MacOS Intel : https://benjamin.kuperberg.fr/mapgyver/download/app/MapGyver-osx-intel-bleedingedge.pkg
-- MacOS Silicon : https://benjamin.kuperberg.fr/mapgyver/download/app/MapGyver-osx-silicon-bleedingedge.pkg
+- Windows : https://www.goldengeek.org/mapgyver/download/app/MapGyver-win-x64-bleedingedge.exe
+- MacOS Intel :Not ready yet (you can contribute by compiling and testing it yourself)
+- MacOS Silicon : https://www.goldengeek.org/mapgyver/download/app/MapGyver-osx-silicon-bleedingedge.pkg
 - Linux x64 : Not ready yet (you can contribute by compiling and testing it yourself with the instructions below)
 - Raspberry 32 bit : Not ready yet (you can contribute by compiling and testing it yourself)
 - Raspberry 64 bit : Not ready yet (you can contribute by compiling and testing it yourself)
@@ -28,14 +28,17 @@ Features :
 
 ### Dependencies
 - You need to install the [NDI SDK](https://ndi.video/for-developers/ndi-sdk/) (you can use the `ndi-sdk` AUR package on Arch)
-- `libvlc` **4.0.x** (for 64bit x86 only) and `Servus` pre-built libraries are included but you might need to recompile them for your needs
-- Official Projucer from JUCE: [Download here](https://juce.com/download/)
+- 
 
 ### Building
+ - Clone the develop-local branch from the JUCE git here : http://github.com/benkuper/JUCE 
+  ```
+  git clone --branch=juce8_local-local http://github.com/benkuper/JUCE
+  ```
+  - In the *JUCE/extras/Projucer/Builds* folder, choose the folder depending on you system, open the solution with your IDE and compile it or make in linux. You can then open the new Projucer app that you just built.
+  - 
 - Clone this repository with submodules: `git clone --recursive https://github.com/Golden-Geek/MapGyver.git`
-- Clone fork of JUCE from your branch to the cloned folder:
-    - `cd MapGyver`
-    - `git clone --branch=juce8_local http://github.com/benkuper/JUCE`
+- 
 - Open MapGyver JUCE with the official Projucer 
 - Save Ctrl + S in Projucer to write the MakeFile
 - Navigate to `Builds/LinuxMakefile` and make with `make -j 8`
