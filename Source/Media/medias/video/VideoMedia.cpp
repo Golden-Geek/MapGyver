@@ -10,10 +10,10 @@
 
 #include "Media/MediaIncludes.h"
 #include "Engine/MGEngine.h"
-#include "VideoMedia.h"
 
 VideoMedia::VideoMedia(var params) :
 	Media(getTypeString(), params),
+	Thread("Youtube DLP Downloader"),
 	controlsCC("Controls"),
 	audioCC("Audio"),
 	updatingPosFromPlayer(false),
@@ -166,6 +166,8 @@ void VideoMedia::load()
 		path = url->stringValue();
 	}
 
+	checkIsYoutubeVideo();
+
 	setupMPV(path);
 }
 
@@ -178,13 +180,16 @@ void VideoMedia::renderOpenGL()
 {
 	if (isClearing) return;
 	if (mpv == nullptr) return;
-	if(!mpv->isGLInit()) mpv->setupGL();
+	if (!mpv->isGLInit()) mpv->setupGL();
 
 	Media::renderOpenGL();
 }
 
 void VideoMedia::renderGLInternal()
 {
+	PlayerState ps = state->getValueDataAsEnum<PlayerState>();
+	if (ps != PLAYING && ps != PAUSED) return;
+
 	if (mpv == nullptr)
 	{
 		glClearColor(.1f, .5f, .8f, .5f);
@@ -231,6 +236,82 @@ void VideoMedia::seek(double time)
 	double target = jlimit(0.0, length->doubleValue(), time);
 	mpv->setPosition(target);
 }
+
+void VideoMedia::checkIsYoutubeVideo()
+{
+	bool isYTVideo = source->getValueDataAsEnum<VideoSource>() == Source_URL &&
+		(url->stringValue().containsIgnoreCase("youtube") ||
+			url->stringValue().containsIgnoreCase("youtu.be"));
+
+	if (isYTVideo)
+	{
+#if JUCE_WINDOWS
+		File f = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("yt-dlp.exe");
+#elif JUCE_MAC
+		File f = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("Resources").getChildFile("yt-dlp");
+#endif
+
+		if (f.existsAsFile()) return;
+
+		AlertWindow::showAsync(MessageBoxOptions().withIconType(AlertWindow::QuestionIcon)
+			.withTitle("YouTube-DLP Not Found")
+			.withMessage("YouTube video playback requires youtube-dlp to be present in the application folder.\n Would you like to download it now?")
+			.withButton("Download")
+			.withButton("Cancel"),
+			[&](int result) {
+				if (result) startThread();
+
+			});
+	}
+}
+
+void VideoMedia::run()
+{
+
+#if JUCE_WINDOWS
+	URL downloadURL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe");
+	File targetFile = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("yt-dlp.exe");
+#elif JUCE_MAC
+	URL downloadURL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos");
+	File targetFile = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("Resources").getChildFile("yt-dlp");
+#endif
+
+	NLOG(niceName, "Starting download of YouTube-DLP...");
+
+	std::unique_ptr<URL::DownloadTask> downloadTask = downloadURL.downloadToFile(targetFile, URL::DownloadTaskOptions().withListener(this));
+
+	if (downloadTask == nullptr)
+	{
+		NLOGERROR(niceName, "Failed to start download of YouTube-DLP.");
+		return;
+	}
+	while (!downloadTask->isFinished())
+	{
+		Thread::sleep(100);
+
+	}
+
+	LOG("End here");
+}
+
+void VideoMedia::progress(URL::DownloadTask* task, int64 bytesDownloaded, int64 totalLength)
+{
+	//LOG("Progress... " << (bytesDownloaded * 100) / totalLength << "%");
+}
+
+void VideoMedia::finished(URL::DownloadTask* task, bool success)
+{
+	if (success)
+	{
+		NLOG(niceName, "YouTube-DLP downloaded successfully.");
+		load();
+	}
+	else
+	{
+		NLOGERROR(niceName, "Failed to download YouTube-DLP.");
+	}
+}
+
 
 // =========================================================================================
 // STANDARD MEDIA HANDLERS

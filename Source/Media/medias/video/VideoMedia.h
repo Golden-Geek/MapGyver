@@ -17,7 +17,9 @@ class VideoMediaAudioProcessor;
 
 class VideoMedia :
 	public Media,
-	public MPVPlayer::MPVListener
+	public MPVPlayer::MPVListener,
+	public Thread,
+	public URL::DownloadTaskListener
 {
 public:
 	VideoMedia(var params = var());
@@ -53,7 +55,6 @@ public:
 	int videoWidth = 0;
 	int videoHeight = 0;
 
-
 	std::unique_ptr<MPVPlayer> mpv;
 
 	void clearItem() override;
@@ -68,6 +69,10 @@ public:
 	void restart();
 	void seek(double time);
 
+	void checkIsYoutubeVideo();
+	void run() override;
+	void progress(URL::DownloadTask* task, int64 bytesDownloaded, int64 totalLength) override;
+	void finished(URL::DownloadTask* task, bool success) override;
 
 	void onContainerParameterChanged(Parameter* p) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
@@ -97,4 +102,5 @@ public:
 	void afterLoadJSONDataInternal() override;
 
 	DECLARE_TYPE("Video")
+
 };

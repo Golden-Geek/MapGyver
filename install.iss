@@ -37,7 +37,6 @@ Source: "Binaries\CI\App\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Binaries\CI\App\server.crt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Binaries\CI\App\server.key"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Binaries\CI\App\resources\*"; DestDir: "{app}\resources"; Flags: recursesubdirs 
-Source: "Binaries\CI\App\yt-dlp.exe"; DestDir: "{app}" ; Flags: ignoreversion
 
 [Icons]                                               
 Name: "{group}\{#ApplicationName}"; Filename: "{app}\{#ApplicationName}.exe"
