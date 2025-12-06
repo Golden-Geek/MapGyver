@@ -14,5 +14,5 @@ inputs:
 runs:
   using: "composite"
   steps: 
-    - run: curl -X POST -F "appFile=@${{ inputs.pkg-name }}" -F "pass=${{ inputs.pass }}" ${{ inputs.url }}
+    - run: curl -v -F "appFile=@${{ inputs.pkg-name }}" --form-string "pass=${{ inputs.pass }}" ${{ inputs.url }}
       shell: bash
