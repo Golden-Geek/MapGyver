@@ -13,7 +13,6 @@
 
 VideoMedia::VideoMedia(var params) :
 	Media(getTypeString(), params),
-	Thread("Youtube DLP Downloader"),
 	controlsCC("Controls"),
 	audioCC("Audio"),
 	updatingPosFromPlayer(false),
@@ -259,59 +258,33 @@ void VideoMedia::checkIsYoutubeVideo()
 			.withButton("OK")
 			.withButton("Cancel"),
 			[&](int result) {
-				if (result) startThread();
+
+#if JUCE_WINDOWS
+				URL downloadURL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe");
+				File targetFile = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("yt-dlp.exe");
+#elif JUCE_MAC
+				URL downloadURL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos");
+				File targetFile = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("Resources").getChildFile("yt-dlp");
+#endif
+
+				NLOG(niceName, "Downloading YouTube-DLP from " << downloadURL.toString(true));
+				FileDownloader::getInstance()->addDownloadFile(downloadURL, targetFile, [&](bool success) {
+
+					if (success)
+					{
+						NLOG(niceName, "YouTube-DLP downloaded and ready.");
+						load();
+
+					}
+					else
+					{
+						NLOGERROR(niceName, "Failed to download YouTube-DLP.");
+					}
+					});
 
 			});
 	}
 }
-
-void VideoMedia::run()
-{
-
-#if JUCE_WINDOWS
-	URL downloadURL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe");
-	File targetFile = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("yt-dlp.exe");
-#elif JUCE_MAC
-	URL downloadURL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos");
-	File targetFile = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("Resources").getChildFile("yt-dlp");
-#endif
-
-	NLOG(niceName, "Starting download of YouTube-DLP...");
-
-	std::unique_ptr<URL::DownloadTask> downloadTask = downloadURL.downloadToFile(targetFile, URL::DownloadTaskOptions().withListener(this));
-
-	if (downloadTask == nullptr)
-	{
-		NLOGERROR(niceName, "Failed to start download of YouTube-DLP.");
-		return;
-	}
-	while (!downloadTask->isFinished())
-	{
-		Thread::sleep(100);
-
-	}
-
-	LOG("End here");
-}
-
-void VideoMedia::progress(URL::DownloadTask* task, int64 bytesDownloaded, int64 totalLength)
-{
-	//LOG("Progress... " << (bytesDownloaded * 100) / totalLength << "%");
-}
-
-void VideoMedia::finished(URL::DownloadTask* task, bool success)
-{
-	if (success)
-	{
-		NLOG(niceName, "YouTube-DLP downloaded successfully.");
-		load();
-	}
-	else
-	{
-		NLOGERROR(niceName, "Failed to download YouTube-DLP.");
-	}
-}
-
 
 // =========================================================================================
 // STANDARD MEDIA HANDLERS

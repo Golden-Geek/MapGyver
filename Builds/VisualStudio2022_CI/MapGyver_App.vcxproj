@@ -3545,6 +3545,9 @@
     <ClCompile Include="..\..\Modules\juce_organicui\helpers\crypto\hmac\SHA1.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Modules\juce_organicui\helpers\FileDownloader.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Modules\juce_organicui\helpers\NetworkHelpers.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -5677,6 +5680,7 @@
     <ClInclude Include="..\..\Modules\juce_organicui\helpers\crypto\hmac\SHA1.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\helpers\crypto\sha512\SHA512.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\helpers\DebugHelpers.h"/>
+    <ClInclude Include="..\..\Modules\juce_organicui\helpers\FileDownloader.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\helpers\NetworkHelpers.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\helpers\OSCHelpers.h"/>
     <ClInclude Include="..\..\Modules\juce_organicui\helpers\PerlinNoise.hpp"/>
