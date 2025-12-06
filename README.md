@@ -28,7 +28,6 @@ Features :
 
 ### Dependencies
 - You need to install the [NDI SDK](https://ndi.video/for-developers/ndi-sdk/) (you can use the `ndi-sdk` AUR package on Arch)
-- `libvlc` **4.0.x** (for 64bit x86 only) and `Servus` pre-built libraries are included but you might need to recompile them for your needs
 - Official Projucer from JUCE: [Download here](https://juce.com/download/)
 
 ### Building
