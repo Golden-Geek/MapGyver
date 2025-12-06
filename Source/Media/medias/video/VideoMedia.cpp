@@ -256,7 +256,7 @@ void VideoMedia::checkIsYoutubeVideo()
 		AlertWindow::showAsync(MessageBoxOptions().withIconType(AlertWindow::QuestionIcon)
 			.withTitle("YouTube-DLP Not Found")
 			.withMessage("YouTube video playback requires youtube-dlp to be present in the application folder.\n Would you like to download it now?")
-			.withButton("Download")
+			.withButton("OK")
 			.withButton("Cancel"),
 			[&](int result) {
 				if (result) startThread();
