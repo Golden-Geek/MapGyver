@@ -28,13 +28,17 @@ Features :
 
 ### Dependencies
 - You need to install the [NDI SDK](https://ndi.video/for-developers/ndi-sdk/) (you can use the `ndi-sdk` AUR package on Arch)
-- Official Projucer from JUCE: [Download here](https://juce.com/download/)
+- 
 
 ### Building
+ - Clone the develop-local branch from the JUCE git here : http://github.com/benkuper/JUCE 
+  ```
+  git clone --branch=juce8_local-local http://github.com/benkuper/JUCE
+  ```
+  - In the *JUCE/extras/Projucer/Builds* folder, choose the folder depending on you system, open the solution with your IDE and compile it or make in linux. You can then open the new Projucer app that you just built.
+  - 
 - Clone this repository with submodules: `git clone --recursive https://github.com/Golden-Geek/MapGyver.git`
-- Clone fork of JUCE from your branch to the cloned folder:
-    - `cd MapGyver`
-    - `git clone --branch=juce8_local http://github.com/benkuper/JUCE`
+- 
 - Open MapGyver JUCE with the official Projucer 
 - Save Ctrl + S in Projucer to write the MakeFile
 - Navigate to `Builds/LinuxMakefile` and make with `make -j 8`
