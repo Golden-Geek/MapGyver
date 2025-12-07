@@ -252,32 +252,46 @@ void WebViewMedia::initWebView()
 							std::wstring streamIdW = streamId.toWideCharPointer();
 
 
-							String setupScript =
-								"if(!window.connectToJuce) { "
-								"window.connectToJuce = async function(streamId) {"
-								"    console.log('JS: Searching for canvas...');"
-								//"    const canvas = document.querySelector('canvas');" // Finds YOUR canvas
-								//"    if (!canvas) { console.error('JS: No canvas found on page!'); return; }"
+							File setupScriptFile = File::getSpecialLocation(File::currentExecutableFile)
+								.getSiblingFile("WebViewSetupScript.js");
 
-								"const canvas = document.getElementById('unity-canvas') || document.querySelector('#unity-canvas, canvas');"
-								" console.log('JS: Selected canvas:', canvas, canvas&& canvas.id, canvas&& canvas.width, canvas&& canvas.height);"
+							String setupScript;
 
-								"    if (window.chrome.webview.registerTextureStream) {"
-								"        try {"
-								//           1. FAKE A CLICK (Bypasses 'User Gesture' requirement)
-								"            document.body.dispatchEvent(new MouseEvent('click', {bubbles: true}));"
+							if (setupScriptFile.existsAsFile()) {
+								setupScript = setupScriptFile.loadFileAsString();
+								LOG("Loaded WebView Setup Script from file.");
+							}
+							else {
+								LOG("WebView Setup Script file not found, using default script.");
 
-								"            const stream = canvas.captureStream(60);"
-								"            const track = stream.getVideoTracks()[0];"
+								setupScript =
+									"console.log('JS: Default Setup Script Loaded');"
+									"if (!window.connectToJuce) {"
+									"window.connectToJuce = async function(streamId) {"
+									"    console.log('JS: Searching for canvas...');"
+									//"    const canvas = document.querySelector('canvas');" // Finds YOUR canvas
+									//"    if (!canvas) { console.error('JS: No canvas found on page!'); return; }"
 
-								"            await window.chrome.webview.registerTextureStream(streamId, track);"
-								"            console.log('JS: SUCCESS - Stream Connected to ' + streamId);"
-								"        } catch (e) {"
-								"            console.error('JS: Connection Failed:', e.name, e.message);"
-								"        }"
-								"    }"
-								"};"
-								"}";
+									"const canvas = document.getElementById('unity-canvas') || document.querySelector('#unity-canvas, canvas');"
+									" console.log('JS: Selected canvas:', canvas, canvas&& canvas.id, canvas&& canvas.width, canvas&& canvas.height);"
+
+									"    if (window.chrome.webview.registerTextureStream) {"
+									"        try {"
+									//           1. FAKE A CLICK (Bypasses 'User Gesture' requirement)
+									"            document.body.dispatchEvent(new MouseEvent('click', {bubbles: true}));"
+
+									"            const stream = canvas.captureStream(60);"
+									"            const track = stream.getVideoTracks()[0];"
+
+									"            await window.chrome.webview.registerTextureStream(streamId, track);"
+									"            console.log('JS: SUCCESS - Stream Connected to ' + streamId);"
+									"        } catch (e) {"
+									"            console.error('JS: Connection Failed:', e.name, e.message);"
+									"        }"
+									"    }"
+									"};"
+									"}";
+							}
 
 							webviewWindow->AddScriptToExecuteOnDocumentCreated(setupScript.toWideCharPointer(), nullptr);
 
@@ -352,6 +366,7 @@ void WebViewMedia::initWebView()
 		LOGERROR("Immediate Environment Creation Failed: " + getErrorMessage(hr));
 	}
 }
+
 void WebViewMedia::initTextureStream()
 {
 	if (!textureStream) return;

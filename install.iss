@@ -34,6 +34,7 @@ SetupWindowTitle={#ApplicationName} {#ApplicationVersion} Setup
 [Files]
 Source: "Binaries\CI\App\{#ApplicationName}.exe"; DestDir: "{app}" ; Flags: ignoreversion
 Source: "Binaries\CI\App\*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Binaries\CI\App\*.js"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Binaries\CI\App\server.crt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Binaries\CI\App\server.key"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Binaries\CI\App\resources\*"; DestDir: "{app}\resources"; Flags: recursesubdirs 
