@@ -46,7 +46,7 @@
 #include "medias/canvas/CanvasMedia.cpp"
 
 #if JUCE_WINDOWS
-#include "medias/web/WebViewMedia.cpp
+#include "medias/web/WebViewMedia.cpp"
 #endif
 
 #include "medias/web/WebMedia.cpp"
