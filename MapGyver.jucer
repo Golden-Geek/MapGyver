@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="DMftGm" name="MapGyver" projectType="guiapp" useAppConfig="1"
-              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/asiodriver&#10;../../External/mpv/include&#10;../../External/NDI/include&#10;../../External/servus/include&#10;../../External/ultralight/include&#10;"
+              addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/asiodriver&#10;../../External/mpv/include&#10;../../External/NDI/include&#10;../../External/servus/include&#10;../../External/ultralight/include&#10;../../External/wil/include"
               defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1&#10;ORGANIC_REMOTE_CONTROL_PORT=46000&#10;MPV_ENABLE_DLL"
               companyWebsite="https://benjamin.kuperberg.fr/mapgyver" companyName="GoldenGeek"
               bundleIdentifier="com.goldengeek.mapgyver" displaySplashScreen="1"
@@ -522,9 +522,9 @@
             extraCompilerFlags="/bigobj" smallIcon="AKcEsb" bigIcon="AKcEsb">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;../../External/mpv/lib/win&#10;../../External/ultralight/lib/win&#10;"
-                       binaryPath="Binaries/Debug" headerPath="../../External/wil/include"/>
+                       binaryPath="Binaries/Debug"/>
         <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib/win&#10;../../External/ultralight/lib/win"
-                       binaryPath="Binaries/Release" headerPath="../../External/wil/include"/>
+                       binaryPath="Binaries/Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics"/>
@@ -587,7 +587,7 @@
             bigIcon="AKcEsb" extraCompilerFlags="/bigobj" externalLibraries="Servus.lib&#10;libmpv.lib&#10;AppCore.lib&#10;Ultralight.lib&#10;WebCore.lib&#10;UltralightCore.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib/win&#10;../../External/ultralight/lib/win"
-                       binaryPath="Binaries/CI" headerPath="../../External/wil/include"/>
+                       binaryPath="Binaries/CI"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="JUCE/modules"/>
