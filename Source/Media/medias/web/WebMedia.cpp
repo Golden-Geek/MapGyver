@@ -109,7 +109,12 @@ void WebMedia::onContainerTriggerTriggered(Trigger* t)
 	Media::onContainerTriggerTriggered(t);
 	if (t == reloadTrigger && view)
 	{
-		view->Reload();
+		GlContextHolder::getInstance()->callOnGLThread(
+			[=]()
+			{
+				view->Reload();
+			}
+		);
 	}
 }
 

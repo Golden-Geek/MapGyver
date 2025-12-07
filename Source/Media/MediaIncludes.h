@@ -30,7 +30,10 @@
 
 #include "medias/canvas/CanvasMedia.h"
 
+#if JUCE_WINDOWS
 #include "medias/web/WebViewMedia.h"
+#endif
+
 #include "medias/web/WebMedia.h"
 
 #include "medias/grid/GridClip.h"

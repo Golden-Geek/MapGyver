@@ -37,7 +37,10 @@ MediaManager::MediaManager() :
 	factory.defs.add(Factory<Media>::Definition::createDef<InteractiveAppMedia>(""));
 
 	factory.defs.add(Factory<Media>::Definition::createDef<WebMedia>(""));
+
+#if JUCE_WINDOWS
 	factory.defs.add(Factory<Media>::Definition::createDef<WebViewMedia>(""));
+#endif
 
 	itemDataType = "Media";
 	selectItemWhenCreated = true;

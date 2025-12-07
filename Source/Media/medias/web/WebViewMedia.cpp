@@ -55,6 +55,12 @@ String getErrorMessage(HRESULT hr)
 WebViewMedia::WebViewMedia(var params) :
 	Media(getTypeString(), params)
 {
+	source = addEnumParameter("Source", "Source");
+	source->addOption("URL", Source_URL)->addOption("File", Source_File);
+
+	filePath = addFileParameter("File path", "File path", "");
+	filePath->setAutoReload(true);
+
 	// 1. Setup Parameters
 	//urlParam = addStringParameter("URL", "Address", "https://webglsamples.org/blob/blob.html");
 	urlParam = addStringParameter("URL", "Address", "https://www.goldengeek.org/mapgyver/simple.html");
@@ -126,6 +132,7 @@ void WebViewMedia::initWebView()
 	auto options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
 	options->put_AdditionalBrowserArguments(
 		L"--enable-features=msWebView2TextureStream "
+
 		L"--disable-gpu-sandbox "
 		L"--enable-gpu-rasterization"
 		L"--disable-features=UseSkiaRenderer "
@@ -133,6 +140,7 @@ void WebViewMedia::initWebView()
 		L"--autoplay-policy=no-user-gesture-required "
 		L"--disable-web-security"
 		L"--use-fake-ui-for-media-stream"
+		L"--enable-gpu --ignore-gpu-blocklist --enable-webgl --use-angle=default"
 	);
 
 
@@ -245,12 +253,14 @@ void WebViewMedia::initWebView()
 
 
 							String setupScript =
+								"if(!window.connectToJuce) { "
 								"window.connectToJuce = async function(streamId) {"
 								"    console.log('JS: Searching for canvas...');"
-								"    const canvas = document.querySelector('canvas');" // Finds YOUR canvas
-								"    if (!canvas) { console.error('JS: No canvas found on page!'); return; }"
+								//"    const canvas = document.querySelector('canvas');" // Finds YOUR canvas
+								//"    if (!canvas) { console.error('JS: No canvas found on page!'); return; }"
 
-								"    console.log('JS: Canvas found. Size:', canvas.width, canvas.height);"
+								"const canvas = document.getElementById('unity-canvas') || document.querySelector('#unity-canvas, canvas');"
+								" console.log('JS: Selected canvas:', canvas, canvas&& canvas.id, canvas&& canvas.width, canvas&& canvas.height);"
 
 								"    if (window.chrome.webview.registerTextureStream) {"
 								"        try {"
@@ -266,9 +276,12 @@ void WebViewMedia::initWebView()
 								"            console.error('JS: Connection Failed:', e.name, e.message);"
 								"        }"
 								"    }"
-								"};";
+								"};"
+								"}";
 
 							webviewWindow->AddScriptToExecuteOnDocumentCreated(setupScript.toWideCharPointer(), nullptr);
+
+
 
 							EventRegistrationToken token;
 							webviewWindow->add_NavigationCompleted(
@@ -281,18 +294,22 @@ void WebViewMedia::initWebView()
 
 										LOG("Connecting JS to Texture Stream with ID: " + streamId);
 
-										String url = "https://www.goldengeek.org"; // Or use your variable
-										String jsonArgs =
-											"{ \"origin\": \"" + url + "\", "
-											"  \"permissions\": [\"videoCapture\", \"sensors\", \"clipboardRead\", \"clipboardWrite\"] }";
+
+
+
+
+										//String url = "https://www.goldengeek.org"; // Or use your variable
+										//String jsonArgs =
+										//	"{ \"origin\": \"" + url + "\", "
+										//	"  \"permissions\": [\"videoCapture\", \"sensors\", \"clipboardRead\", \"clipboardWrite\"] }";
 
 										// 3. EXECUTE "Browser.grantPermissions"
 										//    This overrides any user prompt or default block.
-										webviewWindow->CallDevToolsProtocolMethod(
-											L"Browser.grantPermissions",
-											jsonArgs.toWideCharPointer(),
-											nullptr // We don't need the result
-										);
+										//webviewWindow->CallDevToolsProtocolMethod(
+										//	L"Browser.grantPermissions",
+										//	jsonArgs.toWideCharPointer(),
+										//	nullptr // We don't need the result
+										//);
 
 										// Execute the connector function with the valid ID
 										String trigger = "window.connectToJuce('" + streamId + "');";
@@ -315,46 +332,15 @@ void WebViewMedia::initWebView()
 							}
 							else {
 								LOG("TextureStream Created Successfully!");
-
-								// Allow the page origin to use registerTextureStream
-								String urlStr = urlParam->stringValue();
-								String origin;
-
-								{
-									// Very simple origin extraction: "<scheme>://<host>[:port]"
-									auto schemeEnd = urlStr.indexOf("://");
-									if (schemeEnd >= 0) {
-										auto scheme = urlStr.substring(0, schemeEnd);
-										auto rest = urlStr.substring(schemeEnd + 3); // skip "://"
-										auto slash = rest.indexOfChar('/');
-										auto hostPort = (slash >= 0) ? rest.substring(0, slash) : rest;
-										origin = scheme + "://" + hostPort;
-									}
-								}
-
-								if (origin.isNotEmpty()) {
-									std::wstring originW = origin.toWideCharPointer();
-									HRESULT hrOrigin = textureStream->AddAllowedOrigin(originW.c_str(), TRUE);
-									if (FAILED(hrOrigin)) {
-										LOGERROR("AddAllowedOrigin failed for origin " + origin
-											+ " : " + getErrorMessage(hrOrigin));
-									}
-									else {
-										LOG("TextureStream allowed origin: " + origin);
-									}
-								}
-								else {
-									LOGERROR("Could not compute origin from URL: " + urlStr);
-								}
-
-								// Initialize listeners
-								initTextureStream();
-
-
 							}
 
+
+							// Initialize listeners
+							initTextureStream();
+
+							loadURLOrFile();
+
 							// 9. Navigate
-							webviewWindow->Navigate(urlParam->stringValue().toWideCharPointer());
 							return S_OK;
 						}).Get());
 
@@ -714,6 +700,79 @@ void WebViewMedia::closeGLInternal()
 	}
 }
 
+void WebViewMedia::loadURLOrFile()
+{
+	if (!isWebViewReady) return;
+
+	bool isFile = source->getValueDataAsEnum<SourceType>() == Source_File;
+
+	String origin;
+	String urlToNavigate;
+
+	if (isFile)
+	{
+		wil::com_ptr<ICoreWebView2_3> webview3;
+		if (SUCCEEDED(webviewWindow->QueryInterface(IID_PPV_ARGS(&webview3))) && webview3)
+		{
+			File htmlFile = filePath->getFile();
+			File folder = htmlFile.getParentDirectory();
+
+			LOG("Setting to " << folder.getFullPathName());
+
+			HRESULT hrMap = webview3->SetVirtualHostNameToFolderMapping(
+				L"app.local",														// virtual host name
+				(folder.getFullPathName()).toWideCharPointer(),                       // local folder
+				COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+
+			if (SUCCEEDED(hrMap))
+			{
+				origin = "https://app.local";
+				LOG("Virtual host mapping set: " << origin << " -> " << folder.getFullPathName());
+
+				// Build the URL we will actually navigate to
+				urlToNavigate = origin + "/" + htmlFile.getFileName(); // Use virtual host
+			}
+			else
+			{
+				LOGERROR("SetVirtualHostNameToFolderMapping failed: " + getErrorMessage(hrMap) << " : " << folder.getFullPathName());
+			}
+		}
+		else
+		{
+			LOGERROR("ICoreWebView2_3 not available; cannot set virtual host mapping.");
+		}
+	}
+	else
+	{
+		// Very simple origin extraction: "<scheme>://<host>[:port]"
+		urlToNavigate = urlParam->stringValue();
+		URL url(urlParam->stringValue());
+		int port = url.getPort();
+		origin = url.getScheme() + "://" + url.getDomain();
+		if (port != 80 && port != 0) origin += ":" + String(port);
+
+		else
+			origin = url.getScheme() + "://" + url.getDomain();
+	}
+
+	if (origin.isNotEmpty()) {
+		std::wstring originW = origin.toWideCharPointer();
+		HRESULT hrOrigin = textureStream->AddAllowedOrigin(originW.c_str(), TRUE);
+
+		if (FAILED(hrOrigin)) {
+			LOGERROR("AddAllowedOrigin failed for origin " + origin
+				+ " : " + getErrorMessage(hrOrigin));
+		}
+		else {
+			LOG("TextureStream allowed origin: " + origin);
+		}
+	}
+
+
+	LOG("Navigating to : " + urlToNavigate);
+	webviewWindow->Navigate(urlToNavigate.toWideCharPointer());
+}
+
 // ==============================================================================
 // PARAMETERS & HELPERS
 // ==============================================================================
@@ -722,9 +781,16 @@ void WebViewMedia::onContainerParameterChangedInternal(Parameter* p)
 {
 	Media::onContainerParameterChangedInternal(p);
 
-	if (p == urlParam && webviewWindow)
+	if (p == source)
 	{
-		webviewWindow->Navigate(urlParam->stringValue().toWideCharPointer());
+		bool isFile = source->getValueDataAsEnum<SourceType>() == Source_File;
+		filePath->setEnabled(isFile);
+		urlParam->setEnabled(!isFile);
+	}
+
+	if (p == source || p == filePath || p == urlParam)
+	{
+		loadURLOrFile();
 	}
 	else if (p == width || p == height)
 	{

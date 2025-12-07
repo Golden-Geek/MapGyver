@@ -587,7 +587,7 @@
             bigIcon="AKcEsb" extraCompilerFlags="/bigobj" externalLibraries="Servus.lib&#10;libmpv.lib&#10;AppCore.lib&#10;Ultralight.lib&#10;WebCore.lib&#10;UltralightCore.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib/win&#10;../../External/ultralight/lib/win"
-                       binaryPath="Binaries/CI"/>
+                       binaryPath="Binaries/CI" headerPath="../../External/wil/include"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="JUCE/modules"/>

@@ -34,6 +34,11 @@ public:
     WebViewMedia(var params = var());
     virtual ~WebViewMedia();
 
+
+    enum SourceType { Source_File, Source_URL };
+    EnumParameter* source;
+    FileParameter* filePath;
+
     // Parameters
     StringParameter* urlParam;
     Trigger* reloadTrigger;
@@ -68,6 +73,8 @@ public:
     void renderGLInternal() override;
     void closeGLInternal() override;
 
+    void loadURLOrFile();
+
     Point<int> getDefaultMediaSize() override;
 
     // Initialization Sequence
@@ -87,5 +94,5 @@ public:
     // Helpers
     Point<int> getMediaMousePosition(const MouseEvent& e, Rectangle<int> canvasRect);
 
-    DECLARE_TYPE("WebView")
+    DECLARE_TYPE("WebGL")
 };
