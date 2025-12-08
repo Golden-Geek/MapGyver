@@ -491,15 +491,14 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	}
 
 
-	const char* vertexShaderCode = R"(
-			#version 330
+    String vertexShaderCode = OpenGLHelpers::getGLSLVersionString() +"\n"+R"(
 			in vec3 position;
 			void main() {
 				gl_Position = vec4(position, 1.0);
 			}
 		)";
 
-	if (!shader->addVertexShader(vertexShaderCode))
+    if (!shader->addVertexShader(vertexShaderCode.toRawUTF8()))
 	{
 		NLOGERROR(niceName, "Vertex shader compilation failed: " << shader->getLastError());
 	}
