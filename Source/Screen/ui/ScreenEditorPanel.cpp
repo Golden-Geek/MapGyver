@@ -687,7 +687,6 @@ void ScreenEditorPanel::setScreen(Screen* s)
 	if (editor.screen != nullptr)
 	{
 		editor.screen->removeInspectableListener(this);
-		removeChildComponent(&editor);
 	}
 
 	editor.setScreen(s);
@@ -696,7 +695,11 @@ void ScreenEditorPanel::setScreen(Screen* s)
 	{
 		editor.screen->addInspectableListener(this);
 		ScreenManager::getInstance()->editingScreen = editor.screen;
-		addAndMakeVisible(&editor);
+		addAndMakeVisible(editor);
+	}
+	else
+	{
+		removeChildComponent(&editor);
 	}
 
 
@@ -707,6 +710,7 @@ void ScreenEditorPanel::setScreen(Screen* s)
 		lockPreviewUI.reset(editor.screen->isUILocked->createToggle(AssetManager::getInstance()->padlockImage));
 		addAndMakeVisible(lockPreviewUI.get());
 	}
+
 
 	resized();
 
