@@ -40,6 +40,7 @@ Screen::Screen(var params) :
 
 	if (!Engine::mainEngine->isLoadingFile) surfaces.addItem(nullptr, var(), false);
 
+
 	addChildControllableContainer(&surfaces);
 
 	renderer.reset(new ScreenRenderer(this));

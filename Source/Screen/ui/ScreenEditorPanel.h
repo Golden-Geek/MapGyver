@@ -10,21 +10,19 @@
 
 #pragma once
 
-class ScreenEditorPanel :
-	public ShapeShifterContentComponent,
-	public InspectableSelectionManager::Listener,
-	public Inspectable::InspectableListener,
+class ScreenEditor :
+	public Component,
 	public OpenGLSharedRenderer,
 	public DragAndDropTarget,
-	public KeyListener,
-	public EngineListener
+	public KeyListener
 {
 public:
-	ScreenEditorPanel();
-	~ScreenEditorPanel();
+	ScreenEditor();
+	~ScreenEditor();
 
 	Screen* screen;
 	WeakReference<Inspectable> screenRef;
+
 
 	Rectangle<int> frameBufferRect;
 	Point2DParameter* closestHandle;
@@ -51,7 +49,7 @@ public:
 
 	void setScreen(Screen* s);
 	void paint(Graphics& g) override;
-	
+
 	Path getSurfacePath(Surface* s);
 
 	void mouseDown(const MouseEvent& e) override;
@@ -80,6 +78,26 @@ public:
 	// Inherited via OpenGLRenderer
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
+
+	bool screenIsLocked();
+};
+
+class ScreenEditorPanel :
+	public ShapeShifterContentComponent,
+	public InspectableSelectionManager::Listener,
+	public Inspectable::InspectableListener,
+	public EngineListener
+{
+public:
+	ScreenEditorPanel();
+	~ScreenEditorPanel();
+
+	ScreenEditor editor;
+	std::unique_ptr<BoolToggleUI> lockPreviewUI;
+
+	void resized() override;
+
+	void setScreen(Screen*);
 
 	void inspectablesSelectionChanged() override;
 	void inspectableDestroyed(Inspectable* i) override;

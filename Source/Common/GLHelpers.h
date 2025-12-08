@@ -49,3 +49,11 @@ glTexCoord2f(1, 1); glVertex2f(x + w, y); \
 glTexCoord2f(1, 0); glVertex2f(x + w, y + h); \
 glTexCoord2f(0, 0); glVertex2f(x, y + h); \
 glEnd();
+
+
+#define Draw2DSubTexRect(x, y, w, h, s0, t0, s1, t1) glBegin(GL_QUADS); \
+glTexCoord2f(s0, t0); glVertex2f(x, y); \
+glTexCoord2f(s1, t0); glVertex2f(x + w, y); \
+glTexCoord2f(s1, t1); glVertex2f(x + w, y + h); \
+glTexCoord2f(s0, t1); glVertex2f(x, y + h); \
+glEnd();
