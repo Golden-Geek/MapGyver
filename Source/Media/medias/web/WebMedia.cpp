@@ -381,11 +381,11 @@ void UltralightManager::setupRenderer() {
 	LOG("Init Ultralight Platform");
 	ultralight::Config config;
 
-	File f = File::getSpecialLocation(File::currentExecutableFile);
+    File f = File::getSpecialLocation(File::currentExecutableFile).getParentDirectory();
 #if JUCE_MAC
-	f = f.getParentDirectory().getChildFile("Resources");
+    f = f.getParentDirectory().getChildFile("Resources/ultralight");
 #endif
-	String path = f.getParentDirectory().getFullPathName().toStdString();
+	String path = f.getFullPathName().toStdString();
 
 	ultralight::Platform::instance().set_config(config);
 	ultralight::Platform::instance().set_font_loader(ultralight::GetPlatformFontLoader());

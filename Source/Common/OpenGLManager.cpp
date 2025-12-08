@@ -32,7 +32,7 @@ void GlContextHolder::setup(juce::Component* topLevelComponent)
 	parent = topLevelComponent;
     
 #if JUCE_MAC
-    context.setOpenGLVersionRequired(juce::OpenGLContext::openGL3_2);
+//    context.setOpenGLVersionRequired(juce::OpenGLContext::openGL3_2);
 #endif
 	//context.setOpenGLVersionRequired(juce::OpenGLContext::OpenGLVersion::openGL4_1);
 
