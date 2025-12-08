@@ -140,16 +140,29 @@ jobs:
         with:
           xcode-version: '16.4.0'
           
-      - name: Build
-        uses: sersoft-gmbh/xcodebuild-action@v2.0.1
-        with:
-          project: Builds/MacOSX_CI/${{ env.ProjectName }}.xcodeproj
-          destination: platform=macOS
-          jobs: 2
-          action: build
-          arch: ${{ matrix.arch }}
-          configuration: ${{ matrix.config }}
-          use-xcpretty: true
+      - name: Build (xcodebuild + xcpretty)
+        shell: bash
+        run: |
+          # Install xcpretty for pretty output
+          gem install xcpretty -N || true
+
+          # Fail the whole pipeline if any part fails, so we can handle printing the raw log
+          set -o pipefail
+
+          # Build and pipe output to both a log file and xcpretty for nicer formatting.
+          # On failure, show excerpts containing "error:" to preserve detail.
+          xcodebuild -project Builds/MacOSX_CI/${{ env.ProjectName }}.xcodeproj \
+            -configuration ${{ matrix.config }} \
+            -arch ${{ matrix.arch }} \
+            -jobs 2 \
+            -destination 'platform=macOS' build 2>&1 | tee xcodebuild.log | xcpretty -c || {
+              echo "\n=== xcodebuild reported failure; showing error excerpts from xcodebuild.log ===\n"
+              grep -n -C3 "error:" xcodebuild.log || {
+                echo "(no 'error:' lines found; showing last 200 lines)";
+                tail -n 200 xcodebuild.log;
+              }
+              exit 1;
+          }
 
       - name: Create Package
         id: create_package
