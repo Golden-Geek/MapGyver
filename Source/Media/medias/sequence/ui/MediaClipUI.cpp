@@ -129,13 +129,18 @@ void MediaClipUI::paint(Graphics& g)
 		g.fillRoundedRectangle(getLocalBounds().toFloat().removeFromLeft(tx), 2);
 	}
 
-	if (viewEnd < mediaClip->getTotalLength() - .1f)
+	if (viewEnd < mediaClip->getTotalLength())
 	{
-		int tx = jmin(getWidth(), blockManagerUI->timeline->getXForTime(viewEnd - 1)) - getX();
-		int tw = jmap<float>(jmin((mediaClip->getTotalLength() - viewEnd) / 1.f, 1.f), 0, getWidth() - tx);
-		tw = jlimit<int>(0, 20, tw);
-		g.setGradientFill(ColourGradient(YELLOW_COLOR.withAlpha(.0f), tx, getHeight() / 2, YELLOW_COLOR.withAlpha(.5f), getWidth(), getHeight() / 2, false));
-		g.fillRoundedRectangle(getLocalBounds().toFloat().removeFromRight(tw), 2);
+		float diff = jmin(mediaClip->getTotalLength() - viewEnd, 1.f);
+		int tx = getRealXForTime(viewEnd - diff);
+		int tw = jmin(getWidth() - tx, 20);
+		tx = getWidth() - tw;
+
+		if (tw > 2)
+		{
+			g.setGradientFill(ColourGradient(YELLOW_COLOR.withAlpha(.0f), tx, getHeight() / 2, YELLOW_COLOR.withAlpha(.5f), getWidth(), getHeight() / 2, false));
+			g.fillRoundedRectangle(getLocalBounds().toFloat().removeFromRight(tw), 2);
+		}
 	}
 }
 

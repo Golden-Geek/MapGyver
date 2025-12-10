@@ -52,7 +52,7 @@ void MapGyverApplication::afterInit()
 
 void MapGyverApplication::shutdown()
 {
-	UltralightManager::getInstance()->clear();
+	if (UltralightManager::getInstanceWithoutCreating()) UltralightManager::getInstance()->clear();
 	OrganicApplication::shutdown();
 	AppUpdater::deleteInstance();
 	FileDownloader::deleteInstance();
