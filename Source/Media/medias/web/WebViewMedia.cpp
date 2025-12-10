@@ -801,11 +801,26 @@ void WebViewMedia::onContainerParameterChangedInternal(Parameter* p)
 		bool isFile = source->getValueDataAsEnum<SourceType>() == Source_File;
 		filePath->setEnabled(isFile);
 		urlParam->setEnabled(!isFile);
+		loadURLOrFile();
+		return;
 	}
 
-	if (p == source || p == filePath || p == urlParam)
+	SourceType currentSource = source->getValueDataAsEnum<SourceType>();
+
+
+	if (p == filePath)
 	{
-		loadURLOrFile();
+		if (currentSource == Source_File)
+		{
+			loadURLOrFile();
+		}
+	}
+	else if (p == urlParam)
+	{
+		if (currentSource == Source_URL)
+		{
+			loadURLOrFile();
+		}
 	}
 	else if (p == width || p == height)
 	{
@@ -883,7 +898,10 @@ void WebViewMedia::sendMouseDrag(const MouseEvent& e, Rectangle<int> canvasRect)
 
 void WebViewMedia::sendMouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
 {
-	// Implementation omitted for brevity (similar to SendMouseInput but using mouseData for wheel delta)
+	if (!controller) return;
+	compositionController->SendMouseInput(COREWEBVIEW2_MOUSE_EVENT_KIND_WHEEL, COREWEBVIEW2_MOUSE_EVENT_VIRTUAL_KEYS_NONE,
+		(int)(wheel.deltaY * 120), // Standard wheel delta
+		{ e.x, e.y });
 }
 
 void WebViewMedia::sendKeyPressed(const KeyPress& key)
