@@ -23,10 +23,6 @@ MediaListItemManager::~MediaListItemManager()
 	// stopThread(1000);
 }
 
-
-
-
-
 juce_ImplementSingleton(MediaListItemFactory)
 
 MediaListItemFactory::MediaListItemFactory()

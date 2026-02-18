@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "MediaListMedia.h"
 
 MediaListMedia::MediaListMedia(var params) :
 	Media(getTypeString(), params, true)
@@ -48,10 +47,12 @@ void MediaListMedia::updateMediaLoads()
 	for (auto& item : listManager.items)
 	{
 		if (item == currentItem)
-			item->load(transitionTime);
+			item->load(transitionTime, currentMedia);
 		else
 			item->unload(transitionTime);
 	}
+
+	currentMedia = currentItem->media;
 }
 
 void MediaListMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
@@ -67,20 +68,16 @@ void MediaListMedia::preRenderGLInternal()
 {
 	for (auto& i : listManager.items)
 	{
+		i->process();
 		if (i->weight->floatValue() == 0.f) continue;
 		i->media->renderOpenGLMedia();
+
+		
 	}
 }
 
 void MediaListMedia::renderGLInternal()
 {
-	if (isClearing) return;
-
-	for (auto& item : listManager.items)
-	{
-		item->process();
-	}
-
 	glEnable(GL_BLEND);
 	glColor4f(0, 0, 0, 1);
 	Draw2DRect(0, 0, width->intValue(), height->intValue());
@@ -96,17 +93,21 @@ void MediaListMedia::renderGLInternal()
 		if (w == 0.f) continue;
 
 		ShaderMedia* shaderMedia = i->shaderMedia.get();
-		if (shaderMedia != nullptr && shaderMedia->shaderLoaded->boolValue())
+		Media* mediaToUse = m;
+		bool useShader = i->isLoading() && shaderMedia != nullptr && shaderMedia->enabled->boolValue() && shaderMedia->shaderLoaded->boolValue();
+		if (shaderMedia != nullptr && useShader)
 		{
 			//later implement shader transition
+			mediaToUse = shaderMedia;
+			w = 1.f;
 		}
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glBindTexture(GL_TEXTURE_2D, i->media->frameBuffer.getTextureID());
+		glBindTexture(GL_TEXTURE_2D, mediaToUse->getTextureID());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		Rectangle<int> mediaRect = i->media->getMediaRect(Rectangle<int>(0, 0, width->intValue(), height->intValue()));
+		Rectangle<int> mediaRect = mediaToUse->getMediaRect(Rectangle<int>(0, 0, width->intValue(), height->intValue()));
 		glColor4f(1, 1, 1, w);
 
 		Draw2DTexRect(mediaRect.getX(), mediaRect.getY(), mediaRect.getWidth(), mediaRect.getHeight());

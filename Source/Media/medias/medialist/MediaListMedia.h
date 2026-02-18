@@ -26,6 +26,8 @@ public:
 
 	MediaListItemManager listManager;
 
+	WeakReference<Media> currentMedia;
+
 	void updateMediaLoads();
 
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;

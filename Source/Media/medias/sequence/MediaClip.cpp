@@ -303,6 +303,7 @@ void OwnedMediaClip::setMedia(Media* m)
 
 	if (ownedMedia != nullptr)
 	{
+		ownedMedia->clearItem();
 		ownedMedia->removeAsyncMediaListener(this);
 		removeChildControllableContainer(ownedMedia.get());
 		ownedMedia.reset();

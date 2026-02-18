@@ -234,6 +234,7 @@ void OwnedCompositionLayer::setMedia(Media* m)
 {
 	if (ownedMedia != nullptr)
 	{
+		ownedMedia->clearItem();
 		removeChildControllableContainer(ownedMedia.get());
 	}
 

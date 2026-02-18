@@ -28,15 +28,20 @@ public:
 	FloatParameter* weight;
 	EnumParameter* state;
 
+	FloatParameter* transitionProgression;
+	TargetParameter* transitionSourceMedia;
+	TargetParameter* transitionTargetMedia;
+
 
 	double timeAtStart = 0.f;
 	float weightAtStart = 0.f;
 	double targetTime = 0.f;
 	float targetWeight = 0.f;
+	bool forceRenderShader = false;
 
 	void clearItem() override;
 
-	void load(float fadeInTime);
+	void load(float fadeInTime, WeakReference<Media> prevMedia);
 	void unload(float fadeOutTime);
 
 	void process();
@@ -48,6 +53,8 @@ public:
 	virtual void setMedia(Media* m);
 
 	bool isUsingMedia(Media* m) override;
+	bool isLoading() const;;
+	bool isUnloading() const;;
 };
 
 
