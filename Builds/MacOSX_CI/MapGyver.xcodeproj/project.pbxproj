@@ -172,6 +172,7 @@
 		3DC59A2ED4EC1511806B51EC /* sequence.png */ /* sequence.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sequence.png; path = ../../Resources/media/sequence.png; sourceTree = SOURCE_ROOT; };
 		3DDDF83BCEB53C649DC8147E /* include_juce_data_structures.mm */ /* include_juce_data_structures.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_data_structures.mm; path = ../../JuceLibraryCode/include_juce_data_structures.mm; sourceTree = SOURCE_ROOT; };
 		40998EAFD9807FE60E9D7888 /* ScreenEditorPanel.h */ /* ScreenEditorPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenEditorPanel.h; path = ../../Source/Screen/ui/ScreenEditorPanel.h; sourceTree = SOURCE_ROOT; };
+		40CBEF33502E0CFF7725AFF6 /* MediaListItem.cpp */ /* MediaListItem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaListItem.cpp; path = ../../Source/Media/medias/medialist/MediaListItem.cpp; sourceTree = SOURCE_ROOT; };
 		44DDE9C7EA5B62CBA2F8CB97 /* include_juce_sharedtexture.mm */ /* include_juce_sharedtexture.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_sharedtexture.mm; path = ../../JuceLibraryCode/include_juce_sharedtexture.mm; sourceTree = SOURCE_ROOT; };
 		459894F49B472D0117D17E4D /* juce_audio_formats */ /* juce_audio_formats */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_formats; path = ../../JUCE/modules/juce_audio_formats; sourceTree = SOURCE_ROOT; };
 		468683707ACEFD489C92BBFB /* SurfaceUI.cpp */ /* SurfaceUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SurfaceUI.cpp; path = ../../Source/Screen/Surface/ui/SurfaceUI.cpp; sourceTree = SOURCE_ROOT; };
@@ -191,6 +192,7 @@
 		5471E6E4DC31E4693E58A9E3 /* include_juce_organicui.cpp */ /* include_juce_organicui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_organicui.cpp; path = ../../JuceLibraryCode/include_juce_organicui.cpp; sourceTree = SOURCE_ROOT; };
 		54B76D598CEE5D7D3A486C5F /* CoreMIDI.framework */ /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		56496F85887CE23A3F761A62 /* include_juce_gui_basics.mm */ /* include_juce_gui_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_basics.mm; path = ../../JuceLibraryCode/include_juce_gui_basics.mm; sourceTree = SOURCE_ROOT; };
+		5773FE9EA8A985AB31026CA9 /* MediaListItemManager.cpp */ /* MediaListItemManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaListItemManager.cpp; path = ../../Source/Media/medias/medialist/MediaListItemManager.cpp; sourceTree = SOURCE_ROOT; };
 		585B3635C903E213012732E4 /* ColorMedia.h */ /* ColorMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColorMedia.h; path = ../../Source/Media/medias/color/ColorMedia.h; sourceTree = SOURCE_ROOT; };
 		5B6A9DA1917D79850504D61C /* sharedTexture.png */ /* sharedTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sharedTexture.png; path = ../../Resources/media/sharedTexture.png; sourceTree = SOURCE_ROOT; };
 		5B73D9F808608FF64879E2DD /* ShapeNode.cpp */ /* ShapeNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ShapeNode.cpp; path = ../../Source/Node/nodes/Drawing/shape/ShapeNode.cpp; sourceTree = SOURCE_ROOT; };
@@ -382,6 +384,7 @@
 		DF1A685C6081D41DF62A9BD0 /* CompositionEditorPanel.cpp */ /* CompositionEditorPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CompositionEditorPanel.cpp; path = ../../Source/Media/medias/composition/ui/CompositionEditorPanel.cpp; sourceTree = SOURCE_ROOT; };
 		DF2BA5CE8F12F94601ABDCCB /* GridColumnUI.cpp */ /* GridColumnUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridColumnUI.cpp; path = ../../Source/Media/medias/grid/ui/GridColumnUI.cpp; sourceTree = SOURCE_ROOT; };
 		DF5FA0F7CEB6708E13CB7E47 /* ScreenManager.h */ /* ScreenManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenManager.h; path = ../../Source/Screen/ScreenManager.h; sourceTree = SOURCE_ROOT; };
+		E128A628CF63C038DFB005DF /* MediaListItemManager.h */ /* MediaListItemManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaListItemManager.h; path = ../../Source/Media/medias/medialist/MediaListItemManager.h; sourceTree = SOURCE_ROOT; };
 		E3CCDF0749D08884DBFFFCAF /* IOKit.framework */ /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		E420C3C62CD12E7A6E516479 /* CoreAudio.framework */ /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		E43D9326E603A451DF17CFBE /* GridLayerManager.h */ /* GridLayerManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridLayerManager.h; path = ../../Source/Media/medias/grid/GridLayerManager.h; sourceTree = SOURCE_ROOT; };
@@ -390,6 +393,7 @@
 		E86FB66D006EB15158CA0C5E /* GridLayerManagerUI.h */ /* GridLayerManagerUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridLayerManagerUI.h; path = ../../Source/Media/medias/grid/ui/GridLayerManagerUI.h; sourceTree = SOURCE_ROOT; };
 		E9DB6978C8D3B6EF76CBE165 /* SurfaceEditorPanel.h */ /* SurfaceEditorPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SurfaceEditorPanel.h; path = ../../Source/Screen/Surface/ui/SurfaceEditorPanel.h; sourceTree = SOURCE_ROOT; };
 		EA3474E12B7266C444AA1ED0 /* NodeConnectionManager.h */ /* NodeConnectionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnectionManager.h; path = ../../Source/Node/Connection/NodeConnectionManager.h; sourceTree = SOURCE_ROOT; };
+		EB232F8E24390D57FACBA3F9 /* MediaListItem.h */ /* MediaListItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaListItem.h; path = ../../Source/Media/medias/medialist/MediaListItem.h; sourceTree = SOURCE_ROOT; };
 		EB2895D1CCC3C4DAF0A0F774 /* webcamManager.cpp */ /* webcamManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamManager.cpp; path = ../../Source/Media/medias/webcam/webcamManager.cpp; sourceTree = SOURCE_ROOT; };
 		EB8EB74405C0FC0DE21EE69C /* MediaGridUI.h */ /* MediaGridUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaGridUI.h; path = ../../Source/Media/ui/MediaGridUI.h; sourceTree = SOURCE_ROOT; };
 		EC35D410B265006665D956B1 /* SequenceMedia.cpp */ /* SequenceMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SequenceMedia.cpp; path = ../../Source/Media/medias/sequence/SequenceMedia.cpp; sourceTree = SOURCE_ROOT; };
@@ -765,6 +769,10 @@
 		684ABC779D1065F13921E52D /* medialist */ = {
 			isa = PBXGroup;
 			children = (
+				40CBEF33502E0CFF7725AFF6,
+				EB232F8E24390D57FACBA3F9,
+				5773FE9EA8A985AB31026CA9,
+				E128A628CF63C038DFB005DF,
 				92D769C68B2CD3EDABD5E316,
 				ED8719BFFF89D44E38F4EBF0,
 			);

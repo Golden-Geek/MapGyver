@@ -12,26 +12,13 @@
 #include "MediaListMedia.h"
 
 MediaListMedia::MediaListMedia(var params) :
-	Media(getTypeString(), params),
-	listCC("Media List")
+	Media(getTypeString(), params, true)
 {
 	saveAndLoadRecursiveData = true;
 
-	listCC.userCanAddControllables = true;
-	listCC.customUserCreateControllableFunc = [](ControllableContainer* parent)
-		{
-			TargetParameter* tp = parent->addTargetParameter(parent->getUniqueNameInContainer("Media"), String("Media to use"), MediaManager::getInstance());
-			tp->targetType = TargetParameter::CONTAINER;
-			tp->maxDefaultSearchLevel = 0;
-			tp->saveValueOnly = false;
-			return tp;
-		};
-
-
-	addChildControllableContainer(&listCC);
-
-	index = addIntParameter("Index", "Index of the media to use", 1, 1);
-	currentMedia = nullptr;
+	index = mediaParams.addIntParameter("Index", "Index of the media to use", 1, 1);
+	addChildControllableContainer(&listManager);
+	defaultTransitionTime = mediaParams.addFloatParameter("Default transition time", "Default transition time in seconds when not specified in the item", 1, 0);
 
 	alwaysRedraw = true;
 }
@@ -40,98 +27,94 @@ MediaListMedia::~MediaListMedia()
 {
 }
 
-void MediaListMedia::setCurrentMedia(Media* m)
+
+
+void MediaListMedia::updateMediaLoads()
 {
-	if (isCurrentlyLoadingData) return;
+	GenericScopedLock lock(listManager.items.getLock());
 
-	GenericScopedLock<SpinLock> lock(mediaLock);
-	if (currentMedia == m) return;
-
-	if (currentMedia != nullptr)
+	int mIndex = index->intValue() - 1;
+	if (mIndex < 0 || mIndex >= listManager.items.size())
 	{
-		unregisterUseMedia(0);
+		for (auto& item : listManager.items)
+		{
+			item->unload(0);
+		}
+		return;
 	}
 
-	currentMedia = m;
-	currentMediaSize = Point<int>(0, 0);
-
-	if (currentMedia != nullptr)
+	MediaListItem* currentItem = listManager.items[mIndex];
+	float transitionTime = currentItem->transitionTime->enabled ? currentItem->transitionTime->floatValue() : defaultTransitionTime->getValue();
+	for (auto& item : listManager.items)
 	{
-		registerUseMedia(0, currentMedia);
-		currentMediaSize = currentMedia->getMediaSize();
-
-	}
-}
-
-void MediaListMedia::setMediaFromIndex()
-{
-	Array<WeakReference<Controllable>> controllables = listCC.getAllControllables(true);
-	int idx = jlimit(0, controllables.size() - 1, index->intValue() - 1);
-	if (auto m = dynamic_cast<TargetParameter*>(controllables[idx].get()))
-	{
-		setCurrentMedia(m->getTargetContainerAs<Media>());
-	}
-	else setCurrentMedia(nullptr);
-}
-
-void MediaListMedia::onContainerParameterChangedInternal(Parameter* p)
-{
-	if (p == index)
-	{
-		setMediaFromIndex();
+		if (item == currentItem)
+			item->load(transitionTime);
+		else
+			item->unload(transitionTime);
 	}
 }
 
 void MediaListMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
-	if(cc == &listCC)
+	if (c == index)
 	{
-		if (auto tp = dynamic_cast<TargetParameter*>(c))
-		{
-			setMediaFromIndex();
-		}
+		updateMediaLoads();
+	}
+}
+
+
+void MediaListMedia::preRenderGLInternal()
+{
+	for (auto& i : listManager.items)
+	{
+		if (i->weight->floatValue() == 0.f) continue;
+		i->media->renderOpenGLMedia();
 	}
 }
 
 void MediaListMedia::renderGLInternal()
 {
-	GenericScopedLock<SpinLock> lock(mediaLock);
-	if (currentMedia != nullptr)
-	{
-		//draw current media framebuffer
-		if (currentMedia->getFrameBuffer() != nullptr)
-		{
-			glColor4f(1, 1, 1, 1);
-			glBindTexture(GL_TEXTURE_2D, currentMedia->getTextureID());
-			Draw2DTexRect(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}
-	}
-	else
-	{
-		glColor4f(0, 0, 0, 1);
-		Draw2DRect(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
-	}
-}
+	if (isClearing) return;
 
-Point<int> MediaListMedia::getDefaultMediaSize()
-{
-	return currentMediaSize;
+	for (auto& item : listManager.items)
+	{
+		item->process();
+	}
+
+	glEnable(GL_BLEND);
+	glColor4f(0, 0, 0, 1);
+	Draw2DRect(0, 0, width->intValue(), height->intValue());
+
+	GenericScopedLock lock(listManager.items.getLock());
+	for (auto& i : listManager.items)
+	{
+		Media* m = i->media;
+		if (m == nullptr) continue;
+
+		float w = i->weight->floatValue();
+
+		if (w == 0.f) continue;
+
+		ShaderMedia* shaderMedia = i->shaderMedia.get();
+		if (shaderMedia != nullptr && shaderMedia->shaderLoaded->boolValue())
+		{
+			//later implement shader transition
+		}
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBindTexture(GL_TEXTURE_2D, i->media->frameBuffer.getTextureID());
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		Rectangle<int> mediaRect = i->media->getMediaRect(Rectangle<int>(0, 0, width->intValue(), height->intValue()));
+		glColor4f(1, 1, 1, w);
+
+		Draw2DTexRect(mediaRect.getX(), mediaRect.getY(), mediaRect.getWidth(), mediaRect.getHeight());
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 }
 
 void MediaListMedia::afterLoadJSONDataInternal()
 {
-
-	for (auto& c : listCC.controllables)
-	{
-		if (auto tp = dynamic_cast<TargetParameter*>(c))
-		{
-			tp->rootContainer = MediaManager::getInstance();
-			tp->targetType = TargetParameter::CONTAINER;
-			tp->maxDefaultSearchLevel = 0;
-			tp->saveValueOnly = false;
-		}
-	}
-
-	setMediaFromIndex();
+	updateMediaLoads();
 }

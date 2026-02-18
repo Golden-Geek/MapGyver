@@ -113,6 +113,13 @@
       <GROUP id="{924D741D-3B07-1454-A4CF-6C278ABC753A}" name="Media">
         <GROUP id="{284332BF-9D8F-13AD-1288-491679B1B400}" name="medias">
           <GROUP id="{53154DB8-20D2-418E-5E22-A9CED7320696}" name="medialist">
+            <FILE id="nc7IOJ" name="MediaListItem.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/medialist/MediaListItem.cpp"/>
+            <FILE id="C7R8Ck" name="MediaListItem.h" compile="0" resource="0" file="Source/Media/medias/medialist/MediaListItem.h"/>
+            <FILE id="tTy9sm" name="MediaListItemManager.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/medialist/MediaListItemManager.cpp"/>
+            <FILE id="JueOoI" name="MediaListItemManager.h" compile="0" resource="0"
+                  file="Source/Media/medias/medialist/MediaListItemManager.h"/>
             <FILE id="iwExna" name="MediaListMedia.cpp" compile="0" resource="0"
                   file="Source/Media/medias/medialist/MediaListMedia.cpp"/>
             <FILE id="ix9ELY" name="MediaListMedia.h" compile="0" resource="0"

@@ -28,9 +28,5 @@ public:
     CompositionLayerManager();
     ~CompositionLayerManager();
 
-    void addItemInternal(CompositionLayer* o, var data) override;
-    void removeItemInternal(CompositionLayer* o) override;
-
-    void onContainerParameterChanged(Parameter* p) override;
 
 };

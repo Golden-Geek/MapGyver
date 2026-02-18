@@ -63,6 +63,7 @@ MGEngine::~MGEngine()
 	RMPSettings::deleteInstance();
 	MediaClipFactory::deleteInstance();
 	CompositionLayerFactory::deleteInstance();
+	MediaListItemFactory::deleteInstance();
 	NodeFactory::deleteInstance();
 	MediaGridUIPreview::deleteInstance();
 

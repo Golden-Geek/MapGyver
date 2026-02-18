@@ -24,19 +24,7 @@ CompositionLayerManager::~CompositionLayerManager()
 }
 
 
-void CompositionLayerManager::addItemInternal(CompositionLayer* o, var data)
-{
-}
 
-void CompositionLayerManager::removeItemInternal(CompositionLayer* o)
-{
-
-}
-
-void CompositionLayerManager::onContainerParameterChanged(Parameter* p)
-{
-	Manager::onContainerParameterChanged(p);
-}
 
 
 juce_ImplementSingleton(CompositionLayerFactory)

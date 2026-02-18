@@ -21,22 +21,18 @@ public:
 	~MediaListMedia();
 
 
-	ControllableContainer listCC;
 	IntParameter* index;
+	FloatParameter* defaultTransitionTime;
 
-	SpinLock mediaLock;
-	Media* currentMedia;
-	Point<int> currentMediaSize;
+	MediaListItemManager listManager;
 
-	void setCurrentMedia(Media* m);
-	void setMediaFromIndex();
+	void updateMediaLoads();
 
-	void onContainerParameterChangedInternal(Parameter* c) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
-		void renderGLInternal() override;
+	void preRenderGLInternal() override;
+	void renderGLInternal() override;
 
-	Point<int> getDefaultMediaSize() override;
 
 	void afterLoadJSONDataInternal() override;
 
