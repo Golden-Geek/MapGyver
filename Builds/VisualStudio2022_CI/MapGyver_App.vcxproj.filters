@@ -8,6 +8,9 @@
     <Filter Include="MapGyver\Resources">
       <UniqueIdentifier>{5E97CF29-C0E4-A030-1719-44916A7B2D85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MapGyver\Source\Common\Interaction">
+      <UniqueIdentifier>{5EE1827C-9F07-7507-0B02-BF3BFAC001AE}</UniqueIdentifier>
+    </Filter>
     <Filter Include="MapGyver\Source\Common\Audio\ui">
       <UniqueIdentifier>{4A7F634B-6A57-211E-891D-D405DA3B8423}</UniqueIdentifier>
     </Filter>
@@ -1273,6 +1276,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Common\Interaction\MediaInteractionContainer.cpp">
+      <Filter>MapGyver\Source\Common\Interaction</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Common\Audio\ui\AudioManagerEditor.cpp">
       <Filter>MapGyver\Source\Common\Audio\ui</Filter>
     </ClCompile>
@@ -5520,6 +5526,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Common\Interaction\MediaInteractionContainer.h">
+      <Filter>MapGyver\Source\Common\Interaction</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Common\Audio\ui\AudioManagerEditor.h">
       <Filter>MapGyver\Source\Common\Audio\ui</Filter>
     </ClInclude>

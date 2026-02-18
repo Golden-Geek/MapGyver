@@ -57,6 +57,8 @@ public:
 	BoolParameter* transparentParam;
 	Trigger* reloadTrigger;
 
+	MediaInteractionContainer interactionCC;
+
 	// Ultralight
 	ultralight::RefPtr<ultralight::View> view;
 	static ultralight::RefPtr<ultralight::Renderer> ultralightRenderer;
@@ -67,6 +69,7 @@ public:
 
 	// Overrides
 	void onContainerParameterChangedInternal(Parameter* p) override;
+	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 	void onContainerTriggerTriggered(Trigger* t) override;
 
 	void setupView();

@@ -23,13 +23,14 @@ WebMedia::WebMedia(var params) :
 	transparentParam = addBoolParameter("Transparent", "Transparent Background", false);
 	reloadTrigger = addTrigger("Reload", "Reload Page");
 
+	addChildControllableContainer(&interactionCC);
 
 	// Use default size from parameters (inherited from Media)
 	int w = width != nullptr ? width->intValue() : 1920;
 	int h = height != nullptr ? height->intValue() : 1080;
 	initImage(w, h);
 
-	alwaysRedraw = true;	
+	alwaysRedraw = true;
 
 	UltralightManager::getInstance()->registerClient(this);
 }
@@ -101,6 +102,44 @@ void WebMedia::onContainerParameterChangedInternal(Parameter* p)
 	else if (p == width || p == height)
 	{
 		// Media base class handles parameter storage
+	}
+}
+
+void WebMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
+{
+	Media::onControllableFeedbackUpdateInternal(cc, c); // Call base
+	if (cc == &interactionCC)
+	{
+		Point<float> relPoint = interactionCC.mousePosition->getPoint();
+		ultralight::MouseEvent evt;
+		evt.x = relPoint.x * frameBuffer.getWidth();
+		evt.y = relPoint.y * frameBuffer.getHeight(); 
+		
+		if (c == interactionCC.mousePosition)
+		{
+			evt.type = ultralight::MouseEvent::kType_MouseMoved;
+			evt.button = ultralight::MouseEvent::kButton_None;
+			sendMouseEventToUltralight(evt);
+		}
+		else if (c == interactionCC.leftButtonPressed || c == interactionCC.rightButtonPressed || c == interactionCC.middleButtonPressed)
+		{
+			BoolParameter* buttonParam = dynamic_cast<BoolParameter*>(c);
+			ultralight::MouseEvent evt;
+			evt.type = buttonParam->boolValue() ? ultralight::MouseEvent::kType_MouseDown : ultralight::MouseEvent::kType_MouseUp;
+			evt.button = (c == interactionCC.leftButtonPressed) ? ultralight::MouseEvent::kButton_Left :
+				(c == interactionCC.rightButtonPressed) ? ultralight::MouseEvent::kButton_Right :
+				(c == interactionCC.middleButtonPressed) ? ultralight::MouseEvent::kButton_Middle :
+				ultralight::MouseEvent::kButton_None;
+			sendMouseEventToUltralight(evt);
+		}
+		else if (c == interactionCC.keyPressed)
+		{
+			if (interactionCC.keyPressed->boolValue())
+			{
+				KeyPress k = KeyPress::createFromDescription(interactionCC.combinationToSend->stringValue());
+				sendKeyPressed(k);
+			}
+		}
 	}
 }
 
@@ -381,9 +420,9 @@ void UltralightManager::setupRenderer() {
 	LOG("Init Ultralight Platform");
 	ultralight::Config config;
 
-    File f = File::getSpecialLocation(File::currentExecutableFile).getParentDirectory();
+	File f = File::getSpecialLocation(File::currentExecutableFile).getParentDirectory();
 #if JUCE_MAC
-    f = f.getParentDirectory().getChildFile("Resources/ultralight");
+	f = f.getParentDirectory().getChildFile("Resources/ultralight");
 #endif
 	String path = f.getFullPathName().toStdString();
 

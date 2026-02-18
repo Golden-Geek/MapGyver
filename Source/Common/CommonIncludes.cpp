@@ -24,3 +24,4 @@
 
 #include "Audio/AudioManager.cpp"
 #include "Audio/ui/AudioManagerEditor.cpp"
+#include "Interaction/MediaInteractionContainer.cpp"

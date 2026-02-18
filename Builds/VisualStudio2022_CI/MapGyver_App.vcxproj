@@ -92,6 +92,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Common\Interaction\MediaInteractionContainer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Common\Audio\ui\AudioManagerEditor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4070,6 +4073,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_video.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Common\Interaction\MediaInteractionContainer.h"/>
     <ClInclude Include="..\..\Source\Common\Audio\ui\AudioManagerEditor.h"/>
     <ClInclude Include="..\..\Source\Common\Audio\AudioManager.h"/>
     <ClInclude Include="..\..\Source\Common\ContentExplorer\OnlineContentExplorer.h"/>

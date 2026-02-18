@@ -310,6 +310,7 @@
 		9B6DECFBC545599C8EBF9A88 /* NodeMedia.cpp */ /* NodeMedia.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeMedia.cpp; path = ../../Source/Media/medias/node/NodeMedia.cpp; sourceTree = SOURCE_ROOT; };
 		9E7424C037982675296F8A0D /* include_juce_cryptography.mm */ /* include_juce_cryptography.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_cryptography.mm; path = ../../JuceLibraryCode/include_juce_cryptography.mm; sourceTree = SOURCE_ROOT; };
 		A004F4AA3BFCA2EAC33D951E /* ScreenManager.cpp */ /* ScreenManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenManager.cpp; path = ../../Source/Screen/ScreenManager.cpp; sourceTree = SOURCE_ROOT; };
+		A09306982E7749DC1D08F8E7 /* MediaInteractionContainer.h */ /* MediaInteractionContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaInteractionContainer.h; path = ../../Source/Common/Interaction/MediaInteractionContainer.h; sourceTree = SOURCE_ROOT; };
 		A213BB132E7C862F6B736B72 /* webcam.png */ /* webcam.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = webcam.png; path = ../../Resources/media/webcam.png; sourceTree = SOURCE_ROOT; };
 		A32C24A3C205F7706B9E8B84 /* GridClipManager.cpp */ /* GridClipManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridClipManager.cpp; path = ../../Source/Media/medias/grid/GridClipManager.cpp; sourceTree = SOURCE_ROOT; };
 		A398038D50F9BF04043368C5 /* webcamDeviceChooser.h */ /* webcamDeviceChooser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = webcamDeviceChooser.h; path = ../../Source/Media/medias/webcam/ui/webcamDeviceChooser.h; sourceTree = SOURCE_ROOT; };
@@ -319,6 +320,7 @@
 		A6A3C10A2D5AA1DD8EEF9E86 /* MediaIncludes.h */ /* MediaIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaIncludes.h; path = ../../Source/Media/MediaIncludes.h; sourceTree = SOURCE_ROOT; };
 		AA5469AE25A256ADF7622956 /* MediaPreviewPanel.cpp */ /* MediaPreviewPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaPreviewPanel.cpp; path = ../../Source/Media/ui/MediaPreviewPanel.cpp; sourceTree = SOURCE_ROOT; };
 		AB2C87F4EB29584225BA0FA8 /* AudioToolbox.framework */ /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		ACCC534DACBB959905CF0FB1 /* MediaInteractionContainer.cpp */ /* MediaInteractionContainer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaInteractionContainer.cpp; path = ../../Source/Common/Interaction/MediaInteractionContainer.cpp; sourceTree = SOURCE_ROOT; };
 		AD0D01348231C07777512403 /* SurfaceEditorPanel.cpp */ /* SurfaceEditorPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SurfaceEditorPanel.cpp; path = ../../Source/Screen/Surface/ui/SurfaceEditorPanel.cpp; sourceTree = SOURCE_ROOT; };
 		AF882763241B734884F9DA01 /* juce_cryptography */ /* juce_cryptography */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_cryptography; path = ../../JUCE/modules/juce_cryptography; sourceTree = SOURCE_ROOT; };
 		AFA067CE1221C65AC0C8DB81 /* GridClipUI.cpp */ /* GridClipUI.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GridClipUI.cpp; path = ../../Source/Media/medias/grid/ui/GridClipUI.cpp; sourceTree = SOURCE_ROOT; };
@@ -994,6 +996,7 @@
 		B03B3C31F9F094E63A10567D /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				EFE305EF31D1A3BCE2B101DF,
 				A72ADC846CE6AE902F2F4C95,
 				65C93E965F1F78DAEDAF64D2,
 				F9F56F5EF84FC7D9CD0A4DC5,
@@ -1166,6 +1169,15 @@
 				89F22E858DCF4246F858836A,
 			);
 			name = shape;
+			sourceTree = "<group>";
+		};
+		EFE305EF31D1A3BCE2B101DF /* Interaction */ = {
+			isa = PBXGroup;
+			children = (
+				ACCC534DACBB959905CF0FB1,
+				A09306982E7749DC1D08F8E7,
+			);
+			name = Interaction;
 			sourceTree = "<group>";
 		};
 		F72E8D3231C16AF7D62A5A23 /* color */ = {

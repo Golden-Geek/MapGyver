@@ -72,6 +72,8 @@ WebViewMedia::WebViewMedia(var params) :
 	width = addIntParameter("Width", "Width", 1920, 1, 10000);
 	height = addIntParameter("Height", "Height", 1080, 1, 10000);
 
+	addChildControllableContainer(&interactionCC);
+
 	// We do NOT call GlContextHolder register here, we wait for initGLInternal
 	// But initWebView needs to happen on the Message Thread (Main Thread)
 	// We defer it slightly to ensure the component is alive
@@ -828,6 +830,39 @@ void WebViewMedia::onContainerParameterChangedInternal(Parameter* p)
 		{
 			RECT bounds = { 0, 0, width->intValue(), height->intValue() };
 			controller->put_Bounds(bounds);
+		}
+	}
+}
+
+void WebViewMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
+{
+	Media::onControllableFeedbackUpdateInternal(cc, c); // Call base
+	if (cc == &interactionCC)
+	{
+		Point<float> relPoint = interactionCC.mousePosition->getPoint();
+		Point<int> p = Point<int>(relPoint.x * frameBuffer.getWidth(), relPoint.y * frameBuffer.getHeight());
+
+		if (c == interactionCC.mousePosition)
+		{
+			compositionController->SendMouseInput(COREWEBVIEW2_MOUSE_EVENT_KIND_MOVE, COREWEBVIEW2_MOUSE_EVENT_VIRTUAL_KEYS_NONE, 0, { p.x, p.y });
+		}
+		else if (c == interactionCC.leftButtonPressed || c == interactionCC.rightButtonPressed || c == interactionCC.middleButtonPressed)
+		{
+			COREWEBVIEW2_MOUSE_EVENT_KIND kind = interactionCC.rightButtonPressed->boolValue() ?
+				COREWEBVIEW2_MOUSE_EVENT_KIND_RIGHT_BUTTON_DOWN :
+				(c == interactionCC.middleButtonPressed && interactionCC.middleButtonPressed->boolValue()) ?
+				COREWEBVIEW2_MOUSE_EVENT_KIND_MIDDLE_BUTTON_DOWN :
+				COREWEBVIEW2_MOUSE_EVENT_KIND_LEFT_BUTTON_DOWN;
+
+			compositionController->SendMouseInput(kind, COREWEBVIEW2_MOUSE_EVENT_VIRTUAL_KEYS_NONE, 0, { p.x, p.y });
+		}
+		else if (c == interactionCC.keyPressed)
+		{
+			if (interactionCC.keyPressed->boolValue())
+			{
+				KeyPress k = KeyPress::createFromDescription(interactionCC.combinationToSend->stringValue());
+				sendKeyPressed(k);
+			}
 		}
 	}
 }

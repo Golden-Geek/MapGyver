@@ -58,6 +58,12 @@
     </GROUP>
     <GROUP id="{1C2049A4-F05D-7C48-44EC-DD606A3617AC}" name="Source">
       <GROUP id="{B19EA5C3-367A-80C3-EC20-D9B7AA16E911}" name="Common">
+        <GROUP id="{F252E2B3-0C06-7C61-DC95-26B9B347A888}" name="Interaction">
+          <FILE id="lcYJUt" name="MediaInteractionContainer.cpp" compile="0"
+                resource="0" file="Source/Common/Interaction/MediaInteractionContainer.cpp"/>
+          <FILE id="FShDyY" name="MediaInteractionContainer.h" compile="0" resource="0"
+                file="Source/Common/Interaction/MediaInteractionContainer.h"/>
+        </GROUP>
         <GROUP id="{CA42504B-E8C6-3344-B3DC-0A619E7C9058}" name="Audio">
           <GROUP id="{ADF13E80-B50B-AD8F-B227-8CD69FB12A50}" name="ui">
             <FILE id="auYp50" name="AudioManagerEditor.cpp" compile="0" resource="0"

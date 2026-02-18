@@ -40,3 +40,5 @@
 #include "MediaTarget.h"
 
 #include "ContentExplorer/OnlineContentExplorer.h"
+
+#include "Interaction/MediaInteractionContainer.h"

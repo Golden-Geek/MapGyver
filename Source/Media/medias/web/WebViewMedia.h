@@ -65,8 +65,11 @@ public:
     wil::com_ptr<ID3D11Texture2D> intermediateTexture;
     HANDLE glIntermediateHandle = nullptr; // The handle for the COPY, not the original
 
+	MediaInteractionContainer interactionCC;
+
     // Overrides
     void onContainerParameterChangedInternal(Parameter* p) override;
+	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
     void onContainerTriggerTriggered(Trigger* t) override;
 
     void initGLInternal() override;
