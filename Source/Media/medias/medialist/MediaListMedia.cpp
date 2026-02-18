@@ -43,7 +43,7 @@ void MediaListMedia::updateMediaLoads()
 	}
 
 	MediaListItem* currentItem = listManager.items[mIndex];
-	float transitionTime = currentItem->transitionTime->enabled ? currentItem->transitionTime->floatValue() : defaultTransitionTime->getValue();
+	float transitionTime = currentItem->transitionTime->enabled ? currentItem->transitionTime->floatValue() : defaultTransitionTime->floatValue();
 	for (auto& item : listManager.items)
 	{
 		if (item == currentItem)
