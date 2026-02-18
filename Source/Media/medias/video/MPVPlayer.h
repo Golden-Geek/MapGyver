@@ -117,6 +117,7 @@ public:
 		int numChannels = 0;
 	};
 	FileInfo fileInfo;
+	int pendingFileInfoMask = 0;
 
 	class MPVListener
 	{

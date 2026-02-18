@@ -27,6 +27,8 @@ public:
 	TargetParameter* mediaInParam;
 	TargetParameter* mediaOutParam;
 
+	void clearItem() override;
+
 	void setInOutClips(MediaClip* in, MediaClip* out);
 	virtual void setTime(double time, bool seekMode) override;
 

@@ -56,6 +56,12 @@ ClipTransition::~ClipTransition()
 }
 
 
+void ClipTransition::clearItem()
+{
+	shaderMedia->clearItem();
+	MediaClip::clearItem();
+}
+
 void ClipTransition::setInOutClips(MediaClip* in, MediaClip* out)
 {
 	clipInParam->setValueFromTarget(in);

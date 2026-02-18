@@ -9,7 +9,19 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "MPVPlayer.h"
+
+namespace {
+	constexpr uint64_t kReqDuration = 1;
+	constexpr uint64_t kReqWidth = 2;
+	constexpr uint64_t kReqHeight = 3;
+	constexpr uint64_t kReqChannels = 4;
+
+	constexpr int kMaskDuration = 1 << 0;
+	constexpr int kMaskWidth = 1 << 1;
+	constexpr int kMaskHeight = 1 << 2;
+	constexpr int kMaskChannels = 1 << 3;
+	constexpr int kMaskAll = kMaskDuration | kMaskWidth | kMaskHeight | kMaskChannels;
+}
 
 // ==============================================================================
 // HELPER: Windows OpenGL Loading
@@ -363,22 +375,50 @@ void MPVPlayer::pullEvents()
 			//check actual number of tracks
 
 			//retrieve width/height/duration/channels
-			mpv_get_property(mpv, "duration", MPV_FORMAT_DOUBLE, &fileInfo.duration);
-			mpv_get_property(mpv, "width", MPV_FORMAT_INT64, &fileInfo.width);
-			mpv_get_property(mpv, "height", MPV_FORMAT_INT64, &fileInfo.height);
-			mpv_get_property(mpv, "audio-params/channel-count", MPV_FORMAT_INT64, &fileInfo.numChannels);
-			setupAudio();
-			mpvListeners.call(&MPVListener::mpvFileLoaded);
-			fileInfo.fileLoaded = true;
+			fileInfo.fileLoaded = false;
+			pendingFileInfoMask = kMaskAll;
+			mpv_get_property_async(mpv, kReqDuration, "duration", MPV_FORMAT_DOUBLE);
+			mpv_get_property_async(mpv, kReqWidth, "width", MPV_FORMAT_INT64);
+			mpv_get_property_async(mpv, kReqHeight, "height", MPV_FORMAT_INT64);
+			mpv_get_property_async(mpv, kReqChannels, "audio-params/channel-count", MPV_FORMAT_INT64);
+		}
+		break;
 
-			String activeHwdec = getMPVStringProperty("hwdec-current");
-			// Expect: "nvdec", "d3d11va", "videotoolbox" (Mac)
-			// Bad: "no" (Software)
+		case MPV_EVENT_GET_PROPERTY_REPLY:
+		{
+			auto* prop = static_cast<mpv_event_property*>(e->data);
+			switch (e->reply_userdata)
+			{
+			case kReqDuration:
+				if (e->error == MPV_ERROR_SUCCESS && prop && prop->format == MPV_FORMAT_DOUBLE && prop->data)
+					fileInfo.duration = *static_cast<double*>(prop->data);
+				pendingFileInfoMask &= ~kMaskDuration;
+				break;
+			case kReqWidth:
+				if (e->error == MPV_ERROR_SUCCESS && prop && prop->format == MPV_FORMAT_INT64 && prop->data)
+					fileInfo.width = (int)*static_cast<int64_t*>(prop->data);
+				pendingFileInfoMask &= ~kMaskWidth;
+				break;
+			case kReqHeight:
+				if (e->error == MPV_ERROR_SUCCESS && prop && prop->format == MPV_FORMAT_INT64 && prop->data)
+					fileInfo.height = (int)*static_cast<int64_t*>(prop->data);
+				pendingFileInfoMask &= ~kMaskHeight;
+				break;
+			case kReqChannels:
+				if (e->error == MPV_ERROR_SUCCESS && prop && prop->format == MPV_FORMAT_INT64 && prop->data)
+					fileInfo.numChannels = (int)*static_cast<int64_t*>(prop->data);
+				pendingFileInfoMask &= ~kMaskChannels;
+				break;
+			default:
+				break;
+			}
 
-			// Check the Interop format
-			String interop = getMPVStringProperty("hwdec-interop");
-
-			LOG("MPV File Loaded, Active HW Decoder : " << activeHwdec << ", Interop : " << interop);
+			if (pendingFileInfoMask == 0 && !fileInfo.fileLoaded)
+			{
+				setupAudio();
+				mpvListeners.call(&MPVListener::mpvFileLoaded);
+				fileInfo.fileLoaded = true;
+			}
 		}
 		break;
 
