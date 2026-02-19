@@ -208,13 +208,15 @@ void MediaListItem::onContainerParameterChangedInternal(Parameter* p)
 			unregisterUseMedia(MEDIALISTITEM_MEDIA_ID);
 		}
 
-		if (ts == LOADING && shaderMedia->enabled->boolValue())
+		if (shaderMedia->enabled->boolValue())
 		{
-			registerUseMedia(MEDIALISTITEM_TRANSITION_ID, shaderMedia.get());
-		}
-		else
-		{
-			unregisterUseMedia(MEDIALISTITEM_TRANSITION_ID);
+			if (ts == LOADING)
+			{
+				registerUseMedia(MEDIALISTITEM_TRANSITION_ID, shaderMedia.get());
+			}
+			else {
+				unregisterUseMedia(MEDIALISTITEM_TRANSITION_ID);
+			}
 		}
 
 		if (media != nullptr)
@@ -236,9 +238,9 @@ void MediaListItem::onControllableFeedbackUpdateInternal(ControllableContainer* 
 		//size->setPoint(media->getMediaSize().toFloat());
 	}
 
-	if (c == shaderMedia->enabled || c == shaderMedia->shaderLoaded)
+	if (c == shaderMedia->enabled)
 	{
-		if (shaderMedia->enabled->boolValue() && shaderMedia->shaderLoaded->boolValue())
+		if (shaderMedia->enabled->boolValue())
 		{
 			transitionTargetMedia->setValueFromTarget(media);
 		}
@@ -264,8 +266,11 @@ void MediaListItem::setMedia(Media* m)
 	if (media != nullptr)
 	{
 		Point<int> mediaSize = media->getMediaSize();
-		shaderMedia->width->setValue(mediaSize.getX());
-		shaderMedia->height->setValue(mediaSize.getY());
+		if (mediaSize.x > 0 && mediaSize.y > 0)
+		{
+			shaderMedia->width->setValue(mediaSize.getX());
+			shaderMedia->height->setValue(mediaSize.getY());
+		}
 		media->addAsyncMediaListener(this);
 	}
 
@@ -295,6 +300,18 @@ void MediaListItem::newMessage(const Media::MediaEvent& event)
 		if (ts == RUNNING && an == AUTO_NEXT_MEDIA_FINISH && autoNextTime->floatValue() == 0)
 		{
 			listItemNotifier.addMessage(new MediaListItemEvent(MediaListItemEvent::AUTO_NEXT, this));
+		}
+	}
+	else if (event.type == Media::MediaEvent::MEDIA_CONTENT_CHANGED)
+	{
+		if (media != nullptr && shaderMedia != nullptr)
+		{
+			Point<int> mediaSize = media->getMediaSize();
+			if (mediaSize.x > 0 && mediaSize.y > 0)
+			{
+				shaderMedia->width->setValue(mediaSize.getX());
+				shaderMedia->height->setValue(mediaSize.getY());
+			}
 		}
 	}
 }

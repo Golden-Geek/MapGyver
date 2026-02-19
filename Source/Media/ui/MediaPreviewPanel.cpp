@@ -111,8 +111,11 @@ void MediaPreview::renderOpenGL()
 
 	Init2DMatrix(getWidth(), getHeight());
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	//draw BG
-	glColor4f(0, 0, 0, .3f);
+	glColor4f(0, 0, 0, 1);
 	Draw2DRect(0, 0, getWidth(), getHeight());
 
 

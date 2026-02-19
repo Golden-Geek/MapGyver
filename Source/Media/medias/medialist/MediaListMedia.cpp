@@ -25,6 +25,7 @@ MediaListMedia::MediaListMedia(var params) :
 
 	alwaysRedraw = true;
 
+
 	listManager.addManagerListener(this);
 }
 
@@ -119,7 +120,9 @@ void MediaListMedia::preRenderGLInternal()
 		i->process();
 		if (i->weight->floatValue() == 0.f) continue;
 		i->media->renderOpenGLMedia();
-
+		ShaderMedia* shaderMedia = i->shaderMedia.get();
+		bool useShader = i->isLoading() && shaderMedia != nullptr && shaderMedia->enabled->boolValue() && shaderMedia->shaderLoaded->boolValue();
+		if (useShader) i->shaderMedia->renderOpenGLMedia();
 
 	}
 }
@@ -149,6 +152,7 @@ void MediaListMedia::renderGLInternal()
 			mediaToUse = shaderMedia;
 			w = 1.f;
 		}
+
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glBindTexture(GL_TEXTURE_2D, mediaToUse->getTextureID());

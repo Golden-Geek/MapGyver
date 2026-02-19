@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "ShaderMedia.h"
 
 ShaderMedia::ShaderMedia(var params) :
 	Media(getTypeString(), params, true),
@@ -101,7 +100,7 @@ void ShaderMedia::onContainerParameterChangedInternal(Parameter* p)
 		sourceMedias.userCanAddControllables = !(st == ShaderISFFile || st == ShaderISFURL);
 	}
 
-	if (p == shaderType || p == shaderFile || p == onlineShaderID || p == shaderToyKey)
+	if (p == enabled || p == shaderType || p == shaderFile || p == onlineShaderID || p == shaderToyKey)
 	{
 		if (!isLoadingShader)
 		{
@@ -189,6 +188,12 @@ void ShaderMedia::renderGLInternal()
 
 	//GenericScopedLock lock(shaderLock);
 	if (shader == nullptr) return;
+
+	if (VAO == 0 || VBO == 0)
+	{
+		initGLInternal();
+		if (VAO == 0 || VBO == 0) return;
+	}
 
 	Point<int> size = getMediaSize();
 
