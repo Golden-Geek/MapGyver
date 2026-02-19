@@ -50,6 +50,8 @@ public:
 	void handleStart() override;
 	void handleStop() override;
 
+	double getMediaLength() override;
+
 
 	DECLARE_TYPE("Sequence")
 };

@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "SequenceMedia.h"
 
 MGSequence::MGSequence()
 {
@@ -136,4 +135,9 @@ void SequenceMedia::handleStart()
 void SequenceMedia::handleStop()
 {
 	sequence.stopTrigger->trigger();
+}
+
+double SequenceMedia::getMediaLength()
+{
+	return sequence.totalTime->doubleValue();
 }
