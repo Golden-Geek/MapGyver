@@ -90,6 +90,9 @@
 #include "medias/sequence/ui/MediaClipManagerUI.cpp"
 #include "medias/sequence/ui/MediaLayerTimeline.cpp"
 
+#include "medias/medialist/ui/MediaListItemUI.cpp"
+#include "medias/medialist/ui/MediaListPanel.cpp"
+
 #include "ui/MediaGridUI.cpp"
 #include "ui/MediaManagerGridUI.cpp"
 #include "ui/MediaPreviewPanel.cpp"

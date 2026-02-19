@@ -14,16 +14,19 @@ class ShaderMedia;
 
 class MediaListItem :
 	public BaseItem,
-	public MediaTarget
+	public MediaTarget,
+	public Media::AsyncListener
 {
 public:
 	MediaListItem(const String& name = "Layer", var params = var());
 	virtual ~MediaListItem();
 
-	enum TransitionState { IDLE, LOADING, UNLOADING };
+	enum TransitionState { IDLE, LOADING, UNLOADING, RUNNING };
 
 	Media* media;
 	std::unique_ptr<ShaderMedia> shaderMedia; //if media is a shader media, keep a reference to it for easier access to shader parameters
+	
+	Trigger* launch;
 	FloatParameter* transitionTime;
 	FloatParameter* weight;
 	EnumParameter* state;
@@ -32,6 +35,12 @@ public:
 	TargetParameter* transitionSourceMedia;
 	TargetParameter* transitionTargetMedia;
 
+	BoolParameter* autoPlay;
+	BoolParameter* autoStop;
+
+	enum AutoNextBehavior { AUTO_NEXT_OFF, AUTO_NEXT_MEDIA_FINISH, AUTO_NEXT_TIME };
+	EnumParameter* autoNextBehavior;
+	FloatParameter* autoNextTime;
 
 	double timeAtStart = 0.f;
 	float weightAtStart = 0.f;
@@ -46,8 +55,7 @@ public:
 
 	void process();
 
-
-	virtual void onContainerParameterChangedInternal(Parameter* p);
+	virtual void onContainerParameterChangedInternal(Parameter* p) override;
 	virtual void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 	virtual void setMedia(Media* m);
@@ -55,6 +63,10 @@ public:
 	bool isUsingMedia(Media* m) override;
 	bool isLoading() const;;
 	bool isUnloading() const;;
+
+	void newMessage(const Media::MediaEvent& event) override;
+
+	DECLARE_ASYNC_EVENT(MediaListItem, MediaListItem, listItem, ENUM_LIST(AUTO_NEXT), EVENT_ITEM_CHECK);
 };
 
 

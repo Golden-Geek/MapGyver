@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "SequenceMedia.h"
 
 MGSequence::MGSequence()
 {
@@ -104,4 +105,35 @@ void SequenceMedia::renderGLInternal()
 void SequenceMedia::sequenceCurrentTimeChanged(Sequence* sequence, float time, bool evaluateSkippedData)
 {
 	shouldRedraw = true;
+}
+
+void SequenceMedia::sequenceFinished(Sequence* sequence)
+{
+	mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_FINISHED, this));
+}
+
+void SequenceMedia::handleEnter(double time, bool play)
+{
+	sequence.setCurrentTime(time, false, true);
+	if (play) sequence.playTrigger->trigger();
+}
+
+void SequenceMedia::handleExit()
+{
+	sequence.pauseTrigger->trigger();
+}
+
+void SequenceMedia::handleSeek(double time)
+{
+	sequence.setCurrentTime(time, false, true);
+}
+
+void SequenceMedia::handleStart()
+{
+	sequence.playTrigger->trigger();
+}
+
+void SequenceMedia::handleStop()
+{
+	sequence.stopTrigger->trigger();
 }

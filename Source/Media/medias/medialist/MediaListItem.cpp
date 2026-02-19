@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "MediaListItem.h"
 
 
 #define MEDIALISTITEM_MEDIA_ID 0
@@ -17,28 +16,42 @@
 
 MediaListItem::MediaListItem(const String& name, var params) :
 	BaseItem(name),
-	media(nullptr)
+	media(nullptr),
+	listItemNotifier(10)
 {
 	saveAndLoadRecursiveData = true;
 	canBeDisabled = true;
 
 	itemDataType = "MediaListItem";
 
+	launch = addTrigger("Launch", "Launch media with transition");
+
 	transitionTime = addFloatParameter("Transition time", "In seconds", 1, 0);
 	transitionTime->canBeDisabledByUser = true;
 	transitionTime->setEnabled(false);
 	transitionTime->defaultUI = FloatParameter::TIME;
 
+
+	autoPlay = addBoolParameter("Auto play", "Whether to automatically play the media when loaded", true);
+	autoStop = addBoolParameter("Auto stop", "Whether to automatically stop the media when unloaded", true);
+	autoNextBehavior = addEnumParameter("Auto next", "Whether to automatically play the next media in the list when this media finishes or after a certain time");
+	autoNextBehavior->addOption("Off", AUTO_NEXT_OFF)->addOption("Media finish", AUTO_NEXT_MEDIA_FINISH)->addOption("Force Time", AUTO_NEXT_TIME);
+	autoNextTime = addFloatParameter("Auto next time", "Time in seconds before automatically playing the next media. if auto next ist set to Media Finish, this is 'pre-finish' time to allow smooth transition", 1, 0);
+	autoNextTime->defaultUI = FloatParameter::TIME;
+
 	weight = addFloatParameter("Weight", "", 0, 0, 1);
 	weight->setControllableFeedbackOnly(true);
 
+
+
 	state = addEnumParameter("State", "");
-	state->addOption("Idle", IDLE)->addOption("Loading", LOADING)->addOption("Unloading", UNLOADING);
+	state->addOption("Idle", IDLE)->addOption("Loading", LOADING)->addOption("Unloading", UNLOADING)->addOption("Running", RUNNING);
 	state->setControllableFeedbackOnly(true);
 
 	var manualRenderParams(new DynamicObject());
 	manualRenderParams.getDynamicObject()->setProperty("manualRender", true);
 	shaderMedia.reset(new ShaderMedia(manualRenderParams));
+
 
 	shaderMedia->enabled->setValue(false);
 	shaderMedia->setNiceName("Transition Shader");
@@ -54,8 +67,6 @@ MediaListItem::MediaListItem(const String& name, var params) :
 
 	addChildControllableContainer(shaderMedia.get());
 	shaderMedia->editorIsCollapsed = true;
-
-	//registerUseMedia(MEDIALISTITEM_TRANSITION_ID, shaderMedia.get());
 }
 
 MediaListItem::~MediaListItem()
@@ -75,9 +86,7 @@ void MediaListItem::load(float fadeInTime, WeakReference<Media> prevMedia)
 	if (media == nullptr) return;
 	if (weight->floatValue() == 1.f)
 	{
-		unregisterUseMedia(MEDIALISTITEM_MEDIA_ID);
-		unregisterUseMedia(MEDIALISTITEM_TRANSITION_ID);
-		state->setValueWithData(IDLE);
+		state->setValueWithData(RUNNING);
 		return;
 	}
 
@@ -89,13 +98,13 @@ void MediaListItem::load(float fadeInTime, WeakReference<Media> prevMedia)
 		forceRenderShader = true;
 	}
 
-	registerUseMedia(MEDIALISTITEM_MEDIA_ID, media);
-	registerUseMedia(MEDIALISTITEM_TRANSITION_ID, shaderMedia.get());
 	timeAtStart = Time::getMillisecondCounterHiRes() / 1000.0;
 	weightAtStart = weight->floatValue();
 	targetTime = timeAtStart + fadeInTime * (1 - weightAtStart);
 	targetWeight = 1.f;
 	state->setValueWithData(LOADING);
+
+
 
 
 }
@@ -107,23 +116,22 @@ void MediaListItem::unload(float fadeOutTime)
 	if (media == nullptr) return;
 	if (weight->floatValue() == 0.f)
 	{
-		unregisterUseMedia(MEDIALISTITEM_MEDIA_ID);
-		unregisterUseMedia(MEDIALISTITEM_TRANSITION_ID);
 		state->setValueWithData(IDLE);
 		return;
 	}
-
-	registerUseMedia(MEDIALISTITEM_MEDIA_ID, media);
 
 	timeAtStart = Time::getMillisecondCounterHiRes() / 1000.0;
 	weightAtStart = weight->floatValue();
 	targetTime = timeAtStart + fadeOutTime * weightAtStart;
 	targetWeight = 0.f;
 	state->setValueWithData(UNLOADING);
+
 }
 
 void MediaListItem::process()
 {
+	if (media == nullptr) return;
+
 	if (forceRenderShader)
 	{
 		NLOG(niceName, "Force render shader");
@@ -135,8 +143,27 @@ void MediaListItem::process()
 	switch (ts)
 	{
 	case IDLE:
-		unregisterUseMedia(MEDIALISTITEM_TRANSITION_ID);
 		break;
+
+	case RUNNING:
+	{
+		AutoNextBehavior an = (AutoNextBehavior)autoNextBehavior->getValueDataAsEnum<int>();
+		float timeAN = autoNextTime->floatValue();
+		if (an != AUTO_NEXT_OFF && timeAN > 0)
+		{
+			if (an == AUTO_NEXT_MEDIA_FINISH)
+			{
+				timeAN = media->getMediaLength() - timeAN;
+			}
+
+			double timeSinceStart = Time::getMillisecondCounterHiRes() / 1000.0 - timeAtStart;
+			if (timeSinceStart > timeAN)
+			{
+				listItemNotifier.addMessage(new MediaListItemEvent(MediaListItemEvent::AUTO_NEXT, this));
+			}
+		}
+	}
+	break;
 
 	case LOADING:
 	case UNLOADING:
@@ -146,7 +173,7 @@ void MediaListItem::process()
 		if (t >= targetTime)
 		{
 			weight->setValue(targetWeight);
-			state->setValueWithData(IDLE);
+			state->setValueWithData(targetWeight > 0.f ? RUNNING : IDLE);
 		}
 		else
 		{
@@ -166,13 +193,44 @@ void MediaListItem::process()
 }
 
 
+
 void MediaListItem::onContainerParameterChangedInternal(Parameter* p)
 {
+	if (p == state)
+	{
+		TransitionState ts = state->getValueDataAsEnum<TransitionState>();
+		if (ts != IDLE)
+		{
+			registerUseMedia(MEDIALISTITEM_MEDIA_ID, media);
+		}
+		else
+		{
+			unregisterUseMedia(MEDIALISTITEM_MEDIA_ID);
+		}
 
+		if (ts == LOADING && shaderMedia->enabled->boolValue())
+		{
+			registerUseMedia(MEDIALISTITEM_TRANSITION_ID, shaderMedia.get());
+		}
+		else
+		{
+			unregisterUseMedia(MEDIALISTITEM_TRANSITION_ID);
+		}
+
+		if (media != nullptr)
+		{
+			if (ts == LOADING && autoPlay->boolValue())
+				media->handleEnter(0, true);
+			else if (ts == IDLE && autoStop->boolValue())
+				media->handleStop();
+		}
+	}
 }
 
 void MediaListItem::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
+	BaseItem::onControllableFeedbackUpdateInternal(cc, c);
+
 	if (media != nullptr && (c == media->width || c == media->height))
 	{
 		//size->setPoint(media->getMediaSize().toFloat());
@@ -183,11 +241,9 @@ void MediaListItem::onControllableFeedbackUpdateInternal(ControllableContainer* 
 		if (shaderMedia->enabled->boolValue() && shaderMedia->shaderLoaded->boolValue())
 		{
 			transitionTargetMedia->setValueFromTarget(media);
-			registerUseMedia(MEDIALISTITEM_TRANSITION_ID, shaderMedia.get());
 		}
 		else
 		{
-			unregisterUseMedia(MEDIALISTITEM_TRANSITION_ID);
 		}
 	}
 }
@@ -198,7 +254,8 @@ void MediaListItem::setMedia(Media* m)
 
 	if (media != nullptr)
 	{
-		unregisterUseMedia(COMPOSITION_TARGET_MEDIA_ID);
+		media->removeAsyncMediaListener(this);
+		unregisterUseMedia(MEDIALISTITEM_MEDIA_ID);
 	}
 
 	media = m;
@@ -206,11 +263,10 @@ void MediaListItem::setMedia(Media* m)
 
 	if (media != nullptr)
 	{
-		registerUseMedia(COMPOSITION_TARGET_MEDIA_ID, m);
-
 		Point<int> mediaSize = media->getMediaSize();
 		shaderMedia->width->setValue(mediaSize.getX());
 		shaderMedia->height->setValue(mediaSize.getY());
+		media->addAsyncMediaListener(this);
 	}
 
 	transitionTargetMedia->setValueFromTarget(media);
@@ -228,6 +284,19 @@ bool MediaListItem::isLoading() const {
 
 bool MediaListItem::isUnloading() const {
 	return state->getValueDataAsEnum<TransitionState>() == UNLOADING;
+}
+
+void MediaListItem::newMessage(const Media::MediaEvent& event)
+{
+	if (event.type == Media::MediaEvent::MEDIA_FINISHED)
+	{
+		TransitionState ts = state->getValueDataAsEnum<TransitionState>();
+		AutoNextBehavior an = (AutoNextBehavior)autoNextBehavior->getValueDataAsEnum<int>();
+		if (ts == RUNNING && an == AUTO_NEXT_MEDIA_FINISH && autoNextTime->floatValue() == 0)
+		{
+			listItemNotifier.addMessage(new MediaListItemEvent(MediaListItemEvent::AUTO_NEXT, this));
+		}
+	}
 }
 
 ReferenceMediaListItem::ReferenceMediaListItem(var params) :

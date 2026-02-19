@@ -16,12 +16,15 @@ MediaListItemManager::MediaListItemManager() :
 	itemDataType = "MediaListItem";
 	selectItemWhenCreated = false;
 	managerFactory = MediaListItemFactory::getInstance();
+
+	thumbSize = addFloatParameter("Thumb size", "Size of the thumbnail in pixels when displayed in the list", 100, 32, 500);
 }
 
 MediaListItemManager::~MediaListItemManager()
 {
 	// stopThread(1000);
 }
+
 
 juce_ImplementSingleton(MediaListItemFactory)
 

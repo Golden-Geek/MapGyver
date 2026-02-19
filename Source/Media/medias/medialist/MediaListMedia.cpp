@@ -16,17 +16,27 @@ MediaListMedia::MediaListMedia(var params) :
 	saveAndLoadRecursiveData = true;
 
 	index = mediaParams.addIntParameter("Index", "Index of the media to use", 1, 1);
+
+	nextTrigger = mediaParams.addTrigger("Next", "Go to next media in the list");
+	previousTrigger = mediaParams.addTrigger("Previous", "Go to previous media in the list");
+	loop = mediaParams.addBoolParameter("Loop", "Whether to loop around when reaching the end of the list", false);
 	addChildControllableContainer(&listManager);
 	defaultTransitionTime = mediaParams.addFloatParameter("Default transition time", "Default transition time in seconds when not specified in the item", 1, 0);
 
 	alwaysRedraw = true;
+
+	listManager.addManagerListener(this);
 }
 
 MediaListMedia::~MediaListMedia()
 {
 }
 
-
+void MediaListMedia::clearItem()
+{
+	Media::clearItem();
+	listManager.removeManagerListener(this);
+}
 
 void MediaListMedia::updateMediaLoads()
 {
@@ -61,6 +71,44 @@ void MediaListMedia::onControllableFeedbackUpdateInternal(ControllableContainer*
 	{
 		updateMediaLoads();
 	}
+	else if (MediaListItem* item = dynamic_cast<MediaListItem*>(c->parentContainer.get()))
+	{
+		if (c == item->launch)
+		{
+			index->setValue(listManager.items.indexOf(item) + 1);
+		}
+	}
+	else if (c == nextTrigger)
+	{
+		int nextIndex = index->intValue(); // -1 for 0-based index, but +1 to do the next item
+		while (listManager.items.size() > nextIndex && !listManager.items[nextIndex]->enabled->boolValue())
+		{
+			nextIndex++;
+		}
+
+		if (nextIndex >= listManager.items.size())
+		{
+			if (loop->boolValue()) nextIndex = 0;
+		}
+
+		index->setValue(nextIndex + 1);
+	}
+	else if (c == previousTrigger)
+	{
+
+		int prevIndex = index->intValue() - 2; // -1 for 0-based index, but -1 to do the previous item
+		while (prevIndex >= 0 && !listManager.items[prevIndex]->enabled->boolValue())
+		{
+			prevIndex--;
+		}
+
+		if (prevIndex < 0)
+		{
+			if (loop->boolValue()) prevIndex = listManager.items.size() - 1;
+		}
+
+		index->setValue(prevIndex + 1);
+	}
 }
 
 
@@ -72,7 +120,7 @@ void MediaListMedia::preRenderGLInternal()
 		if (i->weight->floatValue() == 0.f) continue;
 		i->media->renderOpenGLMedia();
 
-		
+
 	}
 }
 
@@ -112,6 +160,41 @@ void MediaListMedia::renderGLInternal()
 
 		Draw2DTexRect(mediaRect.getX(), mediaRect.getY(), mediaRect.getWidth(), mediaRect.getHeight());
 		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+}
+
+
+void MediaListMedia::itemAdded(MediaListItem* item)
+{
+	item->addAsyncMediaListItemListener(this);
+}
+
+void MediaListMedia::itemsAdded(juce::Array<MediaListItem*> items)
+{
+	for (auto& item : items)
+	{
+		item->addAsyncMediaListItemListener(this);
+	}
+}
+
+void MediaListMedia::itemRemoved(MediaListItem* item)
+{
+	item->removeAsyncMediaListItemListener(this);
+}
+
+void MediaListMedia::itemsRemoved(juce::Array<MediaListItem*> items)
+{
+	for (auto& item : items)
+	{
+		item->removeAsyncMediaListItemListener(this);
+	}
+}
+
+void MediaListMedia::newMessage(const MediaListItem::MediaListItemEvent& e)
+{
+	if (e.type == MediaListItem::MediaListItemEvent::AUTO_NEXT)
+	{
+		nextTrigger->trigger();
 	}
 }
 

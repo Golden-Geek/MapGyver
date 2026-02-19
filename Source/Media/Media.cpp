@@ -257,8 +257,14 @@ void Media::generatePreviewImage()
 			float scale = jmin(200.0f / width, 200.0f / height);
 			previewImage = img.rescaled(width * scale, height * scale);
 		}
+		else
+		{
+			previewImage = img;
+		}
 
 		mediaNotifier.addMessage(new MediaEvent(MediaEvent::PREVIEW_CHANGED, this));
+
+		NLOG(niceName, "Generated preview image");
 	}
 
 

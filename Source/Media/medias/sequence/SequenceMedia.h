@@ -42,6 +42,14 @@ public:
 
 	void renderGLInternal() override;
 	void sequenceCurrentTimeChanged(Sequence* sequence, float time, bool evaluateSkippedData) override;
+	void sequenceFinished(Sequence* sequence) override;
+	
+	void handleEnter(double time, bool play) override;
+	void handleExit() override;
+	void handleSeek(double time) override;
+	void handleStart() override;
+	void handleStop() override;
+
 
 	DECLARE_TYPE("Sequence")
 };

@@ -18,6 +18,7 @@ public:
     MediaListItemFactory();
     ~MediaListItemFactory() {}
 
+
 };
 
 class MediaListItemManager :
@@ -26,4 +27,6 @@ class MediaListItemManager :
 public:
     MediaListItemManager();
     ~MediaListItemManager();
+
+    FloatParameter* thumbSize;
 };

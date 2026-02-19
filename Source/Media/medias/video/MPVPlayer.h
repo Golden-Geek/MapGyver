@@ -118,6 +118,7 @@ public:
 	};
 	FileInfo fileInfo;
 	int pendingFileInfoMask = 0;
+	bool eofReached = false;
 
 	class MPVListener
 	{

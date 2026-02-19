@@ -32,6 +32,9 @@
     <Filter Include="MapGyver\Source\Engine">
       <UniqueIdentifier>{AEEB5641-9CF0-9160-1D21-1488A608CB92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MapGyver\Source\Media\medias\medialist\ui">
+      <UniqueIdentifier>{F5FCC618-16F4-E799-9502-04EE95CEC7A5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="MapGyver\Source\Media\medias\medialist">
       <UniqueIdentifier>{FA4B6358-0746-9044-EB70-399869B1FBC7}</UniqueIdentifier>
     </Filter>
@@ -1314,6 +1317,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Engine\MGEngine.cpp">
       <Filter>MapGyver\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\medialist\ui\MediaListItemUI.cpp">
+      <Filter>MapGyver\Source\Media\medias\medialist\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\medialist\ui\MediaListPanel.cpp">
+      <Filter>MapGyver\Source\Media\medias\medialist\ui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\medialist\MediaListItem.cpp">
       <Filter>MapGyver\Source\Media\medias\medialist</Filter>
@@ -5567,6 +5576,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Engine\MGEngine.h">
       <Filter>MapGyver\Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\medialist\ui\MediaListItemUI.h">
+      <Filter>MapGyver\Source\Media\medias\medialist\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\medialist\ui\MediaListPanel.h">
+      <Filter>MapGyver\Source\Media\medias\medialist\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListItem.h">
       <Filter>MapGyver\Source\Media\medias\medialist</Filter>

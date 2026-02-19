@@ -352,6 +352,7 @@ void VideoMedia::mpvFrameUpdate()
 void VideoMedia::mpvFileEnd()
 {
 	state->setValueWithData(PAUSED);
+	mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_FINISHED, this));
 }
 
 bool VideoMedia::isPlaying()

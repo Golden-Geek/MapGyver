@@ -837,7 +837,7 @@ void WebViewMedia::onContainerParameterChangedInternal(Parameter* p)
 void WebViewMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
 	Media::onControllableFeedbackUpdateInternal(cc, c); // Call base
-	if (cc == &interactionCC)
+	if (cc == &interactionCC && compositionController != nullptr)
 	{
 		Point<float> relPoint = interactionCC.mousePosition->getPoint();
 		Point<int> p = Point<int>(relPoint.x * frameBuffer.getWidth(), relPoint.y * frameBuffer.getHeight());

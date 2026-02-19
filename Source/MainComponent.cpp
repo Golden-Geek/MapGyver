@@ -40,6 +40,7 @@ void MainContentComponent::init()
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Node Editor", &NodeManagerViewPanel::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Sequence Editor", &TimeMachineView::create));
 	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("Grid Editor", &GridMediaPanel::create));
+	ShapeShifterFactory::getInstance()->defs.add(new ShapeShifterDefinition("MediaList Editor", &MediaListPanel::create));
 
 	OrganicMainContentComponent::init();
 

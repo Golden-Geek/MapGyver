@@ -33,7 +33,7 @@ ShaderMedia::ShaderMedia(var params) :
 	shaderFile = addFileParameter("Fragment Shader", "Fragment Shader");
 	shaderFile->setAutoReload(true);
 
-	onlineShaderID = addStringParameter("Shader ID", "ID of the shader, either for ShaderToy or ISF. It's the last part of the URL when viewing it on the website", "", false);
+	onlineShaderID = addStringParameter("Shader ID", "ID of the shader, either for ShaderToy or ISF. It's the last part of the URL when viewing it on the website", "dlVyDd", false);
 	shaderToyKey = addStringParameter("ShaderToy Key", "Key of the shader toy. It's the last part of the URL when viewing it on the website", "Bd8jRr", false);
 	keepOfflineCache = addBoolParameter("Keep Offline Cache", "Keep the offline cache of the shader, to reload if file is missing or if no internet for online shaders", true);
 
@@ -491,14 +491,14 @@ void ShaderMedia::loadFragmentShader(const String& fragmentShader)
 	}
 
 
-    String vertexShaderCode = OpenGLHelpers::getGLSLVersionString() +"\n"+R"(
+	String vertexShaderCode = OpenGLHelpers::getGLSLVersionString() + "\n" + R"(
 			in vec3 position;
 			void main() {
 				gl_Position = vec4(position, 1.0);
 			}
 		)";
 
-    if (!shader->addVertexShader(vertexShaderCode.toRawUTF8()))
+	if (!shader->addVertexShader(vertexShaderCode.toRawUTF8()))
 	{
 		NLOGERROR(niceName, "Vertex shader compilation failed: " << shader->getLastError());
 	}
@@ -901,7 +901,7 @@ void ShaderMedia::sendMouseUp(const MouseEvent& e, Rectangle<int> canvasRect)
 
 void ShaderMedia::sendMouseDrag(const MouseEvent& e, Rectangle<int> canvasRect)
 {
-	mouseInputPos->setPoint(getMediaShaderPosition(e,canvasRect));
+	mouseInputPos->setPoint(getMediaShaderPosition(e, canvasRect));
 
 }
 
@@ -960,8 +960,10 @@ void ShaderMedia::run()
 			NLOGWARNING(niceName, "URL is malformed: " << url.toString(true));
 			return;
 		}
-
-		std::unique_ptr<InputStream> stream = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withProgressCallback(
+		juce::String customHeaders = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36\r\n"
+			"Accept: application/json\r\n"
+			"Accept-Language: en-US,en;q=0.9";
+		std::unique_ptr<InputStream> stream = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress).withExtraHeaders(customHeaders).withProgressCallback(
 			[this](int, int) { return !threadShouldExit(); }));
 
 		String dataStr = "";
@@ -972,6 +974,7 @@ void ShaderMedia::run()
 		{
 			NLOGWARNING(niceName, "No response when loading shader at " << url.toString(true));
 		}
+
 
 		var data = JSON::parse(dataStr);
 

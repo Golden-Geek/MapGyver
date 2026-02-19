@@ -116,6 +116,8 @@ void MPVPlayer::setupMPV()
 	mpv_set_option_string(mpv, "force-window", "yes");
 	mpv_set_option_string(mpv, "hr-seek", "yes");
 	mpv_set_option_string(mpv, "hr-seek-framedrop", "yes");
+	mpv_set_option_string(mpv, "keep-open", "yes");
+	mpv_set_option_string(mpv, "keep-open-pause", "yes");
 
 	// "auto" is good, but sometimes picks copy-back methods.
 	// "nvdec" (Nvidia) or "vaapi" (Intel/Linux) are strictly keep-in-VRAM.
@@ -158,6 +160,7 @@ void MPVPlayer::setupMPV()
 
 	//mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
 	mpv_observe_property(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE);
+	mpv_observe_property(mpv, 0, "eof-reached", MPV_FORMAT_FLAG);
 	//mpv_observe_property(mpv, 0, "audio-params/channel-count", MPV_FORMAT_INT64);
 	//mpv_observe_property(mpv, 0, "width", MPV_FORMAT_INT64);
 	//mpv_observe_property(mpv, 0, "height", MPV_FORMAT_INT64);
@@ -381,6 +384,7 @@ void MPVPlayer::pullEvents()
 			mpv_get_property_async(mpv, kReqWidth, "width", MPV_FORMAT_INT64);
 			mpv_get_property_async(mpv, kReqHeight, "height", MPV_FORMAT_INT64);
 			mpv_get_property_async(mpv, kReqChannels, "audio-params/channel-count", MPV_FORMAT_INT64);
+			eofReached = false;
 		}
 		break;
 
@@ -432,6 +436,18 @@ void MPVPlayer::pullEvents()
 			String pName = String(prop->name);
 			if (pName == "time-pos" && prop->format == MPV_FORMAT_DOUBLE) {
 				mpvListeners.call(&MPVListener::mpvTimeChanged, *(double*)prop->data);
+			}
+			else if (pName == "eof-reached" && prop->format == MPV_FORMAT_FLAG) {
+				int reached = prop->data ? *(int*)prop->data : 0;
+				if (reached != 0 && !eofReached)
+				{
+					eofReached = true;
+					mpvListeners.call(&MPVListener::mpvFileEnd);
+				}
+				else if (reached == 0)
+				{
+					eofReached = false;
+				}
 			}
 		}
 		break;
