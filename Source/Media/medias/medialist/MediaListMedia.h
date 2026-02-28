@@ -23,6 +23,7 @@ public:
 	~MediaListMedia();
 
 
+	IntParameter* numLayers;
 	IntParameter* index;
 	Trigger* previousTrigger;
 	Trigger* nextTrigger;
@@ -30,8 +31,10 @@ public:
 	FloatParameter* defaultTransitionTime;
 
 	MediaListItemManager listManager;
+	MediaListItem* currentMediaItem;
 
-	WeakReference<Media> currentMedia;
+
+	OwnedArray<OpenGLFrameBuffer> extraFrameBuffers;
 
 	void clearItem() override;
 	void updateMediaLoads();
@@ -40,11 +43,17 @@ public:
 
 	void preRenderGLInternal() override;
 	void renderGLInternal() override;
+	void renderLayer(int index);
+
+	void updateNumLayers();
 
 	void itemAdded(MediaListItem* item) override;
 	void itemsAdded(juce::Array<MediaListItem*> items) override;
 	void itemRemoved(MediaListItem* item) override;
 	void itemsRemoved(juce::Array<MediaListItem*> items) override;
+
+	void initFrameBuffer() override;
+	void initExtraFrameBuffer(OpenGLFrameBuffer& fb);
 
 	void newMessage(const MediaListItem::MediaListItemEvent& e) override;
 

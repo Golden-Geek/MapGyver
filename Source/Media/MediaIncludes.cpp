@@ -20,6 +20,7 @@
 #include "medias/composition/CompositionMedia.cpp"
 
 #include "medias/picture/PictureMedia.cpp"
+#include "medias/medialist/MediaListSubItem.cpp"
 #include "medias/medialist/MediaListItem.cpp"
 #include "medias/medialist/MediaListItemManager.cpp"
 #include "medias/medialist/MediaListMedia.cpp"

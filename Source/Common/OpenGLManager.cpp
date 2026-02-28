@@ -230,6 +230,7 @@ void GlContextHolder::componentBeingDeleted(juce::Component& component)
 
 void GlContextHolder::newOpenGLContextCreated()
 {
+	GenericScopedLock lock(renderLock);
 	const char* version = (const char*)glGetString(GL_VERSION);
 	const char* vendor = (const char*)glGetString(GL_VENDOR);
 	const char* renderer = (const char*)glGetString(GL_RENDERER);
@@ -253,6 +254,7 @@ void GlContextHolder::newOpenGLContextCreated()
 void GlContextHolder::renderOpenGL()
 {
 
+	GenericScopedLock lock(renderLock);
 	double lastRenderTime = timeAtRender;
 
 	double t = Time::getMillisecondCounterHiRes();
@@ -274,7 +276,7 @@ void GlContextHolder::renderOpenGL()
 
 void GlContextHolder::openGLContextClosing()
 {
-
+	GenericScopedLock lock(renderLock);
 	checkComponents(true, false);
 
 	UltralightManager::getInstance()->deleteInstance();

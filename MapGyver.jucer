@@ -140,6 +140,10 @@
                   file="Source/Media/medias/medialist/MediaListMedia.cpp"/>
             <FILE id="ix9ELY" name="MediaListMedia.h" compile="0" resource="0"
                   file="Source/Media/medias/medialist/MediaListMedia.h"/>
+            <FILE id="yy83eZ" name="MediaListSubItem.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/medialist/MediaListSubItem.cpp"/>
+            <FILE id="UBV2Kg" name="MediaListSubItem.h" compile="0" resource="0"
+                  file="Source/Media/medias/medialist/MediaListSubItem.h"/>
           </GROUP>
           <GROUP id="{477FB961-CBA6-A8B6-E44C-CB14FF111F6E}" name="canvas">
             <FILE id="TUdw4Y" name="CanvasMedia.cpp" compile="0" resource="0" file="Source/Media/medias/canvas/CanvasMedia.cpp"/>

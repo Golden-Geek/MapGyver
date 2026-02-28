@@ -142,6 +142,9 @@
     <ClCompile Include="..\..\Source\Media\medias\medialist\MediaListMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\medialist\MediaListSubItem.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\canvas\CanvasMedia.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4098,6 +4101,7 @@
     <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListItem.h"/>
     <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListItemManager.h"/>
     <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListMedia.h"/>
+    <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListSubItem.h"/>
     <ClInclude Include="..\..\Source\Media\medias\canvas\CanvasMedia.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridBoard.h"/>
     <ClInclude Include="..\..\Source\Media\medias\grid\ui\GridClipManagerUI.h"/>

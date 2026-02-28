@@ -23,6 +23,7 @@
 
 #include "medias/picture/PictureMedia.h"
 
+#include "medias/medialist/MediaListSubItem.h"
 #include "medias/medialist/MediaListItem.h"
 #include "medias/medialist/MediaListItemManager.h"
 #include "medias/medialist/MediaListMedia.h"

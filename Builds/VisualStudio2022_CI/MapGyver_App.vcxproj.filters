@@ -1333,6 +1333,9 @@
     <ClCompile Include="..\..\Source\Media\medias\medialist\MediaListMedia.cpp">
       <Filter>MapGyver\Source\Media\medias\medialist</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\medialist\MediaListSubItem.cpp">
+      <Filter>MapGyver\Source\Media\medias\medialist</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\canvas\CanvasMedia.cpp">
       <Filter>MapGyver\Source\Media\medias\canvas</Filter>
     </ClCompile>
@@ -5590,6 +5593,9 @@
       <Filter>MapGyver\Source\Media\medias\medialist</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListMedia.h">
+      <Filter>MapGyver\Source\Media\medias\medialist</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListSubItem.h">
       <Filter>MapGyver\Source\Media\medias\medialist</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\canvas\CanvasMedia.h">

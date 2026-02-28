@@ -11,7 +11,8 @@
 #pragma once
 
 class MediaListItemUI :
-    public ItemUI<MediaListItem>
+    public ItemUI<MediaListItem>,
+	public MediaListItem::AsyncListener
 {
 public:
     MediaListItemUI(MediaListItem* item);
@@ -21,6 +22,8 @@ public:
 	std::unique_ptr<TriggerButtonUI> triggerButton;
 	Rectangle<int> transitionArea;
 	Rectangle<int> previewArea;
+	Array<Rectangle<int>> subItemMediaAreas;
+	Array<Rectangle<int>> subItemTransitionAreas;
 
 	void paint(juce::Graphics& g) override;
 	void resizedInternalHeader(juce::Rectangle<int>& r) override;
@@ -30,5 +33,5 @@ public:
 
 	void controllableFeedbackUpdateInternal(Controllable* c) override;
 
-	void newMessage(const Inspectable::InspectableEvent& e) override;
+	void newMessage(const MediaListItem::MediaListItemEvent& e) override;
 };

@@ -11,10 +11,12 @@
 #include "Media/MediaIncludes.h"
 
 MediaListMedia::MediaListMedia(var params) :
-	Media(getTypeString(), params, true)
+	Media(getTypeString(), params, true),
+	currentMediaItem(nullptr)
 {
 	saveAndLoadRecursiveData = true;
 
+	numLayers = mediaParams.addIntParameter("Num layers", "Number of layers in the list", 1, 1);
 	index = mediaParams.addIntParameter("Index", "Index of the media to use", 1, 1);
 
 	nextTrigger = mediaParams.addTrigger("Next", "Go to next media in the list");
@@ -24,7 +26,6 @@ MediaListMedia::MediaListMedia(var params) :
 	defaultTransitionTime = mediaParams.addFloatParameter("Default transition time", "Default transition time in seconds when not specified in the item", 1, 0);
 
 	alwaysRedraw = true;
-
 
 	listManager.addManagerListener(this);
 }
@@ -58,12 +59,12 @@ void MediaListMedia::updateMediaLoads()
 	for (auto& item : listManager.items)
 	{
 		if (item == currentItem)
-			item->load(transitionTime, currentMedia);
+			item->load(transitionTime, currentMediaItem);
 		else
 			item->unload(transitionTime);
 	}
 
-	currentMedia = currentItem->media;
+	currentMediaItem = currentItem;
 }
 
 void MediaListMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
@@ -110,6 +111,13 @@ void MediaListMedia::onControllableFeedbackUpdateInternal(ControllableContainer*
 
 		index->setValue(prevIndex + 1);
 	}
+	else if (c == numLayers)
+	{
+		GlContextHolder::getInstance()->callOnGLThread([this]()
+			{
+				updateNumLayers();
+			});
+	}
 }
 
 
@@ -118,44 +126,62 @@ void MediaListMedia::preRenderGLInternal()
 	for (auto& i : listManager.items)
 	{
 		i->process();
-		if (i->weight->floatValue() == 0.f) continue;
-		i->media->renderOpenGLMedia();
-		ShaderMedia* shaderMedia = i->shaderMedia.get();
-		bool useShader = i->isLoading() && shaderMedia != nullptr && shaderMedia->enabled->boolValue() && shaderMedia->shaderLoaded->boolValue();
-		if (useShader) i->shaderMedia->renderOpenGLMedia();
-
 	}
 }
 
+
 void MediaListMedia::renderGLInternal()
 {
-	glEnable(GL_BLEND);
-	glColor4f(0, 0, 0, 1);
-	Draw2DRect(0, 0, width->intValue(), height->intValue());
+	
 
-	GenericScopedLock lock(listManager.items.getLock());
-	for (auto& i : listManager.items)
+
+	for (int i = 0; i < numLayers->intValue(); i++)
 	{
-		Media* m = i->media;
-		if (m == nullptr) continue;
+		OpenGLFrameBuffer* fbo = i == 0 ? &frameBuffer : extraFrameBuffers[i - 1];
+		if (fbo->getWidth() != frameBuffer.getWidth() || fbo->getHeight() != frameBuffer.getHeight()) initExtraFrameBuffer(*fbo);
+		fbo->makeCurrentAndClear();
+		Init2DViewport(fbo->getWidth(), fbo->getHeight());
+		glEnable(GL_BLEND);
+		glColor4f(1, 0, 1, 1);
+		Draw2DRect(0, 0, fbo->getWidth(), fbo->getHeight());
+		renderLayer(i);
+		fbo->releaseAsRenderingTarget();
+	}
+}
 
-		float w = i->weight->floatValue();
+void MediaListMedia::renderLayer(int index)
+{
+	GenericScopedLock lock(listManager.items.getLock());
+
+
+	for (auto& item : listManager.items)
+	{
+		GLuint textureID = item != nullptr ? item->getTextureIDAt(index) : 0;
+		Media* media = item != nullptr ? item->getMediaAt(index) : nullptr;
+		if (textureID == GLuint())
+		{
+			continue;
+		}
+
+		float w = item->weight->floatValue();
 
 		if (w == 0.f) continue;
 
-		ShaderMedia* shaderMedia = i->shaderMedia.get();
-		Media* mediaToUse = m;
-		bool useShader = i->isLoading() && shaderMedia != nullptr && shaderMedia->enabled->boolValue() && shaderMedia->shaderLoaded->boolValue();
+		ShaderMedia* shaderMedia = item->getShaderMediaAt(index);
+		GLuint textureToUse = textureID;
+		Media* mediaToUse = media;
+		bool useShader = item->isLoading() && shaderMedia != nullptr && shaderMedia->enabled->boolValue() && shaderMedia->shaderLoaded->boolValue();
 		if (shaderMedia != nullptr && useShader)
 		{
 			//later implement shader transition
+			textureToUse = shaderMedia->getTextureID();
 			mediaToUse = shaderMedia;
 			w = 1.f;
 		}
 
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glBindTexture(GL_TEXTURE_2D, mediaToUse->getTextureID());
+		glBindTexture(GL_TEXTURE_2D, textureToUse);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -167,9 +193,32 @@ void MediaListMedia::renderGLInternal()
 	}
 }
 
+void MediaListMedia::updateNumLayers()
+{
+
+	int newNumLayers = numLayers->intValue();
+	for (auto& i : listManager.items)
+	{
+		i->setNumLayers(numLayers->intValue());
+	}
+
+	while (extraFrameBuffers.size() < newNumLayers - 1)
+	{
+		extraFrameBuffers.add(std::make_unique<OpenGLFrameBuffer>());
+		addFrameBuffer("Layer " + String(extraFrameBuffers.size() + 1), extraFrameBuffers.getLast());
+	}
+
+	while (extraFrameBuffers.size() > newNumLayers - 1)
+	{
+		removeFrameBuffer("Layer " + String(extraFrameBuffers.size()));
+		extraFrameBuffers.removeLast();
+	}
+}
+
 
 void MediaListMedia::itemAdded(MediaListItem* item)
 {
+	item->setNumLayers(numLayers->intValue());
 	item->addAsyncMediaListItemListener(this);
 }
 
@@ -177,12 +226,14 @@ void MediaListMedia::itemsAdded(juce::Array<MediaListItem*> items)
 {
 	for (auto& item : items)
 	{
+		item->setNumLayers(numLayers->intValue());
 		item->addAsyncMediaListItemListener(this);
 	}
 }
 
 void MediaListMedia::itemRemoved(MediaListItem* item)
 {
+	if (item == currentMediaItem) currentMediaItem = nullptr;
 	item->removeAsyncMediaListItemListener(this);
 }
 
@@ -190,8 +241,27 @@ void MediaListMedia::itemsRemoved(juce::Array<MediaListItem*> items)
 {
 	for (auto& item : items)
 	{
+		if (item == currentMediaItem) currentMediaItem = nullptr;
 		item->removeAsyncMediaListItemListener(this);
 	}
+}
+
+void MediaListMedia::initFrameBuffer()
+{
+	Media::initFrameBuffer();
+	for (auto& fb : extraFrameBuffers)
+	{
+		initExtraFrameBuffer(*fb);
+	}
+}
+
+void MediaListMedia::initExtraFrameBuffer(OpenGLFrameBuffer& fb)
+{
+	Point<int> size = getMediaSize();
+	if (size.isOrigin()) return;
+	if (fb.isValid()) fb.release();
+	fb.initialise(GlContextHolder::getInstance()->context, size.x, size.y);
+	shouldRedraw = true;
 }
 
 void MediaListMedia::newMessage(const MediaListItem::MediaListItemEvent& e)

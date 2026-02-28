@@ -10,17 +10,6 @@
 
 #pragma once
 
-class MediaListItemFactory :
-    public Factory<MediaListItem>
-{
-public:
-    juce_DeclareSingleton(MediaListItemFactory, true);
-    MediaListItemFactory();
-    ~MediaListItemFactory() {}
-
-
-};
-
 class MediaListItemManager :
     public Manager<MediaListItem>
 {

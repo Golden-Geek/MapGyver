@@ -14,31 +14,23 @@ class ShaderMedia;
 
 class MediaListItem :
 	public BaseItem,
-	public MediaTarget,
-	public Media::AsyncListener
+	public MediaListSubItem::AsyncListener
 {
 public:
 	MediaListItem(const String& name = "Layer", var params = var());
 	virtual ~MediaListItem();
 
 	enum TransitionState { IDLE, LOADING, UNLOADING, RUNNING };
-
-	Media* media;
-	std::unique_ptr<ShaderMedia> shaderMedia; //if media is a shader media, keep a reference to it for easier access to shader parameters
 	
 	Trigger* launch;
 	FloatParameter* transitionTime;
 	FloatParameter* weight;
 	EnumParameter* state;
 
-	FloatParameter* transitionProgression;
-	TargetParameter* transitionSourceMedia;
-	TargetParameter* transitionTargetMedia;
-
 	BoolParameter* autoPlay;
 	BoolParameter* autoStop;
 
-	enum AutoNextBehavior { AUTO_NEXT_OFF, AUTO_NEXT_MEDIA_FINISH, AUTO_NEXT_TIME };
+	enum AutoNextBehavior { AUTO_NEXT_OFF, AUTO_NEXT_MEDIA_FINISH_FIRST, AUTO_NEXT_MEDIA_FINISH_LAST, AUTO_NEXT_TIME };
 	EnumParameter* autoNextBehavior;
 	FloatParameter* autoNextTime;
 
@@ -46,53 +38,36 @@ public:
 	float weightAtStart = 0.f;
 	double targetTime = 0.f;
 	float targetWeight = 0.f;
-	bool forceRenderShader = false;
+
+	OwnedArray<MediaListSubItem> subItems;
 
 	void clearItem() override;
 
-	void load(float fadeInTime, WeakReference<Media> prevMedia);
+	void load(float fadeInTime, MediaListItem* prevItem);
 	void unload(float fadeOutTime);
 
+	void render();
 	void process();
 
-	virtual void onContainerParameterChangedInternal(Parameter* p) override;
-	virtual void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
+	Media* getMediaAt(int index);
+	OpenGLFrameBuffer* getFrameBufferAt(int index);
+	GLuint getTextureIDAt(int index);
+	ShaderMedia* getShaderMediaAt(int index);
 
-	virtual void setMedia(Media* m);
+	float getReferenceLength();
+
+	virtual void onContainerParameterChangedInternal(Parameter* p) override;
 
 	bool isUsingMedia(Media* m) override;
-	bool isLoading() const;;
-	bool isUnloading() const;;
+	bool isLoading() const;
+	bool isUnloading() const;
 
-	void newMessage(const Media::MediaEvent& event) override;
+	void setNumLayers(int num);
 
-	DECLARE_ASYNC_EVENT(MediaListItem, MediaListItem, listItem, ENUM_LIST(AUTO_NEXT), EVENT_ITEM_CHECK);
-};
+	void newMessage(const MediaListSubItem::MediaListSubItemEvent& event) override;
 
+	var getJSONData(bool includeNonOverriden = false) override;
+	void loadJSONDataItemInternal(var data) override;
 
-class ReferenceMediaListItem : public MediaListItem
-{
-public:
-	ReferenceMediaListItem(var params = var());
-	virtual ~ReferenceMediaListItem();
-
-	TargetParameter* targetMedia;
-
-	void onContainerParameterChangedInternal(Parameter* p) override;
-
-	DECLARE_TYPE("Reference List Item");
-};
-
-class OwnedMediaListItem : public MediaListItem
-{
-public:
-	OwnedMediaListItem(var params = var());
-	virtual ~OwnedMediaListItem();
-
-	void setMedia(Media* m) override;
-
-	std::unique_ptr<Media> ownedMedia;
-
-	String getTypeString() const override { return ownedMedia != nullptr ? ownedMedia->getTypeString() : ""; }
-	static OwnedMediaListItem* create(var params) { return new OwnedMediaListItem(params); }
+	DECLARE_ASYNC_EVENT(MediaListItem, MediaListItem, listItem, ENUM_LIST(AUTO_NEXT, SELECTION_CHANGED), EVENT_ITEM_CHECK);
 };

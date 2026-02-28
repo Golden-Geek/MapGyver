@@ -201,7 +201,7 @@ String Media::getNameForFrameBuffer(OpenGLFrameBuffer* f)
 }
 
 StringArray Media::getFrameBufferNames() {
-	StringArray result("Default", "");
+	StringArray result("Default");
 	HashMap<String, OpenGLFrameBuffer*>::Iterator it(frameBufferMap);
 	while (it.next()) result.add(it.getKey());
 	return result;
@@ -210,7 +210,7 @@ StringArray Media::getFrameBufferNames() {
 
 OpenGLFrameBuffer* Media::getFrameBuffer(const String& name)
 {
-	if (name.isEmpty()) return &frameBuffer;
+	if (name.isEmpty() || name == "Default") return &frameBuffer;
 
 	if (frameBufferMap.contains(name)) return frameBufferMap[name];
 	return nullptr;
