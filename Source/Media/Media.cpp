@@ -218,7 +218,7 @@ OpenGLFrameBuffer* Media::getFrameBuffer(const String& name)
 
 GLint Media::getTextureID(const String& name)
 {
-	if (name.isEmpty()) return frameBuffer.getTextureID();
+	if (name.isEmpty() || name == "Default") return frameBuffer.getTextureID();
 
 	if (auto* fb = getFrameBuffer(name)) return fb->getTextureID();
 	return 0;

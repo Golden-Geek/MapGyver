@@ -213,7 +213,7 @@ OpenGLFrameBuffer* MediaListItem::getFrameBufferAt(int index)
 	if (index < 0 || index >= subItems.size()) return nullptr;
 	if (subItems[index]->isSubTexture() && index > 0)
 	{
-		subItems[0]->getFrameBuffer(subItems[index]->textureName->getValueData().toString());
+		return subItems[0]->getFrameBuffer(subItems[index]->textureName->getValueData().toString());
 	}
 
 	return subItems[index]->getFrameBuffer();
@@ -224,7 +224,7 @@ GLuint MediaListItem::getTextureIDAt(int index)
 	if (index < 0 || index >= subItems.size()) return GLuint();
 	if (subItems[index]->isSubTexture() && index > 0)
 	{
-		subItems[0]->getTextureID(subItems[index]->textureName->getValueData().toString());
+		return subItems[0]->getTextureID(subItems[index]->textureName->getValueData().toString());
 	}
 
 	return subItems[index]->getTextureID();
