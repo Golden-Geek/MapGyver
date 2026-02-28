@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "MediaListItem.h"
 
 #define MEDIALISTITEM_MEDIA_ID 0
 #define MEDIALISTITEM_TRANSITION_ID 1
@@ -64,7 +63,7 @@ void MediaListItem::setNumLayers(int num)
 
 	while (num > subItems.size())
 	{
-		MediaListSubItem* newSubItem = new MediaListSubItem("Layer " + String(subItems.size() + 1));
+		MediaListSubItem* newSubItem = new MediaListSubItem("Layer " + String(subItems.size() + 1), subItems.size() > 0);
 
 		subItems.add(newSubItem);
 		addChildControllableContainer(newSubItem);
@@ -79,7 +78,6 @@ void MediaListItem::clearItem()
 		subItem->clear();
 	}
 
-	MediaTarget::clearTarget();
 	BaseItem::clearItem();
 }
 
@@ -215,7 +213,7 @@ OpenGLFrameBuffer* MediaListItem::getFrameBufferAt(int index)
 	if (index < 0 || index >= subItems.size()) return nullptr;
 	if (subItems[index]->isSubTexture() && index > 0)
 	{
-		return getFrameBufferAt(0);
+		subItems[0]->getFrameBuffer(subItems[index]->textureName->getValueData().toString());
 	}
 
 	return subItems[index]->getFrameBuffer();
@@ -226,7 +224,7 @@ GLuint MediaListItem::getTextureIDAt(int index)
 	if (index < 0 || index >= subItems.size()) return GLuint();
 	if (subItems[index]->isSubTexture() && index > 0)
 	{
-		return getTextureIDAt(0);
+		subItems[0]->getTextureID(subItems[index]->textureName->getValueData().toString());
 	}
 
 	return subItems[index]->getTextureID();
@@ -297,12 +295,23 @@ void MediaListItem::onContainerParameterChangedInternal(Parameter* p)
 	}
 }
 
-
-bool MediaListItem::isUsingMedia(Media* m)
+void MediaListItem::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
-	if (!enabled->boolValue()) return false;
-	return MediaTarget::isUsingMedia(m);
+	BaseItem::onControllableFeedbackUpdateInternal(cc, c);
+
+	if (MediaListSubItem* subItem = dynamic_cast<MediaListSubItem*>(cc))
+	{
+		if (c == subItem->type)
+		{
+			if (subItem->isSubTexture())
+			{
+				subItem->updateTextureNameOptions(subItems[0]->media);
+			}
+		}
+	}
 }
+
+
 
 bool MediaListItem::isLoading() const {
 	return state->getValueDataAsEnum<TransitionState>() == LOADING;

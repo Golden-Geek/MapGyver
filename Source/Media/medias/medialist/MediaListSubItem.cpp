@@ -8,12 +8,11 @@
   ==============================================================================
 */
 #include "Media/MediaIncludes.h"
-#include "MediaListSubItem.h"
 
 #define MEDIALISTITEM_MEDIA_ID 0
 #define MEDIALISTITEM_TRANSITION_ID 1
 
-MediaListSubItem::MediaListSubItem(const String& name, var params) :
+MediaListSubItem::MediaListSubItem(const String& name, bool canBeSubtexture) :
 	ControllableContainer(name),
 	media(nullptr),
 	listSubItemNotifier(10),
@@ -21,7 +20,9 @@ MediaListSubItem::MediaListSubItem(const String& name, var params) :
 	forceRenderShader(false)
 {
 	type = addEnumParameter("Type", "Type of the media layer");
-	type->addOption("Empty", "empty")->addOption("Reference", "reference")->addOption("Sub Texture", "sub_texture");
+	type->addOption("Empty", "empty")->addOption("Reference", "reference");
+	if (canBeSubtexture) type->addOption("Sub Texture", "sub_texture");
+
 	for (auto& m : MediaManager::getInstance()->factory.defs)
 	{
 		type->addOption(m->type, m->type);
@@ -75,15 +76,22 @@ void MediaListSubItem::clear()
 void MediaListSubItem::onContainerParameterChanged(Parameter* p)
 {
 	ControllableContainer::onContainerParameterChanged(p);
+
+	bool shouldUpdateMedia = false;
 	if (p == type)
 	{
-		updateCurrentMedia();
+		shouldUpdateMedia = true;
 	}
 	else if (p == reference)
 	{
-		updateCurrentMedia();
+		shouldUpdateMedia = true;
 	}
 	else if (p == textureName)
+	{
+		shouldUpdateMedia = true;
+	}
+
+	if (shouldUpdateMedia)
 	{
 		updateCurrentMedia();
 	}
@@ -115,10 +123,8 @@ void MediaListSubItem::updateCurrentMedia(bool force)
 {
 	if (isCurrentlyLoadingData && !force) return;
 
-	GenericScopedLock lock(GlContextHolder::getInstance()->renderLock);
 
 	String mType = type->getValueData().toString();
-
 
 	bool isOwned = false;
 
@@ -181,17 +187,22 @@ void MediaListSubItem::updateCurrentMedia(bool force)
 		}
 	}
 
-	if (ownedMedia != nullptr)
-	{
-		ownedMedia->clearItem();
-		removeChildControllableContainer(ownedMedia.get());
-		ownedMedia.reset();
-	}
 
-	if (isOwned)
 	{
-		ownedMedia.reset(media);
-		if (media != nullptr) addChildControllableContainer(media);
+		GenericScopedLock lock(mediaLock);
+
+		if (ownedMedia != nullptr)
+		{
+			ownedMedia->clearItem();
+			removeChildControllableContainer(ownedMedia.get());
+			ownedMedia.reset();
+		}
+
+		if (isOwned)
+		{
+			ownedMedia.reset(media);
+			if (media != nullptr) addChildControllableContainer(media);
+		}
 	}
 }
 
@@ -247,10 +258,11 @@ void MediaListSubItem::renderShaderIfNecessary()
 	}
 }
 
-void MediaListSubItem::updateTextureNameOptions()
+void MediaListSubItem::updateTextureNameOptions(Media* forceMedia)
 {
-	if (media == nullptr) return;
-	StringArray textureNames = media->getFrameBufferNames();
+	Media* m = forceMedia != nullptr ? forceMedia : media;
+	if (m == nullptr) return;
+	StringArray textureNames = m->getFrameBufferNames();
 
 	Array<EnumParameter::EnumValue> options;
 	for (auto& tn : textureNames)
@@ -260,6 +272,7 @@ void MediaListSubItem::updateTextureNameOptions()
 
 void MediaListSubItem::render(bool isLoading)
 {
+	GenericScopedLock lock(mediaLock);
 	if (media != nullptr) media->renderOpenGLMedia();
 	bool useShader = isLoading && shaderMedia != nullptr && shaderMedia->enabled->boolValue() && shaderMedia->shaderLoaded->boolValue();
 	if (useShader) shaderMedia->renderOpenGLMedia();
@@ -284,6 +297,8 @@ void MediaListSubItem::newMessage(const Media::MediaEvent& event)
 				shaderMedia->height->setValue(mediaSize.getY());
 			}
 		}
+
+		updateTextureNameOptions();
 	}
 }
 
@@ -295,20 +310,20 @@ void MediaListSubItem::newMessage(const Inspectable::InspectableEvent& event)
 	}
 }
 
-OpenGLFrameBuffer* MediaListSubItem::getFrameBuffer()
+OpenGLFrameBuffer* MediaListSubItem::getFrameBuffer(const String& forceTexName)
 {
 	if (media != nullptr)
 	{
-		return media->getFrameBuffer(textureName->getValue().toString());
+		return media->getFrameBuffer(forceTexName.isNotEmpty() ? forceTexName : textureName->getValue().toString());
 	}
 	return nullptr;
 }
 
-GLuint MediaListSubItem::getTextureID()
+GLuint MediaListSubItem::getTextureID(const String& forceTexName)
 {
 	if (media != nullptr)
 	{
-		return media->getTextureID(textureName->getValue().toString());
+		return media->getTextureID(forceTexName.isNotEmpty() ? forceTexName : textureName->getValue().toString());
 	}
 	return GLuint();
 }
@@ -335,4 +350,6 @@ void MediaListSubItem::loadJSONDataInternal(var data)
 	{
 		ownedMedia->loadJSONData(data["ownedMedia"]);
 	}
+
+	updateTextureNameOptions();
 }

@@ -57,8 +57,8 @@ public:
 	float getReferenceLength();
 
 	virtual void onContainerParameterChangedInternal(Parameter* p) override;
+	virtual void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
-	bool isUsingMedia(Media* m) override;
 	bool isLoading() const;
 	bool isUnloading() const;
 

@@ -19,7 +19,7 @@ class MediaListSubItem :
 
 {
 public:
-	MediaListSubItem(const String& name = "Layer", var params = var());
+	MediaListSubItem(const String& name = "Layer", bool canBeSubTexture = true);
 	virtual ~MediaListSubItem();
 
 	enum TransitionState { IDLE, LOADING, UNLOADING, RUNNING };
@@ -39,6 +39,8 @@ public:
 
 	bool forceRenderShader;
 
+	CriticalSection mediaLock;
+
 	void clear() override;
 
 	void onContainerParameterChanged(Parameter* p) override;
@@ -50,7 +52,7 @@ public:
 	void setupTransition(Media* source);
 	void renderShaderIfNecessary();
 
-	void updateTextureNameOptions();
+	void updateTextureNameOptions(Media* forceMedia = nullptr);
 
 	void render(bool isLoading);
 
@@ -60,8 +62,8 @@ public:
 	bool isSubTexture() const { return type->getValueData().toString() == "sub_texture"; }
 	bool isReference() const { return type->getValueData().toString() == "reference"; }
 
-	OpenGLFrameBuffer* getFrameBuffer();
-	GLuint getTextureID();
+	OpenGLFrameBuffer* getFrameBuffer(const String& forceTexName = "");
+	GLuint getTextureID(const String& forceTexName = "");
 
 	var getJSONData(bool includeNonOverriden = false) override;
 	void loadJSONDataInternal(var data) override;
