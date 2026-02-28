@@ -88,7 +88,6 @@ void MediaListSubItem::onContainerParameterChanged(Parameter* p)
 	}
 	else if (p == textureName)
 	{
-		shouldUpdateMedia = true;
 	}
 
 	if (shouldUpdateMedia)
@@ -191,17 +190,20 @@ void MediaListSubItem::updateCurrentMedia(bool force)
 	{
 		GenericScopedLock lock(mediaLock);
 
-		if (ownedMedia != nullptr)
+		if (ownedMedia.get() != media)
 		{
-			ownedMedia->clearItem();
-			removeChildControllableContainer(ownedMedia.get());
-			ownedMedia.reset();
-		}
+			if (ownedMedia != nullptr)
+			{
+				ownedMedia->clearItem();
+				removeChildControllableContainer(ownedMedia.get());
+				ownedMedia.reset();
+			}
 
-		if (isOwned)
-		{
-			ownedMedia.reset(media);
-			if (media != nullptr) addChildControllableContainer(media);
+			if (isOwned)
+			{
+				ownedMedia.reset(media);
+				if (media != nullptr) addChildControllableContainer(media);
+			}
 		}
 	}
 }
