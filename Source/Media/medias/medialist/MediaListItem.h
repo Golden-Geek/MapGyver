@@ -17,11 +17,11 @@ class MediaListItem :
 	public MediaListSubItem::AsyncListener
 {
 public:
-	MediaListItem(const String& name = "Layer", var params = var());
+	MediaListItem(const String& name = "Clip", var params = var());
 	virtual ~MediaListItem();
 
 	enum TransitionState { IDLE, LOADING, UNLOADING, RUNNING };
-	
+
 	Trigger* launch;
 	FloatParameter* transitionTime;
 	FloatParameter* weight;
@@ -44,7 +44,7 @@ public:
 	void clearItem() override;
 
 	void load(float fadeInTime, MediaListItem* prevItem);
-	void unload(float fadeOutTime);
+	void unload(float fadeOutTime, Array<float> fadeOutSubTimes);
 
 	void render();
 	void process();
@@ -53,6 +53,8 @@ public:
 	OpenGLFrameBuffer* getFrameBufferAt(int index);
 	GLuint getTextureIDAt(int index);
 	ShaderMedia* getShaderMediaAt(int index);
+	float getWeightAt(int index, bool useWeightAtStart);
+	Array<float> getSubTransitionTimes(float defaultTime);
 
 	float getReferenceLength();
 
@@ -68,6 +70,8 @@ public:
 
 	var getJSONData(bool includeNonOverriden = false) override;
 	void loadJSONDataItemInternal(var data) override;
+
+	DECLARE_TYPE("MediaListItem");
 
 	DECLARE_ASYNC_EVENT(MediaListItem, MediaListItem, listItem, ENUM_LIST(AUTO_NEXT, SELECTION_CHANGED), EVENT_ITEM_CHECK);
 };

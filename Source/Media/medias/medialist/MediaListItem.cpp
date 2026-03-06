@@ -64,7 +64,7 @@ void MediaListItem::setNumLayers(int num)
 	while (num > subItems.size())
 	{
 		MediaListSubItem* newSubItem = new MediaListSubItem("Layer " + String(subItems.size() + 1), subItems.size() > 0);
-
+		newSubItem->transitionTimeOverride->setRange(0, transitionTime->floatValue());
 		subItems.add(newSubItem);
 		addChildControllableContainer(newSubItem);
 		newSubItem->addAsyncMediaListSubItemListener(this);
@@ -78,10 +78,13 @@ void MediaListItem::clearItem()
 		subItem->clear();
 	}
 
+	listItemNotifier.cancelPendingUpdate();
+	listItemNotifier.clearQueue();
+
 	BaseItem::clearItem();
 }
 
-void MediaListItem::load(float fadeInTime, MediaListItem* prevMedia)
+void MediaListItem::load(float defaultTransitionTime, MediaListItem* prevMedia)
 {
 	if (weight->floatValue() == 1.f)
 	{
@@ -89,24 +92,29 @@ void MediaListItem::load(float fadeInTime, MediaListItem* prevMedia)
 		return;
 	}
 
+	timeAtStart = Time::getMillisecondCounterHiRes() / 1000.0;
+	weightAtStart = weight->floatValue();
+	float fadeInTime = transitionTime->enabled ? transitionTime->floatValue() : defaultTransitionTime;
+	targetTime = timeAtStart + fadeInTime * (1 - weightAtStart);
+
 	for (int i = 0; i < subItems.size(); i++)
 	{
 		MediaListSubItem* subItem = dynamic_cast<MediaListSubItem*>(subItems[i]);
 		jassert(subItem != nullptr);
 		subItem->setupTransition(prevMedia != nullptr ? prevMedia->getMediaAt(i) : nullptr);
+
+
+		bool timeOverride = subItem->transitionTimeOverride->enabled;
+		subItem->weightAtStart = subItem->weight;
+		subItem->targetEndTransitionTime = timeOverride ? timeAtStart + subItem->transitionTimeOverride->floatValue() * (1 - subItem->weightAtStart) : targetTime;
 	}
 
-	timeAtStart = Time::getMillisecondCounterHiRes() / 1000.0;
-	weightAtStart = weight->floatValue();
-	targetTime = timeAtStart + fadeInTime * (1 - weightAtStart);
 	targetWeight = 1.f;
 	state->setValueWithData(LOADING);
 
 }
 
-
-
-void MediaListItem::unload(float fadeOutTime)
+void MediaListItem::unload(float fadeOutTime, Array<float> fadeOutSubTimes)
 {
 	if (weight->floatValue() == 0.f)
 	{
@@ -117,6 +125,16 @@ void MediaListItem::unload(float fadeOutTime)
 	timeAtStart = Time::getMillisecondCounterHiRes() / 1000.0;
 	weightAtStart = weight->floatValue();
 	targetTime = timeAtStart + fadeOutTime * weightAtStart;
+
+	int i = 0;
+	for (auto& subItem : subItems)
+	{
+		subItem->weightAtStart = subItem->weight;
+		float subFadeOutTime = fadeOutSubTimes.size() > i ? fadeOutSubTimes[i] : fadeOutTime;
+		subItem->targetEndTransitionTime = timeAtStart + subFadeOutTime * subItem->weightAtStart;
+		i++;
+	}
+
 	targetWeight = 0.f;
 	state->setValueWithData(UNLOADING);
 
@@ -176,9 +194,20 @@ void MediaListItem::process()
 		{
 			weight->setValue(targetWeight);
 			state->setValueWithData(targetWeight > 0.f ? RUNNING : IDLE);
+			for (auto& s : subItems)
+			{
+				s->weight = targetWeight;
+			}
 		}
 		else
 		{
+			for (auto& s : subItems)
+			{
+				if (t >= s->targetEndTransitionTime)
+					s->weight = targetWeight;
+				else
+					s->weight = jmap<double>(t, timeAtStart, s->targetEndTransitionTime, s->weightAtStart, targetWeight);
+			}
 			double tWeight = jmap<double>(t, timeAtStart, targetTime, weightAtStart, targetWeight);
 			weight->setValue(tWeight);
 		}
@@ -190,7 +219,7 @@ void MediaListItem::process()
 		if (!s->shaderMedia->enabled->boolValue()) continue;
 		float progression = 0.f;
 		if (ts == LOADING)
-			progression = jmap<float>(weight->floatValue(), weightAtStart, 1.f, 0.f, 1.f);
+			progression = jmap<float>(s->weight, s->weightAtStart, 1.f, 0.f, 1.f);
 		s->transitionProgression->setValue(progression);
 	}
 
@@ -236,6 +265,25 @@ ShaderMedia* MediaListItem::getShaderMediaAt(int index)
 	return subItems[index]->shaderMedia.get();
 }
 
+float MediaListItem::getWeightAt(int index, bool useWeightAtStart)
+{
+	if (index < 0 || index >= subItems.size()) return useWeightAtStart ? weight->floatValue() : weightAtStart;
+	return useWeightAtStart ? subItems[index]->weight : subItems[index]->weightAtStart;
+}
+
+Array<float> MediaListItem::getSubTransitionTimes(float defaultTime)
+{
+	Array<float> result;
+	for (auto& s : subItems)
+	{
+		if (s->transitionTimeOverride->enabled)
+			result.add(s->transitionTimeOverride->floatValue());
+		else
+			result.add(transitionTime->enabled ? transitionTime->floatValue() : defaultTime);
+	}
+	return result;
+}
+
 float MediaListItem::getReferenceLength()
 {
 	AutoNextBehavior an = (AutoNextBehavior)autoNextBehavior->getValueDataAsEnum<int>();
@@ -259,7 +307,14 @@ float MediaListItem::getReferenceLength()
 
 void MediaListItem::onContainerParameterChangedInternal(Parameter* p)
 {
-	if (p == state)
+	if (p == transitionTime)
+	{
+		for (auto& s : subItems)
+		{
+			s->transitionTimeOverride->setRange(0, transitionTime->floatValue());
+		}
+	}
+	else if (p == state)
 	{
 		TransitionState ts = state->getValueDataAsEnum<TransitionState>();
 
@@ -299,6 +354,7 @@ void MediaListItem::onControllableFeedbackUpdateInternal(ControllableContainer* 
 {
 	BaseItem::onControllableFeedbackUpdateInternal(cc, c);
 
+
 	if (MediaListSubItem* subItem = dynamic_cast<MediaListSubItem*>(cc))
 	{
 		if (c == subItem->type)
@@ -323,6 +379,8 @@ bool MediaListItem::isUnloading() const {
 
 void MediaListItem::newMessage(const MediaListSubItem::MediaListSubItemEvent& event)
 {
+	if (isBeingDestroyed || (Engine::mainEngine != nullptr && Engine::mainEngine->isClearing)) return;
+
 	if (event.type == MediaListSubItem::MediaListSubItemEvent::SUBMEDIA_FINISHED)
 	{
 		TransitionState ts = state->getValueDataAsEnum<TransitionState>();

@@ -33,6 +33,8 @@ public:
 
 	TargetParameter* reference;
 
+	FloatParameter* transitionTimeOverride;
+
 	FloatParameter* transitionProgression;
 	TargetParameter* transitionSourceMedia;
 	TargetParameter* transitionTargetMedia;
@@ -40,6 +42,10 @@ public:
 	bool forceRenderShader;
 
 	CriticalSection mediaLock;
+
+	float targetEndTransitionTime;
+	float weightAtStart;
+	float weight;
 
 	void clear() override;
 

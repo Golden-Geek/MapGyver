@@ -44,6 +44,7 @@ public:
 	void preRenderGLInternal() override;
 	void renderGLInternal() override;
 	void renderLayer(int index);
+	void renderItemLayer(MediaListItem* item, int layerIndex);
 
 	void updateNumLayers();
 

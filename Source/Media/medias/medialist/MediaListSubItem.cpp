@@ -17,7 +17,10 @@ MediaListSubItem::MediaListSubItem(const String& name, bool canBeSubtexture) :
 	media(nullptr),
 	listSubItemNotifier(10),
 	reference(nullptr),
-	forceRenderShader(false)
+	forceRenderShader(false),
+	targetEndTransitionTime(0),
+	weightAtStart(0),
+	weight(0)
 {
 	type = addEnumParameter("Type", "Type of the media layer");
 	type->addOption("Empty", "empty")->addOption("Reference", "reference");
@@ -34,10 +37,13 @@ MediaListSubItem::MediaListSubItem(const String& name, bool canBeSubtexture) :
 	manualRenderParams.getDynamicObject()->setProperty("manualRender", true);
 	shaderMedia.reset(new ShaderMedia(manualRenderParams));
 
-
 	shaderMedia->enabled->setValue(false);
 	shaderMedia->addAsyncInspectableListener(this);
 	shaderMedia->setNiceName("Transition Shader");
+
+	transitionTimeOverride = addFloatParameter("Transition Time", "Transition time override in seconds (0 to use default)", 0, 0, 1000, false);
+	transitionTimeOverride->canBeDisabledByUser = true;
+
 	transitionProgression = shaderMedia->mediaParams.addFloatParameter("progression", "Progression", 0, 0, 1);
 	transitionProgression->setControllableFeedbackOnly(true);
 	transitionSourceMedia = shaderMedia->sourceMedias.addTargetParameter("Source", "Media");
@@ -65,6 +71,10 @@ void MediaListSubItem::clear()
 		removeChildControllableContainer(ownedMedia.get());
 		ownedMedia.reset();
 	}
+
+	listSubItemNotifier.cancelPendingUpdate();
+	listSubItemNotifier.clearQueue();
+
 	setMedia(nullptr);
 	shaderMedia->removeAsyncInspectableListener(this);
 	shaderMedia->clearItem();
@@ -306,6 +316,8 @@ void MediaListSubItem::newMessage(const Media::MediaEvent& event)
 
 void MediaListSubItem::newMessage(const Inspectable::InspectableEvent& event)
 {
+	if (isBeingDestroyed || (Engine::mainEngine != nullptr && Engine::mainEngine->isClearing)) return;
+
 	if (event.type == Inspectable::InspectableEvent::SELECTION_CHANGED)
 	{
 		listSubItemNotifier.addMessage(new MediaListSubItemEvent(MediaListSubItemEvent::SELECTION_CHANGED, this));

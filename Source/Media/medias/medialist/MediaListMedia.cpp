@@ -9,6 +9,7 @@
 */
 
 #include "Media/MediaIncludes.h"
+#include "MediaListMedia.h"
 
 MediaListMedia::MediaListMedia(var params) :
 	Media(getTypeString(), params, true),
@@ -45,23 +46,27 @@ void MediaListMedia::updateMediaLoads()
 	GenericScopedLock lock(listManager.items.getLock());
 
 	int mIndex = index->intValue() - 1;
+	float dTransitionTime = defaultTransitionTime->floatValue();
 	if (mIndex < 0 || mIndex >= listManager.items.size())
 	{
 		for (auto& item : listManager.items)
 		{
-			item->unload(0);
+			item->unload(dTransitionTime, Array<float>());
 		}
 		return;
 	}
 
 	MediaListItem* currentItem = listManager.items[mIndex];
-	float transitionTime = currentItem->transitionTime->enabled ? currentItem->transitionTime->floatValue() : defaultTransitionTime->floatValue();
+	float itemTransitionTime = currentItem->transitionTime->enabled ? currentItem->transitionTime->floatValue() : dTransitionTime;
+	Array<float> subTransitionTimes = currentItem->getSubTransitionTimes(dTransitionTime);
 	for (auto& item : listManager.items)
 	{
 		if (item == currentItem)
-			item->load(transitionTime, currentMediaItem);
+			item->load(dTransitionTime, currentMediaItem);
 		else
-			item->unload(transitionTime);
+		{
+			item->unload(itemTransitionTime, subTransitionTimes);
+		}
 	}
 
 	currentMediaItem = currentItem;
@@ -132,65 +137,78 @@ void MediaListMedia::preRenderGLInternal()
 
 void MediaListMedia::renderGLInternal()
 {
-	
-
 
 	for (int i = 0; i < numLayers->intValue(); i++)
 	{
-		OpenGLFrameBuffer* fbo = i == 0 ? &frameBuffer : extraFrameBuffers[i - 1];
-		if (fbo->getWidth() != frameBuffer.getWidth() || fbo->getHeight() != frameBuffer.getHeight()) initExtraFrameBuffer(*fbo);
-		fbo->makeCurrentAndClear();
-		Init2DViewport(fbo->getWidth(), fbo->getHeight());
-		glEnable(GL_BLEND);
-		glColor4f(1, 0, 1, 1);
-		Draw2DRect(0, 0, fbo->getWidth(), fbo->getHeight());
 		renderLayer(i);
-		fbo->releaseAsRenderingTarget();
 	}
+
 }
 
 void MediaListMedia::renderLayer(int index)
 {
-	GenericScopedLock lock(listManager.items.getLock());
+	OpenGLFrameBuffer* fbo = index == 0 ? &frameBuffer : extraFrameBuffers[index - 1];
 
+	if (fbo->getWidth() != frameBuffer.getWidth() || fbo->getHeight() != frameBuffer.getHeight()) initExtraFrameBuffer(*fbo);
+
+	fbo->makeCurrentAndClear();
+	
+	Init2DViewport(fbo->getWidth(), fbo->getHeight());
+	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glColor3f(1, 1, 1);
+	glEnable(GL_BLEND);
+
+	GenericScopedLock lock(listManager.items.getLock());
 
 	for (auto& item : listManager.items)
 	{
-		GLuint textureID = item != nullptr ? item->getTextureIDAt(index) : 0;
-		Media* media = item != nullptr ? item->getMediaAt(index) : nullptr;
-		if (textureID == GLuint())
-		{
-			continue;
-		}
-
-		float w = item->weight->floatValue();
-
-		if (w == 0.f) continue;
-
-		ShaderMedia* shaderMedia = item->getShaderMediaAt(index);
-		GLuint textureToUse = textureID;
-		Media* mediaToUse = media;
-		bool useShader = item->isLoading() && shaderMedia != nullptr && shaderMedia->enabled->boolValue() && shaderMedia->shaderLoaded->boolValue();
-		if (shaderMedia != nullptr && useShader)
-		{
-			//later implement shader transition
-			textureToUse = shaderMedia->getTextureID();
-			mediaToUse = shaderMedia;
-			w = 1.f;
-		}
-
-
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glBindTexture(GL_TEXTURE_2D, textureToUse);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		Rectangle<int> mediaRect = mediaToUse->getMediaRect(Rectangle<int>(0, 0, width->intValue(), height->intValue()));
-		glColor4f(1, 1, 1, w);
-
-		Draw2DTexRect(mediaRect.getX(), mediaRect.getY(), mediaRect.getWidth(), mediaRect.getHeight());
-		glBindTexture(GL_TEXTURE_2D, 0);
+		if (item == currentMediaItem) continue;
+		renderItemLayer(item, index);
 	}
+
+	if (currentMediaItem != nullptr)	renderItemLayer(currentMediaItem, index);
+
+	glDisable(GL_BLEND);
+
+	fbo->releaseAsRenderingTarget();
+}
+
+void MediaListMedia::renderItemLayer(MediaListItem* item, int index)
+{
+	GLuint textureID = item != nullptr ? item->getTextureIDAt(index) : 0;
+	Media* media = item != nullptr ? item->getMediaAt(index) : nullptr;
+	if (textureID == GLuint()) return;
+
+	float itemWeight = item->weight->floatValue();
+	if (itemWeight == 0.f) return;
+
+	float w = item->getWeightAt(index, item == currentMediaItem);
+	if (w == 0.f) return;
+
+
+	ShaderMedia* shaderMedia = item->getShaderMediaAt(index);
+	GLuint textureToUse = textureID;
+	Media* mediaToUse = media;
+	bool useShader = item->isLoading() && shaderMedia != nullptr && shaderMedia->enabled->boolValue() && shaderMedia->shaderLoaded->boolValue();
+	if (shaderMedia != nullptr && useShader)
+	{
+		//later implement shader transition
+		textureToUse = shaderMedia->getTextureID();
+		mediaToUse = shaderMedia;
+		w = 1.f;
+	}
+
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	glBindTexture(GL_TEXTURE_2D, textureToUse);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	Rectangle<int> mediaRect = mediaToUse->getMediaRect(Rectangle<int>(0, 0, width->intValue(), height->intValue()));
+	glColor4f(1, 1, 1, w);
+
+	Draw2DTexRect(mediaRect.getX(), mediaRect.getY(), mediaRect.getWidth(), mediaRect.getHeight());
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void MediaListMedia::updateNumLayers()
