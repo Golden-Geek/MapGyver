@@ -32,6 +32,8 @@ public:
 	EnumParameter* mediaTextureName;
 	Media* currentMedia;
 
+	String ghostTextureName; //used to keep the texture name of the media when no media is loaded, to avoid loosing it when switching media
+
 	std::unique_ptr<Media> patternMedia;
 	SpinLock patternMediaLock;
 
@@ -143,6 +145,9 @@ public:
 	static Point<float> openGLPoint(Point2DParameter* p);
 	static bool isPointInsideTriangle(Point<float> point, Point<float> vertex1, Point<float> vertex2, Point<float> vertex3);
 	static bool isPointInsideCircumcircle(Point<float> point, Point<float> vertex1, Point<float> vertex2, Point<float> vertex3);
+
+	var getJSONData(bool includeNonOverriden = false) override;
+	void loadJSONDataItemInternal(var data) override;
 };
 
 

@@ -66,7 +66,7 @@ Media::Media(const String& name, var params, bool hasCustomSize) :
 
 Media::~Media()
 {
-	
+
 }
 
 
@@ -171,22 +171,23 @@ void Media::renderOpenGLMedia(bool force)
 
 
 
-void Media::addFrameBuffer(const String& name, OpenGLFrameBuffer* f)
+void Media::addFrameBuffer(const String& name, OpenGLFrameBuffer* f, bool notify)
 {
 	jassert(f != &frameBuffer);
 	if (frameBufferMap.contains(name) && frameBufferMap[name] == f) return;
 
 	frameBufferMap.set(name, f);
-	mediaNotifier.addMessage(new MediaEvent(MediaEvent::SUB_FRAMEBUFFERS_CHANGED, this));
+
+	if (notify) mediaNotifier.addMessage(new MediaEvent(MediaEvent::SUB_FRAMEBUFFERS_CHANGED, this));
 }
 
-void Media::removeFrameBuffer(const String& name)
+void Media::removeFrameBuffer(const String& name, bool notify)
 {
 	if (!frameBufferMap.contains(name)) return;
 	if (Engine::mainEngine->isClearing) return;
 
 	frameBufferMap.remove(name);
-	mediaNotifier.addMessage(new MediaEvent(MediaEvent::SUB_FRAMEBUFFERS_CHANGED, this));
+	if (notify) mediaNotifier.addMessage(new MediaEvent(MediaEvent::SUB_FRAMEBUFFERS_CHANGED, this));
 }
 
 String Media::getNameForFrameBuffer(OpenGLFrameBuffer* f)

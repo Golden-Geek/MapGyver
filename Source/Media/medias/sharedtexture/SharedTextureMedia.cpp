@@ -144,7 +144,7 @@ void BaseSharedTextureMedia::initExtraFramebuffers()
 	{
 		if (fb != nullptr)
 		{
-			removeFrameBuffer(getNameForFrameBuffer(fb));
+			removeFrameBuffer(getNameForFrameBuffer(fb), false);
 			fb->release();
 		}
 	}
@@ -154,8 +154,10 @@ void BaseSharedTextureMedia::initExtraFramebuffers()
 	{
 		OpenGLFrameBuffer* fbo = extraFrameBuffers.add(new OpenGLFrameBuffer());
 		fbo->initialise(GlContextHolder::getInstance()->context, r->width, r->height);
-		addFrameBuffer(r->sharingName, fbo);
+		addFrameBuffer(r->sharingName, fbo, false);
 	}
+
+	mediaNotifier.addMessage(new MediaEvent(MediaEvent::SUB_FRAMEBUFFERS_CHANGED, this));
 }
 
 Point<int> BaseSharedTextureMedia::getDefaultMediaSize()

@@ -77,8 +77,8 @@ public:
 
 
 
-	void addFrameBuffer(const String& name, OpenGLFrameBuffer* f);
-	void removeFrameBuffer(const String& name);
+	void addFrameBuffer(const String& name, OpenGLFrameBuffer* f, bool notify = true);
+	void removeFrameBuffer(const String& name, bool notify = true);
 	String getNameForFrameBuffer(OpenGLFrameBuffer* f);
 	StringArray getFrameBufferNames(); //for media that have multiple frame buffers (like multi-pass shaders)
 	OpenGLFrameBuffer* getFrameBuffer(const String& name = String());

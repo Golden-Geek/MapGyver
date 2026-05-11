@@ -29,7 +29,6 @@ Surface::Surface(var params) :
 	objectData(params),
 	previewMedia(nullptr),
 	shouldUpdateVertices(true)
-
 {
 	saveAndLoadRecursiveData = true;
 	canBeDisabled = true;
@@ -224,8 +223,13 @@ void Surface::updateMediaTextureNames()
 {
 	if (currentMedia != nullptr)
 	{
-		currentMedia->fillFrameBufferOptions(mediaTextureName);
-		if (mediaTextureName->getValueKey().isEmpty()) mediaTextureName->setValueWithData("");
+		if (!isCurrentlyLoadingData)
+		{
+			String oldGhostName = ghostTextureName;
+			currentMedia->fillFrameBufferOptions(mediaTextureName);
+			String mTexName = mediaTextureName->getValueData().toString();
+			if (mTexName.isEmpty()) mediaTextureName->setValueWithData(oldGhostName);
+		}
 	}
 	else mediaTextureName->clearOptions();
 }
@@ -258,6 +262,12 @@ void Surface::onContainerParameterChangedInternal(Parameter* p)
 		cropRight->setEnabled(e);
 		cropBottom->setEnabled(e);
 		cropLeft->setEnabled(e);
+	}else if(p == mediaTextureName)
+	{
+		if (currentMedia != nullptr && !isCurrentlyLoadingData)
+		{
+			ghostTextureName = mediaTextureName->getValueData().toString();
+		}
 	}
 }
 
@@ -1017,4 +1027,19 @@ bool Surface::isPointInsideCircumcircle(juce::Point<float> point, juce::Point<fl
 
 	// Comparaison des distances au carré
 	return center.getDistanceFrom(point) < center.getDistanceFrom(vertex1);
+}
+
+var Surface::getJSONData(bool includeNonOverriden)
+{
+	var data = BaseItem::getJSONData(includeNonOverriden);
+	if(ghostTextureName != "") data.getDynamicObject()->setProperty("ghostTextureName",  ghostTextureName);
+	
+	return data;
+}
+
+void Surface::loadJSONDataItemInternal(var data)
+{
+	ghostTextureName = data.getProperty("ghostTextureName", "").toString();
+	BaseItem::loadJSONDataItemInternal(data);
+	updateMediaTextureNames();
 }
