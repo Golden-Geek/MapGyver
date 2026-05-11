@@ -14,8 +14,6 @@
 #include <TlHelp32.h>
 #endif
 
-#include "InteractiveAppMedia.h"
-
 InteractiveAppMedia::InteractiveAppMedia(var params) :
 	BaseSharedTextureMedia(getTypeString(), params),
 	Thread("Interactive App"),
@@ -172,7 +170,7 @@ bool InteractiveAppMedia::isAppRunning()
 	return appState->getValueDataAsEnum<AppState>() == AppState::RUNNING;
 }
 
-void InteractiveAppMedia::updateTextureList()
+void InteractiveAppMedia::updateTextureList(bool force)
 {
 	if (!isAppRunning()) return; //only update when app is running
 
@@ -183,10 +181,14 @@ void InteractiveAppMedia::updateTextureList()
 	StringArray goodSenders;
 	for (auto& s : senders)
 	{
-		if (s.contains(serverName->stringValue())) goodSenders.add(s);
+		if (s.contains(serverName->stringValue()))
+		{
+			goodSenders.add(s);
+		}
 	}
 
 	if (goodSenders.isEmpty()) return; //if something went bad, don't destroy the detected list
+
 
 	bool listHasChanged = false;
 	for (auto& s : goodSenders)
@@ -197,6 +199,7 @@ void InteractiveAppMedia::updateTextureList()
 			listHasChanged = true;
 		}
 	}
+
 
 	for (auto& k : keys)
 	{
@@ -214,6 +217,18 @@ void InteractiveAppMedia::updateTextureList()
 		for (auto& s : goodSenders) options.add(EnumParameter::EnumValue(s, s));
 		availableTextures->setOptions(options);
 		if (curSharingName.isNotEmpty()) availableTextures->setValueWithKey(curSharingName);
+
+	}
+
+	if (listHasChanged || extraReceivers.size() != goodSenders.size())
+	{
+		Array<SharedTextureReceiver*> newReceivers;
+		for (auto& s : goodSenders)
+		{
+			SharedTextureReceiver* r = SharedTextureManager::getInstance()->addReceiver(s);
+			if (r != nullptr) newReceivers.add(r);
+		}
+		setupExtraReceivers(newReceivers);
 	}
 }
 
@@ -244,8 +259,6 @@ void InteractiveAppMedia::syncOSCQuery()
 {
 	requestHostInfo();
 }
-
-
 
 void InteractiveAppMedia::requestHostInfo()
 {
@@ -790,4 +803,5 @@ void InteractiveAppMedia::loadJSONDataInternal(var data)
 	BaseSharedTextureMedia::loadJSONDataInternal(data);
 	var tData = data.getProperty("treeData", var());
 	updateTreeFromData(tData);
+	updateTextureList(true);
 }

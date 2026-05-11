@@ -34,6 +34,7 @@ public:
 	MediaListItem* currentMediaItem;
 
 
+	Array<SharedTextureReceiver*> availableReceivers;
 	OwnedArray<OpenGLFrameBuffer> extraFrameBuffers;
 
 	void clearItem() override;

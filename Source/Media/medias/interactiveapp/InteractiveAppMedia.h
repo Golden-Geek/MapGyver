@@ -52,7 +52,6 @@ public:
 
 	Array<Controllable*> noFeedbackList;
 
-
 	void clearItem() override;
 
 	void onContainerParameterChangedInternal(Parameter* p) override;
@@ -60,10 +59,9 @@ public:
 
 	void checkAppRunning();
 	bool isAppRunning();
-	void updateTextureList();
+	void updateTextureList(bool force = false);
 
 	void updateBeingUsed() override;
-
 
 	void syncOSCQuery();
 	void requestHostInfo();

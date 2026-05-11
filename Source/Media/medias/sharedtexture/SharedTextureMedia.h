@@ -23,13 +23,21 @@ public:
 
 	StringParameter* sharingName;
 	SharedTextureReceiver* receiver;
+	Array<SharedTextureReceiver*> extraReceivers;
+	OwnedArray<OpenGLFrameBuffer> extraFrameBuffers;
+
+	bool shouldReinitFrameBuffer;
 
 	void setupReceiver();
+	void setupExtraReceivers(Array<SharedTextureReceiver*> receivers);
 
 	void onContainerParameterChangedInternal(Parameter* p) override;
 	void textureUpdated(SharedTextureReceiver* receiver) override;
 
 	void renderGLInternal() override;
+
+	void initFrameBuffer() override;
+	void initExtraFramebuffers();
 
 	Point<int> getDefaultMediaSize() override;
 
