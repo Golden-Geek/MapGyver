@@ -23,6 +23,8 @@
 #include "medias/medialist/MediaListSubItem.cpp"
 #include "medias/medialist/MediaListItem.cpp"
 #include "medias/medialist/MediaListItemManager.cpp"
+#include "medias/medialist/MediaListCustomOrderList.cpp"
+#include "medias/medialist/MediaListCustomOrderManager.cpp"
 #include "medias/medialist/MediaListMedia.cpp"
 
 #include "medias/ndi/NDIMedia.cpp"

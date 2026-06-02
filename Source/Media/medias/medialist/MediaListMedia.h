@@ -33,6 +33,8 @@ public:
 	FloatParameter* defaultTransitionTime;
 
 	MediaListItemManager listManager;
+	MediaListCustomOrderManager customOrderManager;
+	TargetParameter* customOrderTarget;
 	MediaListItem* currentMediaItem;
 
 

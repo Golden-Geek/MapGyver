@@ -25,6 +25,12 @@ MediaListMedia::MediaListMedia(var params) :
 	preUseNextMedia = mediaParams.addBoolParameter("Pre-use next media", "Whether to keep next media pre-used", true);
 	preUsePreviousMedia = mediaParams.addBoolParameter("Pre-use previous media", "Whether to keep previous media pre-used", false);
 	addChildControllableContainer(&listManager);
+	addChildControllableContainer(&customOrderManager);
+
+	customOrderTarget = mediaParams.addTargetParameter("Custom Order", "Select a custom order list to use for navigation, or leave empty for default order", &customOrderManager);
+	customOrderTarget->targetType = TargetParameter::CONTAINER;
+	customOrderTarget->defaultContainerTypeCheckFunc = [](ControllableContainer* cc) { return dynamic_cast<MediaListCustomOrderList*>(cc) != nullptr; };
+
 	defaultTransitionTime = mediaParams.addFloatParameter("Default transition time", "Default transition time in seconds when not specified in the item", 1, 0);
 
 	alwaysRedraw = true;
@@ -139,7 +145,7 @@ void MediaListMedia::updateMediaLoads()
 
 void MediaListMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
-	if (c == index || c == preUseNextMedia || c == preUsePreviousMedia)
+	if (c == index || c == preUseNextMedia || c == preUsePreviousMedia || c == customOrderTarget)
 	{
 		updateMediaLoads();
 	}
@@ -152,34 +158,89 @@ void MediaListMedia::onControllableFeedbackUpdateInternal(ControllableContainer*
 	}
 	else if (c == nextTrigger)
 	{
-		int nextIndex = index->intValue(); // -1 for 0-based index, but +1 to do the next item
-		while (listManager.items.size() > nextIndex && !listManager.items[nextIndex]->enabled->boolValue())
+		MediaListCustomOrderList* orderList = dynamic_cast<MediaListCustomOrderList*>(customOrderTarget->targetContainer.get());
+		if (orderList != nullptr)
 		{
-			nextIndex++;
+			Array<int> order = orderList->getOrderedIndices();
+			if (order.isEmpty()) return;
+			// Find current position in the custom order
+			int currentItemIndex = index->intValue() - 1;
+			int posInOrder = -1;
+			for (int i = 0; i < order.size(); ++i)
+			{
+				if (order[i] == currentItemIndex) { posInOrder = i; break; }
+			}
+			int nextPos = posInOrder + 1;
+			// Skip disabled items
+			while (nextPos < order.size() && order[nextPos] >= 0 && order[nextPos] < listManager.items.size() && !listManager.items[order[nextPos]]->enabled->boolValue())
+				nextPos++;
+			if (nextPos >= order.size())
+			{
+				if (!loop->boolValue()) return;
+				nextPos = 0;
+				while (nextPos < order.size() && order[nextPos] >= 0 && order[nextPos] < listManager.items.size() && !listManager.items[order[nextPos]]->enabled->boolValue())
+					nextPos++;
+				if (nextPos >= order.size()) return;
+			}
+			index->setValue(order[nextPos] + 1);
 		}
-
-		if (nextIndex >= listManager.items.size())
+		else
 		{
-			if (loop->boolValue()) nextIndex = 0;
-		}
+			int nextIndex = index->intValue(); // -1 for 0-based index, but +1 to do the next item
+			while (listManager.items.size() > nextIndex && !listManager.items[nextIndex]->enabled->boolValue())
+			{
+				nextIndex++;
+			}
 
-		index->setValue(nextIndex + 1);
+			if (nextIndex >= listManager.items.size())
+			{
+				if (loop->boolValue()) nextIndex = 0;
+			}
+
+			index->setValue(nextIndex + 1);
+		}
 	}
 	else if (c == previousTrigger)
 	{
-
-		int prevIndex = index->intValue() - 2; // -1 for 0-based index, but -1 to do the previous item
-		while (prevIndex >= 0 && !listManager.items[prevIndex]->enabled->boolValue())
+		MediaListCustomOrderList* orderList = dynamic_cast<MediaListCustomOrderList*>(customOrderTarget->targetContainer.get());
+		if (orderList != nullptr)
 		{
-			prevIndex--;
+			Array<int> order = orderList->getOrderedIndices();
+			if (order.isEmpty()) return;
+			int currentItemIndex = index->intValue() - 1;
+			int posInOrder = -1;
+			for (int i = 0; i < order.size(); ++i)
+			{
+				if (order[i] == currentItemIndex) { posInOrder = i; break; }
+			}
+			int prevPos = posInOrder - 1;
+			while (prevPos >= 0 && order[prevPos] >= 0 && order[prevPos] < listManager.items.size() && !listManager.items[order[prevPos]]->enabled->boolValue())
+				prevPos--;
+			if (prevPos < 0)
+			{
+				if (!loop->boolValue()) return;
+				prevPos = order.size() - 1;
+				while (prevPos >= 0 && order[prevPos] >= 0 && order[prevPos] < listManager.items.size() && !listManager.items[order[prevPos]]->enabled->boolValue())
+					prevPos--;
+				if (prevPos < 0) return;
+			}
+			index->setValue(order[prevPos] + 1);
 		}
-
-		if (prevIndex < 0)
+		else
 		{
-			if (loop->boolValue()) prevIndex = listManager.items.size() - 1;
-		}
+			int prevIndex = index->intValue() - 2; // -1 for 0-based index, but -1 to do the previous item
+			while (prevIndex >= 0 && !listManager.items[prevIndex]->enabled->boolValue())
+			{
+				prevIndex--;
+			}
 
-		index->setValue(prevIndex + 1);
+			if (prevIndex < 0)
+			{
+				if (loop->boolValue()) prevIndex = listManager.items.size() - 1;
+			}
+
+			index->setValue(prevIndex + 1);
+		}
 	}
 	else if (c == numLayers)
 	{
@@ -349,6 +410,33 @@ void MediaListMedia::initExtraFrameBuffer(OpenGLFrameBuffer& fb)
 
 MediaListItem* MediaListMedia::getNextItem()
 {
+	MediaListCustomOrderList* orderList = dynamic_cast<MediaListCustomOrderList*>(customOrderTarget->targetContainer.get());
+	if (orderList != nullptr)
+	{
+		Array<int> order = orderList->getOrderedIndices();
+		if (order.isEmpty()) return nullptr;
+		int currentItemIndex = index->intValue() - 1;
+		int posInOrder = -1;
+		for (int i = 0; i < order.size(); ++i)
+		{
+			if (order[i] == currentItemIndex) { posInOrder = i; break; }
+		}
+		int nextPos = posInOrder + 1;
+		while (nextPos < order.size() && order[nextPos] >= 0 && order[nextPos] < listManager.items.size() && !listManager.items[order[nextPos]]->enabled->boolValue())
+			nextPos++;
+		if (nextPos < order.size() && order[nextPos] >= 0 && order[nextPos] < listManager.items.size())
+			return listManager.items[order[nextPos]];
+		if (loop->boolValue())
+		{
+			nextPos = 0;
+			while (nextPos < order.size() && order[nextPos] >= 0 && order[nextPos] < listManager.items.size() && !listManager.items[order[nextPos]]->enabled->boolValue())
+				nextPos++;
+			if (nextPos < order.size() && order[nextPos] >= 0 && order[nextPos] < listManager.items.size())
+				return listManager.items[order[nextPos]];
+		}
+		return nullptr;
+	}
+
 	int nextIndex = index->intValue();
 	while (listManager.items.size() > nextIndex && !listManager.items[nextIndex]->enabled)
 	{
@@ -369,6 +457,33 @@ MediaListItem* MediaListMedia::getNextItem()
 
 MediaListItem* MediaListMedia::getPreviousItem()
 {
+	MediaListCustomOrderList* orderList = dynamic_cast<MediaListCustomOrderList*>(customOrderTarget->targetContainer.get());
+	if (orderList != nullptr)
+	{
+		Array<int> order = orderList->getOrderedIndices();
+		if (order.isEmpty()) return nullptr;
+		int currentItemIndex = index->intValue() - 1;
+		int posInOrder = -1;
+		for (int i = 0; i < order.size(); ++i)
+		{
+			if (order[i] == currentItemIndex) { posInOrder = i; break; }
+		}
+		int prevPos = posInOrder - 1;
+		while (prevPos >= 0 && order[prevPos] >= 0 && order[prevPos] < listManager.items.size() && !listManager.items[order[prevPos]]->enabled->boolValue())
+			prevPos--;
+		if (prevPos >= 0 && order[prevPos] >= 0 && order[prevPos] < listManager.items.size())
+			return listManager.items[order[prevPos]];
+		if (loop->boolValue())
+		{
+			prevPos = order.size() - 1;
+			while (prevPos >= 0 && order[prevPos] >= 0 && order[prevPos] < listManager.items.size() && !listManager.items[order[prevPos]]->enabled->boolValue())
+				prevPos--;
+			if (prevPos >= 0 && order[prevPos] >= 0 && order[prevPos] < listManager.items.size())
+				return listManager.items[order[prevPos]];
+		}
+		return nullptr;
+	}
+
 	int previousIndex = index->intValue() - 2;
 	while (previousIndex >= 0 && !listManager.items[previousIndex]->enabled)
 	{

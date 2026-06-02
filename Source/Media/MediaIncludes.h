@@ -26,6 +26,8 @@
 #include "medias/medialist/MediaListSubItem.h"
 #include "medias/medialist/MediaListItem.h"
 #include "medias/medialist/MediaListItemManager.h"
+#include "medias/medialist/MediaListCustomOrderList.h"
+#include "medias/medialist/MediaListCustomOrderManager.h"
 #include "medias/medialist/MediaListMedia.h"
 
 #include "medias/ndi/NDIMedia.h"

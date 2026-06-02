@@ -129,6 +129,14 @@
               <FILE id="cLcSIH" name="MediaListPanel.h" compile="0" resource="0"
                     file="Source/Media/medias/medialist/ui/MediaListPanel.h"/>
             </GROUP>
+            <FILE id="q5VMZj" name="MediaListCustomOrderList.cpp" compile="0" resource="0"
+                  file="Source/Media/medias/medialist/MediaListCustomOrderList.cpp"/>
+            <FILE id="BjnBOf" name="MediaListCustomOrderList.h" compile="0" resource="0"
+                  file="Source/Media/medias/medialist/MediaListCustomOrderList.h"/>
+            <FILE id="gOOVio" name="MediaListCustomOrderManager.cpp" compile="0"
+                  resource="0" file="Source/Media/medias/medialist/MediaListCustomOrderManager.cpp"/>
+            <FILE id="rmbGrD" name="MediaListCustomOrderManager.h" compile="0"
+                  resource="0" file="Source/Media/medias/medialist/MediaListCustomOrderManager.h"/>
             <FILE id="nc7IOJ" name="MediaListItem.cpp" compile="0" resource="0"
                   file="Source/Media/medias/medialist/MediaListItem.cpp"/>
             <FILE id="C7R8Ck" name="MediaListItem.h" compile="0" resource="0" file="Source/Media/medias/medialist/MediaListItem.h"/>

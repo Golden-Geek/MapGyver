@@ -118,6 +118,7 @@
 		0E9602AA6EA3E72D9070DD0F /* ScreenIncludes.h */ /* ScreenIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScreenIncludes.h; path = ../../Source/Screen/ScreenIncludes.h; sourceTree = SOURCE_ROOT; };
 		0F9CC6EE106D4E6D0C60FF5F /* Pin.h */ /* Pin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Pin.h; path = ../../Source/Screen/Surface/Pin.h; sourceTree = SOURCE_ROOT; };
 		0FC3B25BD7E5349FA38491D1 /* webcamDeviceParameter.cpp */ /* webcamDeviceParameter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = webcamDeviceParameter.cpp; path = ../../Source/Media/medias/webcam/webcamDeviceParameter.cpp; sourceTree = SOURCE_ROOT; };
+		10FE2D660A2D94C4229A084B /* MediaListCustomOrderList.h */ /* MediaListCustomOrderList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaListCustomOrderList.h; path = ../../Source/Media/medias/medialist/MediaListCustomOrderList.h; sourceTree = SOURCE_ROOT; };
 		1278284E6FFB63AA9C3EAA62 /* NodeConnectionViewUI.h */ /* NodeConnectionViewUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnectionViewUI.h; path = ../../Source/Node/Connection/ui/NodeConnectionViewUI.h; sourceTree = SOURCE_ROOT; };
 		131482B58FD97E9F4D3ACF24 /* include_juce_audio_processors_headless_ara.cpp */ /* include_juce_audio_processors_headless_ara.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_headless_ara.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_headless_ara.cpp; sourceTree = SOURCE_ROOT; };
 		13A5F9B687F273BE343A6BD3 /* GridClipManagerUI.h */ /* GridClipManagerUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridClipManagerUI.h; path = ../../Source/Media/medias/grid/ui/GridClipManagerUI.h; sourceTree = SOURCE_ROOT; };
@@ -283,6 +284,7 @@
 		86CFB6CC3BEAEAAE91725A9D /* solidColor.png */ /* solidColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = solidColor.png; path = ../../Resources/media/solidColor.png; sourceTree = SOURCE_ROOT; };
 		8720E8253DC9A6A00387488F /* VertexShaderMainSurface.glsl */ /* VertexShaderMainSurface.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; name = VertexShaderMainSurface.glsl; path = ../../Resources/VertexShaderMainSurface.glsl; sourceTree = SOURCE_ROOT; };
 		87DAB0384686C2D4C76FEA51 /* web.png */ /* web.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = web.png; path = ../../Resources/media/web.png; sourceTree = SOURCE_ROOT; };
+		88A55181F64E788E51DF0A01 /* MediaListCustomOrderManager.h */ /* MediaListCustomOrderManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediaListCustomOrderManager.h; path = ../../Source/Media/medias/medialist/MediaListCustomOrderManager.h; sourceTree = SOURCE_ROOT; };
 		895A15B486E3BFC8F5ABB7D1 /* juce_javascript */ /* juce_javascript */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_javascript; path = ../../JUCE/modules/juce_javascript; sourceTree = SOURCE_ROOT; };
 		89F22E858DCF4246F858836A /* ShapeNode.h */ /* ShapeNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShapeNode.h; path = ../../Source/Node/nodes/Drawing/shape/ShapeNode.h; sourceTree = SOURCE_ROOT; };
 		8A811D963E35F3D14A1E99DF /* MediaNode.cpp */ /* MediaNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaNode.cpp; path = ../../Source/Node/nodes/Source/MediaNode.cpp; sourceTree = SOURCE_ROOT; };
@@ -293,6 +295,7 @@
 		8EE2AD5B93991977D88BF794 /* NDIManager.cpp */ /* NDIManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NDIManager.cpp; path = ../../Source/Common/NDI/NDIManager.cpp; sourceTree = SOURCE_ROOT; };
 		8EF16D5FDB2F1AD6A234A097 /* juce_gui_basics */ /* juce_gui_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_basics; path = ../../JUCE/modules/juce_gui_basics; sourceTree = SOURCE_ROOT; };
 		8F672130CECCECB331FCE20C /* SharedTextureMedia.h */ /* SharedTextureMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SharedTextureMedia.h; path = ../../Source/Media/medias/sharedtexture/SharedTextureMedia.h; sourceTree = SOURCE_ROOT; };
+		90F8CDC19311D954DAFD9ECF /* MediaListCustomOrderManager.cpp */ /* MediaListCustomOrderManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaListCustomOrderManager.cpp; path = ../../Source/Media/medias/medialist/MediaListCustomOrderManager.cpp; sourceTree = SOURCE_ROOT; };
 		91C68BCDD82595AAC298A214 /* GridLayerGroupPanel.h */ /* GridLayerGroupPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridLayerGroupPanel.h; path = ../../Source/Media/medias/grid/ui/GridLayerGroupPanel.h; sourceTree = SOURCE_ROOT; };
 		922E5555E45EA796288B582D /* Node.h */ /* Node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Node.h; path = ../../Source/Node/Node.h; sourceTree = SOURCE_ROOT; };
 		9249974391B120ECC2F451E5 /* GridColumnUI.h */ /* GridColumnUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridColumnUI.h; path = ../../Source/Media/medias/grid/ui/GridColumnUI.h; sourceTree = SOURCE_ROOT; };
@@ -372,6 +375,7 @@
 		D3183C58F2CF9338D634AF53 /* GridMedia.h */ /* GridMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GridMedia.h; path = ../../Source/Media/medias/grid/GridMedia.h; sourceTree = SOURCE_ROOT; };
 		D323B02DD96155B72DAA9179 /* include_juce_timeline2.cpp */ /* include_juce_timeline2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_timeline2.cpp; path = ../../JuceLibraryCode/include_juce_timeline2.cpp; sourceTree = SOURCE_ROOT; };
 		D46D53FB00B0CC0681539473 /* canvas.png */ /* canvas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = canvas.png; path = ../../Resources/media/canvas.png; sourceTree = SOURCE_ROOT; };
+		D4F56FBFF156D5AB79E317C1 /* MediaListCustomOrderList.cpp */ /* MediaListCustomOrderList.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MediaListCustomOrderList.cpp; path = ../../Source/Media/medias/medialist/MediaListCustomOrderList.cpp; sourceTree = SOURCE_ROOT; };
 		D5C0000C402A32A746E32C53 /* cacert.pem */ /* cacert.pem */ = {isa = PBXFileReference; lastKnownFileType = file.pem; name = cacert.pem; path = ../../Resources/ultralight/resources/cacert.pem; sourceTree = SOURCE_ROOT; };
 		D5D87A0441414C08682662E8 /* ViewStatsTimer.h */ /* ViewStatsTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ViewStatsTimer.h; path = ../../Source/Node/ui/ViewStatsTimer.h; sourceTree = SOURCE_ROOT; };
 		D63934237EA061ACD2F416A0 /* MainComponentCommands.cpp */ /* MainComponentCommands.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MainComponentCommands.cpp; path = ../../Source/MainComponentCommands.cpp; sourceTree = SOURCE_ROOT; };
@@ -778,6 +782,10 @@
 			isa = PBXGroup;
 			children = (
 				8B14898A7F8809E511C894F3,
+				D4F56FBFF156D5AB79E317C1,
+				10FE2D660A2D94C4229A084B,
+				90F8CDC19311D954DAFD9ECF,
+				88A55181F64E788E51DF0A01,
 				40CBEF33502E0CFF7725AFF6,
 				EB232F8E24390D57FACBA3F9,
 				5773FE9EA8A985AB31026CA9,

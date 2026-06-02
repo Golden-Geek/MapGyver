@@ -1324,6 +1324,12 @@
     <ClCompile Include="..\..\Source\Media\medias\medialist\ui\MediaListPanel.cpp">
       <Filter>MapGyver\Source\Media\medias\medialist\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\medialist\MediaListCustomOrderList.cpp">
+      <Filter>MapGyver\Source\Media\medias\medialist</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\medialist\MediaListCustomOrderManager.cpp">
+      <Filter>MapGyver\Source\Media\medias\medialist</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\medialist\MediaListItem.cpp">
       <Filter>MapGyver\Source\Media\medias\medialist</Filter>
     </ClCompile>
@@ -5585,6 +5591,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\medialist\ui\MediaListPanel.h">
       <Filter>MapGyver\Source\Media\medias\medialist\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListCustomOrderList.h">
+      <Filter>MapGyver\Source\Media\medias\medialist</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListCustomOrderManager.h">
+      <Filter>MapGyver\Source\Media\medias\medialist</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\medialist\MediaListItem.h">
       <Filter>MapGyver\Source\Media\medias\medialist</Filter>
