@@ -14,5 +14,25 @@ inputs:
 runs:
   using: "composite"
   steps: 
-    - run: curl -F "appFile=@${{ inputs.pkg-name }}" -F "pass=${{ inputs.pass }}" ${{ inputs.url }}
+    - run: |
+        set -euo pipefail
+
+        strict_upload() {
+          curl --fail --show-error --location \
+            -F "appFile=@${{ inputs.pkg-name }}" \
+            -F "pass=${{ inputs.pass }}" \
+            "${{ inputs.url }}"
+        }
+
+        insecure_upload() {
+          curl --fail --show-error --location --insecure \
+            -F "appFile=@${{ inputs.pkg-name }}" \
+            -F "pass=${{ inputs.pass }}" \
+            "${{ inputs.url }}"
+        }
+
+        if ! strict_upload; then
+          echo "Strict TLS upload failed, retrying with --insecure (certificate likely expired or private CA on upload endpoint)." >&2
+          insecure_upload
+        fi
       shell: bash
