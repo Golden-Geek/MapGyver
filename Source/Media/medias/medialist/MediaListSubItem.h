@@ -39,6 +39,16 @@ public:
 	TargetParameter* transitionSourceMedia;
 	TargetParameter* transitionTargetMedia;
 
+	// Param link - IN (transition in, progression 0->1)
+	ControllableContainer inParamLinkCC;
+	TargetParameter* inLinkedParam;
+	Point2DParameter* inRange;
+
+	// Param link - OUT (transition out, progression 1->0)
+	ControllableContainer outParamLinkCC;
+	TargetParameter* outLinkedParam;
+	Point2DParameter* outRange;
+
 	bool forceRenderShader;
 
 	CriticalSection mediaLock;

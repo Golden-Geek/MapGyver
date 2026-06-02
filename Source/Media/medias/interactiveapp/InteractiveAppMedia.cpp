@@ -12,6 +12,7 @@
 
 #if JUCE_WINDOWS
 #include <TlHelp32.h>
+#include "InteractiveAppMedia.h"
 #endif
 
 InteractiveAppMedia::InteractiveAppMedia(var params) :
@@ -27,6 +28,7 @@ InteractiveAppMedia::InteractiveAppMedia(var params) :
 	launchArguments = addStringParameter("Launch Arguments", "Launch Arguments", "");
 	launchArguments->multiline = true;
 
+	refreshTextures = addTrigger("Refresh Textures", "Refresh the list of available textures from the app");
 	availableTextures = addEnumParameter("Available Textures", "Available Textures");
 	availableTextures->saveValueOnly = false;
 
@@ -75,6 +77,14 @@ void InteractiveAppMedia::clearItem()
 	Media::clearItem();
 }
 
+void InteractiveAppMedia::onContainerTriggerTriggered(Trigger* t)
+{
+	if (t == refreshTextures)
+	{
+		updateTextureList(true);
+	}
+}
+
 void InteractiveAppMedia::onContainerParameterChangedInternal(Parameter* p)
 {
 	BaseSharedTextureMedia::onContainerParameterChangedInternal(p);
@@ -94,6 +104,10 @@ void InteractiveAppMedia::onContainerParameterChangedInternal(Parameter* p)
 	else if (p == availableTextures)
 	{
 		sharingName->setValue(availableTextures->stringValue());
+	}
+	else if (p == isConnected)
+	{
+		if(isConnected->boolValue()) updateTextureList();
 	}
 }
 
@@ -172,7 +186,7 @@ bool InteractiveAppMedia::isAppRunning()
 
 void InteractiveAppMedia::updateTextureList(bool force)
 {
-	if (!isAppRunning()) return; //only update when app is running
+	if (!isAppRunning() || !isConnected->boolValue()) return; //only update when app is running
 
 	StringArray senders = SharedTextureManager::getInstance()->getAvailableSenders();
 	StringArray keys = availableTextures->getAllKeys();
@@ -187,7 +201,7 @@ void InteractiveAppMedia::updateTextureList(bool force)
 		}
 	}
 
-	if (goodSenders.isEmpty()) return; //if something went bad, don't destroy the detected list
+	if (goodSenders.isEmpty() && !force) return; //if something went bad, don't destroy the detected list
 
 
 	bool listHasChanged = false;
@@ -217,8 +231,8 @@ void InteractiveAppMedia::updateTextureList(bool force)
 		for (auto& s : goodSenders) options.add(EnumParameter::EnumValue(s, s));
 		availableTextures->setOptions(options);
 		if (curSharingName.isNotEmpty()) availableTextures->setValueWithKey(curSharingName);
-
 	}
+
 
 	if (listHasChanged || extraReceivers.size() != goodSenders.size())
 	{
@@ -653,7 +667,7 @@ void InteractiveAppMedia::messageReceived(const String& message)
 void InteractiveAppMedia::launchProcess()
 {
 	if (checkingProcess || isClearing) return;
-	
+
 	AppState state = appState->getValueDataAsEnum<AppState>();
 	if (state == LAUNCHING || state == RUNNING) return;
 
@@ -715,12 +729,13 @@ void InteractiveAppMedia::killProcess()
 
 	shouldMinimize = false;
 	shouldSynchronize = false;
+
+	isConnected->setValue(false);
 }
 
 void InteractiveAppMedia::timerCallback()
 {
 	checkAppRunning();
-	updateTextureList();
 }
 
 #if JUCE_WINDOWS
@@ -803,5 +818,5 @@ void InteractiveAppMedia::loadJSONDataInternal(var data)
 	BaseSharedTextureMedia::loadJSONDataInternal(data);
 	var tData = data.getProperty("treeData", var());
 	updateTreeFromData(tData);
-	updateTextureList(true);
+	//updateTextureList(true);
 }

@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "MediaListMedia.h"
 
 MediaListMedia::MediaListMedia(var params) :
 	Media(getTypeString(), params, true),
@@ -23,6 +22,8 @@ MediaListMedia::MediaListMedia(var params) :
 	nextTrigger = mediaParams.addTrigger("Next", "Go to next media in the list");
 	previousTrigger = mediaParams.addTrigger("Previous", "Go to previous media in the list");
 	loop = mediaParams.addBoolParameter("Loop", "Whether to loop around when reaching the end of the list", false);
+	preUseNextMedia = mediaParams.addBoolParameter("Pre-use next media", "Whether to keep next media pre-used", true);
+	preUsePreviousMedia = mediaParams.addBoolParameter("Pre-use previous media", "Whether to keep previous media pre-used", false);
 	addChildControllableContainer(&listManager);
 	defaultTransitionTime = mediaParams.addFloatParameter("Default transition time", "Default transition time in seconds when not specified in the item", 1, 0);
 
@@ -70,11 +71,75 @@ void MediaListMedia::updateMediaLoads()
 	}
 
 	currentMediaItem = currentItem;
+
+	// Keep current + next medias registered, unregister only obsolete ones to avoid off/on jumps
+	HashMap<int, WeakReference<Media>, DefaultHashFunctions, CriticalSection> desiredUsedMedias;
+
+	for (int i = 0; i < numLayers->intValue(); ++i)
+	{
+		if (Media* currentLayerMedia = currentItem->getMediaAt(i))
+		{
+			desiredUsedMedias.set(i, WeakReference<Media>(currentLayerMedia));
+		}
+	}
+
+	if (preUseNextMedia->boolValue())
+	{
+		MediaListItem* nextItem = getNextItem();
+		if (nextItem != nullptr)
+		{
+			for (int i = 0; i < numLayers->intValue(); ++i)
+			{
+				if (Media* nextLayerMedia = nextItem->getMediaAt(i))
+				{
+					desiredUsedMedias.set(i + numLayers->intValue(), WeakReference<Media>(nextLayerMedia));
+				}
+			}
+		}
+	}
+
+	if (preUsePreviousMedia->boolValue())
+	{
+		MediaListItem* previousItem = getPreviousItem();
+		if (previousItem != nullptr)
+		{
+			for (int i = 0; i < numLayers->intValue(); ++i)
+			{
+				if (Media* previousLayerMedia = previousItem->getMediaAt(i))
+				{
+					desiredUsedMedias.set(i + (numLayers->intValue() * 2), WeakReference<Media>(previousLayerMedia));
+				}
+			}
+		}
+	}
+
+	Array<int> idsToUnregister;
+	HashMap<int, WeakReference<Media>, DefaultHashFunctions, CriticalSection>::Iterator it(usedMedias);
+	while (it.next())
+	{
+		int id = it.getKey();
+		Media* currentlyRegistered = it.getValue();
+		if (!desiredUsedMedias.contains(id) || desiredUsedMedias[id] != currentlyRegistered)
+		{
+			idsToUnregister.add(id);
+		}
+	}
+
+	for (int id : idsToUnregister)
+	{
+		unregisterUseMedia(id);
+	}
+
+	HashMap<int, WeakReference<Media>, DefaultHashFunctions, CriticalSection>::Iterator desiredIt(desiredUsedMedias);
+	while (desiredIt.next())
+	{
+		registerUseMedia(desiredIt.getKey(), desiredIt.getValue());
+	}
 }
 
 void MediaListMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
 {
-	if (c == index)
+	if (c == index || c == preUseNextMedia || c == preUsePreviousMedia)
 	{
 		updateMediaLoads();
 	}
@@ -280,6 +345,46 @@ void MediaListMedia::initExtraFrameBuffer(OpenGLFrameBuffer& fb)
 	if (fb.isValid()) fb.release();
 	fb.initialise(GlContextHolder::getInstance()->context, size.x, size.y);
 	shouldRedraw = true;
+}
+
+MediaListItem* MediaListMedia::getNextItem()
+{
+	int nextIndex = index->intValue();
+	while (listManager.items.size() > nextIndex && !listManager.items[nextIndex]->enabled)
+	{
+		nextIndex++;
+	}
+	if (listManager.items.size() > nextIndex) return listManager.items[nextIndex];
+	if (loop->boolValue())
+	{
+		nextIndex = 0;
+		while (listManager.items.size() > nextIndex && !listManager.items[nextIndex]->enabled)
+		{
+			nextIndex++;
+		}
+		if (listManager.items.size() > nextIndex) return listManager.items[nextIndex];
+	}
+	return nullptr;
+}
+
+MediaListItem* MediaListMedia::getPreviousItem()
+{
+	int previousIndex = index->intValue() - 2;
+	while (previousIndex >= 0 && !listManager.items[previousIndex]->enabled)
+	{
+		previousIndex--;
+	}
+	if (previousIndex >= 0) return listManager.items[previousIndex];
+	if (loop->boolValue())
+	{
+		previousIndex = listManager.items.size() - 1;
+		while (previousIndex >= 0 && !listManager.items[previousIndex]->enabled)
+		{
+			previousIndex--;
+		}
+		if (previousIndex >= 0) return listManager.items[previousIndex];
+	}
+	return nullptr;
 }
 
 void MediaListMedia::newMessage(const MediaListItem::MediaListItemEvent& e)

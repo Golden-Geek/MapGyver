@@ -20,7 +20,9 @@ MediaListSubItem::MediaListSubItem(const String& name, bool canBeSubtexture) :
 	forceRenderShader(false),
 	targetEndTransitionTime(0),
 	weightAtStart(0),
-	weight(0)
+	weight(0),
+	inParamLinkCC("In Param Link"),
+	outParamLinkCC("Out Param Link")
 {
 	type = addEnumParameter("Type", "Type of the media layer");
 	type->addOption("Empty", "empty")->addOption("Reference", "reference");
@@ -56,6 +58,24 @@ MediaListSubItem::MediaListSubItem(const String& name, bool canBeSubtexture) :
 
 	addChildControllableContainer(shaderMedia.get());
 	shaderMedia->editorIsCollapsed = true;
+
+	inParamLinkCC.saveAndLoadRecursiveData = true;
+	inLinkedParam = inParamLinkCC.addTargetParameter("Linked Param", "Parameter driven by transition IN progression (0->1)");
+	inLinkedParam->targetType = TargetParameter::CONTROLLABLE;
+	inRange = inParamLinkCC.addPoint2DParameter("Range", "Output range (x=start, y=end) when transition IN. Disable to use default 0->1");
+	inRange->canBeDisabledByUser = true;
+	inRange->setPoint(0.f, 1.f);
+	inRange->setEnabled(false);
+	addChildControllableContainer(&inParamLinkCC);
+
+	outParamLinkCC.saveAndLoadRecursiveData = true;
+	outLinkedParam = outParamLinkCC.addTargetParameter("Linked Param", "Parameter driven by transition OUT progression (1->0)");
+	outLinkedParam->targetType = TargetParameter::CONTROLLABLE;
+	outRange = outParamLinkCC.addPoint2DParameter("Range", "Output range (x=start, y=end) when transition OUT. Disable to use default 0->1");
+	outRange->canBeDisabledByUser = true;
+	outRange->setPoint(0.f, 1.f);
+	outRange->setEnabled(false);
+	addChildControllableContainer(&outParamLinkCC);
 }
 
 MediaListSubItem::~MediaListSubItem()
@@ -247,6 +267,10 @@ void MediaListSubItem::setMedia(Media* m)
 	updateTextureNameOptions();
 
 	transitionTargetMedia->setValueFromTarget(media);
+
+	ControllableContainer* mediaParamsRoot = media != nullptr ? &media->mediaParams : nullptr;
+	inLinkedParam->rootContainer = mediaParamsRoot;
+	outLinkedParam->rootContainer = mediaParamsRoot;
 }
 
 void MediaListSubItem::setupTransition(Media* source)
@@ -346,6 +370,8 @@ var MediaListSubItem::getJSONData(bool includeNonOverriden)
 {
 	var data = ControllableContainer::getJSONData(includeNonOverriden);
 	data.getDynamicObject()->setProperty("shaderMedia", shaderMedia->getJSONData(includeNonOverriden));
+	data.getDynamicObject()->setProperty("inParamLink", inParamLinkCC.getJSONData(includeNonOverriden));
+	data.getDynamicObject()->setProperty("outParamLink", outParamLinkCC.getJSONData(includeNonOverriden));
 	if (ownedMedia != nullptr) data.getDynamicObject()->setProperty("ownedMedia", ownedMedia->getJSONData(includeNonOverriden));
 	return data;
 }
@@ -357,6 +383,8 @@ void MediaListSubItem::loadJSONDataInternal(var data)
 	{
 		shaderMedia->loadJSONData(data["shaderMedia"]);
 	}
+	if (data.hasProperty("inParamLink")) inParamLinkCC.loadJSONData(data["inParamLink"]);
+	if (data.hasProperty("outParamLink")) outParamLinkCC.loadJSONData(data["outParamLink"]);
 
 	updateCurrentMedia(true);
 

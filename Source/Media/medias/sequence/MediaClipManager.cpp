@@ -9,7 +9,6 @@
 */
 
 #include "Media/MediaIncludes.h"
-#include "MediaClipManager.h"
 
 MediaClipManager::MediaClipManager(MediaLayer* layer) :
 	LayerBlockManager(layer, "Blocks"),

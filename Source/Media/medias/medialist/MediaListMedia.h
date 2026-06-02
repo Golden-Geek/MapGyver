@@ -28,6 +28,8 @@ public:
 	Trigger* previousTrigger;
 	Trigger* nextTrigger;
 	BoolParameter* loop;
+	BoolParameter* preUseNextMedia;
+	BoolParameter* preUsePreviousMedia;
 	FloatParameter* defaultTransitionTime;
 
 	MediaListItemManager listManager;
@@ -56,6 +58,9 @@ public:
 
 	void initFrameBuffer() override;
 	void initExtraFrameBuffer(OpenGLFrameBuffer& fb);
+
+	MediaListItem* getNextItem();
+	MediaListItem* getPreviousItem();
 
 	void newMessage(const MediaListItem::MediaListItemEvent& e) override;
 

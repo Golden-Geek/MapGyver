@@ -23,6 +23,7 @@ public:
 	FileParameter* appParam;
 	StringParameter* launchArguments;
 	EnumParameter* availableTextures;
+	Trigger* refreshTextures;
 
 	enum AppState { CLOSED, LAUNCHING, RUNNING, CLOSING };
 	EnumParameter* appState;
@@ -54,6 +55,7 @@ public:
 
 	void clearItem() override;
 
+	void onContainerTriggerTriggered(Trigger* t) override;
 	void onContainerParameterChangedInternal(Parameter* p) override;
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 

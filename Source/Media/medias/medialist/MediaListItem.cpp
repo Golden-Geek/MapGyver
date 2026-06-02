@@ -216,11 +216,37 @@ void MediaListItem::process()
 
 	for (auto& s : subItems)
 	{
-		if (!s->shaderMedia->enabled->boolValue()) continue;
-		float progression = 0.f;
+		if (s->shaderMedia->enabled->boolValue())
+		{
+			float progression = 0.f;
+			if (ts == LOADING)
+				progression = jmap<float>(s->weight, s->weightAtStart, 1.f, 0.f, 1.f);
+			s->transitionProgression->setValue(progression);
+		}
+
+		// Drive IN linked param (progression 0->1 while loading)
 		if (ts == LOADING)
-			progression = jmap<float>(s->weight, s->weightAtStart, 1.f, 0.f, 1.f);
-		s->transitionProgression->setValue(progression);
+		{
+			if (auto* p = s->inLinkedParam->getTargetAs<Parameter>())
+			{
+				float progression = jmap<float>(s->weight, s->weightAtStart, 1.f, 0.f, 1.f);
+				float start = s->inRange->enabled ? s->inRange->x : 0.f;
+				float end   = s->inRange->enabled ? s->inRange->y : 1.f;
+				p->setValue(jmap(progression, 0.f, 1.f, start, end));
+			}
+		}
+
+		// Drive OUT linked param (progression 1->0 while unloading)
+		if (ts == UNLOADING)
+		{
+			if (auto* p = s->outLinkedParam->getTargetAs<Parameter>())
+			{
+				float outProgression = jmap<float>(s->weight, s->weightAtStart, 0.f, 1.f, 0.f);
+				float start = s->outRange->enabled ? s->outRange->x : 0.f;
+				float end   = s->outRange->enabled ? s->outRange->y : 1.f;
+				p->setValue(jmap(outProgression, 0.f, 1.f, start, end));
+			}
+		}
 	}
 
 	render();
