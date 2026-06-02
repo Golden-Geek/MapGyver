@@ -23,10 +23,10 @@ void MapGyverApplication::initialiseInternal(const String&)
 	if (useWindow) mainComponent.reset(new MainContentComponent());
 
 	//Call after engine init
-	AppUpdater::getInstance()->setURLs("https://benjamin.kuperberg.fr/mapgyver/releases/update.json", "https://benjamin.kuperberg.fr/mapgyver/download/app", getApplicationName());
-	// HelpBox::getInstance()->helpURL = URL("https://benjamin.kuperberg.fr/mapgyver/help/");
+	AppUpdater::getInstance()->setURLs("https://www.goldengeek.org/mapgyver/releases/update.json", "https://www.goldengeek.org/mapgyver/download/app", getApplicationName());
+	// HelpBox::getInstance()->helpURL = URL("https://www.goldengeek.org/mapgyver/help/");
 
-	//CrashDumpUploader::getInstance()->init("https://benjamin.kuperberg.fr/mapgyver/support/crash_report.php",ImageCache::getFromMemory(BinaryData::crash_png, BinaryData::crash_pngSize));
+	//CrashDumpUploader::getInstance()->init("https://www.goldengeek.org/mapgyver/support/crash_report.php",ImageCache::getFromMemory(BinaryData::crash_png, BinaryData::crash_pngSize));
 
 	DashboardManager::getInstance()->setupDownloadURL("https://benjamin.kuperberg.fr/download/dashboard/dashboard.php?folder=dashboard");
 
