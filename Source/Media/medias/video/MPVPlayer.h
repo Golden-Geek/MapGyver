@@ -29,6 +29,7 @@ public:
 };
 
 class MPVPlayer :
+	public VideoPlayerEngine,
 	public AudioManager::AudioManagerListener
 {
 public:
@@ -45,25 +46,45 @@ public:
 	void clear();
 	void setupMPV();
 
+	// VideoPlayerEngine interface implementation
+	bool load(const String& filePath) override;
+	void unload() override;
+	void play() override;
+	void pause() override;
+	void stop() override;
+	bool isPlaying() const override;
+	void setPosition(double pos) override;
+	double getPosition() const override;
+	double getDuration() const override;
+	void setPlaySpeed(float speed) override;
+	float getPlaySpeed() const override;
+	void setVolume(float volume) override;
+	float getVolume() const override;
+	void setLoop(bool loop) override;
+	bool getLoop() const override;
+	int getVideoWidth() const override;
+	int getVideoHeight() const override;
+	int getNumChannels() const override;
+	void setupGL() override;
+	void renderGL(int width, int height) override;
+	AudioProcessor* getAudioProcessor() override;
+	void pullEvents() override;
+
+	// MPV-specific methods
 	void loadFile();
-	void setupGL();
 	void renderGL(OpenGLFrameBuffer* frameBuffer);
 	bool isGLInit();
+	void setPlaySpeedInternal(double speed);
 
 
 	// MPV Stuff
 	void onMPVUpdate();
 	void onMPVWakeup();
-	void pullEvents();
 
-	// Controls
-	void play();
-	void pause();
-	void stop();
-	void setPosition(double pos);
-	void setPlaySpeed(double speed);
-	void setVolume(float volume);
-	void setLoop(bool loop);
+	// Internal state
+	bool shouldLoop = false;
+	float currentVolume = 1.0f;
+	float currentSpeed = 1.0f;
 
 
 	//Audio
@@ -98,15 +119,8 @@ public:
 
 	//Helpers
 	int getMPVIntProperty(const char* name);
-	double getMPVDoubleProperty(const char* name);
+	double getMPVDoubleProperty(const char* name) const;
 	String getMPVStringProperty(const char* name);
-
-	int getVideoWidth();
-	int getVideoHeight();
-	double getDuration();
-	int getNumChannels();
-
-	bool isPlaying();
 
 	struct FileInfo
 	{

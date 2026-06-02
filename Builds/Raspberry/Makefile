@@ -39,7 +39,7 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := -march=armv8-a
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DDEBUG=1" "-D_DEBUG=1" "-DJUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" "-DORGANIC_REMOTE_CONTROL_PORT=46000" "-DMPV_ENABLE_DLL" "-DJUCER_LINUX_MAKE_9C1B7400=1" "-DJUCE_APP_VERSION=1.0.0b2" "-DJUCE_APP_VERSION_HEX=0x10000" $(shell $(PKG_CONFIG) --cflags $(shell ($(PKG_CONFIG) --exists webkit2gtk-4.1 && echo webkit2gtk-4.1) || echo webkit2gtk-4.0) alsa freetype2 fontconfig gl libcurl gtk+-x11-3.0) -pthread -I../../JuceLibraryCode -I../../JUCE/modules -I../../Modules -I../../Source -I../../External/asiodriver -I../../External/mpv/include -I../../External/NDI/include -I../../External/servus/include -I../../External/ultralight/include -I../../External/wil/include $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DDEBUG=1" "-D_DEBUG=1" "-DJUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" "-DORGANIC_REMOTE_CONTROL_PORT=46000" "-DMPV_ENABLE_DLL" "-DVLC_ENABLE" "-DJUCER_LINUX_MAKE_9C1B7400=1" "-DJUCE_APP_VERSION=1.0.0b2" "-DJUCE_APP_VERSION_HEX=0x10000" $(shell $(PKG_CONFIG) --cflags $(shell ($(PKG_CONFIG) --exists webkit2gtk-4.1 && echo webkit2gtk-4.1) || echo webkit2gtk-4.0) alsa freetype2 fontconfig gl libcurl gtk+-x11-3.0) -pthread -I../../JuceLibraryCode -I../../JUCE/modules -I../../Modules -I../../Source -I../../External/asiodriver -I../../External/mpv/include -I../../External/NDI/include -I../../External/servus/include -I../../External/ultralight/include -I../../External/wil/include -I../../External/vlc/include $(CPPFLAGS)
   JUCE_CPPFLAGS_APP :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
   JUCE_TARGET_APP := MapGyver
 
@@ -60,7 +60,7 @@ ifeq ($(CONFIG),Release)
     TARGET_ARCH := -march=armv8-a
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DNDEBUG=1" "-DJUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" "-DORGANIC_REMOTE_CONTROL_PORT=46000" "-DMPV_ENABLE_DLL" "-DJUCER_LINUX_MAKE_9C1B7400=1" "-DJUCE_APP_VERSION=1.0.0b2" "-DJUCE_APP_VERSION_HEX=0x10000" $(shell $(PKG_CONFIG) --cflags $(shell ($(PKG_CONFIG) --exists webkit2gtk-4.1 && echo webkit2gtk-4.1) || echo webkit2gtk-4.0) alsa freetype2 fontconfig gl libcurl gtk+-x11-3.0) -pthread -I../../JuceLibraryCode -I../../JUCE/modules -I../../Modules -I../../Source -I../../External/asiodriver -I../../External/mpv/include -I../../External/NDI/include -I../../External/servus/include -I../../External/ultralight/include -I../../External/wil/include $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) "-DLINUX=1" "-DNDEBUG=1" "-DJUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1" "-DORGANIC_REMOTE_CONTROL_PORT=46000" "-DMPV_ENABLE_DLL" "-DVLC_ENABLE" "-DJUCER_LINUX_MAKE_9C1B7400=1" "-DJUCE_APP_VERSION=1.0.0b2" "-DJUCE_APP_VERSION_HEX=0x10000" $(shell $(PKG_CONFIG) --cflags $(shell ($(PKG_CONFIG) --exists webkit2gtk-4.1 && echo webkit2gtk-4.1) || echo webkit2gtk-4.0) alsa freetype2 fontconfig gl libcurl gtk+-x11-3.0) -pthread -I../../JuceLibraryCode -I../../JUCE/modules -I../../Modules -I../../Source -I../../External/asiodriver -I../../External/mpv/include -I../../External/NDI/include -I../../External/servus/include -I../../External/ultralight/include -I../../External/wil/include -I../../External/vlc/include $(CPPFLAGS)
   JUCE_CPPFLAGS_APP :=  "-DJucePlugin_Build_VST=0" "-DJucePlugin_Build_VST3=0" "-DJucePlugin_Build_AU=0" "-DJucePlugin_Build_AUv3=0" "-DJucePlugin_Build_AAX=0" "-DJucePlugin_Build_Standalone=0" "-DJucePlugin_Build_Unity=0" "-DJucePlugin_Build_LV2=0"
   JUCE_TARGET_APP := MapGyver
 
@@ -74,6 +74,7 @@ endif
 OBJECTS_APP := \
   $(JUCE_OBJDIR)/CommonIncludes_97d07afb.o \
   $(JUCE_OBJDIR)/MGEngine_2098d8a.o \
+  $(JUCE_OBJDIR)/MGSettings_d2ee5e2b.o \
   $(JUCE_OBJDIR)/MediaIncludes_18e0a225.o \
   $(JUCE_OBJDIR)/NodeIncludes_261ff85b.o \
   $(JUCE_OBJDIR)/ScreenIncludes_130f07db.o \
@@ -133,6 +134,11 @@ $(JUCE_OBJDIR)/CommonIncludes_97d07afb.o: ../../Source/Common/CommonIncludes.cpp
 $(JUCE_OBJDIR)/MGEngine_2098d8a.o: ../../Source/Engine/MGEngine.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling MGEngine.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/MGSettings_d2ee5e2b.o: ../../Source/Engine/MGSettings.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling MGSettings.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/MediaIncludes_18e0a225.o: ../../Source/Media/MediaIncludes.cpp

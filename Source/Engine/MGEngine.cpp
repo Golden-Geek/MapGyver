@@ -8,6 +8,7 @@
  ==============================================================================
  */
 #include "MGEngine.h"
+#include "MGSettings.h"
 #include "Screen/ScreenIncludes.h"
 #include "Media/MediaIncludes.h"
 #include "Node/NodeIncludes.h"
@@ -31,6 +32,10 @@ MGEngine::MGEngine() :
 	MGEngine::mainEngine = this;
 
 	GlobalSettings::getInstance()->altScaleFactor->setDefaultValue(0.05);
+
+	// Add MapGyver-specific settings to app settings
+	getAppSettings()->saveAndLoadRecursiveData = true;
+	getAppSettings()->addChildControllableContainer(MGSettings::getInstance());
 
 	addChildControllableContainer(MediaManager::getInstance());
 	addChildControllableContainer(ScreenManager::getInstance());
@@ -61,6 +66,7 @@ MGEngine::~MGEngine()
 	WebcamManager::deleteInstance();
 #endif
 	RMPSettings::deleteInstance();
+	MGSettings::deleteInstance();
 	MediaClipFactory::deleteInstance();
 	CompositionLayerFactory::deleteInstance();
 	NodeFactory::deleteInstance();

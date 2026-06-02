@@ -35,6 +35,11 @@
 
 #include "medias/video/VideoAudioProcessor.cpp"
 #include "medias/video/MPVPlayer.cpp"
+
+#ifdef VLC_ENABLE
+#include "medias/video/VLCPlayer.cpp"
+#endif
+
 #include "medias/video/VideoMedia.cpp"
 
 #if !JUCE_LINUX

@@ -287,26 +287,10 @@ void MPVPlayer::setPosition(double pos)
 	mpv_command_node_async(mpv, 0, &command);
 }
 
-void MPVPlayer::setPlaySpeed(double speed)
+void MPVPlayer::setPlaySpeedInternal(double speed)
 {
 	if (mpv == nullptr) return;
 	mpv_set_property(mpv, "speed", MPV_FORMAT_DOUBLE, &speed);
-}
-
-void MPVPlayer::setVolume(float volume)
-{
-	if (mpv == nullptr) return;
-	double vol = volume * 100.0;
-	mpv_set_property(mpv, "volume", MPV_FORMAT_DOUBLE, &vol);
-}
-
-void MPVPlayer::setLoop(bool loop)
-{
-	if (mpv == nullptr) return;
-
-	// "inf" = infinite loop, "no" = play once
-	const char* value = loop ? "inf" : "no";
-	mpv_set_property_string(mpv, "loop-file", value);
 }
 
 
@@ -356,10 +340,144 @@ void MPVPlayer::audioSetupChanged()
 void MPVPlayer::onMPVUpdate()
 {
 	mpvListeners.call(&MPVListener::mpvFrameUpdate);
+	listeners.call(&VideoPlayerEngine::Listener::playerFrameUpdate);
 }
 
 void MPVPlayer::onMPVWakeup()
 {
+}
+
+int MPVPlayer::getMPVIntProperty(const char* name)
+{
+	if (mpv == nullptr) return 0;
+	int64_t result = 0;
+	mpv_get_property(mpv, name, MPV_FORMAT_INT64, &result);
+	return (int)result;
+}
+
+double MPVPlayer::getMPVDoubleProperty(const char* name) const
+{
+	if (mpv == nullptr) return 0;
+	double result = 0;
+	mpv_get_property(mpv, name, MPV_FORMAT_DOUBLE, &result);
+	return result;
+}
+
+String MPVPlayer::getMPVStringProperty(const char* name)
+{
+	if (mpv == nullptr) return "";
+	char* result = nullptr;
+	mpv_get_property(mpv, name, MPV_FORMAT_STRING, &result);
+	String strResult = String(result);
+	mpv_free(result);
+	return strResult;
+}
+
+// ==============================================================================
+// VideoPlayerEngine Interface Implementation
+// ==============================================================================
+
+bool MPVPlayer::load(const String& path)
+{
+	filePath = path;
+	if (mpv_gl != nullptr)
+	{
+		loadFile();
+		return true;
+	}
+	return false; // GL not ready yet
+}
+
+void MPVPlayer::unload()
+{
+	if (mpv)
+	{
+		const char* cmd[] = { "stop", NULL };
+		mpv_command_async(mpv, 0, cmd);
+	}
+	fileInfo.fileLoaded = false;
+}
+
+bool MPVPlayer::isPlaying() const
+{
+	if (mpv == nullptr) return false;
+	int paused = 1;
+	mpv_get_property(mpv, "pause", MPV_FORMAT_FLAG, &paused);
+	return (paused == 0);
+}
+
+double MPVPlayer::getPosition() const
+{
+	return getMPVDoubleProperty("time-pos");
+}
+
+double MPVPlayer::getDuration() const
+{
+	return fileInfo.duration;
+}
+
+void MPVPlayer::setPlaySpeed(float speed)
+{
+	currentSpeed = speed;
+	setPlaySpeedInternal((double)speed);
+}
+
+float MPVPlayer::getPlaySpeed() const
+{
+	return currentSpeed;
+}
+
+void MPVPlayer::setVolume(float volume)
+{
+	currentVolume = volume;
+	if (mpv == nullptr) return;
+	double vol = volume * 100.0;
+	mpv_set_property(mpv, "volume", MPV_FORMAT_DOUBLE, &vol);
+}
+
+float MPVPlayer::getVolume() const
+{
+	return currentVolume;
+}
+
+void MPVPlayer::setLoop(bool loop)
+{
+	shouldLoop = loop;
+	if (mpv == nullptr) return;
+	const char* value = loop ? "inf" : "no";
+	mpv_set_property_string(mpv, "loop-file", value);
+}
+
+bool MPVPlayer::getLoop() const
+{
+	return shouldLoop;
+}
+
+int MPVPlayer::getVideoWidth() const
+{
+	return fileInfo.width;
+}
+
+int MPVPlayer::getVideoHeight() const
+{
+	return fileInfo.height;
+}
+
+int MPVPlayer::getNumChannels() const
+{
+	return fileInfo.numChannels;
+}
+
+void MPVPlayer::renderGL(int width, int height)
+{
+	// This overload is for the VideoPlayerEngine interface
+	// The actual rendering is done in renderGL(OpenGLFrameBuffer*) which is called by VideoMedia
+	// For now, we don't use this path, but it's here for future compatibility
+}
+
+AudioProcessor* MPVPlayer::getAudioProcessor()
+{
+	return audioProcessor;
 }
 
 void MPVPlayer::pullEvents()
@@ -421,6 +539,7 @@ void MPVPlayer::pullEvents()
 			{
 				setupAudio();
 				mpvListeners.call(&MPVListener::mpvFileLoaded);
+				listeners.call(&VideoPlayerEngine::Listener::playerFileLoaded);
 				fileInfo.fileLoaded = true;
 			}
 		}
@@ -428,6 +547,7 @@ void MPVPlayer::pullEvents()
 
 		case MPV_EVENT_END_FILE:
 			mpvListeners.call(&MPVListener::mpvFileEnd);
+			listeners.call(&VideoPlayerEngine::Listener::playerFileEnd);
 			break;
 
 		case MPV_EVENT_PROPERTY_CHANGE:
@@ -435,7 +555,9 @@ void MPVPlayer::pullEvents()
 			mpv_event_property* prop = (mpv_event_property*)e->data;
 			String pName = String(prop->name);
 			if (pName == "time-pos" && prop->format == MPV_FORMAT_DOUBLE) {
-				mpvListeners.call(&MPVListener::mpvTimeChanged, *(double*)prop->data);
+				double time = *(double*)prop->data;
+				mpvListeners.call(&MPVListener::mpvTimeChanged, time);
+				listeners.call(&VideoPlayerEngine::Listener::playerTimeChanged, time);
 			}
 			else if (pName == "eof-reached" && prop->format == MPV_FORMAT_FLAG) {
 				int reached = prop->data ? *(int*)prop->data : 0;
@@ -443,6 +565,7 @@ void MPVPlayer::pullEvents()
 				{
 					eofReached = true;
 					mpvListeners.call(&MPVListener::mpvFileEnd);
+					listeners.call(&VideoPlayerEngine::Listener::playerFileEnd);
 				}
 				else if (reached == 0)
 				{
@@ -456,65 +579,9 @@ void MPVPlayer::pullEvents()
 	}
 }
 
-int MPVPlayer::getMPVIntProperty(const char* name)
-{
-	if (mpv == nullptr) return 0;
-	int64_t result = 0;
-	mpv_get_property(mpv, name, MPV_FORMAT_INT64, &result);
-	return (int)result;
-}
-
-double MPVPlayer::getMPVDoubleProperty(const char* name)
-{
-	if (mpv == nullptr) return 0;
-	double result = 0;
-	mpv_get_property(mpv, name, MPV_FORMAT_DOUBLE, &result);
-	return result;
-}
-
-String MPVPlayer::getMPVStringProperty(const char* name)
-{
-	if (mpv == nullptr) return "";
-	char* result = nullptr;
-	mpv_get_property(mpv, name, MPV_FORMAT_STRING, &result);
-	String strResult = String(result);
-	mpv_free(result);
-	return strResult;
-}
-
-int MPVPlayer::getVideoWidth()
-{
-	return fileInfo.width;
-}
-int MPVPlayer::getVideoHeight()
-{
-	return fileInfo.height;
-}
-
-double MPVPlayer::getDuration()
-{
-	return fileInfo.duration;
-}
-
-int MPVPlayer::getNumChannels()
-{
-	return fileInfo.numChannels;
-}
-
-
-bool MPVPlayer::isPlaying()
-{
-	if (mpv == nullptr) return false;
-	int paused = 1;
-	mpv_get_property(mpv, "pause", MPV_FORMAT_FLAG, &paused);
-	return (paused == 0);
-}
 
 
 
-
-// ==============================================================================
-//Audio Pipe Thread
 
 // PIPE THREAD
 

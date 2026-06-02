@@ -10,6 +10,7 @@
 
 #include "Media/MediaIncludes.h"
 #include "Engine/MGEngine.h"
+#include "Engine/MGSettings.h"
 
 
 
@@ -63,15 +64,70 @@ VideoMedia::~VideoMedia()
 void VideoMedia::clearItem()
 {
 	Media::clearItem();
-	if (mpv != nullptr) mpv->clear();
+	mpv = nullptr; // Clear raw pointer before engine is destroyed
+	if (engine != nullptr)
+	{
+		engine->unload();
+	}
 	stop();
+}
+
+void VideoMedia::setupEngine(const String& path)
+{
+	// Get the selected engine from MGSettings
+	MGSettings::VideoEngine selectedEngine = MGSettings::VideoEngine::ENGINE_MPV;
+	if (MGSettings::getInstanceWithoutCreating())
+	{
+		selectedEngine = MGSettings::getInstance()->videoPlaybackEngine->getValueDataAsEnum<MGSettings::VideoEngine>();
+		DBG("VideoMedia: Selected engine from settings: " + String(selectedEngine == MGSettings::ENGINE_MPV ? "MPV" : "VLC"));
+	}
+	else
+	{
+		DBG("VideoMedia: MGSettings not available, defaulting to MPV");
+	}
+
+	// Create the appropriate engine based on settings
+	switch (selectedEngine)
+	{
+	case MGSettings::ENGINE_MPV:
+		DBG("VideoMedia: Creating MPV engine for: " + path);
+		engine.reset(new MPVPlayer(path));
+		break;
+
+#ifdef VLC_ENABLE
+	case MGSettings::ENGINE_VLC:
+		DBG("VideoMedia: Creating VLC engine for: " + path);
+		engine.reset(new VLCPlayer(path));
+		break;
+#endif
+
+	default:
+		DBG("VideoMedia: Unknown engine, falling back to MPV");
+		engine.reset(new MPVPlayer(path)); // Fallback to MPV
+		break;
+	}
+
+	engine->addListener(this);
+
+	// Keep mpv raw pointer for backward compatibility with existing MPV-specific code
+	mpv = dynamic_cast<MPVPlayer*>(engine.get());
+	if (mpv)
+	{
+		mpv->addMPVListener(this);
+		// MPV defers loading until GL is ready (setupGL -> loadFile)
+	}
+	else
+	{
+		// Non-MPV engines (e.g. VLC) need explicit load() since they don't use GL init
+		engine->load(path);
+	}
+
+	shouldRedraw = true;
 }
 
 void VideoMedia::setupMPV(const String& path)
 {
-	mpv.reset(new MPVPlayer(path));
-	mpv->addMPVListener(this);
-	shouldRedraw = true;
+	setupEngine(path);
 }
 
 void VideoMedia::onContainerParameterChanged(Parameter* p)
@@ -97,11 +153,11 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 		position->setRange(0, length->doubleValue());
 		mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_LENGTH_CHANGED, this));
 	}
-	else if (p == loop)
+	if (p == loop)
 	{
-		if (mpv != nullptr)
+		if (engine != nullptr)
 		{
-			mpv->setLoop(loop->boolValue());
+			engine->setLoop(loop->boolValue());
 		}
 	}
 }
@@ -119,16 +175,19 @@ void VideoMedia::onControllableFeedbackUpdateInternal(ControllableContainer* cc,
 		else if (c == restartTrigger) restart();
 		else if (c == playSpeed)
 		{
-			mpv->setPlaySpeed(playSpeed->doubleValue());
+			if (engine != nullptr)
+			{
+				engine->setPlaySpeed(playSpeed->floatValue());
+			}
 		}
 	}
 	else if (cc == &audioCC)
 	{
 		if (c == volume)
 		{
-			if (mpv != nullptr)
+			if (engine != nullptr)
 			{
-				mpv->setVolume(volume->floatValue());
+				engine->setVolume(volume->floatValue());
 			}
 		}
 	}
@@ -148,10 +207,11 @@ void VideoMedia::load()
 			if (!f.getFileNameWithoutExtension().isEmpty())
 				NLOGWARNING(niceName, "File not found : " << f.getFullPathName());
 
-			if (mpv != nullptr)
+			mpv = nullptr; // Clear raw pointer before engine is destroyed
+			if (engine != nullptr)
 			{
-				mpv->clear();
-				mpv.reset();
+				engine->unload();
+				engine.reset();
 			}
 
 			state->setValueWithData(UNLOADED);
@@ -180,8 +240,9 @@ void VideoMedia::initGLInternal()
 void VideoMedia::renderOpenGL()
 {
 	if (isClearing) return;
-	if (mpv == nullptr) return;
-	if (!mpv->isGLInit()) mpv->setupGL();
+	if (engine == nullptr) return;
+	// For MPV, we still need the specific GL init check
+	if (mpv != nullptr && !mpv->isGLInit()) mpv->setupGL();
 
 	Media::renderOpenGL();
 }
@@ -191,51 +252,66 @@ void VideoMedia::renderGLInternal()
 	PlayerState ps = state->getValueDataAsEnum<PlayerState>();
 	if (ps != PLAYING && ps != PAUSED) return;
 
-	if (mpv == nullptr)
+	if (engine == nullptr)
 	{
 		glClearColor(.1f, .5f, .8f, .5f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		return;
 	}
 
-	mpv->renderGL(&frameBuffer);
+	// MPV-specific rendering (uses frameBuffer directly)
+	if (mpv != nullptr)
+	{
+		mpv->renderGL(&frameBuffer);
+	}
+	else
+	{
+		// VLC or other engine: use generic interface
+		// For now just clear, VLC callback rendering needs more integration
+		glClearColor(.1f, .1f, .1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// TODO: Implement proper VLC frame rendering
+		// VLC provides frames via callbacks, need to texture them to GL
+	}
 }
 
 void VideoMedia::closeGLInternal()
 {
-	if (mpv == nullptr) return;
+	if (engine == nullptr) return;
 }
 
 
 // CONTROL
 void VideoMedia::play() {
-	if (mpv == nullptr) return;
-	mpv->play();
+	if (engine == nullptr) return;
+	engine->play();
+	state->setValueWithData(PLAYING);
 }
 
 void VideoMedia::stop() {
-	if (mpv == nullptr) return;
-	mpv->stop();
+	if (engine == nullptr) return;
+	engine->stop();
 	state->setValueWithData(PAUSED);
 }
 
 void VideoMedia::pause() {
-	if (mpv == nullptr) return;
-	mpv->pause();
+	if (engine == nullptr) return;
+	engine->pause();
 	state->setValueWithData(PAUSED);
 }
 
 void VideoMedia::restart() {
-	if (mpv == nullptr) return;
+	if (engine == nullptr) return;
 	seek(0);
 	play();
 }
 
 void VideoMedia::seek(double time)
 {
-	if (mpv == nullptr) return;
+	if (engine == nullptr) return;
 	double target = jlimit(0.0, length->doubleValue(), time);
-	mpv->setPosition(target);
+	engine->setPosition(target);
 }
 
 void VideoMedia::checkIsYoutubeVideo()
@@ -350,6 +426,42 @@ void VideoMedia::mpvFrameUpdate()
 }
 
 void VideoMedia::mpvFileEnd()
+{
+	state->setValueWithData(PAUSED);
+	mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_FINISHED, this));
+}
+
+// VideoPlayerEngine::Listener implementations (delegate to legacy MPV callbacks)
+void VideoMedia::playerFileLoaded()
+{
+	if (engine == nullptr) return;
+	videoWidth = engine->getVideoWidth();
+	videoHeight = engine->getVideoHeight();
+	length->setValue(engine->getDuration());
+
+	engine->setVolume(volume->floatValue());
+	engine->setPlaySpeed(playSpeed->floatValue());
+	engine->setLoop(loop->boolValue());
+
+	shouldGeneratePreviewImage = true;
+
+	pause();
+	mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_CONTENT_CHANGED, this));
+}
+
+void VideoMedia::playerTimeChanged(double time)
+{
+	updatingPosFromPlayer = true;
+	position->setValue(time);
+	updatingPosFromPlayer = false;
+}
+
+void VideoMedia::playerFrameUpdate()
+{
+	shouldRedraw = true;
+}
+
+void VideoMedia::playerFileEnd()
 {
 	state->setValueWithData(PAUSED);
 	mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_FINISHED, this));

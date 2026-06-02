@@ -14,10 +14,12 @@
 
 // Forward declaration
 class VideoMediaAudioProcessor;
+class VideoPlayerEngine;
 
 class VideoMedia :
 	public Media,
-	public MPVPlayer::MPVListener
+	public MPVPlayer::MPVListener,
+	public VideoPlayerEngine::Listener
 {
 public:
 	VideoMedia(var params = var());
@@ -53,11 +55,13 @@ public:
 	int videoWidth = 0;
 	int videoHeight = 0;
 
-	std::unique_ptr<MPVPlayer> mpv;
+	std::unique_ptr<VideoPlayerEngine> engine;
+	MPVPlayer* mpv = nullptr; // Raw pointer for backward compatibility (owned by engine)
 
 	void clearItem() override;
 
-	void setupMPV(const String& path);
+	void setupEngine(const String& path);
+	void setupMPV(const String& path); // Keep for backward compatibility
 
 	void load();
 
@@ -83,11 +87,17 @@ public:
 	virtual void handleStop() override;
 	virtual void handleStart() override;
 
-	//MPVEvents
+	//MPVEvents (legacy callbacks)
 	void mpvFileLoaded() override;
 	void mpvTimeChanged(double time) override;
 	void mpvFrameUpdate() override;
 	void mpvFileEnd() override;
+
+	//VideoPlayerEngine::Listener callbacks
+	void playerFileLoaded() override;
+	void playerTimeChanged(double time) override;
+	void playerFrameUpdate() override;
+	void playerFileEnd() override;
 
 	bool isPlaying();
 	double getMediaLength() override;

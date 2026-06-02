@@ -76,8 +76,15 @@
 #include "mpv/client.h"
 #include "mpv/render_gl.h"
 
+#include "medias/video/VideoPlayerEngine.h"
 #include "medias/video/VideoAudioProcessor.h"
 #include "medias/video/MPVPlayer.h"
+
+#ifdef VLC_ENABLE
+#include <vlc/vlc.h>
+#include "medias/video/VLCPlayer.h"
+#endif
+
 #include "medias/video/VideoMedia.h"
 
 #if !JUCE_LINUX

@@ -1318,6 +1318,9 @@
     <ClCompile Include="..\..\Source\Engine\MGEngine.cpp">
       <Filter>MapGyver\Source\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Engine\MGSettings.cpp">
+      <Filter>MapGyver\Source\Engine</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\medialist\ui\MediaListItemUI.cpp">
       <Filter>MapGyver\Source\Media\medias\medialist\ui</Filter>
     </ClCompile>
@@ -1475,6 +1478,9 @@
       <Filter>MapGyver\Source\Media\medias\video</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\video\VideoMedia.cpp">
+      <Filter>MapGyver\Source\Media\medias\video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Media\medias\video\VLCPlayer.cpp">
       <Filter>MapGyver\Source\Media\medias\video</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Media\medias\web\WebMedia.cpp">
@@ -5586,6 +5592,9 @@
     <ClInclude Include="..\..\Source\Engine\MGEngine.h">
       <Filter>MapGyver\Source\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Engine\MGSettings.h">
+      <Filter>MapGyver\Source\Engine</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\medialist\ui\MediaListItemUI.h">
       <Filter>MapGyver\Source\Media\medias\medialist\ui</Filter>
     </ClInclude>
@@ -5743,6 +5752,12 @@
       <Filter>MapGyver\Source\Media\medias\video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\video\VideoMedia.h">
+      <Filter>MapGyver\Source\Media\medias\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\video\VideoPlayerEngine.h">
+      <Filter>MapGyver\Source\Media\medias\video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Media\medias\video\VLCPlayer.h">
       <Filter>MapGyver\Source\Media\medias\video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Media\medias\web\WebMedia.h">
