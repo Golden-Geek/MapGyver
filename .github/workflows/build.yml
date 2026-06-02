@@ -86,6 +86,7 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           files: ./Binaries/CI/App/${{ steps.create_package.outputs.pkg-name }}
+          overwrite_files: true
           fail_on_unmatched_files: true
 
       - name: Upload
@@ -192,6 +193,15 @@ jobs:
           mv ${{ env.ProjectName }}.pkg $PKGNAME
           echo "pkg-name=$PKGNAME" >> $GITHUB_OUTPUT
         working-directory: ./Package
+
+      - name: Publish Tag Asset To GitHub Release
+        if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.arch == 'arm64' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: ./Package/${{ steps.create_package.outputs.pkg-name }}
+          overwrite_files: true
+          fail_on_unmatched_files: true
 
       - name: Upload
         uses: ./.github/actions/upload
