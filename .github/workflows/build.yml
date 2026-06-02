@@ -2,6 +2,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 env:
   ProjectName: MapGyver
   PackagesVersion: 1.2.11
@@ -60,13 +63,30 @@ jobs:
         shell: powershell
         run: |
           Set-Variable -Name "PKGNAME" -Value "${{ env.ProjectName }}-${{ steps.set_variables.outputs.suffix }}"
-          Invoke-WebRequest "${{ secrets.DEPDIRURL }}${{ env.ProjectName }}-win-x64-${{ steps.set_variables.outputs.dep }}-dependencies.zip" -OutFile ./deps.zip
+
+          $depsUrl = "${{ secrets.DEPDIRURL }}${{ env.ProjectName }}-win-x64-${{ steps.set_variables.outputs.dep }}-dependencies.zip"
+          try {
+            Invoke-WebRequest $depsUrl -OutFile ./deps.zip -UseBasicParsing
+          }
+          catch {
+            Write-Warning "Invoke-WebRequest failed, retrying with curl.exe --insecure (likely custom/self-signed cert in CI): $($_.Exception.Message)"
+            curl.exe --fail --location --insecure "$depsUrl" --output ./deps.zip
+          }
+
           7z x deps.zip -aoa
           Get-ChildItem -Recurse
           &"C:/Program Files (x86)/Inno Setup 6/ISCC.exe" "${{ github.workspace }}/${{ matrix.installerName }}.iss" /O. /F$PKGNAME
           echo "pkg-name=$PKGNAME.exe" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
           echo "pdb-name=$PKGNAME.pdb" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
         working-directory: ./Binaries/CI/App
+
+      - name: Publish Tag Asset To GitHub Release
+        if: ${{ startsWith(github.ref, 'refs/tags/') && steps.set_variables.outputs.config == 'Release' && matrix.arch == 'win-x64' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: ./Binaries/CI/App/${{ steps.create_package.outputs.pkg-name }}
+          fail_on_unmatched_files: true
 
       - name: Upload
         uses: ./.github/actions/upload
