@@ -58,6 +58,10 @@ public:
 	std::unique_ptr<VideoPlayerEngine> engine;
 	MPVPlayer* mpv = nullptr; // Raw pointer for backward compatibility (owned by engine)
 
+#ifdef VLC_ENABLE
+	juce::OpenGLFrameBuffer vlcFBO;
+#endif
+
 	void clearItem() override;
 
 	void setupEngine(const String& path);

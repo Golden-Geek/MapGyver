@@ -70,9 +70,9 @@ void VLCPlayer::setupVLC()
 								vlcDisplayCallback,
 								this);
 
-	// Set video format to RGBA (required for callback mode)
-	// This will be overridden when we know the actual video size
-	libvlc_video_set_format(mediaPlayer, "RV32", 1920, 1080, 1920 * 4);
+	// "BGRA" byte layout matches JUCE Image::ARGB (B,G,R,A in memory), giving correct alpha=255.
+	// Placeholder dimensions overridden in load() once the media is parsed.
+	libvlc_video_set_format(mediaPlayer, "BGRA", 1920, 1080, 1920 * 4);
 
 	// Setup event callbacks
 	libvlc_event_manager_t* eventManager = libvlc_media_player_event_manager(mediaPlayer);
@@ -135,6 +135,33 @@ bool VLCPlayer::load(const juce::String& filePath)
 	duration = dur / 1000.0;
 
 	DBG("VLC: Duration = " + juce::String(duration.load()) + "s");
+
+	// Read actual video dimensions from parsed track info
+	unsigned vidW = 1920, vidH = 1080;
+	libvlc_media_track_info_t* tracks = nullptr;
+	int numTracks = libvlc_media_get_tracks_info(currentMedia, &tracks);
+	for (int i = 0; i < numTracks; ++i)
+	{
+		if (tracks[i].i_type == libvlc_track_video && tracks[i].u.video.i_width > 0)
+		{
+			vidW = tracks[i].u.video.i_width;
+			vidH = tracks[i].u.video.i_height;
+			break;
+		}
+	}
+	if (tracks) free(tracks);
+
+	DBG("VLC: Video size = " + juce::String(vidW) + "x" + juce::String(vidH));
+
+	// Set format with correct dimensions and allocate CPU frame buffer
+	libvlc_video_set_format(mediaPlayer, "BGRA", vidW, vidH, vidW * 4);
+	{
+		juce::ScopedLock lock(videoLock);
+		videoWidth  = (int)vidW;
+		videoHeight = (int)vidH;
+		videoBuffer.resize(vidW * vidH * 4);
+		videoFrame  = juce::Image(juce::Image::ARGB, (int)vidW, (int)vidH, true);
+	}
 
 	isLoaded = true;
 
@@ -390,20 +417,10 @@ void* VLCPlayer::vlcLockCallback(void* opaque, void** planes)
 
 	player->videoLock.enter();
 
-	unsigned width, height;
-	libvlc_video_get_size(player->mediaPlayer, 0, &width, &height);
-
-	if ((int)width != player->videoWidth || (int)height != player->videoHeight)
-	{
-		player->videoWidth = width;
-		player->videoHeight = height;
-		player->videoBuffer.resize(width * height * 4);
-		player->videoFrame = juce::Image(juce::Image::ARGB, width, height, true);
-	}
-
-	*planes = player->videoBuffer.data();
+	*planes = player->videoBuffer.empty() ? nullptr : player->videoBuffer.data();
 	return nullptr;
 }
+
 
 void VLCPlayer::vlcUnlockCallback(void* opaque, void* picture, void* const* planes)
 {
@@ -427,6 +444,12 @@ void VLCPlayer::vlcDisplayCallback(void* opaque, void* picture)
 
 	player->frameReady = true;
 	player->listeners.call([player](Listener& l) { l.playerFrameUpdate(); });
+}
+
+juce::Image VLCPlayer::getVideoFrame() const
+{
+	juce::ScopedLock lock(videoLock);
+	return videoFrame;
 }
 
 void VLCPlayer::vlcAudioPlayCallback(void* data, const void* samples, unsigned count, int64_t pts)

@@ -65,6 +65,9 @@ private:
 	static void vlcAudioPlayCallback(void* data, const void* samples, unsigned count, int64_t pts);
 	static void vlcAudioFlushCallback(void* data, int64_t pts);
 
+public:
+	juce::Image getVideoFrame() const;
+
 	String filePath;
 
 	libvlc_instance_t* vlcInstance = nullptr;

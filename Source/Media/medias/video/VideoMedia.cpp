@@ -264,21 +264,46 @@ void VideoMedia::renderGLInternal()
 	{
 		mpv->renderGL(&frameBuffer);
 	}
-	else
+#ifdef VLC_ENABLE
+	else if (VLCPlayer* vlc = dynamic_cast<VLCPlayer*>(engine.get()))
 	{
-		// VLC or other engine: use generic interface
-		// For now just clear, VLC callback rendering needs more integration
-		glClearColor(.1f, .1f, .1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		juce::Image frame = vlc->getVideoFrame();
+		if (frame.isValid())
+		{
+			// Lazily create / recreate FBO when video dimensions change
+			if (!vlcFBO.isValid() || vlcFBO.getWidth() != frame.getWidth() || vlcFBO.getHeight() != frame.getHeight())
+			{
+				if (vlcFBO.isValid()) vlcFBO.release();
+				vlcFBO.initialise(GlContextHolder::getInstance()->context, frame.getWidth(), frame.getHeight());
+			}
 
-		// TODO: Implement proper VLC frame rendering
-		// VLC provides frames via callbacks, need to texture them to GL
+			// Upload the CPU frame into the FBO texture
+			vlcFBO.makeCurrentAndClear();
+			glBindTexture(GL_TEXTURE_2D, vlcFBO.getTextureID());
+			juce::Image::BitmapData bitmapData(frame, juce::Image::BitmapData::readOnly);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, frame.getWidth(), frame.getHeight(), GL_BGRA_EXT, GL_UNSIGNED_BYTE, bitmapData.data);
+			vlcFBO.releaseAsRenderingTarget();
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+
+		// Draw whatever is in the FBO (last valid frame stays if no new one yet)
+		if (vlcFBO.isValid())
+		{
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			glBindTexture(GL_TEXTURE_2D, vlcFBO.getTextureID());
+			Draw2DTexRectFlipped(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 	}
+#endif
 }
 
 void VideoMedia::closeGLInternal()
 {
 	if (engine == nullptr) return;
+#ifdef VLC_ENABLE
+	if (vlcFBO.isValid()) vlcFBO.release();
+#endif
 }
 
 

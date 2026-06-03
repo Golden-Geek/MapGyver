@@ -130,6 +130,14 @@ void AudioManager::fillIOFromSetup()
 	AudioDeviceManager::AudioDeviceSetup setup;
 	am.getAudioDeviceSetup(setup);
 
+	auto currentDevice = am.getCurrentAudioDevice();
+	if (currentDevice == nullptr)
+	{
+		NLOGWARNING(niceName, "No audio device available to fill IO from setup.");
+		isFillingIO = false;
+		return;
+	}
+	
 	StringArray inputNames = am.getCurrentAudioDevice()->getInputChannelNames();
 	StringArray outputNames = am.getCurrentAudioDevice()->getOutputChannelNames();
 
