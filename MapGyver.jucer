@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="DMftGm" name="MapGyver" projectType="guiapp" useAppConfig="1"
               addUsingNamespaceToJuceHeader="1" jucerFormatVersion="1" headerPath="../../Source&#10;../../External/asiodriver&#10;../../External/mpv/include&#10;../../External/NDI/include&#10;../../External/servus/include&#10;../../External/ultralight/include&#10;../../External/wil/include&#10;../../External/vlc/include"
-              defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1&#10;ORGANIC_REMOTE_CONTROL_PORT=46000&#10;MPV_ENABLE_DLL&#10;VLC_ENABLE"
+              defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1&#10;ORGANIC_REMOTE_CONTROL_PORT=46000&#10;MPV_ENABLE_DLL"
               companyWebsite="https://benjamin.kuperberg.fr/mapgyver" companyName="GoldenGeek"
               bundleIdentifier="com.goldengeek.mapgyver" displaySplashScreen="1"
               version="1.0.0b3" projectLineFeed="&#10;">
@@ -560,7 +560,8 @@
                JUCE_USE_WIN_WEBVIEW2="1" JUCE_USE_WIN_WEBVIEW2_WITH_STATIC_LINKING="1"/>
   <EXPORTFORMATS>
     <VS2026 targetFolder="Builds/VisualStudio2026" externalLibraries="Servus.lib&#10;libmpv.lib&#10;AppCore.lib&#10;Ultralight.lib&#10;WebCore.lib&#10;UltralightCore.lib&#10;libvlc.lib&#10;libvlccore.lib"
-            extraCompilerFlags="/bigobj" smallIcon="AKcEsb" bigIcon="AKcEsb">
+            extraCompilerFlags="/bigobj" smallIcon="AKcEsb" bigIcon="AKcEsb"
+            extraDefs="VLC_ENABLE">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/debug&#10;../../External/mpv/lib/win&#10;../../External/ultralight/lib/win&#10;../../External/vlc/lib/win&#10;"
                        binaryPath="Binaries/Debug"/>
@@ -625,10 +626,10 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2022 targetFolder="Builds/VisualStudio2022_CI" smallIcon="AKcEsb"
-            bigIcon="AKcEsb" extraCompilerFlags="/bigobj" externalLibraries="Servus.lib&#10;libmpv.lib&#10;AppCore.lib&#10;Ultralight.lib&#10;WebCore.lib&#10;UltralightCore.lib">
+            bigIcon="AKcEsb" extraCompilerFlags="/bigobj" externalLibraries="Servus.lib&#10;libmpv.lib&#10;AppCore.lib&#10;Ultralight.lib&#10;WebCore.lib&#10;UltralightCore.lib&#10;libvlc.lib&#10;libvlccore.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="0" name="Release" libraryPath="../../External/NDI/lib/x64&#10;../../External/servus/lib/win/x64/release&#10;../../External/mpv/lib/win&#10;../../External/ultralight/lib/win&#10;../../External/vlc/lib/win"
-                       binaryPath="Binaries/CI"/>
+                       binaryPath="Binaries/CI" headerPath="VLC_ENABLE"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="JUCE/modules"/>
@@ -654,7 +655,7 @@
         <MODULEPATH id="juce_graphics" path="JUCE/modules"/>
       </MODULEPATHS>
     </VS2022>
-    <XCODE_MAC targetFolder="Builds/MacOSX_CI" extraDefs="JUCE_COREGRAPHICS_DRAW_ASYNC=0"
+    <XCODE_MAC targetFolder="Builds/MacOSX_CI" extraDefs="JUCE_COREGRAPHICS_DRAW_ASYNC=0&#10;"
                externalLibraries="Servus&#10;ndi&#10;mpv.2&#10;AppCore&#10;Ultralight&#10;UltralightCore&#10;WebCore&#10;libvlc&#10;libvlccore"
                smallIcon="AKcEsb" bigIcon="AKcEsb" xcodeValidArchs="arm64,x86_64"
                customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;&#9;&lt;dict&gt;&#10;&#9;&#9;&lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;&#9;&#9;&lt;true/&gt;&#10;&#9;&lt;/dict&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
