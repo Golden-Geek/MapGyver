@@ -92,6 +92,10 @@ public:
 	std::atomic<int> numAudioChannels{ 2 };
 	std::atomic<double> duration{ 0.0 };
 
+	// Wall-clock interpolation anchor (written from VLC event thread, read from timer thread)
+	std::atomic<int64_t> lastVLCTimeMs{ 0 };
+	std::atomic<int64_t> lastVLCWallMs{ 0 };
+
 	juce::String currentFile;
 	bool isLoaded = false;
 

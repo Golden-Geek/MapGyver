@@ -67,6 +67,7 @@ void VideoMedia::clearItem()
 	mpv = nullptr; // Clear raw pointer before engine is destroyed
 	if (engine != nullptr)
 	{
+		engine->removeListener(this);
 		engine->unload();
 	}
 	stop();
@@ -476,15 +477,9 @@ void VideoMedia::playerFileLoaded()
 
 void VideoMedia::playerTimeChanged(double time)
 {
-	juce::WeakReference<Media> weakThis(this);
-	juce::MessageManager::callAsync([weakThis, time]() {
-		if (auto* vm = dynamic_cast<VideoMedia*>(weakThis.get()))
-		{
-			vm->updatingPosFromPlayer = true;
-			vm->position->setValue(time);
-			vm->updatingPosFromPlayer = false;
-		}
-	});
+	updatingPosFromPlayer = true;
+	position->setValue(time);
+	updatingPosFromPlayer = false;
 }
 
 void VideoMedia::playerFrameUpdate()

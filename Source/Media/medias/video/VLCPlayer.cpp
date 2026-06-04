@@ -12,6 +12,30 @@
 #ifdef VLC_ENABLE
 
 // =============================================================================
+// VLCTimers — shared 60 Hz singleton, same pattern as MPVTimers
+// =============================================================================
+
+class VLCTimers : public juce::Timer
+{
+public:
+	juce_DeclareSingleton(VLCTimers, true);
+	VLCTimers()  { startTimerHz(60); }
+	~VLCTimers() { stopTimer(); players.clear(); }
+
+	void registerVLC(VLCPlayer* p)   { players.addIfNotAlreadyThere(p); }
+	void unregisterVLC(VLCPlayer* p) { players.removeAllInstancesOf(p); }
+
+	void timerCallback() override
+	{
+		for (auto* p : players)
+			p->pullEvents();
+	}
+
+	juce::Array<VLCPlayer*> players;
+};
+juce_ImplementSingleton(VLCTimers);
+
+// =============================================================================
 // VLCPlayer Implementation
 // =============================================================================
 
@@ -19,10 +43,12 @@ VLCPlayer::VLCPlayer(const String& filePath)
 	: filePath(filePath)
 {
 	setupVLC();
+	VLCTimers::getInstance()->registerVLC(this);
 }
 
 VLCPlayer::~VLCPlayer()
 {
+	VLCTimers::getInstance()->unregisterVLC(this);
 	unload();
 
 	if (mediaPlayer)
@@ -45,6 +71,13 @@ void VLCPlayer::setupVLC()
 		"--verbose=0",
 		"--no-video-title-show",
 		"--avcodec-hw=any",
+		"--no-osd",                      // disables marq/logo overlays (also silences those option errors)
+		"--no-spu",                      // no subtitle/SPU decoding
+		"--no-stats",                    // no playback statistics
+		"--no-metadata-network-access",  // no network requests for art/tags
+		"--clock-jitter=0",              // zero clock jitter for tighter A/V sync
+		"--drop-late-frames",            // drop frames that arrive past their deadline
+		"--skip-frames",                 // allow frame-skipping to maintain sync
 	};
 
 	vlcInstance = libvlc_new(sizeof(vlcArgs) / sizeof(vlcArgs[0]), vlcArgs);
@@ -77,11 +110,11 @@ void VLCPlayer::setupVLC()
 	// Setup event callbacks
 	libvlc_event_manager_t* eventManager = libvlc_media_player_event_manager(mediaPlayer);
 
-	libvlc_event_attach(eventManager, libvlc_MediaPlayerPlaying, vlcEventCallback, this);
-	libvlc_event_attach(eventManager, libvlc_MediaPlayerPaused, vlcEventCallback, this);
-	libvlc_event_attach(eventManager, libvlc_MediaPlayerStopped, vlcEventCallback, this);
-	libvlc_event_attach(eventManager, libvlc_MediaPlayerEndReached, vlcEventCallback, this);
-	libvlc_event_attach(eventManager, libvlc_MediaPlayerTimeChanged, vlcEventCallback, this);
+	libvlc_event_attach(eventManager, libvlc_MediaPlayerPlaying,       vlcEventCallback, this);
+	libvlc_event_attach(eventManager, libvlc_MediaPlayerPaused,        vlcEventCallback, this);
+	libvlc_event_attach(eventManager, libvlc_MediaPlayerStopped,       vlcEventCallback, this);
+	libvlc_event_attach(eventManager, libvlc_MediaPlayerEndReached,    vlcEventCallback, this);
+	libvlc_event_attach(eventManager, libvlc_MediaPlayerTimeChanged,   vlcEventCallback, this);
 	libvlc_event_attach(eventManager, libvlc_MediaPlayerLengthChanged, vlcEventCallback, this);
 
 	setupAudio();
@@ -166,9 +199,9 @@ bool VLCPlayer::load(const juce::String& filePath)
 	isLoaded = true;
 
 	// Notify listeners that file is loaded
-	listeners.call([this](Listener& l) { 
+	listeners.call([this](Listener& l) {
 		DBG("VLC: Calling playerFileLoaded callback");
-		l.playerFileLoaded(); 
+		l.playerFileLoaded();
 	});
 
 	DBG("VLC: Load complete, ready to play");
@@ -239,8 +272,10 @@ void VLCPlayer::setPosition(double pos)
 {
 	if (!mediaPlayer || !isLoaded) return;
 
-	float position = (float)(pos / duration.load());
-	libvlc_media_player_set_position(mediaPlayer, juce::jlimit(0.0f, 1.0f, position));
+	libvlc_time_t ms = (libvlc_time_t)(juce::jlimit(0.0, duration.load(), pos) * 1000.0);
+	libvlc_media_player_set_time(mediaPlayer, ms);
+	lastVLCTimeMs = ms;
+	lastVLCWallMs = juce::Time::currentTimeMillis();
 }
 
 double VLCPlayer::getPosition() const
@@ -333,18 +368,12 @@ juce::AudioProcessor* VLCPlayer::getAudioProcessor()
 
 void VLCPlayer::pullEvents()
 {
-	// VLC uses callbacks, so no explicit event pulling needed
-	// But we can check for loop condition here
-	if (loopEnabled.load() && !playing.load() && isLoaded)
-	{
-		// Check if we've reached the end
-		libvlc_state_t state = libvlc_media_player_get_state(mediaPlayer);
-		if (state == libvlc_Ended)
-		{
-			setPosition(0.0);
-			play();
-		}
-	}
+	if (!isLoaded || !playing.load()) return;
+
+	int64_t elapsed = juce::Time::currentTimeMillis() - lastVLCWallMs.load();
+	double interpolated = lastVLCTimeMs.load() * 0.001 + elapsed * 0.001 * currentSpeed.load();
+	interpolated = juce::jlimit(0.0, duration.load(), interpolated);
+	listeners.call([interpolated](Listener& l) { l.playerTimeChanged(interpolated); });
 }
 
 // =============================================================================
@@ -366,11 +395,16 @@ void VLCPlayer::handleVLCEvent(const libvlc_event_t* event)
 		case libvlc_MediaPlayerPlaying:
 			DBG("VLC Event: Playing");
 			playing = true;
+			lastVLCWallMs = juce::Time::currentTimeMillis(); // restart interpolation from now
 			break;
 
 		case libvlc_MediaPlayerPaused:
 			DBG("VLC Event: Paused");
 			playing = false;
+			{
+				libvlc_time_t t = libvlc_media_player_get_time(mediaPlayer);
+				if (t >= 0) lastVLCTimeMs = t; // snap anchor to exact paused position
+			}
 			break;
 
 		case libvlc_MediaPlayerStopped:
@@ -391,19 +425,14 @@ void VLCPlayer::handleVLCEvent(const libvlc_event_t* event)
 			break;
 
 		case libvlc_MediaPlayerTimeChanged:
-		{
-			double pos = event->u.media_player_time_changed.new_time / 1000.0;
-			// DBG("VLC Event: Time Changed - " + juce::String(pos));  // Too verbose
-			listeners.call([pos](Listener& l) { l.playerTimeChanged(pos); });
+			// Calibration tick: update interpolation anchor with the authoritative VLC time
+			lastVLCTimeMs = event->u.media_player_time_changed.new_time;
+			lastVLCWallMs = juce::Time::currentTimeMillis();
 			break;
-		}
 
 		case libvlc_MediaPlayerLengthChanged:
-		{
 			duration = libvlc_media_player_get_length(mediaPlayer) / 1000.0;
-			DBG("VLC Event: Length Changed - " + juce::String(duration.load()));
 			break;
-		}
 
 		default:
 			break;
