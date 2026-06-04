@@ -74,6 +74,9 @@ void ScreenRenderer::renderOpenGL()
 
 	frameBuffer.releaseAsRenderingTarget();
 
+	if (screen->ndiSender != nullptr)
+		screen->ndiSender->sendFrame(frameBuffer);
+
 }
 
 void ScreenRenderer::openGLContextClosing()

@@ -21,9 +21,13 @@ public:
 	virtual ~MediaListItem();
 
 	enum TransitionState { IDLE, LOADING, UNLOADING, RUNNING };
+	enum TransitionType { FADE, CUT };
 
 	Trigger* launch;
 	FloatParameter* transitionTime;
+	EnumParameter* transitionType;
+	FloatParameter* cutPoint;
+	Automation fadeCurve;
 	FloatParameter* weight;
 	EnumParameter* state;
 
@@ -60,6 +64,8 @@ public:
 
 	virtual void onContainerParameterChangedInternal(Parameter* p) override;
 	virtual void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
+
+	float getTransitionWeight(float progression, float from, float to);
 
 	bool isLoading() const;
 	bool isUnloading() const;

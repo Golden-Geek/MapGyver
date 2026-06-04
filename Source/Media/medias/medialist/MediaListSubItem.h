@@ -56,6 +56,7 @@ public:
 	float targetEndTransitionTime;
 	float weightAtStart;
 	float weight;
+	float linearProgression = 0.f;
 
 	void clear() override;
 

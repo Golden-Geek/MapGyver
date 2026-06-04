@@ -15,6 +15,7 @@
 
 MediaListItem::MediaListItem(const String& name, var params) :
 	BaseItem(name),
+	fadeCurve("Fade Curve"),
 	listItemNotifier(10)
 {
 	saveAndLoadRecursiveData = false;
@@ -29,7 +30,16 @@ MediaListItem::MediaListItem(const String& name, var params) :
 	transitionTime->setEnabled(false);
 	transitionTime->defaultUI = FloatParameter::TIME;
 
+	transitionType = addEnumParameter("Transition type", "How this item transitions in");
+	transitionType->addOption("Fade", FADE)->addOption("Cut", CUT);
 
+	cutPoint = addFloatParameter("Cut point", "Progression (0-1) at which the cut from A to B occurs", 0.f, 0.f, 1.f);
+	cutPoint->setEnabled(false);
+
+	fadeCurve.length->setValue(1.f);
+	fadeCurve.addKey(0, 0);
+	fadeCurve.addKey(1, 1);
+	addChildControllableContainer(&fadeCurve);
 
 	autoPlay = addBoolParameter("Auto play", "Whether to automatically play the media when loaded", true);
 	autoStop = addBoolParameter("Auto stop", "Whether to automatically stop the media when unloaded", true);
@@ -151,6 +161,15 @@ void MediaListItem::render()
 
 }
 
+float MediaListItem::getTransitionWeight(float progression, float from, float to) 
+{
+	if (transitionType->getValueDataAsEnum<TransitionType>() == CUT)
+		return progression >= cutPoint->floatValue() ? to : from;
+
+	float factor = fadeCurve.getValueAtNormalizedPosition(progression);
+	return jmap(factor, 0.f, 1.f, from, to);
+}
+
 void MediaListItem::process()
 {
 	for (auto& subItem : subItems)
@@ -188,27 +207,36 @@ void MediaListItem::process()
 	case LOADING:
 	case UNLOADING:
 	{
-
 		double t = Time::getMillisecondCounterHiRes() / 1000.0;
 		if (t >= targetTime)
 		{
 			weight->setValue(targetWeight);
 			state->setValueWithData(targetWeight > 0.f ? RUNNING : IDLE);
 			for (auto& s : subItems)
-			{
 				s->weight = targetWeight;
-			}
 		}
 		else
 		{
 			for (auto& s : subItems)
 			{
 				if (t >= s->targetEndTransitionTime)
+				{
 					s->weight = targetWeight;
+					s->linearProgression = 1.f;
+				}
 				else
-					s->weight = jmap<double>(t, timeAtStart, s->targetEndTransitionTime, s->weightAtStart, targetWeight);
+				{
+					float subProgression = (float)jmap<double>(t, timeAtStart, s->targetEndTransitionTime, 0.0, 1.0);
+					s->linearProgression = subProgression;
+					s->weight = ts == LOADING
+						? getTransitionWeight(subProgression, s->weightAtStart, (float)targetWeight)
+						: jmap(subProgression, 0.f, 1.f, s->weightAtStart, (float)targetWeight);
+				}
 			}
-			double tWeight = jmap<double>(t, timeAtStart, targetTime, weightAtStart, targetWeight);
+			float progression = (float)jmap<double>(t, timeAtStart, targetTime, 0.0, 1.0);
+			float tWeight = ts == LOADING
+				? getTransitionWeight(progression, (float)weightAtStart, (float)targetWeight)
+				: jmap(progression, 0.f, 1.f, (float)weightAtStart, (float)targetWeight);
 			weight->setValue(tWeight);
 		}
 	};
@@ -224,24 +252,23 @@ void MediaListItem::process()
 			s->transitionProgression->setValue(progression);
 		}
 
-		// Drive IN linked param (progression 0->1 while loading)
+		// Drive IN linked param (progression 0->1 while loading, always linear)
 		if (ts == LOADING)
 		{
 			if (auto* p = s->inLinkedParam->getTargetAs<Parameter>())
 			{
-				float progression = jmap<float>(s->weight, s->weightAtStart, 1.f, 0.f, 1.f);
 				float start = s->inRange->enabled ? s->inRange->x : 0.f;
 				float end   = s->inRange->enabled ? s->inRange->y : 1.f;
-				p->setValue(jmap(progression, 0.f, 1.f, start, end));
+				p->setValue(jmap(s->linearProgression, 0.f, 1.f, start, end));
 			}
 		}
 
-		// Drive OUT linked param (progression 1->0 while unloading)
+		// Drive OUT linked param (progression 1->0 while unloading, always linear)
 		if (ts == UNLOADING)
 		{
 			if (auto* p = s->outLinkedParam->getTargetAs<Parameter>())
 			{
-				float outProgression = jmap<float>(s->weight, s->weightAtStart, 0.f, 1.f, 0.f);
+				float outProgression = 1.f - s->linearProgression;
 				float start = s->outRange->enabled ? s->outRange->x : 0.f;
 				float end   = s->outRange->enabled ? s->outRange->y : 1.f;
 				p->setValue(jmap(outProgression, 0.f, 1.f, start, end));
@@ -340,6 +367,12 @@ void MediaListItem::onContainerParameterChangedInternal(Parameter* p)
 			s->transitionTimeOverride->setRange(0, transitionTime->floatValue());
 		}
 	}
+	else if (p == transitionType)
+	{
+		TransitionType tt = transitionType->getValueDataAsEnum<TransitionType>();
+		cutPoint->setEnabled(tt == CUT);
+		fadeCurve.editorIsCollapsed = (tt != FADE);
+	}
 	else if (p == state)
 	{
 		TransitionState ts = state->getValueDataAsEnum<TransitionState>();
@@ -432,6 +465,7 @@ var MediaListItem::getJSONData(bool includeNonOverriden)
 	}
 
 	data.getDynamicObject()->setProperty("subItems", subItemsData);
+	data.getDynamicObject()->setProperty("fadeCurve", fadeCurve.getJSONData(includeNonOverriden));
 
 	return data;
 }
@@ -451,4 +485,12 @@ void MediaListItem::loadJSONDataItemInternal(var data)
 			}
 		}
 	}
+
+	if (data.hasProperty("fadeCurve"))
+		fadeCurve.loadJSONData(data["fadeCurve"]);
+
+	// Sync visibility after loading
+	TransitionType tt = transitionType->getValueDataAsEnum<TransitionType>();
+	cutPoint->setEnabled(tt == CUT);
+	fadeCurve.editorIsCollapsed = (tt != FADE);
 }

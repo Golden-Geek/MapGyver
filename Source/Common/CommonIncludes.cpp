@@ -13,6 +13,7 @@
 #include "NDI/NDIDevice.cpp"
 #include "NDI/NDIDeviceParameter.cpp"
 #include "NDI/NDIManager.cpp"
+#include "NDI/NDIOutputSender.cpp"
 #include "NDI/ui/NDIDeviceChooser.cpp"
 #include "NDI/ui/NDIDeviceParameterUI.cpp"
 

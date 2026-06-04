@@ -57,6 +57,7 @@ void Screen::clearItem()
 
 	if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->removeSender(sharedTextureSender);
 	sharedTextureSender = nullptr;
+	ndiSender.reset();
 
 	//enabled->setValue(false);
 }
@@ -73,18 +74,26 @@ void Screen::onContainerParameterChangedInternal(Parameter* p)
 		if (p == enabled) sharedTextureSender->setEnabled(enabled->boolValue());
 		else if (p == screenWidth || p == screenHeight) sharedTextureSender->setSize(screenWidth->intValue(), screenHeight->intValue());
 	}
+
+	if (ndiSender != nullptr)
+	{
+		if (p == enabled) ndiSender->setEnabled(enabled->boolValue());
+		else if (p == screenWidth || p == screenHeight) ndiSender->setSize(screenWidth->intValue(), screenHeight->intValue());
+	}
 }
 
 void Screen::onContainerNiceNameChanged()
 {
 	BaseItem::onContainerNiceNameChanged();
 	if (sharedTextureSender != nullptr) sharedTextureSender->setSharingName(niceName);
+	if (ndiSender != nullptr) ndiSender->setName(niceName);
 }
 
 void Screen::setupOutput()
 {
 	SharedTextureManager::getInstance()->removeSender(sharedTextureSender);
 	sharedTextureSender = nullptr;
+	ndiSender.reset();
 
 	OutputType type = outputType->getValueDataAsEnum<OutputType>();
 	switch (type)
@@ -98,6 +107,7 @@ void Screen::setupOutput()
 		break;
 
 	case NDI:
+		ndiSender = std::make_unique<NDIOutputSender>(niceName, screenWidth->intValue(), screenHeight->intValue());
 		break;
 	}
 }

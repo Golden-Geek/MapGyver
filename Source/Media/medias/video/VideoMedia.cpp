@@ -476,9 +476,15 @@ void VideoMedia::playerFileLoaded()
 
 void VideoMedia::playerTimeChanged(double time)
 {
-	updatingPosFromPlayer = true;
-	position->setValue(time);
-	updatingPosFromPlayer = false;
+	juce::WeakReference<Media> weakThis(this);
+	juce::MessageManager::callAsync([weakThis, time]() {
+		if (auto* vm = dynamic_cast<VideoMedia*>(weakThis.get()))
+		{
+			vm->updatingPosFromPlayer = true;
+			vm->position->setValue(time);
+			vm->updatingPosFromPlayer = false;
+		}
+	});
 }
 
 void VideoMedia::playerFrameUpdate()

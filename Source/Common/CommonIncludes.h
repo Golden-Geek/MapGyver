@@ -26,6 +26,7 @@
 #include "NDI/NDIDevice.h"
 #include "NDI/NDIManager.h"
 #include "NDI/NDIDeviceParameter.h"
+#include "NDI/NDIOutputSender.h"
 
 #include "NDI/ui/NDIDeviceChooser.h"
 #include "NDI/ui/NDIDeviceParameterUI.h"

@@ -138,18 +138,18 @@ bool VLCPlayer::load(const juce::String& filePath)
 
 	// Read actual video dimensions from parsed track info
 	unsigned vidW = 1920, vidH = 1080;
-	libvlc_media_track_info_t* tracks = nullptr;
-	int numTracks = libvlc_media_get_tracks_info(currentMedia, &tracks);
-	for (int i = 0; i < numTracks; ++i)
+	libvlc_media_track_t** tracks = nullptr;
+	unsigned numTracks = libvlc_media_tracks_get(currentMedia, &tracks);
+	for (unsigned i = 0; i < numTracks; ++i)
 	{
-		if (tracks[i].i_type == libvlc_track_video && tracks[i].u.video.i_width > 0)
+		if (tracks[i]->i_type == libvlc_track_video && tracks[i]->video->i_width > 0)
 		{
-			vidW = tracks[i].u.video.i_width;
-			vidH = tracks[i].u.video.i_height;
+			vidW = tracks[i]->video->i_width;
+			vidH = tracks[i]->video->i_height;
 			break;
 		}
 	}
-	if (tracks) free(tracks);
+	libvlc_media_tracks_release(tracks, numTracks);
 
 	DBG("VLC: Video size = " + juce::String(vidW) + "x" + juce::String(vidH));
 
@@ -392,7 +392,7 @@ void VLCPlayer::handleVLCEvent(const libvlc_event_t* event)
 
 		case libvlc_MediaPlayerTimeChanged:
 		{
-			double pos = getPosition();
+			double pos = event->u.media_player_time_changed.new_time / 1000.0;
 			// DBG("VLC Event: Time Changed - " + juce::String(pos));  // Too verbose
 			listeners.call([pos](Listener& l) { l.playerTimeChanged(pos); });
 			break;

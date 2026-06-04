@@ -11,6 +11,7 @@
 #pragma once
 
 class ScreenRenderer;
+class NDIOutputSender;
 
 class Screen :
     public BaseItem
@@ -39,6 +40,7 @@ public:
 
     std::unique_ptr<ScreenRenderer> renderer;
     SharedTextureSender* sharedTextureSender;
+    std::unique_ptr<NDIOutputSender> ndiSender;
 
     void clearItem() override;
 
