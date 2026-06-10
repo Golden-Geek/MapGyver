@@ -5,7 +5,7 @@
               defines="JUCE_DONT_ASSERT_ON_GLSL_COMPILE_ERROR=1&#10;ORGANIC_REMOTE_CONTROL_PORT=46000&#10;MPV_ENABLE_DLL"
               companyWebsite="https://benjamin.kuperberg.fr/mapgyver" companyName="GoldenGeek"
               bundleIdentifier="com.goldengeek.mapgyver" displaySplashScreen="1"
-              version="1.0.0b3" projectLineFeed="&#10;">
+              version="1.0.0b4" projectLineFeed="&#10;">
   <MAINGROUP id="HVgNxl" name="MapGyver">
     <GROUP id="{F38B7255-1DCA-93A3-BDC5-0B94B29FDCE3}" name="Resources">
       <GROUP id="{714BA6B0-CDE8-2433-11E9-E60FA7C30A64}" name="media">

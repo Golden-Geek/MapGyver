@@ -138,7 +138,7 @@ void MediaListPanel::resized()
 void MediaListPanel::setMediaList(MediaListMedia* media)
 {
 	if (currentMedia == media) return;
-	if (Engine::mainEngine->isClearing) return;
+	
 	 
 	if (currentMedia != nullptr)
 	{
@@ -149,6 +149,12 @@ void MediaListPanel::setMediaList(MediaListMedia* media)
 	{
 		removeChildComponent(mediaListView.get());
 		mediaListView.reset();
+	}
+
+	if (Engine::mainEngine->isClearing)
+	{
+		currentMedia = nullptr;
+		return;
 	}
 
 	currentMedia = media;

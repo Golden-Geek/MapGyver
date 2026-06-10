@@ -102,6 +102,11 @@ void MGEngine::loadJSONDataInternalEngine(var data, ProgressTask* loadingTask)
 	ProgressTask* ScreenTask = loadingTask->addTask("Screens");
 	ProgressTask* MediaTask = loadingTask->addTask("Medias");
 
+	ScreenTask->start();
+	ScreenManager::getInstance()->loadJSONData(data.getProperty(ScreenManager::getInstance()->shortName, var()));
+	ScreenTask->setProgress(1);
+	ScreenTask->end();
+
 
 	MediaTask->start();
 	MediaManager::getInstance()->loadJSONData(data.getProperty(MediaManager::getInstance()->shortName, var()));
@@ -110,11 +115,7 @@ void MGEngine::loadJSONDataInternalEngine(var data, ProgressTask* loadingTask)
 
 
 
-	ScreenTask->start();
-	ScreenManager::getInstance()->loadJSONData(data.getProperty(ScreenManager::getInstance()->shortName, var()));
-	ScreenTask->setProgress(1);
-	ScreenTask->end();
-
+	
 
 }
 
