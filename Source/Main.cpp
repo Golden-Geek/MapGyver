@@ -9,6 +9,7 @@ extern "C" {
 
 #include "MainIncludes.h"
 #include "Engine/MGEngine.h"
+#include "Screen/ScreenIncludes.h"
 
 
 MapGyverApplication::MapGyverApplication() :
@@ -50,10 +51,81 @@ void MapGyverApplication::afterInit()
 
 }
 
+void MapGyverApplication::systemRequestedQuit()
+{
+	if (shutdownPrepared)
+	{
+		quit();
+		return;
+	}
+
+	if (Engine::mainEngine == nullptr)
+	{
+		quit();
+		return;
+	}
+
+	Engine::mainEngine->saveIfNeededAndUserAgreesAsync([this](FileBasedDocument::SaveResult result)
+		{
+			switch (result)
+			{
+			case FileBasedDocument::SaveResult::userCancelledSave:
+				return;
+
+			case FileBasedDocument::SaveResult::failedToWriteToFile:
+				LOGERROR("Could not save the document (Failed to write to file)\nCancelled closing of the application");
+				return;
+
+			case FileBasedDocument::SaveResult::savedOk:
+				Engine::mainEngine->removeNewerAutosaves();
+				break;
+			}
+
+			prepareShutdownAfterSave();
+		});
+}
+
+void MapGyverApplication::prepareShutdownAfterSave()
+{
+	if (shutdownPrepared)
+		return;
+
+	shutdownPrepared = true;
+	isShuttingDown = true;
+
+	// This is intentionally done before JUCE's quit message stops normal message
+	// dispatch. MPV and JUCE's GL render thread can then complete without either
+	// side waiting on a message-manager lock held by the other.
+	ScreenOutputWatcher::deleteInstance();
+	if (engine != nullptr)
+		engine->clear();
+
+	quit();
+}
+
 void MapGyverApplication::shutdown()
 {
 	if (UltralightManager::getInstanceWithoutCreating()) UltralightManager::getInstance()->clear();
+
+	// DocumentWindow destruction invalidates the cached OpenGL image and closes
+	// GlContextHolder immediately. Clear media first so every VideoMedia can
+	// unregister, stop MPV, and free its render context in the safe two-phase path.
+	isShuttingDown = true;
+	ScreenOutputWatcher::deleteInstance();
+	if (engine != nullptr)
+	{
+		engine->clear();
+		MPVPlayer::drainDeferredPlayers();
+	}
+
 	OrganicApplication::shutdown();
+
+	// MPV's deferred GL work was drained above. Destroy the UI-owned OpenGL and
+	// screen helpers now, while Engine::mainEngine and ScreenManager are still
+	// valid; MainContentComponent owns ScreenOutputWatcher.
+	mainComponent.reset();
+	engine.reset();
+
 	AppUpdater::deleteInstance();
 	FileDownloader::deleteInstance();
 }

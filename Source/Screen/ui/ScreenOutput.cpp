@@ -176,9 +176,15 @@ ScreenOutputWatcher::ScreenOutputWatcher()
 
 ScreenOutputWatcher::~ScreenOutputWatcher()
 {
-	ScreenManager::getInstance()->removeAsyncManagerListener(this);
-	ScreenManager::getInstance()->removeAsyncContainerListener(this);
-	Engine::mainEngine->removeEngineListener(this);
+	if (auto* screenManager = ScreenManager::getInstanceWithoutCreating())
+	{
+		screenManager->removeAsyncManagerListener(this);
+		screenManager->removeAsyncContainerListener(this);
+	}
+
+	if (Engine::mainEngine != nullptr)
+		Engine::mainEngine->removeEngineListener(this);
+
 	outputs.clear();
 }
 

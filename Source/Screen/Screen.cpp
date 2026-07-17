@@ -21,7 +21,7 @@ Screen::Screen(var params) :
 
 	itemDataType = "Screen";
 
-	screenX = positionCC.addIntParameter("Screen X", "Screen X position", 0, 0);
+	screenX = positionCC.addIntParameter("Screen X", "Screen X position", 0, 0); 
 	screenY = positionCC.addIntParameter("Screen Y", "Screen Y position", 0, 0);
 	screenWidth = positionCC.addIntParameter("Screen width", "Screen width in pixels", 1920, 0, 10000);
 	screenHeight = positionCC.addIntParameter("Screen height", "Screen height in pixels", 1080, 0, 10000);
@@ -69,17 +69,56 @@ void Screen::onContainerParameterChangedInternal(Parameter* p)
 		setupOutput();
 	}
 
+	if (renderer != nullptr && (p == outputType || p == screenID))
+	{
+		renderer->regenerateTextures();
+	}
+
 	if (sharedTextureSender != nullptr)
 	{
 		if (p == enabled) sharedTextureSender->setEnabled(enabled->boolValue());
-		else if (p == screenWidth || p == screenHeight) sharedTextureSender->setSize(screenWidth->intValue(), screenHeight->intValue());
 	}
 
 	if (ndiSender != nullptr)
 	{
 		if (p == enabled) ndiSender->setEnabled(enabled->boolValue());
-		else if (p == screenWidth || p == screenHeight) ndiSender->setSize(screenWidth->intValue(), screenHeight->intValue());
 	}
+}
+
+void Screen::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c)
+{
+	if (cc != &positionCC) return;
+
+	if (c == positionCC.enabled || c == screenWidth || c == screenHeight)
+	{
+		if (renderer != nullptr) renderer->regenerateTextures();
+	}
+
+	if (c == screenWidth || c == screenHeight)
+	{
+		if (sharedTextureSender != nullptr)
+			sharedTextureSender->setSize(screenWidth->intValue(), screenHeight->intValue());
+
+		if (ndiSender != nullptr)
+			ndiSender->setSize(screenWidth->intValue(), screenHeight->intValue());
+	}
+}
+
+Point<int> Screen::getRenderSize() const
+{
+	if (outputType->getValueDataAsEnum<OutputType>() == DISPLAY && !positionCC.enabled->boolValue())
+	{
+		Displays displays = Desktop::getInstance().getDisplays();
+		const int displayIndex = screenID->intValue();
+
+		if (isPositiveAndBelow(displayIndex, displays.displays.size()))
+		{
+			const Rectangle<int> displayArea = displays.displays[displayIndex].totalArea;
+			return { displayArea.getWidth(), displayArea.getHeight() };
+		}
+	}
+
+	return { jmax(1, screenWidth->intValue()), jmax(1, screenHeight->intValue()) };
 }
 
 void Screen::onContainerNiceNameChanged()

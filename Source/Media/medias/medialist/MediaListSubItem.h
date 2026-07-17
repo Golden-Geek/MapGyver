@@ -85,5 +85,5 @@ public:
 	var getJSONData(bool includeNonOverriden = false) override;
 	void loadJSONDataInternal(var data) override;
 
-	DECLARE_ASYNC_EVENT(MediaListSubItem, MediaListSubItem, listSubItem, ENUM_LIST(SUBMEDIA_FINISHED, SELECTION_CHANGED), EVENT_ITEM_CHECK);
+	DECLARE_ASYNC_EVENT(MediaListSubItem, MediaListSubItem, listSubItem, ENUM_LIST(SUBMEDIA_FINISHED, SELECTION_CHANGED, TEXTURE_OPTIONS_CHANGED), EVENT_ITEM_CHECK);
 };

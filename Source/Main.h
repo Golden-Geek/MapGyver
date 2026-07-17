@@ -22,8 +22,12 @@ public:
 	void afterInit() override;
 
 	void shutdown() override;
+	void systemRequestedQuit() override;
 
 	void handleCrashed() override;
-};
 
+private:
+	bool shutdownPrepared = false;
+	void prepareShutdownAfterSave();
+};
 START_JUCE_APPLICATION(MapGyverApplication)

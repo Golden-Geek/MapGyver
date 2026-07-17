@@ -57,8 +57,6 @@ MGEngine::~MGEngine()
 
 	isClearing = true;
 
-	MPVTimers::deleteInstance();
-
 	MediaManager::deleteInstance();
 	ScreenManager::deleteInstance();
 	NDIManager::deleteInstance();
@@ -71,6 +69,12 @@ MGEngine::~MGEngine()
 	CompositionLayerFactory::deleteInstance();
 	NodeFactory::deleteInstance();
 	MediaGridUIPreview::deleteInstance();
+
+	// Media destruction starts MPV's non-blocking stop sequence. Drain those
+	// deferred players before removing their event timer, AudioManager, or the
+	// shared OpenGL context (MapGyverApplication destroys this engine first).
+	MPVPlayer::drainDeferredPlayers();
+	MPVTimers::deleteInstance();
 
 	AudioManager::deleteInstance();
 }

@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <atomic>
 
 class ScreenRenderer :
 	public juce::OpenGLRenderer
@@ -22,6 +23,8 @@ public:
 
 	std::unique_ptr<OpenGLShaderProgram> shader;
 	juce::OpenGLFrameBuffer frameBuffer;
+	std::atomic<int> requestedTextureWidth;
+	std::atomic<int> requestedTextureHeight;
 
 	void regenerateTextures();
 
@@ -31,4 +34,5 @@ public:
 	void openGLContextClosing() override;
 
 	void createAndLoadShaders();
+	void updateFrameBufferSize();
 };

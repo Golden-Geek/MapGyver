@@ -63,14 +63,35 @@ VideoMedia::~VideoMedia()
 
 void VideoMedia::clearItem()
 {
+	// Start MPV's asynchronous video-chain shutdown while its renderer is still
+	// registered. mpv_render_context_free() waits for that chain to go away, so
+	// sending stop only after closeGLInternal can deadlock the GL worker.
+	if (engine != nullptr)
+		engine->unload();
+	deferMPVCleanup = mpv != nullptr && mpv->isGLInit();
+
+	// unregisterOpenGlRenderer synchronously invokes closeGLInternal on the GL
+	// thread, so the MPV update callback has stopped before listeners are removed.
 	Media::clearItem();
-	mpv = nullptr; // Clear raw pointer before engine is destroyed
+
 	if (engine != nullptr)
 	{
 		engine->removeListener(this);
-		engine->unload();
+		if (mpv != nullptr)
+			mpv->removeMPVListener(this);
+
+		if (deferMPVCleanup)
+		{
+			std::unique_ptr<MPVPlayer> deferredPlayer(static_cast<MPVPlayer*>(engine.release()));
+			mpv = nullptr;
+			MPVPlayer::destroyAfterShutdown(std::move(deferredPlayer));
+		}
+		else
+		{
+			mpv = nullptr;
+			engine.reset();
+		}
 	}
-	stop();
 }
 
 void VideoMedia::setupEngine(const String& path)
@@ -302,6 +323,13 @@ void VideoMedia::renderGLInternal()
 void VideoMedia::closeGLInternal()
 {
 	if (engine == nullptr) return;
+	if (mpv != nullptr)
+	{
+		if (deferMPVCleanup)
+			mpv->stopGLUpdates();
+		else
+			mpv->clearGL();
+	}
 #ifdef VLC_ENABLE
 	if (vlcFBO.isValid()) vlcFBO.release();
 #endif

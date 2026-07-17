@@ -15,6 +15,7 @@ namespace {
 	constexpr uint64_t kReqWidth = 2;
 	constexpr uint64_t kReqHeight = 3;
 	constexpr uint64_t kReqChannels = 4;
+	constexpr uint64_t kReqShutdownStop = 5;
 
 	constexpr int kMaskDuration = 1 << 0;
 	constexpr int kMaskWidth = 1 << 1;
@@ -22,6 +23,105 @@ namespace {
 	constexpr int kMaskChannels = 1 << 3;
 	constexpr int kMaskAll = kMaskDuration | kMaskWidth | kMaskHeight | kMaskChannels;
 }
+
+class MPVDeferredCleaner final : private Timer
+{
+public:
+	static MPVDeferredCleaner& getInstance()
+	{
+		auto*& instance = instanceStorage();
+		if (instance == nullptr)
+			instance = new MPVDeferredCleaner();
+		return *instance;
+	}
+
+	static void drainAndDelete()
+	{
+		auto*& instance = instanceStorage();
+		if (instance == nullptr)
+			return;
+
+		instance->drain();
+		delete instance;
+		instance = nullptr;
+	}
+
+	static bool hasPendingPlayers()
+	{
+		auto* instance = instanceStorage();
+		return instance != nullptr && !instance->players.empty();
+	}
+
+	void add(std::unique_ptr<MPVPlayer> player)
+	{
+		jassert(MessageManager::getInstance()->isThisTheMessageThread());
+		players.push_back(std::move(player));
+		startTimer(10);
+	}
+
+	void drain()
+	{
+		jassert(MessageManager::getInstance()->isThisTheMessageThread());
+		stopTimer();
+
+		// This path is used only while the application is exiting. Never enter MPV
+		// or wait for its GL/decoder threads here: detach application-owned resources
+		// and leave the native handles for the operating system's process teardown.
+		for (auto& player : players)
+		{
+			player->abandonForProcessExit();
+			(void)player.release();
+		}
+		players.clear();
+	}
+
+private:
+	std::vector<std::unique_ptr<MPVPlayer>> players;
+
+	static MPVDeferredCleaner*& instanceStorage()
+	{
+		static MPVDeferredCleaner* instance = nullptr;
+		return instance;
+	}
+
+	void cleanupReadyPlayers()
+	{
+		for (int i = (int)players.size(); --i >= 0;)
+		{
+			auto* player = players[(size_t)i].get();
+			if (!player->isShutdownComplete())
+				continue;
+
+			auto* glHolder = GlContextHolder::getInstanceWithoutCreating();
+			if (glHolder == nullptr)
+				continue;
+
+			// MPV has completed the asynchronous stop command, so freeing the render
+			// context no longer waits for an active video chain. Waiting for this short
+			// GL task keeps ownership on the message thread and avoids leaving a raw
+			// pointer in MessageManager::callAsync during application shutdown.
+			glHolder->callOnGLThread([player]()
+				{
+					player->clearGL();
+				}, true);
+
+			players.erase(players.begin() + i);
+		}
+	}
+
+	void timerCallback() override
+	{
+		// Do not rely solely on MPVTimers: that singleton is deliberately torn
+		// down during application shutdown.
+		for (auto& player : players)
+			player->pullEvents();
+
+		cleanupReadyPlayers();
+
+		if (players.empty())
+			stopTimer();
+	}
+};
 
 // ==============================================================================
 // HELPER: Windows OpenGL Loading
@@ -89,16 +189,72 @@ void MPVPlayer::clear()
 	}
 
 	if (mpv_gl)
-	{
-		mpv_render_context_free(mpv_gl);
-		mpv_gl = nullptr;
-	}
+		clearGL();
 
 	if (mpv)
 	{
 		mpv_terminate_destroy(mpv);
 		mpv = nullptr;
 	}
+}
+
+void MPVPlayer::clearGL()
+{
+	if (mpv_gl == nullptr)
+		return;
+
+	// The OpenGL render context must be destroyed while the same OpenGL
+	// context used to create it is current. VideoMedia calls this from its
+	// openGLContextClosing callback before unregistering from the GL thread.
+	stopGLUpdates();
+	mpv_render_context_free(mpv_gl);
+	mpv_gl = nullptr;
+}
+
+void MPVPlayer::stopGLUpdates()
+{
+	if (mpv_gl != nullptr)
+		mpv_render_context_set_update_callback(mpv_gl, nullptr, nullptr);
+}
+
+void MPVPlayer::destroyAfterShutdown(std::unique_ptr<MPVPlayer> player)
+{
+	if (player != nullptr)
+		MPVDeferredCleaner::getInstance().add(std::move(player));
+}
+
+void MPVPlayer::drainDeferredPlayers()
+{
+	MPVDeferredCleaner::drainAndDelete();
+}
+
+bool MPVPlayer::hasDeferredPlayers()
+{
+	return MPVDeferredCleaner::hasPendingPlayers();
+}
+
+void MPVPlayer::abandonForProcessExit()
+{
+	// Do not call any MPV API here: this method exists specifically for an MPV
+	// instance which stopped responding. VideoMedia already disabled GL updates
+	// before it transferred ownership to the deferred cleaner, and this object is
+	// intentionally kept alive until the process exits.
+
+	if (auto* timers = MPVTimers::getInstanceWithoutCreating())
+		timers->unregisterMPV(this);
+
+	if (pipeThread)
+	{
+		pipeThread->shutdown();
+		pipeThread.reset();
+	}
+
+	if (auto* audioManager = AudioManager::getInstanceWithoutCreating())
+	{
+		audioManager->removeAudioManagerListener(this);
+		audioManager->graph.removeNode(audioNodeID);
+	}
+	audioProcessor = nullptr;
 }
 
 void MPVPlayer::setupMPV()
@@ -161,6 +317,7 @@ void MPVPlayer::setupMPV()
 	//mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
 	mpv_observe_property(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE);
 	mpv_observe_property(mpv, 0, "eof-reached", MPV_FORMAT_FLAG);
+	mpv_observe_property(mpv, 0, "idle-active", MPV_FORMAT_FLAG);
 	//mpv_observe_property(mpv, 0, "audio-params/channel-count", MPV_FORMAT_INT64);
 	//mpv_observe_property(mpv, 0, "width", MPV_FORMAT_INT64);
 	//mpv_observe_property(mpv, 0, "height", MPV_FORMAT_INT64);
@@ -180,6 +337,12 @@ void MPVPlayer::loadFile()
 
 
 	const char* cmd[] = { "loadfile", filePath.toRawUTF8(), NULL };
+	shutdownRequested = false;
+	shutdownCommandComplete = false;
+	shutdownComplete = false;
+	// START_FILE and idle-active are the authoritative playback state. Setting
+	// this optimistically here creates a shutdown race: if stop overtakes a load
+	// which never starts, MPV has no corresponding END_FILE event to clear it.
 	mpv_command_async(mpv, 0, cmd);
 }
 
@@ -255,14 +418,14 @@ void MPVPlayer::play()
 {
 	if (mpv == nullptr) return;
 	int paused = 0;
-	mpv_set_property(mpv, "pause", MPV_FORMAT_FLAG, &paused);
+	mpv_set_property_async(mpv, 0, "pause", MPV_FORMAT_FLAG, &paused);
 }
 
 void MPVPlayer::pause()
 {
 	if (mpv == nullptr) return;
 	int paused = 1;
-	mpv_set_property(mpv, "pause", MPV_FORMAT_FLAG, &paused);
+	mpv_set_property_async(mpv, 0, "pause", MPV_FORMAT_FLAG, &paused);
 }
 
 void MPVPlayer::stop()
@@ -392,8 +555,12 @@ void MPVPlayer::unload()
 {
 	if (mpv)
 	{
+		shutdownRequested = true;
+		shutdownCommandComplete = false;
+		shutdownComplete = false;
 		const char* cmd[] = { "stop", NULL };
-		mpv_command_async(mpv, 0, cmd);
+		if (mpv_command_async(mpv, kReqShutdownStop, cmd) < 0)
+			shutdownComplete = true;
 	}
 	fileInfo.fileLoaded = false;
 }
@@ -463,6 +630,7 @@ int MPVPlayer::getVideoHeight() const
 	return fileInfo.height;
 }
 
+
 int MPVPlayer::getNumChannels() const
 {
 	return fileInfo.numChannels;
@@ -491,6 +659,10 @@ void MPVPlayer::pullEvents()
 
 		switch (e->event_id)
 		{
+		case MPV_EVENT_START_FILE:
+			playbackActive = true;
+			break;
+
 		case MPV_EVENT_FILE_LOADED:
 		{
 			//check actual number of tracks
@@ -545,16 +717,48 @@ void MPVPlayer::pullEvents()
 		}
 		break;
 
+		case MPV_EVENT_COMMAND_REPLY:
+			if (e->reply_userdata == kReqShutdownStop && shutdownRequested.load())
+			{
+				shutdownCommandComplete = true;
+				// MPV defines COMMAND_REPLY as completion of the asynchronous
+				// command. Once stop has completed, the render context can be
+				// released without waiting for a second notification which is
+				// not emitted when there was no active file.
+				shutdownComplete = true;
+			}
+			break;
+
 		case MPV_EVENT_END_FILE:
+			playbackActive = false;
+			if (shutdownRequested.load() && shutdownCommandComplete.load())
+				shutdownComplete = true;
 			mpvListeners.call(&MPVListener::mpvFileEnd);
 			listeners.call(&VideoPlayerEngine::Listener::playerFileEnd);
+			break;
+
+		case MPV_EVENT_IDLE:
+			playbackActive = false;
+			if (shutdownRequested.load() && shutdownCommandComplete.load())
+				shutdownComplete = true;
+			break;
+
+		case MPV_EVENT_SHUTDOWN:
+			playbackActive = false;
+			shutdownComplete = true;
 			break;
 
 		case MPV_EVENT_PROPERTY_CHANGE:
 		{
 			mpv_event_property* prop = (mpv_event_property*)e->data;
 			String pName = String(prop->name);
-			if (pName == "time-pos" && prop->format == MPV_FORMAT_DOUBLE) {
+			if (pName == "idle-active" && prop->format == MPV_FORMAT_FLAG) {
+				const bool isIdle = prop->data != nullptr && *(int*)prop->data != 0;
+				playbackActive = !isIdle;
+				if (isIdle && shutdownRequested.load() && shutdownCommandComplete.load())
+					shutdownComplete = true;
+			}
+			else if (pName == "time-pos" && prop->format == MPV_FORMAT_DOUBLE) {
 				double time = *(double*)prop->data;
 				mpvListeners.call(&MPVListener::mpvTimeChanged, time);
 				listeners.call(&VideoPlayerEngine::Listener::playerTimeChanged, time);

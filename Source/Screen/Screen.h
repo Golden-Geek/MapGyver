@@ -45,9 +45,11 @@ public:
     void clearItem() override;
 
     void onContainerParameterChangedInternal(Parameter* p) override;
+    void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
     void onContainerNiceNameChanged() override;
 
     void setupOutput();
+    Point<int> getRenderSize() const;
     
     Point2DParameter* getClosestHandle(Point<float> pos, float maxDistance = INT32_MAX, Array<Point2DParameter*> excludeHandles = {});
     Point2DParameter* getSnapHandle(Point<float> pos, Point2DParameter* handle);

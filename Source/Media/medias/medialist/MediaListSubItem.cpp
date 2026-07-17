@@ -34,6 +34,10 @@ MediaListSubItem::MediaListSubItem(const String& name, bool canBeSubtexture) :
 	}
 
 	textureName = addEnumParameter("Texture name", "Name of the texture to use from the media");
+	// Texture options are supplied dynamically by the selected media. Save them
+	// with the value so a subtexture selection can be restored before that media
+	// has reconnected and announced its framebuffers.
+	textureName->saveValueOnly = false;
 
 	var manualRenderParams(new DynamicObject());
 	manualRenderParams.getDynamicObject()->setProperty("manualRender", true);
@@ -265,6 +269,7 @@ void MediaListSubItem::setMedia(Media* m)
 	}
 
 	updateTextureNameOptions();
+	listSubItemNotifier.addMessage(new MediaListSubItemEvent(MediaListSubItemEvent::TEXTURE_OPTIONS_CHANGED, this));
 
 	transitionTargetMedia->setValueFromTarget(media);
 
@@ -298,12 +303,30 @@ void MediaListSubItem::updateTextureNameOptions(Media* forceMedia)
 {
 	Media* m = forceMedia != nullptr ? forceMedia : media;
 	if (m == nullptr) return;
+
+	String selectedTextureName = textureName->getValueKey();
+	if (selectedTextureName.isEmpty()) selectedTextureName = textureName->getValueData().toString();
+
 	StringArray textureNames = m->getFrameBufferNames();
 
 	Array<EnumParameter::EnumValue> options;
 	for (auto& tn : textureNames)
 		options.add({ tn, tn });
 	textureName->setOptions(options);
+
+	// setOptions can replace an enum entry while leaving its cached data stale.
+	// Force the selected key back through the parameter after rebuilding.
+	if (selectedTextureName.isNotEmpty())
+	{
+		// Keep an unavailable key as the raw value as well. InteractiveApp
+		// framebuffers are announced asynchronously after load, so falling back
+		// here would permanently discard the saved subtexture selection.
+		textureName->setValue(selectedTextureName, false, true);
+	}
+	else if (!textureNames.isEmpty())
+	{
+		textureName->setValue(textureNames[0], false, true);
+	}
 }
 
 void MediaListSubItem::render(bool isLoading)
@@ -335,6 +358,12 @@ void MediaListSubItem::newMessage(const Media::MediaEvent& event)
 		}
 
 		updateTextureNameOptions();
+		listSubItemNotifier.addMessage(new MediaListSubItemEvent(MediaListSubItemEvent::TEXTURE_OPTIONS_CHANGED, this));
+	}
+	else if (event.type == Media::MediaEvent::SUB_FRAMEBUFFERS_CHANGED)
+	{
+		updateTextureNameOptions();
+		listSubItemNotifier.addMessage(new MediaListSubItemEvent(MediaListSubItemEvent::TEXTURE_OPTIONS_CHANGED, this));
 	}
 }
 

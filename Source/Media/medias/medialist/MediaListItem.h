@@ -71,6 +71,7 @@ public:
 	bool isUnloading() const;
 
 	void setNumLayers(int num);
+	void updateSubTextureNameOptions();
 
 	void newMessage(const MediaListSubItem::MediaListSubItemEvent& event) override;
 

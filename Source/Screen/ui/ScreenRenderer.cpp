@@ -17,8 +17,11 @@
 using namespace juce::gl;
 
 ScreenRenderer::ScreenRenderer(Screen* screen) :
-	screen(screen)
+	screen(screen),
+	requestedTextureWidth(1),
+	requestedTextureHeight(1)
 {
+	regenerateTextures();
 	GlContextHolder::getInstance()->registerOpenGlRenderer(this, 2);
 }
 
@@ -29,17 +32,23 @@ ScreenRenderer::~ScreenRenderer()
 
 void ScreenRenderer::regenerateTextures()
 {
+	const Point<int> size = screen->getRenderSize();
+	requestedTextureWidth.store(size.x, std::memory_order_relaxed);
+	requestedTextureHeight.store(size.y, std::memory_order_relaxed);
 }
 
 void ScreenRenderer::newOpenGLContextCreated()
 {
 	// Set up your OpenGL state here
 	createAndLoadShaders();
-	frameBuffer.initialise(GlContextHolder::getInstance()->context, screen->screenWidth->intValue(), screen->screenHeight->intValue());
+	updateFrameBufferSize();
 }
 
 void ScreenRenderer::renderOpenGL()
 {
+	updateFrameBufferSize();
+	if (!frameBuffer.isValid()) return;
+
 	frameBuffer.makeCurrentRenderingTarget();
 	glClearColor(0, 0, 0, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -77,6 +86,18 @@ void ScreenRenderer::renderOpenGL()
 	if (screen->ndiSender != nullptr)
 		screen->ndiSender->sendFrame(frameBuffer);
 
+}
+
+void ScreenRenderer::updateFrameBufferSize()
+{
+	const int width = requestedTextureWidth.load(std::memory_order_relaxed);
+	const int height = requestedTextureHeight.load(std::memory_order_relaxed);
+
+	if (frameBuffer.isValid() && frameBuffer.getWidth() == width && frameBuffer.getHeight() == height)
+		return;
+
+	if (frameBuffer.isValid()) frameBuffer.release();
+	frameBuffer.initialise(GlContextHolder::getInstance()->context, width, height);
 }
 
 void ScreenRenderer::openGLContextClosing()

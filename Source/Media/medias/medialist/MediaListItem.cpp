@@ -81,6 +81,22 @@ void MediaListItem::setNumLayers(int num)
 	}
 }
 
+void MediaListItem::updateSubTextureNameOptions()
+{
+	if (subItems.isEmpty()) return;
+
+	Media* sourceMedia = subItems[0]->media;
+	if (sourceMedia == nullptr) return;
+
+	for (int i = 1; i < subItems.size(); i++)
+	{
+		if (subItems[i]->isSubTexture())
+		{
+			subItems[i]->updateTextureNameOptions(sourceMedia);
+		}
+	}
+}
+
 void MediaListItem::clearItem()
 {
 	for (auto& subItem : subItems)
@@ -453,6 +469,13 @@ void MediaListItem::newMessage(const MediaListSubItem::MediaListSubItemEvent& ev
 	{
 		listItemNotifier.addMessage(new MediaListItemEvent(MediaListItemEvent::SELECTION_CHANGED, this));
 	}
+	else if (event.type == MediaListSubItem::MediaListSubItemEvent::TEXTURE_OPTIONS_CHANGED)
+	{
+		if (!subItems.isEmpty() && event.item == subItems[0])
+		{
+			updateSubTextureNameOptions();
+		}
+	}
 }
 
 var MediaListItem::getJSONData(bool includeNonOverriden)
@@ -488,6 +511,10 @@ void MediaListItem::loadJSONDataItemInternal(var data)
 
 	if (data.hasProperty("fadeCurve"))
 		fadeCurve.loadJSONData(data["fadeCurve"]);
+
+	// The first layer is loaded before the subtexture layers, so its current
+	// framebuffer list can now restore every saved subtexture selection.
+	updateSubTextureNameOptions();
 
 	// Sync visibility after loading
 	TransitionType tt = transitionType->getValueDataAsEnum<TransitionType>();

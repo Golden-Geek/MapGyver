@@ -72,9 +72,16 @@ public:
 
 	// MPV-specific methods
 	void loadFile();
+	void stopGLUpdates();
+	void clearGL();
 	void renderGL(OpenGLFrameBuffer* frameBuffer);
 	bool isGLInit();
 	void setPlaySpeedInternal(double speed);
+	bool isShutdownComplete() const { return shutdownComplete.load(); }
+	void abandonForProcessExit();
+	static void destroyAfterShutdown(std::unique_ptr<MPVPlayer> player);
+	static void drainDeferredPlayers();
+	static bool hasDeferredPlayers();
 
 
 	// MPV Stuff
@@ -133,6 +140,10 @@ public:
 	FileInfo fileInfo;
 	int pendingFileInfoMask = 0;
 	bool eofReached = false;
+	std::atomic<bool> playbackActive{ false };
+	std::atomic<bool> shutdownRequested{ false };
+	std::atomic<bool> shutdownCommandComplete{ false };
+	std::atomic<bool> shutdownComplete{ false };
 
 	class MPVListener
 	{
