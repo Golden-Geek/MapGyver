@@ -39,6 +39,7 @@ void ScreenRenderer::regenerateTextures()
 
 void ScreenRenderer::newOpenGLContextCreated()
 {
+	const ScopedLock frameBufferGuard(frameBufferLock);
 	// Set up your OpenGL state here
 	createAndLoadShaders();
 	updateFrameBufferSize();
@@ -46,6 +47,7 @@ void ScreenRenderer::newOpenGLContextCreated()
 
 void ScreenRenderer::renderOpenGL()
 {
+	const ScopedLock frameBufferGuard(frameBufferLock);
 	updateFrameBufferSize();
 	if (!frameBuffer.isValid()) return;
 
@@ -60,6 +62,9 @@ void ScreenRenderer::renderOpenGL()
 
 	if (shader != nullptr)
 	{
+		// Surface creation, removal and reordering happen on the message thread.
+		// Keep OwnedArray storage stable while the GL thread traverses it.
+		const ScopedLock surfacesLock(screen->surfaces.items.getLock());
 		for (int i = screen->surfaces.items.size() - 1; i >= 0; i--)
 		{
 			
@@ -83,8 +88,11 @@ void ScreenRenderer::renderOpenGL()
 
 	frameBuffer.releaseAsRenderingTarget();
 
-	if (screen->ndiSender != nullptr)
-		screen->ndiSender->sendFrame(frameBuffer);
+	{
+		const ScopedLock outputGuard(screen->outputLock);
+		if (screen->ndiSender != nullptr)
+			screen->ndiSender->sendFrame(frameBuffer);
+	}
 
 }
 
@@ -102,6 +110,17 @@ void ScreenRenderer::updateFrameBufferSize()
 
 void ScreenRenderer::openGLContextClosing()
 {
+	const ScopedLock frameBufferGuard(frameBufferLock);
+	{
+		const ScopedLock surfacesLock(screen->surfaces.items.getLock());
+		for (auto* surface : screen->surfaces.items)
+			if (surface != nullptr)
+				surface->releaseGLResources();
+	}
+
+	if (frameBuffer.isValid())
+		frameBuffer.release();
+
 	glEnable(GL_BLEND);
 	glDisable(GL_BLEND);
 	shader = nullptr;

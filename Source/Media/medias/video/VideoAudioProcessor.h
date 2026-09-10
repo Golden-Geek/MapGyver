@@ -47,8 +47,7 @@ public:
 
 	MPVPlayer* player;
 	std::unique_ptr<AudioFIFO> fifo;
-
-	
+	CriticalSection fifoLock;
 
 	// NEW MEMBERS
 	std::atomic<bool> isBuffering{ true };

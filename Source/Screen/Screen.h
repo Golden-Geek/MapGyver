@@ -41,6 +41,7 @@ public:
     std::unique_ptr<ScreenRenderer> renderer;
     SharedTextureSender* sharedTextureSender;
     std::unique_ptr<NDIOutputSender> ndiSender;
+	CriticalSection outputLock;
 
     void clearItem() override;
 

@@ -27,10 +27,12 @@ ScreenOutput::ScreenOutput(Screen* screen) :
 
 	setWantsKeyboardFocus(true);
 	setInterceptsMouseClicks(true, true);
+	attach();
 }
 
 ScreenOutput::~ScreenOutput()
 {
+	detach();
 	removeFromDesktop();
 }
 
@@ -112,6 +114,7 @@ void ScreenOutput::renderOpenGL()
 	{
 		return;
 	}
+	const ScopedLock frameBufferGuard(screen->renderer->frameBufferLock);
 
 	//context.makeActive();
 

@@ -119,7 +119,8 @@ public:
 
 	// Audio Processor Graph
 	AudioProcessorGraph::NodeID audioNodeID;
-	MPVAudioProcessor* audioProcessor;
+	MPVAudioProcessor* audioProcessor = nullptr;
+	bool audioListenerRegistered = false;
 
 	void setupAudio();
 	void audioSetupChanged() override;
@@ -144,6 +145,7 @@ public:
 	std::atomic<bool> shutdownRequested{ false };
 	std::atomic<bool> shutdownCommandComplete{ false };
 	std::atomic<bool> shutdownComplete{ false };
+	std::atomic<bool> frameUpdatePending{ false };
 
 	class MPVListener
 	{

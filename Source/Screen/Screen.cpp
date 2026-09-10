@@ -55,6 +55,7 @@ void Screen::clearItem()
 {
 	BaseItem::clearItem();
 
+	const ScopedLock outputGuard(outputLock);
 	if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->removeSender(sharedTextureSender);
 	sharedTextureSender = nullptr;
 	ndiSender.reset();
@@ -74,14 +75,13 @@ void Screen::onContainerParameterChangedInternal(Parameter* p)
 		renderer->regenerateTextures();
 	}
 
-	if (sharedTextureSender != nullptr)
 	{
-		if (p == enabled) sharedTextureSender->setEnabled(enabled->boolValue());
-	}
+		const ScopedLock outputGuard(outputLock);
+		if (sharedTextureSender != nullptr && p == enabled)
+			sharedTextureSender->setEnabled(enabled->boolValue());
 
-	if (ndiSender != nullptr)
-	{
-		if (p == enabled) ndiSender->setEnabled(enabled->boolValue());
+		if (ndiSender != nullptr && p == enabled)
+			ndiSender->setEnabled(enabled->boolValue());
 	}
 }
 
@@ -96,6 +96,7 @@ void Screen::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Con
 
 	if (c == screenWidth || c == screenHeight)
 	{
+		const ScopedLock outputGuard(outputLock);
 		if (sharedTextureSender != nullptr)
 			sharedTextureSender->setSize(screenWidth->intValue(), screenHeight->intValue());
 
@@ -124,12 +125,14 @@ Point<int> Screen::getRenderSize() const
 void Screen::onContainerNiceNameChanged()
 {
 	BaseItem::onContainerNiceNameChanged();
+	const ScopedLock outputGuard(outputLock);
 	if (sharedTextureSender != nullptr) sharedTextureSender->setSharingName(niceName);
 	if (ndiSender != nullptr) ndiSender->setName(niceName);
 }
 
 void Screen::setupOutput()
 {
+	const ScopedLock outputGuard(outputLock);
 	SharedTextureManager::getInstance()->removeSender(sharedTextureSender);
 	sharedTextureSender = nullptr;
 	ndiSender.reset();

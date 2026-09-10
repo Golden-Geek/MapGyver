@@ -23,6 +23,7 @@ public:
 
 	std::unique_ptr<OpenGLShaderProgram> shader;
 	juce::OpenGLFrameBuffer frameBuffer;
+	CriticalSection frameBufferLock;
 	std::atomic<int> requestedTextureWidth;
 	std::atomic<int> requestedTextureHeight;
 

@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <atomic>
 
 class Media;
 
@@ -25,7 +26,7 @@ public:
 	String objectType;
 	var objectData;
 
-	bool shouldUpdateVertices;
+	std::atomic<bool> shouldUpdateVertices{ true };
 
 
 	TargetParameter* mediaParam;
@@ -35,7 +36,7 @@ public:
 	String ghostTextureName; //used to keep the texture name of the media when no media is loaded, to avoid loosing it when switching media
 
 	std::unique_ptr<Media> patternMedia;
-	SpinLock patternMediaLock;
+	CriticalSection patternMediaLock;
 
 	ControllableContainer positionningCC;
 	Point2DParameter* topLeft;
@@ -93,16 +94,17 @@ public:
 	Path quadPath;
 
 	// openGL variables
-	GLuint vbo;
-	GLint posAttrib;
-	GLint surfacePosAttrib;
-	GLint texAttrib;
-	GLint maskAttrib;
-	GLuint borderSoftLocation;
-	GLuint invertMaskLocation;
-	GLuint ratioLocation;
-	GLuint tintLocation;
-	GLuint ebo;
+	GLuint vbo = 0;
+	GLint posAttrib = -1;
+	GLint surfacePosAttrib = -1;
+	GLint texAttrib = -1;
+	GLint maskAttrib = -1;
+	GLint borderSoftLocation = -1;
+	GLint invertMaskLocation = -1;
+	GLint ratioLocation = -1;
+	GLint tintLocation = -1;
+	GLuint ebo = 0;
+	std::unique_ptr<OpenGLTexture> whiteMaskTexture;
 
 	void setupMedia();
 	void updateMediaTextureNames();
@@ -126,6 +128,7 @@ public:
 	void addLastFourAsQuad();
 	void updateVertices();
 	void draw(GLuint shaderID);
+	void releaseGLResources();
 
 	Media* getMedia();
 

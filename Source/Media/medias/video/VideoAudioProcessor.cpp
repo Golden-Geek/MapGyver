@@ -14,6 +14,7 @@ MPVAudioProcessor::~MPVAudioProcessor()
 void MPVAudioProcessor::onAudioPlay(const void* data, unsigned int count, int64_t pts)
 {
 	//if (!player->isPlaying()) return;
+	const ScopedLock lock(fifoLock);
 
 	if (fifo != nullptr)
 	{
@@ -38,6 +39,7 @@ void MPVAudioProcessor::processBlock(AudioBuffer<float>& buffer, MidiBuffer& mid
 	//	return;
 	//}
 
+	const ScopedLock lock(fifoLock);
 	if (fifo == nullptr || buffer.getNumChannels() == 0)
 	{
 		buffer.clear();
@@ -65,6 +67,7 @@ const String MPVAudioProcessor::getName() const {
 
 void MPVAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
+	const ScopedLock lock(fifoLock);
 	int numChannels = getTotalNumOutputChannels();
 	if (numChannels > 0)
 	{
@@ -127,18 +130,20 @@ void AudioFIFO::pullData(AudioBuffer<float>& buffer, int numSamples)
 	{
 		if (ch >= buffer.getNumChannels()) break;
 
-		int invertChannel = channels - ch - 1;
+		// Keep the historic stereo swap, but never address a channel which the
+		// destination buffer does not contain.
+		const int destinationChannel = buffer.getNumChannels() >= channels ? channels - ch - 1 : ch;
 
 		if (localReadPos + framesToPull > bufferSize)
 		{
 			int framesToEnd = bufferSize - localReadPos;
 			int framesFromStart = framesToPull - framesToEnd;
-			buffer.copyFrom(invertChannel, 0, fifoBuffer, ch, localReadPos, framesToEnd);
-			buffer.copyFrom(invertChannel, framesToEnd, fifoBuffer, ch, 0, framesFromStart);
+			buffer.copyFrom(destinationChannel, 0, fifoBuffer, ch, localReadPos, framesToEnd);
+			buffer.copyFrom(destinationChannel, framesToEnd, fifoBuffer, ch, 0, framesFromStart);
 		}
 		else
 		{
-			buffer.copyFrom(invertChannel, 0, fifoBuffer, ch, localReadPos, framesToPull);
+			buffer.copyFrom(destinationChannel, 0, fifoBuffer, ch, localReadPos, framesToPull);
 		}
 	}
 

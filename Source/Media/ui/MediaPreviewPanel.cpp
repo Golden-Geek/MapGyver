@@ -22,11 +22,14 @@ MediaPreview::MediaPreview() :
 	setWantsKeyboardFocus(true); // Permet au composant de recevoir le focus clavier.
 	addKeyListener(this);
 	setSize(200, 200);
+	attach();
 }
 
 MediaPreview::~MediaPreview()
 {
-	getTopLevelComponent()->removeKeyListener(this);
+	detach();
+	if (auto* topLevel = getTopLevelComponent())
+		topLevel->removeKeyListener(this);
 	setMedia(nullptr);
 }
 

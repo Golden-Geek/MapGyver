@@ -96,6 +96,10 @@ void VideoMedia::clearItem()
 
 void VideoMedia::setupEngine(const String& path)
 {
+	disposeEngine();
+	deferMPVCleanup = false;
+	state->setValueWithData(LOADING);
+
 	// Get the selected engine from MGSettings
 	MGSettings::VideoEngine selectedEngine = MGSettings::VideoEngine::ENGINE_MPV;
 	if (MGSettings::getInstanceWithoutCreating())
@@ -133,18 +137,56 @@ void VideoMedia::setupEngine(const String& path)
 
 	// Keep mpv raw pointer for backward compatibility with existing MPV-specific code
 	mpv = dynamic_cast<MPVPlayer*>(engine.get());
-	if (mpv)
-	{
-		mpv->addMPVListener(this);
-		// MPV defers loading until GL is ready (setupGL -> loadFile)
-	}
-	else
+	if (mpv == nullptr)
 	{
 		// Non-MPV engines (e.g. VLC) need explicit load() since they don't use GL init
 		engine->load(path);
 	}
 
 	shouldRedraw = true;
+}
+
+void VideoMedia::disposeEngine()
+{
+	if (engine == nullptr)
+	{
+		mpv = nullptr;
+		return;
+	}
+
+	engine->unload();
+	engine->removeListener(this);
+
+	MPVPlayer* oldMPV = dynamic_cast<MPVPlayer*>(engine.get());
+	if (oldMPV != nullptr && oldMPV->isGLInit())
+	{
+		// Stop libmpv's arbitrary-thread callback before transferring ownership.
+		// The deferred cleaner releases the render context on the GL thread once
+		// the asynchronous stop command has completed.
+		oldMPV->stopGLUpdates();
+		std::unique_ptr<MPVPlayer> deferredPlayer(static_cast<MPVPlayer*>(engine.release()));
+		mpv = nullptr;
+		MPVPlayer::destroyAfterShutdown(std::move(deferredPlayer));
+	}
+	else
+	{
+		mpv = nullptr;
+		engine.reset();
+	}
+}
+
+bool VideoMedia::ensureEngineLoaded()
+{
+	if (engine != nullptr)
+		return true;
+
+	if (pendingPath.isEmpty())
+		load();
+
+	if (engine == nullptr && pendingPath.isNotEmpty())
+		setupEngine(pendingPath);
+
+	return engine != nullptr;
 }
 
 void VideoMedia::setupMPV(const String& path)
@@ -174,6 +216,10 @@ void VideoMedia::onContainerParameterChanged(Parameter* p)
 	{
 		position->setRange(0, length->doubleValue());
 		mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_LENGTH_CHANGED, this));
+	}
+	else if (p == isBeingUsed && isBeingUsed->boolValue() && engine == nullptr && pendingPath.isNotEmpty())
+	{
+		setupEngine(pendingPath);
 	}
 	if (p == loop)
 	{
@@ -229,12 +275,8 @@ void VideoMedia::load()
 			if (!f.getFileNameWithoutExtension().isEmpty())
 				NLOGWARNING(niceName, "File not found : " << f.getFullPathName());
 
-			mpv = nullptr; // Clear raw pointer before engine is destroyed
-			if (engine != nullptr)
-			{
-				engine->unload();
-				engine.reset();
-			}
+			pendingPath.clear();
+			disposeEngine();
 
 			state->setValueWithData(UNLOADED);
 			videoWidth = 0;
@@ -250,8 +292,17 @@ void VideoMedia::load()
 	}
 
 	checkIsYoutubeVideo();
+	pendingPath = path;
 
-	setupMPV(path);
+	// Avoid allocating decoders, thread pools, caches, and GPU surfaces for media
+	// that are merely stored in the project and are not currently in use.
+	if (isBeingUsed->boolValue() || playAtLoad->boolValue() || playbackRequested)
+		setupMPV(path);
+	else
+	{
+		disposeEngine();
+		state->setValueWithData(UNLOADED);
+	}
 }
 
 
@@ -338,18 +389,21 @@ void VideoMedia::closeGLInternal()
 
 // CONTROL
 void VideoMedia::play() {
-	if (engine == nullptr) return;
+	playbackRequested = true;
+	if (!ensureEngineLoaded()) return;
 	engine->play();
 	state->setValueWithData(PLAYING);
 }
 
 void VideoMedia::stop() {
+	playbackRequested = false;
 	if (engine == nullptr) return;
 	engine->stop();
 	state->setValueWithData(PAUSED);
 }
 
 void VideoMedia::pause() {
+	playbackRequested = false;
 	if (engine == nullptr) return;
 	engine->pause();
 	state->setValueWithData(PAUSED);
@@ -499,7 +553,16 @@ void VideoMedia::playerFileLoaded()
 
 	shouldGeneratePreviewImage = true;
 
-	pause();
+	if (playbackRequested)
+	{
+		engine->play();
+		state->setValueWithData(PLAYING);
+	}
+	else
+	{
+		engine->pause();
+		state->setValueWithData(PAUSED);
+	}
 	mediaNotifier.addMessage(new MediaEvent(MediaEvent::MEDIA_CONTENT_CHANGED, this));
 }
 

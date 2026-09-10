@@ -28,16 +28,17 @@ SurfaceEditorPanel::SurfaceEditorPanel() :
 	Engine::mainEngine->addEngineListener(this);
 
 	InspectableSelectionManager::mainSelectionManager->addSelectionListener(this);
+	attach();
 
 }
 
 SurfaceEditorPanel::~SurfaceEditorPanel()
 {
+	detach();
 	Engine::mainEngine->removeEngineListener(this);
 
 	InspectableSelectionManager::mainSelectionManager->removeSelectionListener(this);
 
-	if (GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterOpenGlRenderer(this);
 	removeKeyListener(this);
 
 	setSurface(nullptr);

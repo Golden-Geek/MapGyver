@@ -108,6 +108,7 @@ public:
 	void onControllableFeedbackUpdateInternal(ControllableContainer* cc, Controllable* c) override;
 
 	void initGLInternal() override;
+	void closeGLInternal() override;
 	void preRenderGLInternal() override;
 	void renderGLInternal() override;
 	void reloadShader();

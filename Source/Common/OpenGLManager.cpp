@@ -52,10 +52,13 @@ void GlContextHolder::detach()
 {
 	jassert(juce::MessageManager::getInstance()->isThisTheMessageThread());
 
-	const int n = clients.size();
-	for (int i = 0; i < n; ++i)
-		if (juce::Component* comp = clients[i]->c)
-			comp->removeComponentListener(this);
+	{
+		const juce::ScopedLock arrayLock(clients.getLock());
+		const int n = clients.size();
+		for (int i = 0; i < n; ++i)
+			if (juce::Component* comp = clients[i]->c)
+				comp->removeComponentListener(this);
+	}
 
 	context.detach();
 	context.setRenderer(nullptr);
@@ -71,6 +74,7 @@ void GlContextHolder::registerOpenGlRenderer(juce::OpenGLRenderer* child, int pr
 
 	if (dynamic_cast<juce::OpenGLRenderer*> (child) != nullptr)
 	{
+		const juce::ScopedLock arrayLock(clients.getLock());
 		if (findClientIndexForRenderer(child) < 0)
 		{
 			juce::Component* c = dynamic_cast<juce::Component*> (child);
@@ -89,24 +93,32 @@ void GlContextHolder::unregisterOpenGlRenderer(juce::OpenGLRenderer* child)
 {
 	jassert(juce::MessageManager::getInstance()->isThisTheMessageThread());
 
-	const int index = findClientIndexForRenderer(child);
-
-	if (index >= 0)
+	Client* client = nullptr;
 	{
-		Client* client = clients[index];
-		{
-			juce::ScopedLock stateChangeLock(stateChangeCriticalSection);
-			client->nextState = Client::State::suspended;
-		}
+		const juce::ScopedLock arrayLock(clients.getLock());
+		const int index = findClientIndexForRenderer(child);
+		if (index >= 0)
+			client = clients[index];
 
-		if (client->c != nullptr) client->c->removeComponentListener(this);
+		if (client != nullptr)
+		{
+			const juce::ScopedLock stateChangeLock(stateChangeCriticalSection);
+			client->nextState = Client::State::suspended;
+			if (client->c != nullptr)
+				client->c->removeComponentListener(this);
+		}
+	}
+
+	if (client != nullptr)
+	{
 		context.executeOnGLThread([this](juce::OpenGLContext&)
 			{
 				checkComponents(false, false);
 			}, true);
-		client->c = nullptr;
 
-		clients.remove(index);
+		const juce::ScopedLock arrayLock(clients.getLock());
+		client->c = nullptr;
+		clients.removeObject(client);
 	}
 }
 
@@ -204,25 +216,33 @@ void GlContextHolder::componentVisibilityChanged(juce::Component& component)
 
 void GlContextHolder::componentBeingDeleted(juce::Component& component)
 {
-	const int index = findClientIndexForComponent(&component);
-
-	if (index >= 0)
+	Client* client = nullptr;
 	{
-		Client* client = clients[index];
+		const juce::ScopedLock arrayLock(clients.getLock());
+		const int index = findClientIndexForComponent(&component);
+		if (index >= 0)
+			client = clients[index];
 
-		// You didn't call unregister before deleting this component
-		jassert(client->nextState == Client::State::suspended);
-		client->nextState = Client::State::suspended;
+		if (client != nullptr)
+		{
+			// You didn't call unregister before deleting this component.
+			jassert(client->nextState == Client::State::suspended);
+			const juce::ScopedLock stateChangeLock(stateChangeCriticalSection);
+			client->nextState = Client::State::suspended;
+			component.removeComponentListener(this);
+		}
+	}
 
-		component.removeComponentListener(this);
+	if (client != nullptr)
+	{
 		context.executeOnGLThread([this](juce::OpenGLContext&)
 			{
 				checkComponents(false, false);
 			}, true);
 
+		const juce::ScopedLock arrayLock(clients.getLock());
 		client->c = nullptr;
-
-		clients.remove(index);
+		clients.removeObject(client);
 	}
 }
 
@@ -271,7 +291,12 @@ void GlContextHolder::renderOpenGL()
 
 	checkComponents(false, true);
 
-	for (auto& c : sharedRenderers) c->context.triggerRepaint();
+	{
+		const juce::ScopedLock sharedLock(sharedRenderers.getLock());
+		for (auto& c : sharedRenderers)
+			if (c != nullptr)
+				c->context.triggerRepaint();
+	}
 }
 
 void GlContextHolder::openGLContextClosing()
@@ -289,6 +314,7 @@ void GlContextHolder::openGLContextClosing()
 
 int GlContextHolder::findClientIndexForComponent(juce::Component* c) const
 {
+	const juce::ScopedLock arrayLock(clients.getLock());
 	const int n = clients.size();
 	for (int i = 0; i < n; ++i)
 		if (c == clients[i]->c)
@@ -299,6 +325,7 @@ int GlContextHolder::findClientIndexForComponent(juce::Component* c) const
 
 GlContextHolder::Client* GlContextHolder::findClientForComponent(juce::Component* c) const
 {
+	const juce::ScopedLock arrayLock(clients.getLock());
 	const int index = findClientIndexForComponent(c);
 	if (index >= 0 && index < clients.size())
 		return clients[index];
@@ -308,6 +335,7 @@ GlContextHolder::Client* GlContextHolder::findClientForComponent(juce::Component
 
 int GlContextHolder::findClientIndexForRenderer(juce::OpenGLRenderer* r) const
 {
+	const juce::ScopedLock arrayLock(clients.getLock());
 	const int n = clients.size();
 	for (int i = 0; i < n; ++i)
 		if (r == clients[i]->r)
@@ -318,6 +346,7 @@ int GlContextHolder::findClientIndexForRenderer(juce::OpenGLRenderer* r) const
 
 GlContextHolder::Client* GlContextHolder::findClientForRenderer(juce::OpenGLRenderer* r) const
 {
+	const juce::ScopedLock arrayLock(clients.getLock());
 	const int index = findClientIndexForRenderer(r);
 	if (index >= 0 && index < clients.size())
 		return clients[index];
@@ -328,17 +357,33 @@ GlContextHolder::Client* GlContextHolder::findClientForRenderer(juce::OpenGLRend
 
 OpenGLSharedRenderer::OpenGLSharedRenderer(Component* component) : component(component)
 {
-	GlContextHolder::getInstance()->registerSharedRenderer(this);
-	context.detach();
 	context.setSwapInterval(0);
 	context.setRenderer(this);
-	context.attachTo(*component);
-
 }
 
 OpenGLSharedRenderer::~OpenGLSharedRenderer()
 {
-	if (GlContextHolder::getInstanceWithoutCreating()) GlContextHolder::getInstance()->unregisterSharedRenderer(this);
+	detach();
+}
+
+void OpenGLSharedRenderer::attach()
+{
+	if (isAttached || component == nullptr)
+		return;
+
+	isAttached = true;
+	GlContextHolder::getInstance()->registerSharedRenderer(this);
+	context.attachTo(*component);
+}
+
+void OpenGLSharedRenderer::detach()
+{
+	if (!isAttached)
+		return;
+
+	isAttached = false;
+	if (GlContextHolder::getInstanceWithoutCreating())
+		GlContextHolder::getInstance()->unregisterSharedRenderer(this);
 	context.detach();
 }
 

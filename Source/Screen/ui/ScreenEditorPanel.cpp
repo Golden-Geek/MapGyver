@@ -30,10 +30,12 @@ ScreenEditor::ScreenEditor() :
 {
 	setWantsKeyboardFocus(true); // Permet au composant de recevoir le focus clavier.
 	addKeyListener(this);
+	attach();
 }
 
 ScreenEditor::~ScreenEditor()
 {
+	detach();
 	setScreen(nullptr);
 	removeKeyListener(this);
 }
@@ -452,6 +454,7 @@ void ScreenEditor::renderOpenGL()
 
 	if (screen == nullptr || screenRef.wasObjectDeleted()) return;
 
+	const ScopedLock frameBufferGuard(screen->renderer->frameBufferLock);
 	OpenGLFrameBuffer* frameBuffer = &screen->renderer->frameBuffer;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

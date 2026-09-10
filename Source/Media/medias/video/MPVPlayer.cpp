@@ -179,8 +179,18 @@ void MPVPlayer::clear()
 	if (MPVTimers::getInstanceWithoutCreating())
 		MPVTimers::getInstance()->unregisterMPV(this);
 
-	if (AudioManager::getInstanceWithoutCreating())
-		AudioManager::getInstance()->graph.removeNode(audioNodeID);
+	if (auto* audioManager = AudioManager::getInstanceWithoutCreating())
+	{
+		if (audioListenerRegistered)
+		{
+			audioManager->removeAudioManagerListener(this);
+			audioListenerRegistered = false;
+		}
+
+		if (audioProcessor != nullptr)
+			audioManager->graph.removeNode(audioNodeID);
+	}
+	audioProcessor = nullptr;
 
 	// Cleanup Pipe Thread
 	if (pipeThread) {
@@ -266,8 +276,16 @@ void MPVPlayer::setupMPV()
 		return;
 	}
 
-	mpv_set_option_string(mpv, "terminal", "yes");
-	mpv_set_option_string(mpv, "msg-level", "all=v");
+	auto setOption = [this](const char* name, const char* value)
+		{
+			const int optionResult = mpv_set_option_string(mpv, name, value);
+			if (optionResult < 0)
+				NLOGWARNING("MPV Player", "Could not set " << name << "=" << value << ": " << mpv_error_string(optionResult));
+		};
+
+	// This is a GUI application. Verbose terminal logging adds work for every
+	// active decoder and has nowhere useful to go.
+	setOption("terminal", "no");
 	mpv_set_option_string(mpv, "vo", "libmpv");
 	mpv_set_option_string(mpv, "force-window", "yes");
 	mpv_set_option_string(mpv, "hr-seek", "yes");
@@ -289,9 +307,16 @@ void MPVPlayer::setupMPV()
 	mpv_set_option_string(mpv, "gpu-context", "wgl"); // Use "cocoa" on Mac, "x11" on Linux
 #endif
 
-	// 3. DIRECT RENDERING (Crucial for CPU offload)
-	// Allows the decoder to write directly into video memory allocated by the renderer
-	mpv_set_option_string(mpv, "vd-lavc-dr", "yes");
+	// Do not force every decoder to reserve a large direct-rendering surface pool.
+	// Multiple simultaneous 4K videos otherwise consume several GB of GPU memory.
+	setOption("vd-lavc-dr", "no");
+	setOption("hwdec-extra-frames", "1");
+	setOption("vd-lavc-threads", "4");
+
+	// Bound the per-player demux cache while retaining useful network history.
+	setOption("demuxer-max-bytes", "32MiB");
+	setOption("demuxer-max-back-bytes", "8MiB");
+	setOption("cache-secs", "10");
 
 	// --- AUDIO ROUTING CONFIGURATION ---
 	double sampleRate = AudioManager::getInstance()->graph.getSampleRate();
@@ -459,22 +484,37 @@ void MPVPlayer::setPlaySpeedInternal(double speed)
 
 void MPVPlayer::setupAudio()
 {
-	if (fileInfo.numChannels <= 0)
+	auto* audioManager = AudioManager::getInstanceWithoutCreating();
+	if (fileInfo.numChannels <= 0 || audioManager == nullptr)
 	{
 		return;
 	}
 
-	audioNodeID = AudioProcessorGraph::NodeID(AudioManager::getInstance()->getUniqueNodeGraphID());
-	std::unique_ptr<MPVAudioProcessor> ap(new MPVAudioProcessor(this));
-	audioProcessor = ap.get();
-	AudioManager::getInstance()->graph.addNode(std::move(ap), audioNodeID);
-	AudioManager::getInstance()->addAudioManagerListener(this);
+	const bool isFirstSetup = audioProcessor == nullptr;
+	if (isFirstSetup)
+	{
+		audioNodeID = AudioProcessorGraph::NodeID(audioManager->getUniqueNodeGraphID());
+		std::unique_ptr<MPVAudioProcessor> processor(new MPVAudioProcessor(this));
+		audioProcessor = processor.get();
+		audioManager->graph.addNode(std::move(processor), audioNodeID);
 
-	pipeThread->startThread();
+		if (!audioListenerRegistered)
+		{
+			audioManager->addAudioManagerListener(this);
+			audioListenerRegistered = true;
+		}
+	}
+	else
+	{
+		// Reconfigure the existing node after an audio-device change. Allocating a
+		// new node here leaked the previous processor and duplicated connections.
+		audioManager->graph.disconnectNode(audioNodeID);
+	}
 
-
-	int sampleRate = AudioManager::getInstance()->graph.getSampleRate();
-	int bufferSize = AudioManager::getInstance()->graph.getBlockSize();
+	int sampleRate = (int)audioManager->graph.getSampleRate();
+	int bufferSize = audioManager->graph.getBlockSize();
+	if (sampleRate <= 0) sampleRate = 48000;
+	if (bufferSize <= 0) bufferSize = 512;
 	int numChannels = 2; // We enforced 2 channels in MPV options
 
 	// Prepare the processor
@@ -482,15 +522,17 @@ void MPVPlayer::setupAudio()
 	audioProcessor->prepareToPlay(sampleRate, bufferSize);
 
 	// Connect to Output Mixer
-	int minChannels = jmin(numChannels, AudioManager::getInstance()->getNumUserOutputs());
+	int minChannels = jmin(numChannels, audioManager->getNumUserOutputs());
 	for (int ch = 0; ch < minChannels; ++ch)
 	{
-		if (AudioManager::getInstance()->graph.canConnect({ { audioNodeID, ch }, { AUDIO_OUTPUTMIXER_GRAPH_ID, ch } }))
+		if (audioManager->graph.canConnect({ { audioNodeID, ch }, { AUDIO_OUTPUTMIXER_GRAPH_ID, ch } }))
 		{
-			AudioManager::getInstance()->graph.addConnection({ { audioNodeID, ch }, { AUDIO_OUTPUTMIXER_GRAPH_ID, ch } });
+			audioManager->graph.addConnection({ { audioNodeID, ch }, { AUDIO_OUTPUTMIXER_GRAPH_ID, ch } });
 		}
 	}
 
+	if (isFirstSetup && pipeThread != nullptr)
+		pipeThread->startThread();
 }
 
 void MPVPlayer::audioSetupChanged()
@@ -502,8 +544,9 @@ void MPVPlayer::audioSetupChanged()
 
 void MPVPlayer::onMPVUpdate()
 {
-	mpvListeners.call(&MPVListener::mpvFrameUpdate);
-	listeners.call(&VideoPlayerEngine::Listener::playerFrameUpdate);
+	// libmpv invokes this callback from an arbitrary internal thread. JUCE's
+	// listener lists may only be traversed from their owning message thread.
+	frameUpdatePending.store(true, std::memory_order_release);
 }
 
 void MPVPlayer::onMPVWakeup()
@@ -650,6 +693,12 @@ AudioProcessor* MPVPlayer::getAudioProcessor()
 
 void MPVPlayer::pullEvents()
 {
+	if (frameUpdatePending.exchange(false, std::memory_order_acq_rel))
+	{
+		mpvListeners.call(&MPVListener::mpvFrameUpdate);
+		listeners.call(&VideoPlayerEngine::Listener::playerFrameUpdate);
+	}
+
 	if (mpv == nullptr) return;
 
 	while (true)

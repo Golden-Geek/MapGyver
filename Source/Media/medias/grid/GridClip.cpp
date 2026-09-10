@@ -140,6 +140,7 @@ void OwnedGridClip::setMedia(Media* m)
 	{
 		ownedMedia->removeAsyncMediaListener(this);
 		removeChildControllableContainer(ownedMedia.get());
+		ownedMedia->clearItem();
 		ownedMedia.reset();
 	}
 

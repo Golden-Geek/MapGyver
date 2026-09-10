@@ -158,6 +158,22 @@ void ShaderMedia::initGLInternal()
 	timeAtLastFrame = Time::getMillisecondCounter();
 }
 
+void ShaderMedia::closeGLInternal()
+{
+	shader.reset();
+
+	if (VBO != 0)
+	{
+		glDeleteBuffers(1, &VBO);
+		VBO = 0;
+	}
+	if (VAO != 0)
+	{
+		glDeleteVertexArrays(1, &VAO);
+		VAO = 0;
+	}
+}
+
 void ShaderMedia::preRenderGLInternal()
 {
 	if (shouldReloadShader) reloadShader();

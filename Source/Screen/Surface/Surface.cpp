@@ -191,6 +191,30 @@ Surface::Surface(var params) :
 
 Surface::~Surface()
 {
+	// patternMedia registers itself as an OpenGL renderer. Detach the ownership
+	// under the draw lock, then unregister it without holding that lock so a
+	// frame already waiting to draw this surface cannot deadlock the GL thread.
+	std::unique_ptr<Media> oldPatternMedia;
+	{
+		const ScopedLock patternLock(patternMediaLock);
+		unregisterUseMedia(SURFACE_PATTERN_ID);
+		oldPatternMedia = std::move(patternMedia);
+	}
+	if (oldPatternMedia != nullptr)
+		oldPatternMedia->clearItem();
+
+	if (auto* glHolder = GlContextHolder::getInstanceWithoutCreating())
+	{
+		glHolder->callOnGLThread([this]() { releaseGLResources(); }, true);
+	}
+	else
+	{
+		// The OpenGL context already owns and will release the native objects.
+		// Avoid asking OpenGLTexture to delete a name without a current context.
+		(void)whiteMaskTexture.release();
+		vbo = 0;
+		ebo = 0;
+	}
 }
 
 void Surface::setupMedia()
@@ -305,22 +329,38 @@ void Surface::onControllableFeedbackUpdateInternal(ControllableContainer* cc, Co
 	}
 	else if (c == showTestPattern)
 	{
-		GenericScopedLock lock(patternMediaLock);
-		ShaderMedia* sm = nullptr;
-
-		unregisterUseMedia(SURFACE_PATTERN_ID);
-
+		std::unique_ptr<Media> newPatternMedia;
 		if (showTestPattern->boolValue())
 		{
-			sm = new ShaderMedia();
+			// Media normally registers from its base constructor, before ShaderMedia
+			// is fully built. Construct this short-lived renderer in manual mode and
+			// register only after all of its state is ready for the GL thread.
+			var patternParams(new DynamicObject());
+			patternParams.getDynamicObject()->setProperty("manualRender", true);
+			auto* sm = new ShaderMedia(patternParams);
 			sm->keepOfflineCache->setValue(true);
 			sm->shaderType->setValueWithData(ShaderMedia::ShaderToyFile);
 			sm->shaderOfflineData = String(BinaryData::fragmentShaderTestGrid_glsl, BinaryData::fragmentShaderTestGrid_glslSize);
 			sm->shouldReloadShader = true;
-			registerUseMedia(SURFACE_PATTERN_ID, sm);
+			sm->manualRender = false;
+			GlContextHolder::getInstance()->registerOpenGlRenderer(sm, 1);
+			newPatternMedia.reset(sm);
 		}
 
-		patternMedia.reset(sm);
+		std::unique_ptr<Media> oldPatternMedia;
+		{
+			const ScopedLock patternLock(patternMediaLock);
+			unregisterUseMedia(SURFACE_PATTERN_ID);
+			oldPatternMedia = std::move(patternMedia);
+			patternMedia = std::move(newPatternMedia);
+			if (patternMedia != nullptr)
+				registerUseMedia(SURFACE_PATTERN_ID, patternMedia.get());
+		}
+
+		// Keep the old renderer alive until the GL thread has finished any frame
+		// that already captured it, then remove it before deleting the object.
+		if (oldPatternMedia != nullptr)
+			oldPatternMedia->clearItem();
 	}
 	else if (c == blendFunction) {
 		BlendPreset preset = blendFunction->getValueDataAsEnum<BlendPreset>();
@@ -460,6 +500,7 @@ Array<Point2DParameter*> Surface::getCornerHandles()
 Array<Point2DParameter*> Surface::getAllHandles()
 {
 	Array<Point2DParameter*> ret = { topLeft, topRight, bottomLeft, bottomRight, handleBezierTopLeft, handleBezierTopRight, handleBezierBottomLeft, handleBezierBottomRight, handleBezierLeftTop, handleBezierLeftBottom, handleBezierRightTop, handleBezierRightBottom };
+	const ScopedLock pinsLock(pinsCC.items.getLock());
 	for (int i = 0; i < pinsCC.items.size(); i++)
 	{
 		ret.add(pinsCC.items[i]->position);
@@ -524,7 +565,8 @@ void Surface::updateVertices()
 	Point<float>br = openGLPoint(bottomRight);
 
 	Point<float> center(0, 0);
-	intersection(tl, br, bl, tr, &center);
+	if (!intersection(tl, br, bl, tr, &center))
+		center = (tl + tr + bl + br) / 4.0f;
 
 	Vector3D<float> tlTex(cropLeft->floatValue(), 1 - cropTop->floatValue(), 1.0f);
 	Vector3D<float> trTex(1 - cropRight->floatValue(), 1 - cropTop->floatValue(), 1.0f);
@@ -541,11 +583,16 @@ void Surface::updateVertices()
 	if (t != STRETCH) {
 		float outputRatio = ratio->floatValue();
 
-		if (hTex == 0) hTex = 0.0000001;
+		constexpr float epsilon = 0.000001f;
+		if (std::abs(hTex) < epsilon) hTex = hTex < 0 ? -epsilon : epsilon;
 
 		if (med != nullptr) {
 			Point<int> mediaSize = med->getMediaSize(mediaTextureName->stringValue());
-			float mediaRatio = abs((wTex * mediaSize.x) / (hTex * (float)mediaSize.y));
+			float mediaRatio = outputRatio;
+			if (mediaSize.x > 0 && mediaSize.y > 0 && outputRatio > epsilon)
+				mediaRatio = std::abs((wTex * mediaSize.x) / (hTex * (float)mediaSize.y));
+			if (!std::isfinite(mediaRatio) || mediaRatio <= epsilon)
+				mediaRatio = outputRatio;
 			if (mediaRatio != outputRatio) {
 				if (t == FIT) {
 					float transformRatio = mediaRatio / outputRatio;
@@ -653,8 +700,9 @@ void Surface::updateVertices()
 				currentDistBottom += grid[i][gridSize - 1].getDistanceFrom(grid[i - 1][gridSize - 1]);
 			}
 
-			float ratioTop = currentDistTop / distTop;
-			float ratioBottom = currentDistBottom / distBottom;
+			const float fallbackRatio = i / (float)(gridSize - 1);
+			float ratioTop = distTop > 0.000001f ? currentDistTop / distTop : fallbackRatio;
+			float ratioBottom = distBottom > 0.000001f ? currentDistBottom / distBottom : fallbackRatio;
 
 			Point<float> handleTop = deltaHandleLT + (deltaTop * ratioTop) + grid[i][0];
 			Point<float> handleBottom = deltaHandleLB + (deltaBottom * ratioBottom) + grid[i][gridSize - 1];
@@ -698,6 +746,7 @@ void Surface::updateVertices()
 	}
 	else
 	{
+		const ScopedLock pinsLock(pinsCC.items.getLock());
 		Array<Pin*> pins;
 		if (pinsCC.items.size() > 0) {
 			for (int i = 0; i < pinsCC.items.size(); i++) {
@@ -773,10 +822,18 @@ void Surface::updateVertices()
 		}
 		else
 		{
-			float ztl = ((dtl + dbr) / dbr);
-			float ztr = ((dtr + dbl) / dbl);
-			float zbr = ((dbr + dtl) / dtl);
-			float zbl = ((dbl + dtr) / dtr);
+			auto perspectiveRatio = [](float distance, float denominator)
+				{
+					if (denominator <= 0.000001f)
+						return 1.0f;
+					const float value = (distance + denominator) / denominator;
+					return std::isfinite(value) ? value : 1.0f;
+				};
+
+			float ztl = perspectiveRatio(dtl, dbr);
+			float ztr = perspectiveRatio(dtr, dbl);
+			float zbr = perspectiveRatio(dbr, dtl);
+			float zbl = perspectiveRatio(dbl, dtr);
 
 			tlTex *= ztl;
 			trTex *= ztr;
@@ -801,29 +858,25 @@ void Surface::draw(GLuint shaderID)
 {
 	if (!enabled->boolValue()) return;
 
-
+	// Test-pattern ownership can change on the message thread. Keep it alive for
+	// the complete draw instead of releasing the lock while retaining a raw pointer.
+	const ScopedLock patternLock(patternMediaLock);
 	Media* media = getMedia();
 	String texName = media == currentMedia ? mediaTextureName->stringValue() : String();
 
+	if (patternMedia != nullptr)
 	{
-		GenericScopedLock lock(patternMediaLock);
-		if (patternMedia != nullptr)
-		{
-			Point<int> ms = media != nullptr ? media->getMediaSize(texName) : Point<int>(512, 512);
-			patternMedia->width->setValue(ms.x);
-			patternMedia->height->setValue(ms.y);
-			media = patternMedia.get();
-		}
+		Point<int> ms = media != nullptr ? media->getMediaSize(texName) : Point<int>(512, 512);
+		if (patternMedia->width->intValue() != ms.x) patternMedia->width->setValue(ms.x);
+		if (patternMedia->height->intValue() != ms.y) patternMedia->height->setValue(ms.y);
+		media = patternMedia.get();
 	}
 
 	if (media == nullptr) return;
 
-	Point<float> tl, tr, bl, br;
-
 	Media* maskMedia = mask->getTargetContainerAs<Media>();// dynamic_cast<Media*>(mask->targetContainer.get());
-	std::shared_ptr<OpenGLTexture> texMask = nullptr;
 
-	GLuint maskLocation = glGetUniformLocation(shaderID, "mask");
+	GLint maskLocation = glGetUniformLocation(shaderID, "mask");
 	glUniform1i(maskLocation, 0);
 	glActiveTexture(GL_TEXTURE0);
 
@@ -833,106 +886,85 @@ void Surface::draw(GLuint shaderID)
 	}
 	else
 	{
-		juce::Image whiteImage(juce::Image::PixelFormat::ARGB, 1, 1, true);
-		whiteImage.setPixelAt(0, 0, Colours::white);
-		texMask = std::make_shared<OpenGLTexture>();
-		texMask->loadImage(whiteImage);
-		texMask->bind();
+		if (whiteMaskTexture == nullptr)
+		{
+			juce::Image whiteImage(juce::Image::PixelFormat::ARGB, 1, 1, true);
+			whiteImage.setPixelAt(0, 0, Colours::white);
+			whiteMaskTexture.reset(new OpenGLTexture());
+			whiteMaskTexture->loadImage(whiteImage);
+		}
+		whiteMaskTexture->bind();
 	}
 	glGetError();
 
-
-
-	GLuint textureLocation = glGetUniformLocation(shaderID, "tex");
+	GLint textureLocation = glGetUniformLocation(shaderID, "tex");
 	glUniform1i(textureLocation, 1);
 	glActiveTexture(GL_TEXTURE1);
 	glGetError();
-
-	if (media == nullptr) return;
 
 	glBindTexture(GL_TEXTURE_2D, media->getTextureID(texName));
 
 	Colour tintColor = tint->getColor();
 
-
-	// vertices start
-	if (shouldUpdateVertices) {
-		shouldUpdateVertices = false;
+	const bool verticesChanged = shouldUpdateVertices.exchange(false, std::memory_order_acq_rel);
+	if (verticesChanged)
 		updateVertices();
 
+	const bool buffersMissing = vbo == 0 || ebo == 0;
+	if (vbo == 0)
 		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	if (ebo == 0)
+		glGenBuffers(1, &ebo);
 
+	if (verticesChanged || buffersMissing)
+	{
 		posAttrib = glGetAttribLocation(shaderID, "position");
-		glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), 0);
-
 		surfacePosAttrib = glGetAttribLocation(shaderID, "surfacePosition");
-		glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
-
 		texAttrib = glGetAttribLocation(shaderID, "texcoord");
-		glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
-
 		maskAttrib = glGetAttribLocation(shaderID, "maskcoord");
-		glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
-
 		borderSoftLocation = glGetUniformLocation(shaderID, "borderSoft");
-		glUniform4f(borderSoftLocation, softEdgeTop->floatValue(), softEdgeRight->floatValue(), softEdgeBottom->floatValue(), softEdgeLeft->floatValue());
-
 		invertMaskLocation = glGetUniformLocation(shaderID, "invertMask");
-		glUniform1i(invertMaskLocation, invertMask->boolValue() ? 1 : 0);
-
 		ratioLocation = glGetUniformLocation(shaderID, "ratio");
-		glUniform1f(ratioLocation, ratio->floatValue());
-
 		tintLocation = glGetUniformLocation(shaderID, "tint");
 
-		glGenBuffers(1, &ebo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
+		const ScopedLock verticesGuard(verticesLock);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.getRawDataPointer(), GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, verticesElements.size() * sizeof(GLuint), verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), 0);
-	glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
-	glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
-	glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
-	glUniform4f(borderSoftLocation, softEdgeTop->floatValue(), softEdgeRight->floatValue(), softEdgeBottom->floatValue(), softEdgeLeft->floatValue());
-	glUniform1i(invertMaskLocation, invertMask->boolValue() ? 1 : 0);
-	glUniform1i(ratioLocation, ratio->floatValue());
+	if (posAttrib >= 0) glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), 0);
+	if (surfacePosAttrib >= 0) glVertexAttribPointer(surfacePosAttrib, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+	if (texAttrib >= 0) glVertexAttribPointer(texAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
+	if (maskAttrib >= 0) glVertexAttribPointer(maskAttrib, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
+	if (borderSoftLocation >= 0) glUniform4f(borderSoftLocation, softEdgeTop->floatValue(), softEdgeRight->floatValue(), softEdgeBottom->floatValue(), softEdgeLeft->floatValue());
+	if (invertMaskLocation >= 0) glUniform1i(invertMaskLocation, invertMask->boolValue() ? 1 : 0);
+	if (ratioLocation >= 0) glUniform1f(ratioLocation, ratio->floatValue());
 
 	float boostValue = boost->floatValue();
-	glUniform4f(tintLocation, tintColor.getFloatRed() * boostValue, tintColor.getFloatGreen() * boostValue, tintColor.getFloatBlue() * boostValue, tintColor.getFloatAlpha());
+	if (tintLocation >= 0) glUniform4f(tintLocation, tintColor.getFloatRed() * boostValue, tintColor.getFloatGreen() * boostValue, tintColor.getFloatBlue() * boostValue, tintColor.getFloatAlpha());
 
-	glEnableVertexAttribArray(posAttrib);
-	glGetError();
-
-	glEnableVertexAttribArray(surfacePosAttrib);
-	glGetError();
-
-	glEnableVertexAttribArray(texAttrib);
-	glGetError();
-
-	glEnableVertexAttribArray(maskAttrib);
-	glGetError();
+	if (posAttrib >= 0) glEnableVertexAttribArray(posAttrib);
+	if (surfacePosAttrib >= 0) glEnableVertexAttribArray(surfacePosAttrib);
+	if (texAttrib >= 0) glEnableVertexAttribArray(texAttrib);
+	if (maskAttrib >= 0) glEnableVertexAttribArray(maskAttrib);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glGetError();
-
-	verticesLock.enter();
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.getRawDataPointer(), GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, verticesElements.size() * sizeof(GLuint), verticesElements.getRawDataPointer(), GL_STATIC_DRAW);
-	verticesLock.exit();
 
 	glBlendFunc((GLenum)(int)blendFunctionSourceFactor->getValueData(), (GLenum)(int)blendFunctionDestinationFactor->getValueData());
 
-	//glDrawElements(GL_LINES, verticesElements.size(), GL_UNSIGNED_INT, 0);
-	glDrawElements(GL_TRIANGLES, verticesElements.size(), GL_UNSIGNED_INT, 0);
+	GLsizei indexCount = 0;
+	{
+		const ScopedLock verticesGuard(verticesLock);
+		indexCount = (GLsizei)verticesElements.size();
+	}
+	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 	glGetError();
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	//glDeleteBuffers(1, &ebo);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glDeleteBuffers(1, &vbo);
 
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
@@ -944,6 +976,26 @@ void Surface::draw(GLuint shaderID)
 
 	glActiveTexture(GL_TEXTURE0);
 	glGetError();
+}
+
+void Surface::releaseGLResources()
+{
+	whiteMaskTexture.reset();
+
+	if (ebo != 0)
+	{
+		glDeleteBuffers(1, &ebo);
+		ebo = 0;
+	}
+	if (vbo != 0)
+	{
+		glDeleteBuffers(1, &vbo);
+		vbo = 0;
+	}
+
+	posAttrib = surfacePosAttrib = texAttrib = maskAttrib = -1;
+	borderSoftLocation = invertMaskLocation = ratioLocation = tintLocation = -1;
+	shouldUpdateVertices.store(true, std::memory_order_release);
 }
 
 Media* Surface::getMedia()
@@ -968,7 +1020,7 @@ bool Surface::intersection(Point<float> p1, Point<float> p2, Point<float> p3, Po
 
 	float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 	// If d is zero, there is no intersection
-	if (d == 0) return false;
+	if (std::abs(d) < 0.000001f) return false;
 
 	// Get the x and y
 	float pre = (x1 * y2 - y1 * x2), post = (x3 * y4 - y3 * x4);
@@ -1019,6 +1071,8 @@ bool Surface::isPointInsideCircumcircle(juce::Point<float> point, juce::Point<fl
 	float x3 = vertex3.x, y3 = vertex3.y;
 
 	float D = 2 * (x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2));
+	if (std::abs(D) < 0.000001f)
+		return false;
 
 	float Ux = ((x1 * x1 + y1 * y1) * (y2 - y3) + (x2 * x2 + y2 * y2) * (y3 - y1) + (x3 * x3 + y3 * y3) * (y1 - y2)) / D;
 	float Uy = ((x1 * x1 + y1 * y1) * (x3 - x2) + (x2 * x2 + y2 * y2) * (x1 - x3) + (x3 * x3 + y3 * y3) * (x2 - x1)) / D;

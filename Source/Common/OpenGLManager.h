@@ -18,10 +18,13 @@ class OpenGLSharedRenderer :
 public:
 	OpenGLSharedRenderer(Component* component) ;
 	~OpenGLSharedRenderer();
+	void attach();
+	void detach();
 
 	OpenGLContext context;
 	Component* component;
 	Point<int> glInitSize;
+	bool isAttached = false;
 
 	virtual void newOpenGLContextCreated() override;
 
