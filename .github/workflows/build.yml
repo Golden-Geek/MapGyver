@@ -172,7 +172,7 @@ jobs:
       - name: Setup XCode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.4.0'
+          xcode-version: '26.6.0'
           
       - name: Build (xcodebuild + xcpretty)
         shell: bash
