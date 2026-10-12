@@ -38,7 +38,6 @@ void GlContextHolder::setup(juce::Component* topLevelComponent)
 
 	//if (OpenGLRenderer* r = dynamic_cast<OpenGLRenderer*>(offScreenRenderComponent)) registerOpenGlRenderer(r);
 	//registerOpenGlRenderer(&offScreenRenderComponent);
-	context.setSwapInterval(0);
 	context.setRenderer(this);
 	context.setContinuousRepainting(true);
 	context.setComponentPaintingEnabled(true);
@@ -266,6 +265,10 @@ void GlContextHolder::newOpenGLContextCreated()
 	glDisable(GL_DEBUG_OUTPUT);
 #endif
 
+	// Frame rate is limited by the FPS limit setting in renderOpenGL, not by vsync.
+	// This must be set once the native context exists (JUCE enables vsync when it initialises it).
+	context.setSwapInterval(0);
+
 	UltralightManager::getInstance();
 
 	checkComponents(false, false);
@@ -357,7 +360,6 @@ GlContextHolder::Client* GlContextHolder::findClientForRenderer(juce::OpenGLRend
 
 OpenGLSharedRenderer::OpenGLSharedRenderer(Component* component) : component(component)
 {
-	context.setSwapInterval(0);
 	context.setRenderer(this);
 }
 
@@ -400,4 +402,5 @@ void OpenGLSharedRenderer::newOpenGLContextCreated()
     }
 	juce::gl::glDisable(juce::gl::GL_DEBUG_OUTPUT);
 
+	context.setSwapInterval(swapInterval);
 }
