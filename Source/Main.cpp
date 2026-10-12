@@ -4,6 +4,11 @@
 extern "C" {
 	__declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+
+	// Opt out of Nahimic / Alienware Sound Center / SteelSeries Sonar code injection.
+	// Their NahimicOSD.dll hooks SwapBuffers and can spin forever on OpenGL windows (seen with an
+	// output window on an NVIDIA-driven display), which hangs JUCE's shared GL render thread.
+	__declspec(dllexport) void NoHotPatch() {}
 }
 #endif
 
