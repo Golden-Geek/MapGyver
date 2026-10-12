@@ -45,8 +45,7 @@ void ScreenEditor::setScreen(Screen* s)
 	if (screen == s) return;
 
 	screen = s;
-
-	
+	screenRef = s;
 
 	manipSurface = nullptr;
 	closestHandle = nullptr;
@@ -446,27 +445,35 @@ void ScreenEditor::renderOpenGL()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	Colour c = BG_COLOR.darker();
-	//draw BG
-	glBegin(GL_QUADS);
+	//draw BG (in local coordinates, the viewport already matches this component)
+	glDisable(GL_TEXTURE_2D);
 	glColor3f(c.getFloatRed(), c.getFloatGreen(), c.getFloatBlue());
+	Draw2DRect(0, 0, getWidth(), getHeight());
 
-	Draw2DTexRect(getX(), getY(), getWidth(), getHeight());
-
-	if (screen == nullptr || screenRef.wasObjectDeleted()) return;
+	if (screen == nullptr || screenRef.wasObjectDeleted())
+	{
+		glDisable(GL_BLEND);
+		return;
+	}
 
 	const ScopedLock frameBufferGuard(screen->renderer->frameBufferLock);
 	OpenGLFrameBuffer* frameBuffer = &screen->renderer->frameBuffer;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	int fw = frameBuffer->getWidth();
+	int fh = frameBuffer->getHeight();
+
+	//the screen renderer creates its frame buffer on its first render, nothing to show before that
+	if (!frameBuffer->isValid() || fw <= 0 || fh <= 0)
+	{
+		frameBufferRect = Rectangle<int>();
+		glDisable(GL_BLEND);
+		return;
+	}
 
 	//draw frameBuffer
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, frameBuffer->getTextureID());
-
-
-
-	int fw = frameBuffer->getWidth();
-	int fh = frameBuffer->getHeight();
 
 	float fr = fw * 1.0f / fh;
 	float r = getWidth() * 1.0f / getHeight();
@@ -491,9 +498,7 @@ void ScreenEditor::renderOpenGL()
 	float oy = viewOffset.y;
 
 
-	glBegin(GL_QUADS);
 	glColor3f(1, 1, 1);
-
 	Draw2DSubTexRect(tx, ty, tw, th, ox, oy + hZoom, ox + rZoom, oy + 1);
 
 	glDisable(GL_TEXTURE_2D);
