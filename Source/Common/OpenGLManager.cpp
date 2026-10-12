@@ -43,6 +43,8 @@ void GlContextHolder::setup(juce::Component* topLevelComponent)
 	context.setContinuousRepainting(true);
 	context.setComponentPaintingEnabled(true);
 	context.attachTo(offScreenRenderComponent);
+
+	startTimer((int)watchdogCheckIntervalMs);
 }
 
 //==============================================================================
@@ -51,6 +53,8 @@ void GlContextHolder::setup(juce::Component* topLevelComponent)
 void GlContextHolder::detach()
 {
 	jassert(juce::MessageManager::getInstance()->isThisTheMessageThread());
+
+	stopTimer();
 
 	{
 		const juce::ScopedLock arrayLock(clients.getLock());
@@ -273,6 +277,7 @@ void GlContextHolder::newOpenGLContextCreated()
 
 void GlContextHolder::renderOpenGL()
 {
+	lastRenderHeartbeat = Time::getMillisecondCounter();
 
 	//GenericScopedLock lock(renderLock);
 	double lastRenderTime = timeAtRender;
@@ -302,10 +307,72 @@ void GlContextHolder::renderOpenGL()
 void GlContextHolder::openGLContextClosing()
 {
 	//GenericScopedLock lock(renderLock);
+	lastRenderHeartbeat = 0;
 	checkComponents(true, false);
 
 	UltralightManager::getInstance()->deleteInstance();
 
+}
+
+//==============================================================================
+// RENDER WATCHDOG
+//==============================================================================
+
+void GlContextHolder::timerCallback()
+{
+	const juce::uint32 now = Time::getMillisecondCounter();
+	const juce::uint32 previousCheck = std::exchange(lastWatchdogCheck, now);
+
+	// A late tick means the message thread itself was busy (loading a file, system sleep...),
+	// and the render thread may only have been waiting for it : don't judge on this tick.
+	if (previousCheck == 0 || now - previousCheck > watchdogCheckIntervalMs * 3) return;
+
+	const juce::uint32 heartbeat = lastRenderHeartbeat.load();
+	if (heartbeat == 0) return; // not rendering yet, or context closing
+
+	const bool isStalled = now - heartbeat >= renderStallThresholdMs;
+
+	if (isStalled && renderStallStart == 0)
+	{
+		renderStallStart = heartbeat;
+
+		String message = "OpenGL rendering has been stalled for " + String((now - heartbeat) / 1000) + " s, previews and outputs are frozen.\n"
+			"An OpenGL context is blocked in the graphics driver, or in third-party software hooking it.";
+
+		const String hooks = getLoadedPresentHookModules();
+		if (hooks.isNotEmpty()) message += "\nSoftware known to hook OpenGL is loaded : " + hooks + ". Try disabling or uninstalling it.";
+		else message += "\nTry updating the graphics driver and disabling overlay software.";
+
+		NLOGWARNING("OpenGL", message);
+	}
+	else if (!isStalled && renderStallStart != 0)
+	{
+		NLOG("OpenGL", "OpenGL rendering resumed after being stalled for " + String((heartbeat - renderStallStart) / 1000.0, 1) + " s");
+		renderStallStart = 0;
+	}
+}
+
+juce::String GlContextHolder::getLoadedPresentHookModules()
+{
+	StringArray found;
+
+#if JUCE_WINDOWS
+	// Software known to inject itself into every process and hook OpenGL buffer swaps
+	static const std::pair<const wchar_t*, const char*> knownHooks[] =
+	{
+		{ L"NahimicOSD.dll", "Nahimic / Alienware Sound Center / SteelSeries Sonar" },
+		{ L"RTSSHooks64.dll", "RivaTuner Statistics Server" },
+		{ L"GameOverlayRenderer64.dll", "Steam overlay" },
+		{ L"DiscordHook64.dll", "Discord overlay" },
+		{ L"graphics-hook64.dll", "OBS game capture" }
+	};
+
+	for (const auto& [module, product] : knownHooks)
+		if (GetModuleHandleW(module) != nullptr)
+			found.add(String(product) + " (" + String(module) + ")");
+#endif
+
+	return found.joinIntoString(", ");
 }
 
 //==============================================================================
