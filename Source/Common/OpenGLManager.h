@@ -38,7 +38,8 @@ public:
 
 class GlContextHolder :
 	private juce::ComponentListener,
-	private juce::OpenGLRenderer
+	private juce::OpenGLRenderer,
+	private juce::Timer
 	//public juce::HighResolutionTimer
 {
 public:
@@ -117,6 +118,18 @@ private:
 	void newOpenGLContextCreated() override;
 	void renderOpenGL() override;
 	void openGLContextClosing() override;
+
+	// Render watchdog : JUCE renders every OpenGL context on a single shared thread, so one context
+	// blocked in the driver or in third-party software hooking it freezes all previews and outputs.
+	// The master renderer is called on every pass of that thread, so a stale heartbeat means it is stuck.
+	static constexpr juce::uint32 watchdogCheckIntervalMs = 1000;
+	static constexpr juce::uint32 renderStallThresholdMs = 5000;
+	std::atomic<juce::uint32> lastRenderHeartbeat{ 0 };
+	juce::uint32 lastWatchdogCheck = 0;
+	juce::uint32 renderStallStart = 0;
+
+	void timerCallback() override;
+	static juce::String getLoadedPresentHookModules();
 
 	int findClientIndexForComponent(juce::Component* c) const;
 	Client* findClientForComponent(juce::Component* c) const;
