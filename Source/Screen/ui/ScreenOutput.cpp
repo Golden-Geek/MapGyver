@@ -25,6 +25,9 @@ ScreenOutput::ScreenOutput(Screen* screen) :
 {
 	autoDrawContourWhenSelected = false;
 
+	// Keep vsync on video outputs to avoid tearing on projectors
+	swapInterval = 1;
+
 	setWantsKeyboardFocus(true);
 	setInterceptsMouseClicks(true, true);
 	attach();
@@ -99,9 +102,7 @@ void ScreenOutput::update()
 
 void ScreenOutput::newOpenGLContextCreated()
 {
-	// Set up your OpenGL state here
-	gl::glDebugMessageControl(gl::GL_DEBUG_SOURCE_API, gl::GL_DEBUG_TYPE_OTHER, gl::GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, gl::GL_FALSE);
-	glDisable(GL_DEBUG_OUTPUT);
+	OpenGLSharedRenderer::newOpenGLContextCreated();
 }
 
 void ScreenOutput::renderOpenGL()

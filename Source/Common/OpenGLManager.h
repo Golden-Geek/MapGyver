@@ -26,6 +26,10 @@ public:
 	Point<int> glInitSize;
 	bool isAttached = false;
 
+	// Applied in newOpenGLContextCreated(): setting it before the native context exists has no effect,
+	// and JUCE enables vsync (1) when it initialises the context.
+	int swapInterval = 0;
+
 	virtual void newOpenGLContextCreated() override;
 
 	virtual void renderOpenGL() override = 0;
