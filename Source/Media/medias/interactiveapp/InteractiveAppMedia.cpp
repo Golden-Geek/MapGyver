@@ -18,6 +18,7 @@
 InteractiveAppMedia::InteractiveAppMedia(var params) :
 	BaseSharedTextureMedia(getTypeString(), params),
 	Thread("Interactive App"),
+	isUpdatingTextures(true),
 	checkingProcess(false),
 	shouldMinimize(false),
 	shouldSynchronize(false),
@@ -28,7 +29,11 @@ InteractiveAppMedia::InteractiveAppMedia(var params) :
 	launchArguments = addStringParameter("Launch Arguments", "Launch Arguments", "");
 	launchArguments->multiline = true;
 
-	refreshTextures = addTrigger("Refresh Textures", "Refresh the list of available textures from the app");
+	textureSelectionMode = addEnumParameter("Texture Selection Mode", "Choose automatic discovery, an exact texture name, or a texture name suffix");
+	textureSelectionMode->addOption("Automatic", AUTOMATIC)->addOption("Exact Name", EXACT_NAME)->addOption("Name Suffix", NAME_SUFFIX);
+	textureName = addStringParameter("Texture Name", "Expected full texture name, or suffix in Name Suffix mode. Works independently of OSCQuery and the texture list.", "");
+	textureName->setEnabled(false);
+	refreshTextures = addTrigger("Refresh Textures", "Discover available textures and reconnect the texture receivers, even when OSCQuery is disconnected");
 	availableTextures = addEnumParameter("Available Textures", "Available Textures");
 	availableTextures->saveValueOnly = false;
 
@@ -58,6 +63,7 @@ InteractiveAppMedia::InteractiveAppMedia(var params) :
 
 	oscSender.connect("0.0.0.0", 0);
 
+	isUpdatingTextures = false;
 	startTimerHz(2);
 }
 
@@ -81,6 +87,7 @@ void InteractiveAppMedia::onContainerTriggerTriggered(Trigger* t)
 {
 	if (t == refreshTextures)
 	{
+		if (!isConnected->boolValue()) shouldSynchronize = true;
 		updateTextureList(true);
 	}
 }
@@ -88,6 +95,7 @@ void InteractiveAppMedia::onContainerTriggerTriggered(Trigger* t)
 void InteractiveAppMedia::onContainerParameterChangedInternal(Parameter* p)
 {
 	BaseSharedTextureMedia::onContainerParameterChangedInternal(p);
+	if (isUpdatingTextures) return;
 
 	if (p == appParam)
 	{
@@ -103,11 +111,20 @@ void InteractiveAppMedia::onContainerParameterChangedInternal(Parameter* p)
 	}
 	else if (p == availableTextures)
 	{
-		sharingName->setValue(availableTextures->stringValue());
+		if (!isCurrentlyLoadingData && !isUpdatingTextures && textureSelectionMode->getValueDataAsEnum<TextureSelectionMode>() == AUTOMATIC)
+		{
+			sharingName->setValue(availableTextures->stringValue());
+			textureServerName = serverName->stringValue();
+		}
 	}
-	else if (p == isConnected)
+	else if (p == textureSelectionMode || p == textureName)
 	{
-		if(isConnected->boolValue()) updateTextureList();
+		if (!isCurrentlyLoadingData)
+		{
+			if (p == textureSelectionMode && textureSelectionMode->getValueDataAsEnum<TextureSelectionMode>() == AUTOMATIC)
+				sharingName->setValue(availableTextures->stringValue());
+			updateTextureList(true);
+		}
 	}
 }
 
@@ -165,6 +182,7 @@ void InteractiveAppMedia::checkAppRunning()
 #endif
 
 	bool isRunning = processes.contains(appParam->getFile().getFileName());
+	if (isRunning && !isAppRunning()) shouldSynchronize = true;
 
 	if (isRunning && (shouldMinimize || shouldSynchronize) && !isThreadRunning())
 	{
@@ -186,64 +204,112 @@ bool InteractiveAppMedia::isAppRunning()
 
 void InteractiveAppMedia::updateTextureList(bool force)
 {
-	if (!isAppRunning() || !isConnected->boolValue()) return; //only update when app is running
+	if (isUpdatingTextures || isCurrentlyLoadingData || isClearing || Engine::mainEngine->isLoadingFile) return;
+	const ScopedValueSetter<bool> updatingTextures(isUpdatingTextures, true);
+	const TextureSelectionMode mode = textureSelectionMode->getValueDataAsEnum<TextureSelectionMode>();
+	availableTextures->setEnabled(mode == AUTOMATIC);
+	textureName->setEnabled(mode != AUTOMATIC);
 
-	StringArray senders = SharedTextureManager::getInstance()->getAvailableSenders();
-	StringArray keys = availableTextures->getAllKeys();
-
-
-	StringArray goodSenders;
-	for (auto& s : senders)
+	String selectedName = sharingName->stringValue();
+	StringArray textureNames, textureApps;
+	auto* manager = SharedTextureManager::getInstance();
+	if (mode == EXACT_NAME)
 	{
-		if (s.contains(serverName->stringValue()))
+		// Create a named receiver even before the sender exists; Spout waits for it.
+		selectedName = textureName->stringValue().trim();
+		clearWarning("texture");
+	}
+	else
+	{
+		StringArray senders, apps;
+		manager->getAvailableSenderDetails(senders, apps);
+		const String appName = serverName->stringValue();
+		const String suffix = textureName->stringValue().trim();
+		for (int i = 0; i < senders.size(); ++i)
 		{
-			goodSenders.add(s);
+			const bool matches = mode == NAME_SUFFIX
+				? suffix.isNotEmpty() && senders[i].endsWith(suffix)
+				: appName.isNotEmpty() && (senders[i].contains(appName) || apps[i] == appName);
+			if (!matches) continue;
+			textureNames.add(senders[i]);
+			textureApps.add(apps[i]);
+		}
+
+		if (mode == NAME_SUFFIX)
+		{
+			// Do not guess when several applications publish the same suffix.
+			if (textureNames.size() == 1) selectedName = textureNames[0];
+			else if (textureNames.size() > 1 || suffix.isEmpty() || !selectedName.endsWith(suffix)) selectedName.clear();
+			if (textureNames.size() > 1) setWarningMessage("Several textures match this suffix. Use a longer suffix or an exact name.", "texture");
+			else clearWarning("texture");
+		}
+		else
+		{
+			clearWarning("texture");
+			if (!textureNames.isEmpty())
+			{
+				if (selectedName.isEmpty()) selectedName = textureNames[0];
+				else if (!textureNames.contains(selectedName) && textureServerName.isNotEmpty() && selectedName.contains(textureServerName))
+				{
+					// Keep the selected output when the app's machine-dependent prefix changes.
+					const String renamed = selectedName.replace(textureServerName, appName);
+					if (textureNames.contains(renamed)) selectedName = renamed;
+				}
+				if (textureNames.contains(selectedName)) textureServerName = appName;
+			}
+
+			// Keep an unavailable selection, including its saved name, until it returns.
+			StringArray keys = textureNames;
+			if (keys.isEmpty()) keys = availableTextures->getAllKeys();
+			if (selectedName.isNotEmpty()) keys.addIfNotAlreadyThere(selectedName);
+			if (keys != availableTextures->getAllKeys())
+			{
+				Array<EnumParameter::EnumValue> options;
+				for (auto& s : keys) options.add(EnumParameter::EnumValue(s, s));
+				availableTextures->setOptions(options);
+			}
+			availableTextures->setValueWithKey(selectedName);
 		}
 	}
 
-	if (goodSenders.isEmpty() && !force) return; //if something went bad, don't destroy the detected list
+	if (sharingName->stringValue() != selectedName) sharingName->setValue(selectedName);
+	else if (force) setupReceiver();
 
-
-	bool listHasChanged = false;
-	for (auto& s : goodSenders)
+	const ScopedLock lock(receiverLock);
+#if JUCE_MAC
+	// Syphon also identifies the publishing application. Exact names can resolve
+	// this detail without requiring an OSCQuery connection or filling the enum.
+	if (mode == EXACT_NAME && selectedName.isNotEmpty())
 	{
-		if (!keys.contains(s))
+		StringArray senders, apps;
+		manager->getAvailableSenderDetails(senders, apps);
+		for (int i = 0; i < senders.size(); ++i)
 		{
-			availableTextures->addOption(s, s);
-			listHasChanged = true;
+			if (senders[i] != selectedName) continue;
+			textureNames.add(senders[i]);
+			textureApps.add(apps[i]);
 		}
 	}
+#endif
+	const int selectedIndex = textureNames.indexOf(selectedName);
+	if (receiver != nullptr && selectedIndex >= 0)
+		receiver->setSharingName(selectedName, textureApps[selectedIndex]);
 
-
-	for (auto& k : keys)
+	Array<SharedTextureReceiver*> newReceivers;
+	if (mode == AUTOMATIC)
 	{
-		if (!goodSenders.contains(k))
+		// Reuse receivers during ordinary scans, including a temporary sender loss.
+		if (textureNames.isEmpty() && !force) return;
+		for (int i = 0; i < textureNames.size(); ++i)
 		{
-			availableTextures->removeOption(k);
-			listHasChanged = true;
+			SharedTextureReceiver* existing = nullptr;
+			if (!force)
+				for (auto* r : extraReceivers)
+					if (r->sharingName == textureNames[i] && r->sharingAppName == textureApps[i]) { existing = r; break; }
+			newReceivers.add(existing != nullptr ? existing : manager->addReceiver(textureNames[i], textureApps[i]));
 		}
 	}
-
-	if (listHasChanged)
-	{
-		String curSharingName = sharingName->stringValue();
-		Array<EnumParameter::EnumValue> options;
-		for (auto& s : goodSenders) options.add(EnumParameter::EnumValue(s, s));
-		availableTextures->setOptions(options);
-		if (curSharingName.isNotEmpty()) availableTextures->setValueWithKey(curSharingName);
-	}
-
-
-	if (listHasChanged || extraReceivers.size() != goodSenders.size())
-	{
-		Array<SharedTextureReceiver*> newReceivers;
-		for (auto& s : goodSenders)
-		{
-			SharedTextureReceiver* r = SharedTextureManager::getInstance()->addReceiver(s);
-			if (r != nullptr) newReceivers.add(r);
-		}
-		setupExtraReceivers(newReceivers);
-	}
+	setupExtraReceivers(newReceivers);
 }
 
 void InteractiveAppMedia::updateBeingUsed()
@@ -735,7 +801,9 @@ void InteractiveAppMedia::killProcess()
 
 void InteractiveAppMedia::timerCallback()
 {
+	if (isCurrentlyLoadingData || isClearing || Engine::mainEngine->isLoadingFile) return;
 	checkAppRunning();
+	updateTextureList();
 }
 
 #if JUCE_WINDOWS
@@ -809,6 +877,7 @@ var InteractiveAppMedia::getJSONData(bool includeNonOverriden)
 {
 	var data = BaseSharedTextureMedia::getJSONData(includeNonOverriden);
 	data.getDynamicObject()->setProperty("treeData", treeData);
+	data.getDynamicObject()->setProperty("textureServerName", textureServerName);
 	return data;
 }
 
@@ -816,7 +885,7 @@ var InteractiveAppMedia::getJSONData(bool includeNonOverriden)
 void InteractiveAppMedia::loadJSONDataInternal(var data)
 {
 	BaseSharedTextureMedia::loadJSONDataInternal(data);
+	textureServerName = data.getProperty("textureServerName", serverName->stringValue()).toString();
 	var tData = data.getProperty("treeData", var());
 	updateTreeFromData(tData);
-	//updateTextureList(true);
 }

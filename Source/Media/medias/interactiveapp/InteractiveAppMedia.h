@@ -24,6 +24,11 @@ public:
 	StringParameter* launchArguments;
 	EnumParameter* availableTextures;
 	Trigger* refreshTextures;
+	enum TextureSelectionMode { AUTOMATIC, EXACT_NAME, NAME_SUFFIX };
+	EnumParameter* textureSelectionMode;
+	StringParameter* textureName;
+	bool isUpdatingTextures;
+	String textureServerName;
 
 	enum AppState { CLOSED, LAUNCHING, RUNNING, CLOSING };
 	EnumParameter* appState;

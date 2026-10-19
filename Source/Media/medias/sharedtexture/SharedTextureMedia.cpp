@@ -21,16 +21,21 @@ BaseSharedTextureMedia::BaseSharedTextureMedia(const String& name, var params) :
 
 BaseSharedTextureMedia::~BaseSharedTextureMedia()
 {
+	const ScopedLock lock(receiverLock);
+	auto* manager = SharedTextureManager::getInstanceWithoutCreating();
+	if (manager == nullptr) return;
 	if (receiver != nullptr)
 	{
-		if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->removeReceiver(receiver);
+		receiver->removeListener(this);
+		manager->removeReceiver(receiver);
 	}
 
 	for (auto& r : extraReceivers)
 	{
 		if (r != nullptr)
 		{
-			if (SharedTextureManager::getInstanceWithoutCreating() != nullptr) SharedTextureManager::getInstance()->removeReceiver(r);
+			r->removeListener(this);
+			manager->removeReceiver(r);
 		}
 	}
 }
@@ -38,16 +43,25 @@ BaseSharedTextureMedia::~BaseSharedTextureMedia()
 
 void BaseSharedTextureMedia::setupReceiver()
 {
-	if (receiver != nullptr) SharedTextureManager::getInstance()->removeReceiver(receiver);
-	receiver = SharedTextureManager::getInstance()->addReceiver(sharingName->stringValue());
+	const ScopedLock lock(receiverLock);
+	if (receiver != nullptr)
+	{
+		receiver->removeListener(this);
+		SharedTextureManager::getInstance()->removeReceiver(receiver);
+	}
+	// An empty Spout name selects the active sender, which may be another app.
+	receiver = sharingName->stringValue().isEmpty() ? nullptr : SharedTextureManager::getInstance()->addReceiver(sharingName->stringValue());
 	if (receiver != nullptr) receiver->addListener(this);
+	shouldRedraw = true;
 }
 
 void BaseSharedTextureMedia::setupExtraReceivers(Array<SharedTextureReceiver*> receivers)
 {
+	const ScopedLock lock(receiverLock);
+	if (extraReceivers == receivers) return;
 	for (auto& r : extraReceivers)
 	{
-		if (r != nullptr)
+		if (r != nullptr && !receivers.contains(r))
 		{
 			r->removeListener(this);
 			SharedTextureManager::getInstance()->removeReceiver(r);
@@ -61,6 +75,7 @@ void BaseSharedTextureMedia::setupExtraReceivers(Array<SharedTextureReceiver*> r
 
 	extraReceivers = receivers;
 	shouldReinitFrameBuffer = true;
+	shouldRedraw = true;
 }
 
 void BaseSharedTextureMedia::onContainerParameterChangedInternal(Parameter* p)
@@ -78,14 +93,15 @@ void BaseSharedTextureMedia::textureUpdated(SharedTextureReceiver* receiver)
 
 void BaseSharedTextureMedia::renderGLInternal()
 {
-	if (receiver == nullptr || receiver->width == 0 || receiver->height == 0) return;
+	const ScopedLock lock(receiverLock);
+	if (receiver == nullptr || receiver->fbo == nullptr || receiver->width == 0 || receiver->height == 0) return;
 
 	for (int i = 0;i < extraReceivers.size() && i < extraFrameBuffers.size();i++)
 	{
 		OpenGLFrameBuffer* fb = extraFrameBuffers[i];
 		SharedTextureReceiver* r = extraReceivers[i];
 		if (fb == nullptr || r == nullptr || r->width == 0 || r->height == 0) continue;
-		if (fb->getWidth() != r->width || fb->getHeight() != r->height)
+		if (!fb->isValid() || fb->getWidth() != r->width || fb->getHeight() != r->height)
 		{
 			shouldReinitFrameBuffer = true;
 			break;
@@ -94,8 +110,9 @@ void BaseSharedTextureMedia::renderGLInternal()
 
 	if (shouldReinitFrameBuffer)
 	{
-		initFrameBuffer();
-		shouldReinitFrameBuffer = false;
+		// The main FBO is already bound by Media::renderOpenGLMedia. Rebuilding
+		// only the extra FBOs keeps that rendering target alive during refresh.
+		initExtraFramebuffers();
 	}
 
 	glBindTexture(GL_TEXTURE_2D, receiver->fbo->getTextureID());
@@ -105,7 +122,12 @@ void BaseSharedTextureMedia::renderGLInternal()
 	//draw full quad
 	Init2DViewport(receiver->width, receiver->height);
 	glColor3f(1, 1, 1);
+#if JUCE_WINDOWS
+	// Spout textures need the opposite vertical orientation in our media FBO.
+	Draw2DTexRectFlipped(0, 0, receiver->width, receiver->height);
+#else
 	Draw2DTexRect(0, 0, receiver->width, receiver->height);
+#endif
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -115,7 +137,7 @@ void BaseSharedTextureMedia::renderGLInternal()
 	{
 		OpenGLFrameBuffer* fb = extraFrameBuffers[i];
 		SharedTextureReceiver* r = extraReceivers[i];
-		if (fb == nullptr || r == nullptr || r->width == 0 || r->height == 0) continue;
+		if (fb == nullptr || !fb->isValid() || r == nullptr || r->fbo == nullptr || r->width == 0 || r->height == 0) continue;
 		fb->makeCurrentAndClear();
 
 		glBindTexture(GL_TEXTURE_2D, r->fbo->getTextureID());
@@ -124,7 +146,11 @@ void BaseSharedTextureMedia::renderGLInternal()
 
 		Init2DViewport(r->width, r->height);
 		glColor3f(1, 1, 1);
+#if JUCE_WINDOWS
+		Draw2DTexRectFlipped(0, 0, r->width, r->height);
+#else
 		Draw2DTexRect(0, 0, r->width, r->height);
+#endif
 		fb->releaseAsRenderingTarget();
 	}
 
@@ -134,12 +160,14 @@ void BaseSharedTextureMedia::renderGLInternal()
 
 void BaseSharedTextureMedia::initFrameBuffer()
 {
+	const ScopedLock lock(receiverLock);
 	Media::initFrameBuffer();
 	initExtraFramebuffers();
 }
 
 void BaseSharedTextureMedia::initExtraFramebuffers()
 {
+	const ScopedLock lock(receiverLock);
 	for (auto& fb : extraFrameBuffers)
 	{
 		if (fb != nullptr)
@@ -153,15 +181,18 @@ void BaseSharedTextureMedia::initExtraFramebuffers()
 	for (auto& r : extraReceivers)
 	{
 		OpenGLFrameBuffer* fbo = extraFrameBuffers.add(new OpenGLFrameBuffer());
-		fbo->initialise(GlContextHolder::getInstance()->context, r->width, r->height);
+		if (r->width > 0 && r->height > 0)
+			fbo->initialise(GlContextHolder::getInstance()->context, r->width, r->height);
 		addFrameBuffer(r->sharingName, fbo, false);
 	}
 
 	mediaNotifier.addMessage(new MediaEvent(MediaEvent::SUB_FRAMEBUFFERS_CHANGED, this));
+	shouldReinitFrameBuffer = false;
 }
 
 Point<int> BaseSharedTextureMedia::getDefaultMediaSize()
 {
+	const ScopedLock lock(receiverLock);
 	if (receiver == nullptr) return Point<int>();
 	return Point<int>(receiver->width, receiver->height);
 }

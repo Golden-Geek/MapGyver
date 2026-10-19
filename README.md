@@ -14,6 +14,12 @@ Features :
 - OrganicUI framework : fully controllable from external software like Chataigne
 - Timeline : Time based animations, blending, etc.
 
+## Interactive App textures
+
+`Texture Selection Mode` defaults to `Automatic`. Discovery checks for new outputs regularly and keeps the selected texture name while its sender is unavailable. `Refresh Textures` rescans outputs and recreates their receivers to recover a stalled connection.
+
+Choose `Exact Name` and enter the full sender name in `Texture Name` to connect without OSCQuery discovery or choosing from the texture list. Choose `Name Suffix` to match the end of the sender name across computers (for example, `/Main` matches both `Computer-A/Main` and `Computer-B/Main`). Suffix matching reconnects automatically when a matching sender appears; if several senders match, use a longer suffix or an exact name.
+
 
 ## Downloads
 

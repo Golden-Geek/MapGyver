@@ -20,6 +20,7 @@ public:
 	virtual ~BaseSharedTextureMedia();
 
 	bool frameUpdated;
+	CriticalSection receiverLock;
 
 	StringParameter* sharingName;
 	SharedTextureReceiver* receiver;
