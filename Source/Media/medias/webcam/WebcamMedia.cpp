@@ -48,8 +48,15 @@ void WebcamMedia::updateDevice()
 }
 
 void WebcamMedia::WebcamImageReceived(const Image& camImage) {
-	initImage(camImage);
+	if (!camImage.isValid()) return;
+
+	{
+		GenericScopedLock lock(imageLock);
+		bitmapData.reset();
+		image = camImage.convertedToFormat(Image::ARGB);
+		bitmapData.reset(new Image::BitmapData(image, Image::BitmapData::readWrite));
+	}
+
 	shouldRedraw = true;
 	FPSTick();
-
 }
