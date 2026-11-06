@@ -13,48 +13,47 @@
 class NDIDevice
 {
 public:
-	enum Type { NDI_IN, NDI_OUT };
-	NDIDevice(NDIlib_source_t &deviceName, Type t);
-	virtual ~NDIDevice() {}
+    enum Type { NDI_IN, NDI_OUT };
+    NDIDevice(NDIlib_source_t& deviceName, Type t);
+    virtual ~NDIDevice() {}
 
-	String name;
-	Type type;
+    String name;
+    Type type;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NDIDevice)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NDIDevice)
 };
 
 class NDIInputDevice :
-	public NDIDevice,
-	public Thread
+    public NDIDevice,
+    public Thread
 {
 public:
-	NDIInputDevice(NDIlib_source_t &info);
-	~NDIInputDevice();
-	//std::unique_ptr<NDIInput> device;
+    NDIInputDevice(NDIlib_source_t& info);
+    ~NDIInputDevice();
 
-	NDIlib_recv_instance_t pNDI_recv;
-	NDIlib_source_t* p_source;
+    NDIlib_recv_instance_t pNDI_recv = nullptr;
 
-	// Inherited via NDIInputCallback
-	//virtual void handleIncomingNDIMessage(NDIInput * source, const NDIMessage & message) override;
+    // Own the strings: the NDI finder only guarantees its source pointers until
+    // the next call to NDIlib_find_get_current_sources().
+    String sourceName;
+    String sourceAddress;
+    NDIlib_source_t sourceInfo;
 
-	void run() override;
-	bool shouldProcess = false;
+    CriticalSection receiverLock;
+    std::atomic<bool> shouldProcess{ false };
+    void run() override;
 
-	class NDIInputListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~NDIInputListener() {}
-		virtual void videoFrameReceived(NDIlib_video_frame_v2_t* frame) {}
-		//virtual void noteOnReceived(const int&/*channel*/, const int&/*pitch*/, const int&/*velocity*/) {}
-	};
+    class NDIInputListener
+    {
+    public:
+        virtual ~NDIInputListener() {}
+        virtual void videoFrameReceived(NDIlib_video_frame_v2_t* frame) {}
+        virtual void audioFrameReceived(const NDIlib_audio_frame_v3_t* frame) {}
+    };
 
-	ListenerList<NDIInputListener> inputListeners;
-	void addNDIInputListener(NDIInputListener* newListener);
-	void removeNDIInputListener(NDIInputListener* listener);
+    ListenerList<NDIInputListener> inputListeners;
+    void addNDIInputListener(NDIInputListener* newListener);
+    void removeNDIInputListener(NDIInputListener* listener);
 
-
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NDIInputDevice)
-
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NDIInputDevice)
 };

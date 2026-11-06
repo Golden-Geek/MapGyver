@@ -1,96 +1,112 @@
 /*
   ==============================================================================
 
-	NDIDevice.cpp
-	Created: 20 Dec 2016 1:17:56pm
-	Author:  Ben
+    NDIDevice.cpp
+    Created: 20 Dec 2016 1:17:56pm
+    Author:  Ben
 
   ==============================================================================
 */
 #include "Common/CommonIncludes.h"
 
 NDIDevice::NDIDevice(NDIlib_source_t& info, Type t) :
-	name(info.p_ndi_name),
-	type(t)
+    name(info.p_ndi_name != nullptr ? info.p_ndi_name : ""),
+    type(t)
 {
 }
 
-
-
-NDIInputDevice::NDIInputDevice(NDIlib_source_t & info) :
-	NDIDevice(info, NDI_IN),
-	Thread("NDI Input")
+NDIInputDevice::NDIInputDevice(NDIlib_source_t& info) :
+    NDIDevice(info, NDI_IN),
+    Thread("NDI Input"),
+    sourceName(info.p_ndi_name != nullptr ? info.p_ndi_name : ""),
+    sourceAddress(info.p_url_address != nullptr ? info.p_url_address : "")
 {
-	p_source = &info;
-	startThread();
+    sourceInfo.p_ndi_name = sourceName.toRawUTF8();
+    sourceInfo.p_url_address = sourceAddress.isNotEmpty() ? sourceAddress.toRawUTF8() : nullptr;
+    startThread();
 }
 
 NDIInputDevice::~NDIInputDevice()
 {
-	stopThread(100);
+    stopThread(3000);
+    const ScopedLock lock(receiverLock);
+    shouldProcess = false;
+    if (pNDI_recv != nullptr)
+    {
+        NDIlib_recv_destroy(pNDI_recv);
+        pNDI_recv = nullptr;
+    }
 }
-
-
 
 void NDIInputDevice::addNDIInputListener(NDIInputListener* newListener)
 {
-	inputListeners.add(newListener);
-	if (inputListeners.size() == 1)
-	{
+    const ScopedLock lock(receiverLock);
+    inputListeners.add(newListener);
+    if (inputListeners.size() == 1)
+    {
+        NDIlib_recv_create_v3_t recv_create_desc;
+        recv_create_desc.color_format = NDIlib_recv_color_format_BGRX_BGRA;
 
-		NDIlib_recv_create_v3_t recv_create_desc;
-		recv_create_desc.color_format = NDIlib_recv_color_format_BGRX_BGRA; // Format de couleur souhaité
-
-		pNDI_recv = NDIlib_recv_create_v3(&recv_create_desc);
-		NDIlib_recv_connect(pNDI_recv, p_source);
-
-		// Destroy the NDI finder. We needed to have access to the pointers to p_sources[0]
-		//NDIlib_find_destroy(pNDI_find);
-
-		shouldProcess = true;
-	}
+        pNDI_recv = NDIlib_recv_create_v3(&recv_create_desc);
+        if (pNDI_recv != nullptr)
+        {
+            NDIlib_recv_connect(pNDI_recv, &sourceInfo);
+            shouldProcess = true;
+            notify();
+        }
+        else
+        {
+            LOGERROR("Error creating NDI receiver");
+        }
+    }
 }
 
-void NDIInputDevice::removeNDIInputListener(NDIInputListener* listener) {
-	inputListeners.remove(listener);
-	if (inputListeners.size() == 0)
-	{
-		shouldProcess = false;
-		NDIlib_recv_destroy(pNDI_recv);
-		LOG("close connexion here");
-	}
+void NDIInputDevice::removeNDIInputListener(NDIInputListener* listener)
+{
+    const ScopedLock lock(receiverLock);
+    inputListeners.remove(listener);
+    if (inputListeners.size() == 0)
+    {
+        shouldProcess = false;
+        if (pNDI_recv != nullptr)
+        {
+            NDIlib_recv_destroy(pNDI_recv);
+            pNDI_recv = nullptr;
+        }
+    }
 }
 
 void NDIInputDevice::run()
 {
-	while (!threadShouldExit()) {
-		if (shouldProcess) {
-			NDIlib_video_frame_v2_t video_frame;
+    while (!threadShouldExit())
+    {
+        bool active = false;
+        {
+            const ScopedLock lock(receiverLock);
+            if (shouldProcess && pNDI_recv != nullptr)
+            {
+                active = true;
+                NDIlib_video_frame_v2_t video_frame;
+                NDIlib_audio_frame_v3_t audio_frame;
 
-			switch (NDIlib_recv_capture_v3(pNDI_recv, &video_frame, nullptr, nullptr, 100)) {
-				// No data
-			case NDIlib_frame_type_none:
-				//LOG("No data received");
-				break;
+                switch (NDIlib_recv_capture_v3(pNDI_recv, &video_frame, &audio_frame, nullptr, 100))
+                {
+                case NDIlib_frame_type_video:
+                    inputListeners.call(&NDIInputListener::videoFrameReceived, &video_frame);
+                    NDIlib_recv_free_video_v2(pNDI_recv, &video_frame);
+                    break;
 
-				// Video data
-			case NDIlib_frame_type_video:
+                case NDIlib_frame_type_audio:
+                    inputListeners.call(&NDIInputListener::audioFrameReceived, &audio_frame);
+                    NDIlib_recv_free_audio_v3(pNDI_recv, &audio_frame);
+                    break;
 
-				//LOG("Video data received : " <<  video_frame.xres << " / " << video_frame.yres);
-				inputListeners.call(&NDIInputListener::videoFrameReceived, &video_frame);
-				NDIlib_recv_free_video_v2(pNDI_recv, &video_frame);
-				break;
-
-				// Audio data
-			case NDIlib_frame_type_audio:
-				//LOG("Audio data received : " << audio_frame.no_samples);
-				//NDIlib_recv_free_audio_v2(pNDI_recv, &audio_frame);
-				break;
-			}
-		}
-		else {
-			wait(1000);
-		}
-	}
+                default:
+                    break;
+                }
+            }
+        }
+        if (!active)
+            wait(30);
+    }
 }
-
