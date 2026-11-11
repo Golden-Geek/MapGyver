@@ -434,6 +434,8 @@ void VideoMedia::checkIsYoutubeVideo()
 		File f = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("yt-dlp.exe");
 #elif JUCE_MAC
 		File f = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("Resources").getChildFile("yt-dlp");
+#elif JUCE_LINUX
+		File f = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("yt-dlp");
 #endif
 
 		if (f.existsAsFile()) return;
@@ -451,6 +453,9 @@ void VideoMedia::checkIsYoutubeVideo()
 #elif JUCE_MAC
 				URL downloadURL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos");
 				File targetFile = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("Resources").getChildFile("yt-dlp");
+#elif JUCE_LINUX
+				URL downloadURL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux");
+				File targetFile = File::getSpecialLocation(File::currentApplicationFile).getParentDirectory().getChildFile("yt-dlp");
 #endif
 
 				NLOG(niceName, "Downloading YouTube-DLP from " << downloadURL.toString(true));
@@ -458,6 +463,9 @@ void VideoMedia::checkIsYoutubeVideo()
 
 					if (success)
 					{
+#if JUCE_LINUX
+						targetFile.setExecutePermission(true);
+#endif
 						NLOG(niceName, "YouTube-DLP downloaded and ready.");
 						load();
 

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=MapGyver
+Exec=MapGyver
+Icon=MapGyver
+Type=Application
+Categories=Graphics;Video;
+Comment=Cross-platform lightweight video mapping software
+Terminal=false
+StartupWMClass=MapGyver

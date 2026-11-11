@@ -224,11 +224,8 @@ jobs:
           pass: ${{ secrets.UPLOADPASS }}
           
   linux:
-    if: false # tmp disable
-
-    name: Linux
-    runs-on: ubuntu-22.04
-    container: tommagnier/chataigne-linux-x64-build
+    name: Linux x64
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repo
@@ -250,55 +247,94 @@ jobs:
           os: 'x64'
 
       - name: Installing dependencies
-        id: install_deps
-        #shell: bash {0} # Opt out of fail-fast behavior (necessary to ignore fetch errors)
         run: |
-          # Most dependencies are already installed in the Docker image. Uncomment the following lines if you need more
-          # apt-get update && apt-get install ...
+          sudo apt-get update
+          sudo apt-get install -qyf make g++ pkg-config patchelf imagemagick \
+            libfreetype-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev \
+            libxcomposite-dev mesa-common-dev libasound2-dev freeglut3-dev \
+            libcurl4-gnutls-dev libbluetooth-dev libgtk-3-dev libwebkit2gtk-4.1-dev \
+            libsdl2-dev libusb-1.0-0-dev libhidapi-dev ladspa-sdk libssl-dev \
+            libmpv-dev libavahi-client-dev
 
-          cd $GITHUB_WORKSPACE
-          wget "https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage"
-          chmod a+x appimagetool-x86_64.AppImage
-
-      # - name: Start SSH via ngrok
-      #   uses: P3TERX/ssh2actions@main
-      #   with:
-      #     mode: ngrok
-      #   env:
-      #     # After sign up on the https://ngrok.com
-      #     # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
-      #     NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
-          
-      #     # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
-      #     # You can find this server region here: https://ngrok.com/docs#global-locations
-      #     NGROK_REGION: us
-
-      #     # This password you will use when authorizing via SSH
-      #     SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      - name: Install NDI SDK
+        run: |
+          curl -sL -o ndi.tar.gz "https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v6_Linux.tar.gz"
+          tar -xzf ndi.tar.gz
+          ARCHIVE_LINE=$(grep -an '^__NDI_ARCHIVE_BEGIN__$' Install_NDI_SDK_v6_Linux.sh | cut -d: -f1)
+          tail -n +$((ARCHIVE_LINE + 1)) Install_NDI_SDK_v6_Linux.sh | tar -xz
+          sudo cp -r "NDI SDK for Linux/include/." /usr/local/include/
+          sudo cp "NDI SDK for Linux/lib/x86_64-linux-gnu/libndi.so.6.3.2" /usr/local/lib/
+          sudo ln -sf /usr/local/lib/libndi.so.6.3.2 /usr/local/lib/libndi.so.6
+          sudo ln -sf /usr/local/lib/libndi.so.6.3.2 /usr/local/lib/libndi.so
+          sudo ldconfig
 
       - name: Build
         run: |
-          cd $GITHUB_WORKSPACE/Builds/LinuxMakefile
-          gcc --version
-          make -j2 CONFIG=Release
+          make -C Builds/LinuxMakefile -j$(nproc) CONFIG=Release
+
+          # Stage the bundled runtime libs and the Ultralight resources next to the binary
+          mkdir -p Builds/LinuxMakefile/build/lib Builds/LinuxMakefile/build/resources
+          cp External/servus/lib/linux/libServus.so.6 External/ultralight/lib/linux/*.so Builds/LinuxMakefile/build/lib/
+          cp -r Resources/ultralight/resources/. Builds/LinuxMakefile/build/resources/
+
+          # Fail early if any dynamic dependency is missing
+          if ldd Builds/LinuxMakefile/build/MapGyver | grep -q "not found"; then
+            ldd Builds/LinuxMakefile/build/MapGyver | grep "not found"
+            exit 1
+          fi
 
       - name: Create AppImage
         id: create_package
         run: |
-          mkdir -p ${{ env.ProjectName }}.AppDir/usr/bin/
-          cp build/${{ env.ProjectName }} ${{ env.ProjectName }}.AppDir/usr/bin/
+          # linuxdeploy bundles the full ldd closure (libmpv, Ultralight, NDI, Servus) into the AppDir,
+          # making the AppImage self-contained.
+          wget -q "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
+          chmod +x linuxdeploy-x86_64.AppImage
+
+          # The desktop entry spec requires a 128px+ icon; upscale the 64px app icon
+          # (the file must be named MapGyver.png to match the desktop entry's Icon name)
+          mkdir -p icon_tmp
+          convert MapGyver.png -resize 256x256 icon_tmp/MapGyver.png
+
+          ./linuxdeploy-x86_64.AppImage --appimage-extract-and-run \
+            --appdir Builds/LinuxMakefile/MapGyver.AppDir \
+            --executable Builds/LinuxMakefile/build/MapGyver \
+            --desktop-file Package/Linux/MapGyver.desktop \
+            --icon-file icon_tmp/MapGyver.png
+
+          # Ultralight looks for its resources next to the executable
+          cp -r Resources/ultralight/resources Builds/LinuxMakefile/MapGyver.AppDir/usr/bin/resources
 
           PKGNAME=${{ env.ProjectName }}-linux-${{ steps.set_variables.outputs.suffix }}.AppImage
+          ./linuxdeploy-x86_64.AppImage --appimage-extract-and-run \
+            --appdir Builds/LinuxMakefile/MapGyver.AppDir \
+            --output appimage
+          mv MapGyver-x86_64.AppImage "Builds/LinuxMakefile/$PKGNAME"
           echo "pkg-name=$PKGNAME" >> $GITHUB_OUTPUT
-          $GITHUB_WORKSPACE/appimagetool-x86_64.AppImage --appimage-extract-and-run ${{ env.ProjectName }}.AppDir $PKGNAME
-        working-directory: ./Builds/LinuxMakefile
+
+      - name: Publish Tag Asset To GitHub Release
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: ./Builds/LinuxMakefile/${{ steps.create_package.outputs.pkg-name }}
+          overwrite_files: true
+          fail_on_unmatched_files: true
 
       - name: Upload
+        # posts to the project's own download server; skipped gracefully on forks without the secrets
+        continue-on-error: true
         uses: ./.github/actions/upload
         with:
           pkg-name: ./Builds/LinuxMakefile/${{ steps.create_package.outputs.pkg-name }}
           url: ${{ secrets.UPLOADURL }}
           pass: ${{ secrets.UPLOADPASS }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.create_package.outputs.pkg-name }}
+          path: ./Builds/LinuxMakefile/${{ steps.create_package.outputs.pkg-name }}
   
   raspberrypi:
     if: false # tmp disable

@@ -26,31 +26,48 @@ Choose `Exact Name` and enter the full sender name in `Texture Name` to connect 
 - Windows : https://www.goldengeek.org/mapgyver/download/app/MapGyver-win-x64-bleedingedge.exe
 - MacOS Intel :Not ready yet (you can contribute by compiling and testing it yourself)
 - MacOS Silicon : https://www.goldengeek.org/mapgyver/download/app/MapGyver-osx-silicon-bleedingedge.pkg
-- Linux x64 : Not ready yet (you can contribute by compiling and testing it yourself with the instructions below)
+- Linux x64 : AppImage built by CI on tags, available on the [releases page](https://github.com/Golden-Geek/MapGyver/releases) (you can also compile it yourself with the instructions below)
 - Raspberry 32 bit : Not ready yet (you can contribute by compiling and testing it yourself)
 - Raspberry 64 bit : Not ready yet (you can contribute by compiling and testing it yourself)
 
 ## Linux specific instructions
 
 ### Dependencies
-- You need to install the [NDI SDK](https://ndi.video/for-developers/ndi-sdk/) (you can use the `ndi-sdk` AUR package on Arch)
-- 
+- [NDI SDK](https://ndi.video/for-developers/ndi-sdk/) (proprietary, required) :
+  - Arch Linux : install the `ndi-sdk` AUR package.
+  - Debian/Ubuntu : download the SDK, extract it, then copy `include/*` to `/usr/local/include` and `bin/x86_64/lib*` to `/usr/local/lib`.
+- Build dependencies :
+  - Arch Linux : `sudo pacman -S --needed base-devel git freetype2 libx11 libxinerama libxrandr libxcursor libxcomposite mesa alsa-lib gtk3 webkit2gtk-4.1 curl openssl mpv`
+  - Debian/Ubuntu : run `./install_linux_deps.sh`
+- Optional : enable the Avahi daemon (`sudo systemctl enable --now avahi-daemon`) for zeroconf network discovery (NDI announcement, OSCQuery senders).
 
 ### Building
- - Clone the develop-local branch from the JUCE git here : http://github.com/benkuper/JUCE 
-  ```
-  git clone --branch=juce8_local-local http://github.com/benkuper/JUCE
-  ```
-  - In the *JUCE/extras/Projucer/Builds* folder, choose the folder depending on you system, open the solution with your IDE and compile it or make in linux. You can then open the new Projucer app that you just built.
-  - 
-- Clone this repository with submodules: `git clone --recursive https://github.com/Golden-Geek/MapGyver.git`
-- 
-- Open MapGyver JUCE with the official Projucer 
-- Save Ctrl + S in Projucer to write the MakeFile
-- Navigate to `Builds/LinuxMakefile` and make with `make -j 8`
+The easiest way is the provided build script, which handles submodules, JUCE and the runtime files staging:
+```bash
+git clone --recursive https://github.com/Golden-Geek/MapGyver.git
+cd MapGyver
+./linux_build.sh
+```
+
+Or manually :
+```bash
+# Clone benkuper's JUCE fork (branch juce8_local) into ./JUCE
+git clone --branch juce8_local http://github.com/benkuper/JUCE JUCE
+
+# Build
+make -C Builds/LinuxMakefile -j$(nproc) CONFIG=Release
+
+# Stage the bundled runtime libs and Ultralight resources next to the binary
+mkdir -p Builds/LinuxMakefile/build/lib Builds/LinuxMakefile/build/resources
+cp External/servus/lib/linux/libServus.so.6 External/ultralight/lib/linux/*.so Builds/LinuxMakefile/build/lib/
+cp -r Resources/ultralight/resources/. Builds/LinuxMakefile/build/resources/
+```
+
+If you re-save the project in Projucer, the Makefile regenerates with the correct settings : the Linux exporter already declares all the needed external libs (Servus, NDI, mpv, Ultralight), search paths and the `$ORIGIN` rpath.
 
 ### Running
-- After compiling, run MapGyver with :
+After compiling, run MapGyver with :
 ```bash
-LD_LIBRARY_PATH=../../External/servus/lib/linux:../../External/vlc/lib/linux:$LD_LIBRARY_PATH build/MapGyver
+./Builds/LinuxMakefile/build/MapGyver
 ```
+The binary uses an `$ORIGIN` rpath, so it finds Servus and Ultralight libs in `build/lib` and the Ultralight resources in `build/resources` automatically.
